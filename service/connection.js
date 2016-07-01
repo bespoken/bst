@@ -5,8 +5,8 @@ var Connection = (function () {
     function Connection(connectionHandler, socket) {
         this.connectionHandler = connectionHandler;
         this.socket = socket;
-        this.uuid = uuid.v4();
         var self = this;
+        this.uuid = uuid.v4();
         // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function (data) {
             console.log('DATA ' + self.socket.remoteAddress + ': ' + data);
@@ -16,7 +16,6 @@ var Connection = (function () {
         });
         // Add a 'close' event handler to this instance of socket
         socket.on('close', function () {
-            console.log('CLOSED: ' + self.remoteAddress() + ' ' + self.socket.remotePort);
             self.connectionHandler.onClose(self);
         });
     }

@@ -8,9 +8,9 @@ export class Connection {
     public uuid:string;
 
     constructor(private connectionHandler:ConnectionHandler, private socket:Socket) {
+        let self = this;
         this.uuid = uuid.v4();
 
-        let self = this;
         // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function(data) {
             console.log('DATA ' + self.socket.remoteAddress + ': ' + data);
@@ -22,7 +22,6 @@ export class Connection {
 
         // Add a 'close' event handler to this instance of socket
         socket.on('close', function() {
-            console.log('CLOSED: ' + self.remoteAddress() +' '+ self.socket.remotePort);
             self.connectionHandler.onClose(self);
         });
     }

@@ -23,21 +23,21 @@ export class BespokeClient {
 
     }
 
-    public write(data: string):void {
+    public write(data: string, callback: () => void):void {
         if (this.connected == null) {
             return;
         }
 
         let self = this;
         this.connected.then(function () {
-            self.client.write(data);
+            self.client.write(data, callback);
         });
     }
 
     public disconnect():void {
+        let self = this;
         this.connected.then(function () {
-            this.client.end();
+            self.client.end();
         });
-        //this.client.destroy();
     }
 }
