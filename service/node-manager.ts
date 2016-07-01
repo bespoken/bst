@@ -2,29 +2,29 @@
  * Created by jpk on 7/1/16.
  */
 import * as net from 'net';
-import {Connection} from "./connection";
+import {NodeConnection} from "./node-connection";
 import {Socket} from "net";
 
 export interface OnConnectCallback {
-    (connection: Connection): void;
+    (connection: NodeConnection): void;
 }
 
 export interface OnReceiveCallback {
-    (connection: Connection, data: string): void;
+    (connection: NodeConnection, data: string): void;
 }
 
 export interface OnCloseCallback {
-    (connection: Connection): void;
+    (connection: NodeConnection): void;
 }
 
-export class ConnectionHandler {
+export class NodeManager {
     public host:string = '0.0.0.0';
     public onClose:OnCloseCallback;
     public onConnect:OnConnectCallback;
     public onReceive:OnReceiveCallback;
 
 
-    private connections: {[id: string] : Connection } = {};
+    private nodes: {[id: string] : NodeConnection } = {};
 
     constructor(private port:number) {}
 
@@ -32,10 +32,10 @@ export class ConnectionHandler {
 
         let self = this;
         net.createServer(function(socket:Socket) {
-            let connection = new Connection(self, socket);
-            self.connections[connection.uuid] = connection;
+            let node = new NodeConnection(self, socket);
+            self.nodes[node.uuid] = node;
 
-            self.onConnect(connection);
+            self.onConnect(node);
 
             // We have a connection - a socket object is assigned to the connection automatically
             console.log('CONNECTED: ' + socket.remoteAddress +':'+ socket.remotePort);

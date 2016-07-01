@@ -2,12 +2,12 @@
 
 import * as uuid from 'node-uuid';
 import {Socket} from "net";
-import {ConnectionHandler} from "./connection-handler";
+import {NodeManager} from "./node-manager";
 
-export class Connection {
+export class NodeConnection {
     public uuid:string;
 
-    constructor(private connectionHandler:ConnectionHandler, private socket:Socket) {
+    constructor(private nodeManager:NodeManager, private socket:Socket) {
         let self = this;
         this.uuid = uuid.v4();
 
@@ -17,12 +17,12 @@ export class Connection {
             // Write the data back to the socket, the client will receive it as data from the server
             self.socket.write('You said "' + data + '"');
 
-            self.connectionHandler.onReceive(self, data);
+            self.nodeManager.onReceive(self, data);
         });
 
         // Add a 'close' event handler to this instance of socket
         socket.on('close', function() {
-            self.connectionHandler.onClose(self);
+            self.nodeManager.onClose(self);
         });
     }
 

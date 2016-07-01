@@ -1,9 +1,9 @@
 /// <reference path="../typings/modules/node-uuid/index.d.ts" />
 "use strict";
 var uuid = require('node-uuid');
-var Connection = (function () {
-    function Connection(connectionHandler, socket) {
-        this.connectionHandler = connectionHandler;
+var NodeConnection = (function () {
+    function NodeConnection(nodeManager, socket) {
+        this.nodeManager = nodeManager;
         this.socket = socket;
         var self = this;
         this.uuid = uuid.v4();
@@ -12,16 +12,16 @@ var Connection = (function () {
             console.log('DATA ' + self.socket.remoteAddress + ': ' + data);
             // Write the data back to the socket, the client will receive it as data from the server
             self.socket.write('You said "' + data + '"');
-            self.connectionHandler.onReceive(self, data);
+            self.nodeManager.onReceive(self, data);
         });
         // Add a 'close' event handler to this instance of socket
         socket.on('close', function () {
-            self.connectionHandler.onClose(self);
+            self.nodeManager.onClose(self);
         });
     }
-    Connection.prototype.remoteAddress = function () {
+    NodeConnection.prototype.remoteAddress = function () {
         return this.socket.remoteAddress;
     };
-    return Connection;
+    return NodeConnection;
 }());
-exports.Connection = Connection;
+exports.NodeConnection = NodeConnection;

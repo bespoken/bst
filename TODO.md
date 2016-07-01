@@ -1,7 +1,13 @@
+** IDE
+How to run individual tests?
+
 ** Design
 Store off which node instance is managing which connection (assumes multiple BSS instances)
 
 Pick out a logging library
+
+Figure out how to handle signing from AWS
+
 
 ** Investigate
 Is there a way to do absolute references with typescript?

@@ -1,3 +1,5 @@
+/// <reference path="../typings/modules/es6-promise/index.d.ts" />
+"use strict";
 var net = require('net');
 var es6_promise_1 = require('es6-promise');
 var BespokeClient = (function () {
@@ -10,6 +12,7 @@ var BespokeClient = (function () {
         var _this = this;
         this.client = new net.Socket();
         var self = this;
+        //Use a connected promise to wait on any other stuff that needs to happen
         this.connected = new es6_promise_1.Promise(function (resolve) {
             self.client.connect(_this.port, _this.host, function () {
                 resolve();
@@ -32,6 +35,5 @@ var BespokeClient = (function () {
         });
     };
     return BespokeClient;
-})();
+}());
 exports.BespokeClient = BespokeClient;
-//# sourceMappingURL=bespoke-client.js.map
