@@ -5,6 +5,10 @@ import * as net from 'net';
 import {Connection} from "./connection";
 import {Socket} from "net";
 
+export interface OnConnectCallback {
+    (connection: Connection): void;
+}
+
 export interface OnReceiveCallback {
     (connection: Connection, data: string): void;
 }
@@ -15,16 +19,17 @@ export interface OnCloseCallback {
 
 export class ConnectionHandler {
     public host:string = '0.0.0.0';
-    public onReceiveCallback:OnReceiveCallback;
-    public onCloseCallback:OnCloseCallback;
+    public onClose:OnCloseCallback;
+    public onConnect:OnConnectCallback;
+    public onReceive:OnReceiveCallback;
+
 
     private connections: {[id: string] : Connection } = {};
 
-    constructor(private port:number,
-                private onConnect:(connection: Connection) => void) {}
+    constructor(private port:number) {}
 
     public start () {
-        console.log("Test!");
+
         let self = this;
         net.createServer(function(socket:Socket) {
             let connection = new Connection(self, socket);

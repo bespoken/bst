@@ -5,14 +5,12 @@
 var net = require('net');
 var connection_1 = require("./connection");
 var ConnectionHandler = (function () {
-    function ConnectionHandler(port, onConnect) {
+    function ConnectionHandler(port) {
         this.port = port;
-        this.onConnect = onConnect;
         this.host = '0.0.0.0';
         this.connections = {};
     }
     ConnectionHandler.prototype.start = function () {
-        console.log("Test!");
         var self = this;
         net.createServer(function (socket) {
             var connection = new connection_1.Connection(self, socket);

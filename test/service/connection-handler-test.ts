@@ -13,19 +13,20 @@ import {ConnectionHandler} from '../../service/connection-handler';
 describe('ConnectionHandler', function() {
     describe('Connect', function() {
         it('Should Connect and Receive Data', function(done) {
-            let handler = new ConnectionHandler(9999,
-                function (connection: Connection) {
-                    assert.equal("127.0.0.1", connection.remoteAddress());
-                }
-            );
+            let handler = new ConnectionHandler(9999);
 
-            handler.onReceiveCallback = function(connection, data) {
+            handler.onConnect = function (connection: Connection) {
+                assert.equal("127.0.0.1", connection.remoteAddress());
+            };
+
+
+            handler.onReceive = function(connection, data) {
                 assert.equal("127.0.0.1", connection.remoteAddress());
                 assert.equal("I am Chuck Norris!", data);
                 done();
             };
 
-            handler.onCloseCallback = function() {
+            handler.onClose = function() {
                 done();
             };
 

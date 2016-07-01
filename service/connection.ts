@@ -17,13 +17,13 @@ export class Connection {
             // Write the data back to the socket, the client will receive it as data from the server
             self.socket.write('You said "' + data + '"');
 
-            self.connectionHandler.onReceiveCallback(self, data);
+            self.connectionHandler.onReceive(self, data);
         });
 
         // Add a 'close' event handler to this instance of socket
         socket.on('close', function() {
             console.log('CLOSED: ' + self.remoteAddress() +' '+ self.socket.remotePort);
-            self.connectionHandler.onCloseCallback(self);
+            self.connectionHandler.onClose(self);
         });
     }
 
