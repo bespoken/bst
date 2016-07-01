@@ -5,8 +5,8 @@ import {Socket} from 'net';
 import {Promise} from 'es6-promise';
 
 export class BespokeClient {
-    private client:Socket;
-    private initialized:Promise<boolean>;
+    private client: Socket;
+    private connected: Promise<void> = null;
 
     constructor(private host:string, private port:number) {}
 
@@ -14,26 +14,30 @@ export class BespokeClient {
         this.client = new net.Socket();
         let self = this;
 
-
-        this.initialized = new Promise<boolean>((resolve, reject) => {
+        //Use a connected promise to wait on any other stuff that needs to happen
+        this.connected = new Promise<void>((resolve) => {
             self.client.connect(this.port, this.host, function() {
-                // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
-                resolve(true);
+                resolve();
             });
         });
 
     }
 
     public write(data: string):void {
+        if (this.connected == null) {
+            return;
+        }
+
         let self = this;
-        this.initialized.then(function () {
-            console.log("Test");
+        this.connected.then(function () {
             self.client.write(data);
         });
     }
 
-    public disconnect() {
-        this.client.end();
+    public disconnect():void {
+        this.connected.then(function () {
+            this.client.end();
+        });
         //this.client.destroy();
     }
 }

@@ -1,9 +1,3 @@
-/**
- * Created by jpk on 7/1/16.
- */
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/node/index.d.ts" />
-"use strict";
 var assert = require("assert");
 var bespoke_client_1 = require('../../client/bespoke-client');
 var connection_handler_1 = require('../../service/connection-handler');
@@ -18,11 +12,15 @@ describe('ConnectionHandler', function () {
                 assert.equal("I am Chuck Norris!", data);
                 done();
             };
+            handler.onCloseCallback = function () {
+                done();
+            };
             handler.start();
             var client = new bespoke_client_1.BespokeClient("localhost", 9999);
             client.connect();
             client.write("I am Chuck Norris!");
-            //assert.ok(true);
+            client.disconnect();
         });
     });
 });
+//# sourceMappingURL=connection-handler-test.js.map

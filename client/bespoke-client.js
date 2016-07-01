@@ -6,27 +6,32 @@ var BespokeClient = (function () {
     function BespokeClient(host, port) {
         this.host = host;
         this.port = port;
+        this.connected = null;
     }
     BespokeClient.prototype.connect = function () {
         var _this = this;
         this.client = new net.Socket();
         var self = this;
-        this.initialized = new es6_promise_1.Promise(function (resolve, reject) {
+        //Use a connected promise to wait on any other stuff that needs to happen
+        this.connected = new es6_promise_1.Promise(function (resolve) {
             self.client.connect(_this.port, _this.host, function () {
-                // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
-                resolve(true);
+                resolve();
             });
         });
     };
     BespokeClient.prototype.write = function (data) {
+        if (this.connected == null) {
+            return;
+        }
         var self = this;
-        this.initialized.then(function () {
-            console.log("Test");
+        this.connected.then(function () {
             self.client.write(data);
         });
     };
     BespokeClient.prototype.disconnect = function () {
-        this.client.end();
+        this.connected.then(function () {
+            this.client.end();
+        });
         //this.client.destroy();
     };
     return BespokeClient;

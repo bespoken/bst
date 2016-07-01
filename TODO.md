@@ -1,6 +1,8 @@
 ** Design
 Store off which node instance is managing which connection (assumes multiple BSS instances)
 
+Pick out a logging library
+
 ** Investigate
 Is there a way to do absolute references with typescript?
 

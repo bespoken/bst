@@ -16,10 +16,16 @@ describe('ConnectionHandler', function() {
             let handler = new ConnectionHandler(9999,
                 function (connection: Connection) {
                     assert.equal("127.0.0.1", connection.remoteAddress());
-                });
+                }
+            );
+
             handler.onReceiveCallback = function(connection, data) {
                 assert.equal("127.0.0.1", connection.remoteAddress());
                 assert.equal("I am Chuck Norris!", data);
+                done();
+            };
+
+            handler.onCloseCallback = function() {
                 done();
             };
 
@@ -28,6 +34,7 @@ describe('ConnectionHandler', function() {
             let client = new BespokeClient("localhost", 9999);
             client.connect();
             client.write("I am Chuck Norris!");
+            client.disconnect();
             //assert.ok(true);
         });
     });
