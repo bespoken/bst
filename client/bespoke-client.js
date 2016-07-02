@@ -1,38 +1,32 @@
 /// <reference path="../typings/modules/es6-promise/index.d.ts" />
 "use strict";
 var net = require('net');
-var es6_promise_1 = require('es6-promise');
+var socket_handler_1 = require("../service/socket-handler");
 var BespokeClient = (function () {
-    function BespokeClient(host, port) {
+    function BespokeClient(nodeID, host, port) {
+        this.nodeID = nodeID;
         this.host = host;
         this.port = port;
-        this.connected = null;
     }
     BespokeClient.prototype.connect = function () {
-        var _this = this;
-        this.client = new net.Socket();
         var self = this;
-        //Use a connected promise to wait on any other stuff that needs to happen
-        this.connected = new es6_promise_1.Promise(function (resolve) {
-            self.client.connect(_this.port, _this.host, function () {
-                resolve();
+        this.client = new net.Socket();
+        this.socketHandler = new socket_handler_1.SocketHandler(this.client, null);
+        //Use a promise to so that other things wait on the connection
+        this.client.connect(this.port, this.host, function () {
+            //As soon as we connect, we send our ID
+            var messageJSON = { "id": self.nodeID };
+            var message = JSON.stringify(messageJSON);
+            self.send(message, function (replyMessage) {
+                console.log("ACK: " + replyMessage);
             });
         });
     };
-    BespokeClient.prototype.write = function (data, callback) {
-        if (this.connected == null) {
-            return;
-        }
-        var self = this;
-        this.connected.then(function () {
-            self.client.write(data, callback);
-        });
+    BespokeClient.prototype.send = function (message, onMessage) {
+        this.socketHandler.send(message, onMessage);
     };
     BespokeClient.prototype.disconnect = function () {
-        var self = this;
-        this.connected.then(function () {
-            self.client.end();
-        });
+        this.client.end();
     };
     return BespokeClient;
 }());

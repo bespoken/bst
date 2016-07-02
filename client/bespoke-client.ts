@@ -3,41 +3,41 @@
 import * as net from 'net';
 import {Socket} from 'net';
 import {Promise} from 'es6-promise';
+import {Global} from "../service/global";
+import {OnMessage} from "../service/socket-handler";
+import {SocketHandler} from "../service/socket-handler";
 
 export class BespokeClient {
     private client: Socket;
-    private connected: Promise<void> = null;
+    private socketHandler: SocketHandler;
 
-    constructor(private host:string, private port:number) {}
+    constructor(public nodeID: string,
+                private host:string,
+                private port:number) {}
 
     public connect():void {
-        this.client = new net.Socket();
         let self = this;
 
-        //Use a connected promise to wait on any other stuff that needs to happen
-        this.connected = new Promise<void>((resolve) => {
-            self.client.connect(this.port, this.host, function() {
-                resolve();
+        this.client = new net.Socket();
+        this.socketHandler = new SocketHandler(this.client, null);
+
+        //Use a promise to so that other things wait on the connection
+        this.client.connect(this.port, this.host, function() {
+           //As soon as we connect, we send our ID
+            let messageJSON = {"id": self.nodeID};
+            let message = JSON.stringify(messageJSON);
+
+            self.send(message, function(replyMessage: string) {
+                console.log("ACK: " + replyMessage);
             });
         });
-
     }
 
-    public write(data: string, callback: () => void):void {
-        if (this.connected == null) {
-            return;
-        }
-
-        let self = this;
-        this.connected.then(function () {
-            self.client.write(data, callback);
-        });
+    public send(message: string, onMessage: OnMessage) {
+        this.socketHandler.send(message, onMessage);
     }
 
     public disconnect():void {
-        let self = this;
-        this.connected.then(function () {
-            self.client.end();
-        });
+        this.client.end();
     }
 }

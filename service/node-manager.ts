@@ -2,19 +2,20 @@
  * Created by jpk on 7/1/16.
  */
 import * as net from 'net';
-import {NodeConnection} from "./node-connection";
+import {Node} from "./node";
 import {Socket} from "net";
+import {SocketHandler} from "./socket-handler";
 
 export interface OnConnectCallback {
-    (connection: NodeConnection): void;
+    (node: Node): void;
 }
 
 export interface OnReceiveCallback {
-    (connection: NodeConnection, data: string): void;
+    (connection: Node, data: string): void;
 }
 
 export interface OnCloseCallback {
-    (connection: NodeConnection): void;
+    (connection: Node): void;
 }
 
 export class NodeManager {
@@ -24,7 +25,7 @@ export class NodeManager {
     public onReceive:OnReceiveCallback;
 
 
-    private nodes: {[id: string] : NodeConnection } = {};
+    private sockets: {[id: string] : SocketHandler } = {};
 
     constructor(private port:number) {}
 
@@ -32,16 +33,19 @@ export class NodeManager {
 
         let self = this;
         net.createServer(function(socket:Socket) {
-            let node = new NodeConnection(self, socket);
-            self.nodes[node.uuid] = node;
-
-            self.onConnect(node);
+            let socketHandler = new SocketHandler(socket, function(message: string) {
+                let connectData = JSON.parse(message);
+                let node = new Node(connectData.id, socket.remoteAddress);
+                self.sockets[node.id] = socketHandler;
+                socketHandler.send("ACK", null);
+                self.onConnect(node);
+            });
 
             // We have a connection - a socket object is assigned to the connection automatically
-            console.log('CONNECTED: ' + socket.remoteAddress +':'+ socket.remotePort);
+            console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
         }).listen(this.port, this.host);
 
-        console.log('Server listening on ' + this.host +':'+ this.port);
+        console.log('Server listening on ' + this.host + ':' + this.port);
     }
 }

@@ -11,7 +11,7 @@ export class WebhookManager {
     private server: Server;
     public onWebhookReceived: WebhookReceivedCallback = null;
 
-    constructor () {}
+    constructor (private port: number) {}
 
     public start(): void {
         let self = this;
@@ -33,7 +33,7 @@ export class WebhookManager {
             });
         });
 
-        this.server.listen(8080);
+        this.server.listen(this.port);
 
 
     }

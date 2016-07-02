@@ -7,7 +7,7 @@
 import * as assert from "assert";
 
 import {BespokeClient} from '../../client/bespoke-client';
-import {NodeConnection} from "../../service/node-connection";
+import {Node} from "../../service/node";
 import {NodeManager} from '../../service/node-manager';
 import {WebhookManager} from "../../service/webhook-manager";
 import {WebhookRequest} from "../../service/webhook-request";
@@ -16,7 +16,7 @@ import {HTTPClient} from "../../client/http-client";
 describe('WebhookManager', function() {
     describe('Connect', function() {
         it('Should Connect and Receive Data', function(done) {
-            let manager = new WebhookManager();
+            let manager = new WebhookManager(8080);
             manager.onWebhookReceived = function(request: WebhookRequest) {
                 console.log("NodeID: " + request.nodeID());
                 done();
@@ -25,7 +25,7 @@ describe('WebhookManager', function() {
             manager.start();
 
             let client = new HTTPClient();
-            client.post("Test");
+            client.post("localhost", 8080, "Test");
         });
     });
 });

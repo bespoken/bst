@@ -2,6 +2,9 @@ Create main routine
 Connect node to server
 Connect webhook to server
 Have node return response to webhook
+Robustness of TCP connection
+
+Promise is not doing what i expect
 
 ** IDE
 How to run individual tests?

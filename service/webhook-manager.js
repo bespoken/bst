@@ -2,7 +2,8 @@
 var http = require("http");
 var webhook_request_1 = require("./webhook-request");
 var WebhookManager = (function () {
-    function WebhookManager() {
+    function WebhookManager(port) {
+        this.port = port;
         this.onWebhookReceived = null;
     }
     WebhookManager.prototype.start = function () {
@@ -21,7 +22,7 @@ var WebhookManager = (function () {
                 }
             });
         });
-        this.server.listen(8080);
+        this.server.listen(this.port);
     };
     return WebhookManager;
 }());

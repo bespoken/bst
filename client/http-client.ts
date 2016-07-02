@@ -5,20 +5,20 @@ import * as http from "http";
 
 export class HTTPClient {
 
-    public post(codestring) {
+    public post(host: string, port: number, data: string) {
         // Build the post string from an object
         var post_data = querystring.stringify({
             'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
             'output_format': 'json',
             'output_info': 'compiled_code',
             'warning_level' : 'QUIET',
-            'js_code' : codestring
+            'js_code' : data
         });
 
         // An object of options to indicate where to post to
         var post_options = {
-            host: 'localhost',
-            port: 8080,
+            host: host,
+            port: port,
             path: '/compile?node-id=10',
             method: 'POST',
             headers: {
