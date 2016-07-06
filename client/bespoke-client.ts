@@ -39,8 +39,8 @@ export class BespokeClient {
             self.send(message);
         });
 
-        this.onWebhookReceived = function(request: WebhookRequest) {
-            let tcpClient = new TCPClient(self.targetPort);
+        this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
+            let tcpClient = new TCPClient();
             console.log("Transmit To")
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string) {
                 self.socketHandler.send(data);
@@ -56,7 +56,7 @@ export class BespokeClient {
         if (message.indexOf("ACK") != -1) {
             console.log("Client: ACK RECEIVED");
         } else {
-            this.onWebhookReceived(WebhookRequest.fromString(message));
+            this.onWebhookReceived(this.client, WebhookRequest.fromString(message));
         }
 
     }

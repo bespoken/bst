@@ -28,7 +28,7 @@ export class Node {
         return this.activeRequest != null;
     }
 
-    public activeRequest(): WebhookRequest {
+    public webhookRequest(): WebhookRequest {
         return this.activeRequest;
     }
 }

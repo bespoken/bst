@@ -10,6 +10,7 @@ import {WebhookManager} from "../../service/webhook-manager";
 import {WebhookRequest} from "../../service/webhook-request";
 import {HTTPClient} from "../../client/http-client";
 import {BespokeServer} from "../../service/bespoke-server";
+import {Socket} from "net";
 
 describe('BespokeServerTest', function() {
     describe('ReceiveWebhook', function() {
@@ -19,13 +20,15 @@ describe('BespokeServerTest', function() {
             server.start();
 
             //Connect a client
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9000);
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
             bespokeClient.connect();
-            bespokeClient.onWebhookReceived = function(webhookRequest: WebhookRequest) {
+
+            bespokeClient.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
                 done();
             };
+
 
             let webhookCaller = new HTTPClient();
             webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");

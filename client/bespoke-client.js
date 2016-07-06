@@ -1,4 +1,5 @@
 /// <reference path="../typings/modules/es6-promise/index.d.ts" />
+"use strict";
 var net = require('net');
 var socket_handler_1 = require("../service/socket-handler");
 var webhook_request_1 = require("../service/webhook-request");
@@ -24,8 +25,8 @@ var BespokeClient = (function () {
             var message = JSON.stringify(messageJSON);
             self.send(message);
         });
-        this.onWebhookReceived = function (request) {
-            var tcpClient = new tcp_client_1.TCPClient(self.targetPort);
+        this.onWebhookReceived = function (socket, request) {
+            var tcpClient = new tcp_client_1.TCPClient();
             console.log("Transmit To");
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function (data) {
                 self.socketHandler.send(data);
@@ -40,13 +41,12 @@ var BespokeClient = (function () {
             console.log("Client: ACK RECEIVED");
         }
         else {
-            this.onWebhookReceived(webhook_request_1.WebhookRequest.fromString(message));
+            this.onWebhookReceived(this.client, webhook_request_1.WebhookRequest.fromString(message));
         }
     };
     BespokeClient.prototype.disconnect = function () {
         this.client.end();
     };
     return BespokeClient;
-})();
+}());
 exports.BespokeClient = BespokeClient;
-//# sourceMappingURL=bespoke-client.js.map

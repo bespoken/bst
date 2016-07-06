@@ -1,5 +1,6 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
+"use strict";
 var assert = require("assert");
 var bespoke_client_1 = require('../../client/bespoke-client');
 var http_client_1 = require("../../client/http-client");
@@ -11,9 +12,9 @@ describe('BespokeServerTest', function () {
             var server = new bespoke_server_1.BespokeServer(8000, 9000);
             server.start();
             //Connect a client
-            var bespokeClient = new bespoke_client_1.BespokeClient("JPK", "localhost", 9000);
+            var bespokeClient = new bespoke_client_1.BespokeClient("JPK", "localhost", 9000, 9001);
             bespokeClient.connect();
-            bespokeClient.onWebhookReceived = function (webhookRequest) {
+            bespokeClient.onWebhookReceived = function (socket, webhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
                 done();
@@ -23,4 +24,3 @@ describe('BespokeServerTest', function () {
         });
     });
 });
-//# sourceMappingURL=bespoke-server-test.js.map

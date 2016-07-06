@@ -11,7 +11,7 @@ describe('NodeManager', function() {
     describe('Connect', function() {
         it('Should Connect and Receive Data', function(done) {
             let nodeManager = new NodeManager(9999);
-            let client = new BespokeClient("JPK", "localhost", 9999);
+            let client = new BespokeClient("JPK", "localhost", 9999, 9998);
 
             nodeManager.onConnect = function (node: Node) {
                 assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
