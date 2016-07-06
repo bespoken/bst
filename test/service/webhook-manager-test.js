@@ -1,9 +1,3 @@
-/**
- * Created by jpk on 7/1/16.
- */
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/node/index.d.ts" />
-"use strict";
 var assert = require("assert");
 var webhook_manager_1 = require("../../service/webhook-manager");
 var http_client_1 = require("../../client/http-client");
@@ -23,3 +17,4 @@ describe('WebhookManager', function () {
         });
     });
 });
+//# sourceMappingURL=webhook-manager-test.js.map

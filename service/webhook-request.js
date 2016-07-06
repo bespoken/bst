@@ -1,4 +1,3 @@
-"use strict";
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest() {
@@ -26,6 +25,7 @@ var WebhookRequest = (function () {
             }
         }
         else {
+            this.appendBody(data.toString());
         }
     };
     WebhookRequest.prototype.appendBody = function (bodyPart) {
@@ -52,7 +52,6 @@ var WebhookRequest = (function () {
         if (this.uri.indexOf('?') >= 0) {
             this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
         }
-        //Handle the headers
         console.log("request: " + requestLine);
         for (var i = 1; i < lines.length; i++) {
             var headerLine = lines[i];
@@ -69,10 +68,10 @@ var WebhookRequest = (function () {
     };
     WebhookRequest.prototype.process = function () {
     };
-    //Turns the webhook HTTP request into straight TCP payload
     WebhookRequest.prototype.toTCP = function () {
         return "";
     };
     return WebhookRequest;
-}());
+})();
 exports.WebhookRequest = WebhookRequest;
+//# sourceMappingURL=webhook-request.js.map

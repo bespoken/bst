@@ -35,7 +35,7 @@ export class WebhookRequest {
                 }
             }
         } else {
-
+            this.appendBody(data.toString());
         }
     }
 
@@ -81,7 +81,6 @@ export class WebhookRequest {
             this.headers[key] = value;
             console.log("Header: " + key + "=" + value);
         }
-
     }
 
     public nodeID ():string {

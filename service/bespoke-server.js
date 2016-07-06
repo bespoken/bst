@@ -1,4 +1,3 @@
-"use strict";
 var node_manager_1 = require("./node-manager");
 var webhook_manager_1 = require("./webhook-manager");
 var BespokeServer = (function () {
@@ -13,7 +12,6 @@ var BespokeServer = (function () {
         this.webhookManager = new webhook_manager_1.WebhookManager(this.webhookPort);
         this.webhookManager.start();
         this.webhookManager.onWebhookReceived = function (webhookRequest) {
-            //Lookup the node
             var node = self.nodeManager.node(webhookRequest.nodeID());
             if (node == null) {
                 console.log("Ignoring this webhook - no matching node");
@@ -24,5 +22,6 @@ var BespokeServer = (function () {
         };
     };
     return BespokeServer;
-}());
+})();
 exports.BespokeServer = BespokeServer;
+//# sourceMappingURL=bespoke-server.js.map

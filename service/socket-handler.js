@@ -1,4 +1,3 @@
-"use strict";
 var global_1 = require("./global");
 var SocketHandler = (function () {
     function SocketHandler(socket, onMessage) {
@@ -6,7 +5,6 @@ var SocketHandler = (function () {
         this.onMessage = onMessage;
         this.message = null;
         var self = this;
-        // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function (data) {
             console.log('DATA ' + self.socket.remoteAddress + ': ' + data + " DELIM: " + global_1.Global.MessageDelimiter);
             if (self.message == null) {
@@ -26,7 +24,6 @@ var SocketHandler = (function () {
     }
     SocketHandler.prototype.send = function (message) {
         console.log("SendingMessage: " + message);
-        //Use TOKEN as message delimiter
         message = message + global_1.Global.MessageDelimiter;
         this.socket.write(message, function () {
             console.log("WroteData: " + message);
@@ -36,5 +33,6 @@ var SocketHandler = (function () {
         return this.socket.remoteAddress;
     };
     return SocketHandler;
-}());
+})();
 exports.SocketHandler = SocketHandler;
+//# sourceMappingURL=socket-handler.js.map

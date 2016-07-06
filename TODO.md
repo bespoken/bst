@@ -9,6 +9,8 @@ Promise is not doing what i expect
 
 What version of node am I using?
 
+Factor part of webhook request into http message class?
+
 ** IDE
 How to run individual tests?
 
