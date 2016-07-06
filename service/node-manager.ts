@@ -1,6 +1,3 @@
-/**
- * Created by jpk on 7/1/16.
- */
 import * as net from 'net';
 import {Node} from "./node";
 import {Socket} from "net";
@@ -36,12 +33,19 @@ export class NodeManager {
 
         let self = this;
         net.createServer(function(socket:Socket) {
+            let initialConnection = true;
+            let node: Node = null;
             let socketHandler = new SocketHandler(socket, function(message: string) {
-                let connectData = JSON.parse(message);
-                let node = new Node(connectData.id, socketHandler);
-                self.nodes[node.id] = node;
+                //We do special handling when we first connect
+                if (initialConnection) {
+                    let connectData = JSON.parse(message);
+                    node = new Node(connectData.id, socketHandler);
+                    self.nodes[node.id] = node;
 
-                socketHandler.send("ACK");
+                    socketHandler.send("ACK");
+                    initialConnection = false;
+                }
+
                 if (self.onConnect != null) {
                     self.onConnect(node);
                 }
@@ -52,6 +56,6 @@ export class NodeManager {
 
         }).listen(this.port, this.host);
 
-        console.log('Server listening on ' + this.host + ':' + this.port);
+        console.log('NodeServer listening on ' + this.host + ':' + this.port);
     }
 }

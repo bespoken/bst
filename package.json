@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "pretest": "tsc test/**/*test.ts --module commonjs",
-    "test": "mocha test/**/bespoke-server-test.js"
+    "test": "mocha test/**/bespoke-server-test.js",
+    "debug": "node service/main.js test test2"
   },
   "devDependencies": {
     "mocha": "2.5.3"

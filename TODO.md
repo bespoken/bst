@@ -1,4 +1,7 @@
 Create main routine
+
+deploy it
+
 Connect node to server
 Connect webhook to server
 Have node return response to webhook
@@ -10,6 +13,8 @@ Promise is not doing what i expect
 What version of node am I using?
 
 Factor part of webhook request into http message class?
+
+How to setup the live-debugger to run as a script?
 
 ** IDE
 How to run individual tests?

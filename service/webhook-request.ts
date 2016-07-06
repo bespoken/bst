@@ -1,4 +1,5 @@
-import {IncomingMessage} from "http";
+/// <reference path="../typings/globals/node/index.d.ts" />
+
 import * as querystring from "querystring";
 
 export class WebhookRequest {
@@ -7,9 +8,9 @@ export class WebhookRequest {
     public uri: string;
     public body: string;
     public headers:{ [id: string] : string };
-
     public queryParameters: {[id: string]: string} = {};
-    constructor() {
+
+    public constructor() {
         this.rawContents = new Buffer("");
         this.body = "";
     }
@@ -57,10 +58,8 @@ export class WebhookRequest {
         return contentLength;
     }
 
-
     private parseHeaders (headersString: string): void {
         let lines: Array<string> = headersString.split("\n");
-
         let requestLine = lines[0];
         let requestLineParts: Array<string> = requestLine.split(" ");
         this.method = requestLineParts[0];
@@ -72,24 +71,19 @@ export class WebhookRequest {
         }
 
         //Handle the headers
-        console.log("request: " + requestLine);
+        console.log("Request: " + requestLine);
         for (let i=1;i<lines.length;i++) {
             let headerLine: string = lines[i];
             let headerParts: Array<string> = headerLine.split(":");
             let key = headerParts[0];
             let value = headerParts[1].trim();
             this.headers[key] = value;
-            console.log("Header: " + key + "=" + value);
+            //console.log("Header: " + key + "=" + value);
         }
     }
 
     public nodeID ():string {
-        let nodeID = this.queryParameters["node-id"];
-        return nodeID;
-    }
-
-    public process (): void {
-
+        return this.queryParameters["node-id"];
     }
 
     //Turns the webhook HTTP request into straight TCP payload

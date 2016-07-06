@@ -1,4 +1,4 @@
-"use strict";
+/// <reference path="../typings/globals/node/index.d.ts" />
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest() {
@@ -54,26 +54,23 @@ var WebhookRequest = (function () {
             this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
         }
         //Handle the headers
-        console.log("request: " + requestLine);
+        console.log("Request: " + requestLine);
         for (var i = 1; i < lines.length; i++) {
             var headerLine = lines[i];
             var headerParts = headerLine.split(":");
             var key = headerParts[0];
             var value = headerParts[1].trim();
             this.headers[key] = value;
-            console.log("Header: " + key + "=" + value);
         }
     };
     WebhookRequest.prototype.nodeID = function () {
-        var nodeID = this.queryParameters["node-id"];
-        return nodeID;
-    };
-    WebhookRequest.prototype.process = function () {
+        return this.queryParameters["node-id"];
     };
     //Turns the webhook HTTP request into straight TCP payload
     WebhookRequest.prototype.toTCP = function () {
         return this.rawContents.toString();
     };
     return WebhookRequest;
-}());
+})();
 exports.WebhookRequest = WebhookRequest;
+//# sourceMappingURL=webhook-request.js.map

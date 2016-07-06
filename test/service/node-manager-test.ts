@@ -1,6 +1,3 @@
-/**
- * Created by jpk on 7/1/16.
- */
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
 

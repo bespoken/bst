@@ -5,7 +5,7 @@ import {SocketHandler} from "./socket-handler";
 import {Socket} from "net";
 
 export interface WebhookReceivedCallback {
-    (webhookRequest: WebhookRequest): void;
+    (socket: Socket, webhookRequest: WebhookRequest): void;
 }
 export class WebhookManager {
     private server: Server;
@@ -28,7 +28,7 @@ export class WebhookManager {
                 webhookRequest.append(data);
 
                 if (webhookRequest.done()) {
-                    self.onWebhookReceived(webhookRequest);
+                    self.onWebhookReceived(socket, webhookRequest);
                 }
             });
 
@@ -37,5 +37,6 @@ export class WebhookManager {
 
         }).listen(this.port, this.host);
 
+        console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     }
 }

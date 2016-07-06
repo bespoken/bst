@@ -1,13 +1,14 @@
 /// <reference path="../typings/modules/es6-promise/index.d.ts" />
-"use strict";
 var net = require('net');
 var socket_handler_1 = require("../service/socket-handler");
 var webhook_request_1 = require("../service/webhook-request");
+var tcp_client_1 = require("./tcp-client");
 var BespokeClient = (function () {
-    function BespokeClient(nodeID, host, port) {
+    function BespokeClient(nodeID, host, port, targetPort) {
         this.nodeID = nodeID;
         this.host = host;
         this.port = port;
+        this.targetPort = targetPort;
     }
     BespokeClient.prototype.connect = function () {
         var self = this;
@@ -23,6 +24,13 @@ var BespokeClient = (function () {
             var message = JSON.stringify(messageJSON);
             self.send(message);
         });
+        this.onWebhookReceived = function (request) {
+            var tcpClient = new tcp_client_1.TCPClient(self.targetPort);
+            console.log("Transmit To");
+            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function (data) {
+                self.socketHandler.send(data);
+            });
+        };
     };
     BespokeClient.prototype.send = function (message) {
         this.socketHandler.send(message);
@@ -39,5 +47,6 @@ var BespokeClient = (function () {
         this.client.end();
     };
     return BespokeClient;
-}());
+})();
 exports.BespokeClient = BespokeClient;
+//# sourceMappingURL=bespoke-client.js.map

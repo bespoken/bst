@@ -21,7 +21,7 @@ export class HTTPClient {
         // Set up the request
         var post_req = http.request(post_options, function(res) {
             res.setEncoding('utf8');
-            res.on('data', function (chunk) {
+            res.on('data', function (chunk: any) {
                 console.log('Response: ' + chunk);
             });
         });

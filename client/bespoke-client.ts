@@ -8,6 +8,7 @@ import {OnMessage} from "../service/socket-handler";
 import {SocketHandler} from "../service/socket-handler";
 import {WebhookReceivedCallback} from "../service/webhook-manager";
 import {WebhookRequest} from "../service/webhook-request";
+import {TCPClient} from "./tcp-client";
 
 export class BespokeClient {
     public onWebhookReceived: WebhookReceivedCallback;
@@ -17,7 +18,8 @@ export class BespokeClient {
 
     constructor(public nodeID: string,
                 private host:string,
-                private port:number) {}
+                private port:number,
+                private targetPort: number) {}
 
     public connect():void {
         let self = this;
@@ -36,6 +38,14 @@ export class BespokeClient {
 
             self.send(message);
         });
+
+        this.onWebhookReceived = function(request: WebhookRequest) {
+            let tcpClient = new TCPClient(self.targetPort);
+            console.log("Transmit To")
+            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string) {
+                self.socketHandler.send(data);
+            });
+        }
     }
 
     public send(message: string) {

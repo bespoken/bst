@@ -1,4 +1,3 @@
-"use strict";
 var webhook_request_1 = require("./webhook-request");
 var net = require("net");
 var WebhookManager = (function () {
@@ -16,13 +15,15 @@ var WebhookManager = (function () {
                 var webhookRequest = new webhook_request_1.WebhookRequest();
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
-                    self.onWebhookReceived(webhookRequest);
+                    self.onWebhookReceived(socket, webhookRequest);
                 }
             });
             // We have a connection - a socket object is assigned to the connection automatically
             console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
+        console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     };
     return WebhookManager;
-}());
+})();
 exports.WebhookManager = WebhookManager;
+//# sourceMappingURL=webhook-manager.js.map

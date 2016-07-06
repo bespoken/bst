@@ -1,4 +1,3 @@
-"use strict";
 var global_1 = require("./global");
 var SocketHandler = (function () {
     function SocketHandler(socket, onMessage) {
@@ -32,9 +31,15 @@ var SocketHandler = (function () {
             console.log("WroteData: " + message);
         });
     };
+    SocketHandler.prototype.call = function (message, onReply) {
+        console.log("CallingWith: " + message);
+        this.onMessage = onReply;
+        this.send(message);
+    };
     SocketHandler.prototype.remoteAddress = function () {
         return this.socket.remoteAddress;
     };
     return SocketHandler;
-}());
+})();
 exports.SocketHandler = SocketHandler;
+//# sourceMappingURL=socket-handler.js.map

@@ -43,6 +43,12 @@ export class SocketHandler {
         });
     }
 
+    public call(message: string, onReply: OnMessage) {
+        console.log("CallingWith: " + message);
+        this.onMessage = onReply;
+        this.send(message);
+    }
+
     public remoteAddress (): string {
         return this.socket.remoteAddress;
     }
