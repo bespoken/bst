@@ -23,6 +23,7 @@ describe('BespokeServerTest', function() {
             bespokeClient.connect();
             bespokeClient.onWebhookReceived = function(webhookRequest: WebhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
+                assert.equal("Test", webhookRequest.body);
                 done();
             };
 

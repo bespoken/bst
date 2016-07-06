@@ -10,7 +10,7 @@ export class Node {
     constructor(public id: string, public socketHandler: SocketHandler) {}
 
     public forward(data: string) {
-        console.log("Sending: " + data);
-        this.socketHandler.send(data, null);
+        console.log("Node Sending: " + data);
+        this.socketHandler.send(data);
     }
 }

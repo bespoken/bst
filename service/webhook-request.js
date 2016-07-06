@@ -1,3 +1,4 @@
+"use strict";
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest(request, body) {
@@ -22,6 +23,5 @@ var WebhookRequest = (function () {
     WebhookRequest.prototype.process = function () {
     };
     return WebhookRequest;
-})();
+}());
 exports.WebhookRequest = WebhookRequest;
-//# sourceMappingURL=webhook-request.js.map

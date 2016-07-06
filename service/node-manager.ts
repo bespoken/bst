@@ -41,7 +41,7 @@ export class NodeManager {
                 let node = new Node(connectData.id, socketHandler);
                 self.nodes[node.id] = node;
 
-                socketHandler.send("ACK", null);
+                socketHandler.send("ACK");
                 if (self.onConnect != null) {
                     self.onConnect(node);
                 }

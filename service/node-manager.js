@@ -21,7 +21,7 @@ var NodeManager = (function () {
                 var connectData = JSON.parse(message);
                 var node = new node_1.Node(connectData.id, socketHandler);
                 self.nodes[node.id] = node;
-                socketHandler.send("ACK", null);
+                socketHandler.send("ACK");
                 if (self.onConnect != null) {
                     self.onConnect(node);
                 }
