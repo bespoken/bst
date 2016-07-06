@@ -1,3 +1,7 @@
+"use strict";
+/**
+ * Created by jpk on 7/1/16.
+ */
 var net = require('net');
 var node_1 = require("./node");
 var socket_handler_1 = require("./socket-handler");
@@ -22,11 +26,11 @@ var NodeManager = (function () {
                     self.onConnect(node);
                 }
             });
+            // We have a connection - a socket object is assigned to the connection automatically
             console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
         console.log('Server listening on ' + this.host + ':' + this.port);
     };
     return NodeManager;
-})();
+}());
 exports.NodeManager = NodeManager;
-//# sourceMappingURL=node-manager.js.map

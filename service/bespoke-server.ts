@@ -22,7 +22,7 @@ export class BespokeServer {
             if (node == null) {
                 console.log("Ignoring this webhook - no matching node");
             } else {
-                node.forward(webhookRequest.body);
+                node.forward(webhookRequest.toTCP());
             }
         };
     }

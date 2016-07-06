@@ -94,6 +94,6 @@ export class WebhookRequest {
 
     //Turns the webhook HTTP request into straight TCP payload
     public toTCP (): string {
-        return "";
+        return this.rawContents.toString();
     }
 }

@@ -1,3 +1,9 @@
+/**
+ * Created by jpk on 7/1/16.
+ */
+/// <reference path="../../typings/globals/mocha/index.d.ts" />
+/// <reference path="../../typings/globals/node/index.d.ts" />
+"use strict";
 var assert = require("assert");
 var bespoke_client_1 = require('../../client/bespoke-client');
 var node_manager_1 = require('../../service/node-manager');
@@ -28,7 +34,9 @@ describe('NodeManager', function () {
             nodeManager.start();
             client.connect();
             setTimeout(function () { console.log("Time UP"); }, 2000);
+            //client.send("I am Chuck Norris!");
+            //client.disconnect();
+            //assert.ok(true);
         });
     });
 });
-//# sourceMappingURL=node-manager-test.js.map
