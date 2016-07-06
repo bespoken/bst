@@ -32,7 +32,7 @@ var BespokeClient = (function () {
             console.log("Client: ACK RECEIVED");
         }
         else {
-            this.onWebhookReceived(new webhook_request_1.WebhookRequest(null, message));
+            this.onWebhookReceived(webhook_request_1.WebhookRequest.fromString(message));
         }
     };
     BespokeClient.prototype.disconnect = function () {

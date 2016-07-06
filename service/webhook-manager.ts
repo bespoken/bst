@@ -1,40 +1,41 @@
-import * as http from "http";
-import {Server} from "http";
-import {IncomingMessage} from "http";
-import {request} from "http";
 import {WebhookRequest} from "./webhook-request";
+import * as net from "net";
+import {Server} from "net";
+import {SocketHandler} from "./socket-handler";
+import {Socket} from "net";
 
 export interface WebhookReceivedCallback {
     (webhookRequest: WebhookRequest): void;
 }
 export class WebhookManager {
     private server: Server;
+    private host: string;
     public onWebhookReceived: WebhookReceivedCallback = null;
 
-    constructor (private port: number) {}
+    constructor (private port: number) {
+        this.host = "0.0.0.0";
+    }
 
     public start(): void {
         let self = this;
-        this.server = http.createServer();
 
-        this.server.on('request', function(request: IncomingMessage, response) {
-            let requestBytes = [];
+        this.server = net.createServer(function(socket: Socket) {
+            let message: string = "";
+            socket.on('data', function(data: Buffer) {
+                console.log('Webhook DATA ' + socket.remoteAddress);
 
-            //Standard stuff for reading in body of a request
-            request.on('data', function(chunk) {
-                requestBytes.push(chunk);
-            }).on('end', function() {
-                let requestString = Buffer.concat(requestBytes).toString();
+                let webhookRequest = new WebhookRequest();
+                webhookRequest.append(data);
 
-                let webhookRequest = new WebhookRequest(request, requestString);
-                if (self.onWebhookReceived != null) {
+                if (webhookRequest.done()) {
                     self.onWebhookReceived(webhookRequest);
                 }
             });
-        });
 
-        this.server.listen(this.port);
+            // We have a connection - a socket object is assigned to the connection automatically
+            console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
+        }).listen(this.port, this.host);
 
     }
 }

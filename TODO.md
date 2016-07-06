@@ -7,6 +7,8 @@ Need a way to pass HTTP headers and what not
 
 Promise is not doing what i expect
 
+What version of node am I using?
+
 ** IDE
 How to run individual tests?
 

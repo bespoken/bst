@@ -46,7 +46,7 @@ export class BespokeClient {
         if (message.indexOf("ACK") != -1) {
             console.log("Client: ACK RECEIVED");
         } else {
-            this.onWebhookReceived(new WebhookRequest(null, message));
+            this.onWebhookReceived(WebhookRequest.fromString(message));
         }
 
     }

@@ -1,28 +1,27 @@
 "use strict";
-var http = require("http");
 var webhook_request_1 = require("./webhook-request");
+var net = require("net");
 var WebhookManager = (function () {
     function WebhookManager(port) {
         this.port = port;
         this.onWebhookReceived = null;
+        this.host = "0.0.0.0";
     }
     WebhookManager.prototype.start = function () {
         var self = this;
-        this.server = http.createServer();
-        this.server.on('request', function (request, response) {
-            var requestBytes = [];
-            //Standard stuff for reading in body of a request
-            request.on('data', function (chunk) {
-                requestBytes.push(chunk);
-            }).on('end', function () {
-                var requestString = Buffer.concat(requestBytes).toString();
-                var webhookRequest = new webhook_request_1.WebhookRequest(request, requestString);
-                if (self.onWebhookReceived != null) {
+        this.server = net.createServer(function (socket) {
+            var message = "";
+            socket.on('data', function (data) {
+                console.log('Webhook DATA ' + socket.remoteAddress);
+                var webhookRequest = new webhook_request_1.WebhookRequest();
+                webhookRequest.append(data);
+                if (webhookRequest.done()) {
                     self.onWebhookReceived(webhookRequest);
                 }
             });
-        });
-        this.server.listen(this.port);
+            // We have a connection - a socket object is assigned to the connection automatically
+            console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
+        }).listen(this.port, this.host);
     };
     return WebhookManager;
 }());
