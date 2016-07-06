@@ -1,4 +1,3 @@
-"use strict";
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest(request, body) {
@@ -8,6 +7,9 @@ var WebhookRequest = (function () {
         this.prepare();
     }
     WebhookRequest.prototype.prepare = function () {
+        if (this.request == null) {
+            return;
+        }
         console.log("QueryString URL: " + this.request.url);
         if (this.request.url.indexOf('?') >= 0) {
             this.queryParameters = querystring.parse(this.request.url.replace(/^.*\?/, ''));
@@ -20,5 +22,6 @@ var WebhookRequest = (function () {
     WebhookRequest.prototype.process = function () {
     };
     return WebhookRequest;
-}());
+})();
 exports.WebhookRequest = WebhookRequest;
+//# sourceMappingURL=webhook-request.js.map

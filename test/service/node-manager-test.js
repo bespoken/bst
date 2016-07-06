@@ -13,13 +13,13 @@ describe('NodeManager', function () {
             var nodeManager = new node_manager_1.NodeManager(9999);
             var client = new bespoke_client_1.BespokeClient("JPK", "localhost", 9999);
             nodeManager.onConnect = function (node) {
-                assert.equal("127.0.0.1", node.remoteAddress);
+                assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
                 done();
             };
             var count = 0;
             nodeManager.onReceive = function (node, data) {
                 console.log("OnReceive: " + data);
-                assert.equal("127.0.0.1", node.remoteAddress);
+                assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
                 count++;
                 if (count == 1) {
                     assert.equal("{\"id\":\"JPK\"}", data);

@@ -6,8 +6,12 @@ import {Promise} from 'es6-promise';
 import {Global} from "../service/global";
 import {OnMessage} from "../service/socket-handler";
 import {SocketHandler} from "../service/socket-handler";
+import {WebhookReceivedCallback} from "../service/webhook-manager";
+import {WebhookRequest} from "../service/webhook-request";
 
 export class BespokeClient {
+    public onWebhookReceived: WebhookReceivedCallback;
+
     private client: Socket;
     private socketHandler: SocketHandler;
 
@@ -19,7 +23,10 @@ export class BespokeClient {
         let self = this;
 
         this.client = new net.Socket();
-        this.socketHandler = new SocketHandler(this.client, null);
+        this.socketHandler = new SocketHandler(this.client, function(data: string) {
+            console.log("ClientReceived: " + data);
+            self.onMessage(data);
+        });
 
         //Use a promise to so that other things wait on the connection
         this.client.connect(this.port, this.host, function() {
@@ -27,14 +34,16 @@ export class BespokeClient {
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
 
-            self.send(message, function(replyMessage: string) {
-                console.log("ACK: " + replyMessage);
-            });
+            self.send(message);
         });
     }
 
-    public send(message: string, onMessage: OnMessage) {
-        this.socketHandler.send(message, onMessage);
+    public send(message: string) {
+        this.socketHandler.send(message);
+    }
+
+    public onMessage (message: string) {
+        this.onWebhookReceived(new WebhookRequest(null, message));
     }
 
     public disconnect():void {

@@ -19,13 +19,15 @@ describe('WebhookManager', function() {
             let manager = new WebhookManager(8080);
             manager.onWebhookReceived = function(request: WebhookRequest) {
                 console.log("NodeID: " + request.nodeID());
+                assert.equal("10", request.nodeID());
+                assert.equal("Test", request.body);
                 done();
             };
 
             manager.start();
 
             let client = new HTTPClient();
-            client.post("localhost", 8080, "Test");
+            client.post("localhost", 8080, "/test?node-id=10", "Test");
         });
     });
 });

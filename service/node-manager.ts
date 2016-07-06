@@ -24,10 +24,13 @@ export class NodeManager {
     public onConnect:OnConnectCallback;
     public onReceive:OnReceiveCallback;
 
-
-    private sockets: {[id: string] : SocketHandler } = {};
+    private nodes: {[id: string] : Node } = {};
 
     constructor(private port:number) {}
+
+    public node (nodeID: string): Node {
+        return this.nodes[nodeID];
+    }
 
     public start () {
 
@@ -35,10 +38,13 @@ export class NodeManager {
         net.createServer(function(socket:Socket) {
             let socketHandler = new SocketHandler(socket, function(message: string) {
                 let connectData = JSON.parse(message);
-                let node = new Node(connectData.id, socket.remoteAddress);
-                self.sockets[node.id] = socketHandler;
+                let node = new Node(connectData.id, socketHandler);
+                self.nodes[node.id] = node;
+
                 socketHandler.send("ACK", null);
-                self.onConnect(node);
+                if (self.onConnect != null) {
+                    self.onConnect(node);
+                }
             });
 
             // We have a connection - a socket object is assigned to the connection automatically

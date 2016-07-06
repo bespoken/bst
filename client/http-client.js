@@ -1,28 +1,19 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
 "use strict";
-var querystring = require("querystring");
 var http = require("http");
 var HTTPClient = (function () {
     function HTTPClient() {
     }
-    HTTPClient.prototype.post = function (host, port, data) {
-        // Build the post string from an object
-        var post_data = querystring.stringify({
-            'compilation_level': 'ADVANCED_OPTIMIZATIONS',
-            'output_format': 'json',
-            'output_info': 'compiled_code',
-            'warning_level': 'QUIET',
-            'js_code': data
-        });
+    HTTPClient.prototype.post = function (host, port, path, data) {
         // An object of options to indicate where to post to
         var post_options = {
             host: host,
             port: port,
-            path: '/compile?node-id=10',
+            path: path,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(post_data)
+                'Content-Length': Buffer.byteLength(data)
             }
         };
         // Set up the request
@@ -33,7 +24,7 @@ var HTTPClient = (function () {
             });
         });
         // post the data
-        post_req.write(post_data);
+        post_req.write(data);
         post_req.end();
     };
     return HTTPClient;

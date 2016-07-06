@@ -3,6 +3,7 @@ Connect node to server
 Connect webhook to server
 Have node return response to webhook
 Robustness of TCP connection
+Need a way to pass HTTP headers and what not
 
 Promise is not doing what i expect
 

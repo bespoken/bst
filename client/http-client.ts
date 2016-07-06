@@ -5,25 +5,16 @@ import * as http from "http";
 
 export class HTTPClient {
 
-    public post(host: string, port: number, data: string) {
-        // Build the post string from an object
-        var post_data = querystring.stringify({
-            'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
-            'output_format': 'json',
-            'output_info': 'compiled_code',
-            'warning_level' : 'QUIET',
-            'js_code' : data
-        });
-
+    public post(host: string, port: number, path: string, data: string) {
         // An object of options to indicate where to post to
         var post_options = {
             host: host,
             port: port,
-            path: '/compile?node-id=10',
+            path: path,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(post_data)
+                'Content-Length': Buffer.byteLength(data)
             }
         };
 
@@ -36,7 +27,7 @@ export class HTTPClient {
         });
 
         // post the data
-        post_req.write(post_data);
+        post_req.write(data);
         post_req.end();
 
     }

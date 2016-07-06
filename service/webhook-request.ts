@@ -8,6 +8,10 @@ export class WebhookRequest {
     }
 
     private prepare (): void {
+        if (this.request == null) {
+            return;
+        }
+
         console.log("QueryString URL: " + this.request.url);
         if (this.request.url.indexOf('?') >= 0) {
             this.queryParameters = querystring.parse(this.request.url.replace(/^.*\?/, ''));

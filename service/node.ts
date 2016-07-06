@@ -7,6 +7,10 @@ import {Global} from "./global";
 import {SocketHandler} from "./socket-handler";
 
 export class Node {
-    constructor(public id: string, public remoteAddress: string) {}
+    constructor(public id: string, public socketHandler: SocketHandler) {}
 
+    public forward(data: string) {
+        console.log("Sending: " + data);
+        this.socketHandler.send(data, null);
+    }
 }

@@ -22,25 +22,29 @@ export class SocketHandler {
                 self.message = "";
             }
 
-            let dataString: string = data.toString()
+            let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) == -1) {
                 self.message += dataString;
             } else {
                 let completeMessage = dataString.substr(0, dataString.indexOf(Global.MessageDelimiter));
+                console.log("FullMessage: " + completeMessage);
                 self.onMessage(completeMessage);
                 self.message = null;
             }
-
         });
     }
 
-    public send(message: string, onMessage: OnMessage) {
-        this.onMessage = onMessage;
+    public send(message: string) {
+        console.log("SendingMessage: " + message);
         //Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;
         this.socket.write(message, function() {
             console.log("WroteData: " + message);
         });
+    }
+
+    public remoteAddress (): string {
+        return this.socket.remoteAddress;
     }
 }
 

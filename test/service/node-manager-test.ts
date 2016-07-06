@@ -17,14 +17,14 @@ describe('NodeManager', function() {
             let client = new BespokeClient("JPK", "localhost", 9999);
 
             nodeManager.onConnect = function (node: Node) {
-                assert.equal("127.0.0.1", node.remoteAddress);
+                assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
                 done();
             };
 
             let count = 0;
             nodeManager.onReceive = function(node, data) {
                 console.log("OnReceive: " + data);
-                assert.equal("127.0.0.1", node.remoteAddress);
+                assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
 
                 count++;
                 if (count == 1) {
