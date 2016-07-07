@@ -30,6 +30,7 @@ export class WebhookRequest {
             let endIndex = contentsString.indexOf("\r\n\r\n");
             if (endIndex != -1) {
                 this.parseHeaders(contentsString.substr(0, endIndex));
+
                 if (endIndex+4 < contentsString.length) {
                     let bodyPart: string = contentsString.substr((endIndex + 4));
                     this.appendBody(bodyPart);
@@ -45,6 +46,9 @@ export class WebhookRequest {
     }
 
     public done(): boolean {
+        if (this.method == "GET") {
+            return true;
+        }
         return (this.body.length == this.contentLength());
     }
 

@@ -29,7 +29,7 @@ export class WebhookManager {
 
                 if (webhookRequest.done()) {
                     if (webhookRequest.isPing()) {
-                        socket.write("HTTP/1.0 200 OK\r\n\r\n");
+                        socket.write("HTTP/1.0 200 OK\r\nContent-Length: 10\r\n\r\nbst-server");
                         socket.end();
                     } else {
                         self.onWebhookReceived(socket, webhookRequest);

@@ -33,6 +33,9 @@ var WebhookRequest = (function () {
         this.body += bodyPart;
     };
     WebhookRequest.prototype.done = function () {
+        if (this.method == "GET") {
+            return true;
+        }
         return (this.body.length == this.contentLength());
     };
     WebhookRequest.prototype.contentLength = function () {
