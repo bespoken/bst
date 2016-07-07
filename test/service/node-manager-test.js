@@ -1,17 +1,17 @@
 "use strict";
-var assert = require("assert");
-var bespoke_client_1 = require('../../client/bespoke-client');
-var node_manager_1 = require('../../service/node-manager');
+const assert = require("assert");
+const bespoke_client_1 = require('../../client/bespoke-client');
+const node_manager_1 = require('../../service/node-manager');
 describe('NodeManager', function () {
     describe('Connect', function () {
         it('Should Connect and Receive Data', function (done) {
-            var nodeManager = new node_manager_1.NodeManager(9999);
-            var client = new bespoke_client_1.BespokeClient("JPK", "localhost", 9999, 9998);
+            let nodeManager = new node_manager_1.NodeManager(9999);
+            let client = new bespoke_client_1.BespokeClient("JPK", "localhost", 9999, 9998);
             nodeManager.onConnect = function (node) {
                 assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
                 done();
             };
-            var count = 0;
+            let count = 0;
             nodeManager.onReceive = function (node, data) {
                 console.log("OnReceive: " + data);
                 assert.equal("127.0.0.1", node.socketHandler.remoteAddress());

@@ -3,10 +3,8 @@
 import {StringUtil} from "./string-util";
 
 export class BufferUtil {
-    public static prettyPrint(buffer: Buffer) {
+    public static prettyPrint(buffer: Buffer): string {
         let s = buffer.toString();
-        s = StringUtil.replaceAll(s, "\r\n", "\\n");
-        s = StringUtil.replaceAll(s, "\n", "\\n");
-        return s;
+        return StringUtil.prettyPrint(s);
     }
 }

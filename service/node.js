@@ -1,26 +1,24 @@
-/// <reference path="../typings/modules/node-uuid/index.d.ts" />
-var Node = (function () {
-    function Node(id, socketHandler) {
+"use strict";
+class Node {
+    constructor(id, socketHandler) {
         this.id = id;
         this.socketHandler = socketHandler;
     }
-    Node.prototype.forward = function (sourceSocket, request) {
-        console.log("Node Sending: " + request.toTCP());
+    forward(sourceSocket, request) {
+        console.log("NODE Forwarding ID:" + this.id);
         this.socketHandler.call(request.toTCP(), function (data) {
-            console.log("OnReply: " + data);
+            console.log("NODE ReplyReceived ID:" + this.id);
             sourceSocket.write(data, function () {
-                //sourceSocket.end();
             });
         });
         this.activeRequest = request;
-    };
-    Node.prototype.hasActiveRequest = function () {
+    }
+    hasActiveRequest() {
         return this.activeRequest != null;
-    };
-    Node.prototype.webhookRequest = function () {
+    }
+    webhookRequest() {
         return this.activeRequest;
-    };
-    return Node;
-})();
+    }
+}
 exports.Node = Node;
 //# sourceMappingURL=node.js.map

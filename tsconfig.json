@@ -5,7 +5,8 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "target": "ES6"
   },
   "exclude": [
     "node_modules",

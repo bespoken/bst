@@ -1,14 +1,14 @@
 "use strict";
-var webhook_request_1 = require("../../service/webhook-request");
-var buffer_util_1 = require("../../core/buffer-util");
-var assert = require("assert");
-var fs = require("fs");
+const webhook_request_1 = require("../../service/webhook-request");
+const buffer_util_1 = require("../../core/buffer-util");
+const assert = require("assert");
+const fs = require("fs");
 describe('WebhookRequest', function () {
     describe('SimplePost', function () {
         it('All Data At Once', function (done) {
-            var request = new webhook_request_1.WebhookRequest();
-            var buffer = fs.readFileSync('test/service/WebhookRequestProper.raw');
-            var bufferString = buffer.toString();
+            let request = new webhook_request_1.WebhookRequest();
+            let buffer = fs.readFileSync('test/service/WebhookRequestProper.raw');
+            let bufferString = buffer.toString();
             request.append(buffer);
             assert.ok(request.body.indexOf("version") != -1);
             assert.equal(request.headers["Content-Length"], 603);
@@ -19,12 +19,12 @@ describe('WebhookRequest', function () {
     });
     describe('TwoPartPost', function () {
         it('Data Split In Two', function (done) {
-            var request = new webhook_request_1.WebhookRequest();
-            var buffer = fs.readFileSync('test/service/WebhookRequestProper.raw');
-            var bufferString = buffer.toString();
+            let request = new webhook_request_1.WebhookRequest();
+            let buffer = fs.readFileSync('test/service/WebhookRequestProper.raw');
+            let bufferString = buffer.toString();
             console.log("BUFFER: " + buffer_util_1.BufferUtil.prettyPrint(buffer));
-            var buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
-            var buffer2 = bufferString.substr(bufferString.indexOf("38Z"));
+            let buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
+            let buffer2 = bufferString.substr(bufferString.indexOf("38Z"));
             request.append(Buffer.from(buffer1));
             request.append(Buffer.from(buffer2));
             assert.ok(request.body.indexOf("version") != -1);

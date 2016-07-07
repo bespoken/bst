@@ -1,1 +1,1 @@
-{"version":3,"file":"global.js","sourceRoot":"","sources":["global.ts"],"names":["Global","Global.constructor"],"mappings":"AAAA,2DAA2D;AAE3D;IAAAA;IAEAC,CAACA;IADiBD,uBAAgBA,GAAGA,YAAYA,CAACA;IAClDA,aAACA;AAADA,CAACA,AAFD,IAEC;AAFY,cAAM,SAElB,CAAA"}
+{"version":3,"file":"global.js","sourceRoot":"","sources":["global.ts"],"names":[],"mappings":";AAEA;AAEA,CAAC;AADiB,uBAAgB,GAAG,YAAY,CAAC;AADrC,cAAM,SAElB,CAAA"}
