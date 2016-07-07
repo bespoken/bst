@@ -1,4 +1,3 @@
-"use strict";
 var webhook_request_1 = require("./webhook-request");
 var net = require("net");
 var buffer_util_1 = require("../core/buffer-util");
@@ -13,6 +12,7 @@ var WebhookManager = (function () {
         this.server = net.createServer(function (socket) {
             var message = "";
             socket.on('data', function (data) {
+                //Throw away the pings - too much noise
                 var dataString = data.toString();
                 if (dataString.length > 4 && dataString.substr(0, 3) != "GET") {
                     console.log('Webhook From ' + socket.remoteAddress + ":" + socket.remotePort);
@@ -30,10 +30,12 @@ var WebhookManager = (function () {
                     }
                 }
             });
+            // We have a connection - a socket object is assigned to the connection automatically
+            //console.log('WEBHOOK CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     };
     return WebhookManager;
-}());
+})();
 exports.WebhookManager = WebhookManager;
 //# sourceMappingURL=webhook-manager.js.map

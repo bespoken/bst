@@ -13,25 +13,26 @@ export class SocketHandler {
 
     public constructor (private socket: Socket, private onMessage: OnMessage) {
         let self = this;
+        this.resetBuffer();
 
         // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function(data: Buffer) {
             console.log('DATA READ ' + self.socket.remoteAddress + ': ' + data);
 
-            if (self.message == null) {
-                self.message = "";
-            }
-
             let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) == -1) {
                 self.message += dataString;
             } else {
-                let completeMessage = dataString.substr(0, dataString.indexOf(Global.MessageDelimiter));
+                self.message += dataString.substr(0, dataString.indexOf(Global.MessageDelimiter));
                 //console.log("FullMessage: " + completeMessage);
-                self.onMessage(completeMessage);
-                self.message = null;
+                self.onMessage(self.message);
+                self.resetBuffer();
             }
         });
+    }
+
+    private resetBuffer(): void {
+        this.message = "";
     }
 
     public send(message: string) {

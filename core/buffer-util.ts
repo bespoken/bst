@@ -5,6 +5,8 @@ import {StringUtil} from "./string-util";
 export class BufferUtil {
     public static prettyPrint(buffer: Buffer) {
         let s = buffer.toString();
-        return StringUtil.replaceAll(s, "\r\n", "\\n");
+        s = StringUtil.replaceAll(s, "\r\n", "\\n");
+        s = StringUtil.replaceAll(s, "\n", "\\n");
+        return s;
     }
 }

@@ -1,4 +1,3 @@
-"use strict";
 var net = require('net');
 var node_1 = require("./node");
 var socket_handler_1 = require("./socket-handler");
@@ -17,6 +16,7 @@ var NodeManager = (function () {
             var initialConnection = true;
             var node = null;
             var socketHandler = new socket_handler_1.SocketHandler(socket, function (message) {
+                //We do special handling when we first connect
                 if (initialConnection) {
                     var connectData = JSON.parse(message);
                     node = new node_1.Node(connectData.id, socketHandler);
@@ -28,11 +28,12 @@ var NodeManager = (function () {
                     self.onConnect(node);
                 }
             });
+            // We have a connection - a socket object is assigned to the connection automatically
             console.log('NODE CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
         console.log('NodeServer listening on ' + this.host + ':' + this.port);
     };
     return NodeManager;
-}());
+})();
 exports.NodeManager = NodeManager;
 //# sourceMappingURL=node-manager.js.map
