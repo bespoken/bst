@@ -15,6 +15,7 @@ describe('WebhookRequest', function () {
             assert.ok(request.body.indexOf("version") != -1);
             assert.equal(request.headers["Content-Length"], 603);
             assert.equal(request.body.length, 603);
+            assert.equal(request.rawContents.length, 1481);
             done();
         });
     });
@@ -33,6 +34,7 @@ describe('WebhookRequest', function () {
             assert.ok(request.body.indexOf("version") != -1);
             assert.equal(request.headers["Content-Length"], 603);
             assert.equal(request.body.length, 603);
+            assert.equal(request.rawContents.length, 1481);
             done();
         });
     });

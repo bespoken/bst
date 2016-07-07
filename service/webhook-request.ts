@@ -3,7 +3,7 @@
 import * as querystring from "querystring";
 
 export class WebhookRequest {
-    private rawContents: Buffer;
+    public rawContents: Buffer;
     public method: string;
     public uri: string;
     public body: string;

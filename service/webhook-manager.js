@@ -1,4 +1,3 @@
-"use strict";
 var webhook_request_1 = require("./webhook-request");
 var net = require("net");
 var WebhookManager = (function () {
@@ -12,7 +11,8 @@ var WebhookManager = (function () {
         this.server = net.createServer(function (socket) {
             var message = "";
             socket.on('data', function (data) {
-                console.log('Webhook DATA ' + socket.remoteAddress);
+                console.log('Webhook From ' + socket.remoteAddress);
+                console.log('Webhook Payload ' + data.toString());
                 var webhookRequest = new webhook_request_1.WebhookRequest();
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
@@ -31,5 +31,6 @@ var WebhookManager = (function () {
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     };
     return WebhookManager;
-}());
+})();
 exports.WebhookManager = WebhookManager;
+//# sourceMappingURL=webhook-manager.js.map

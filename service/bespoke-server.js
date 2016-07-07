@@ -1,4 +1,3 @@
-"use strict";
 var node_manager_1 = require("./node-manager");
 var webhook_manager_1 = require("./webhook-manager");
 var BespokeServer = (function () {
@@ -24,5 +23,6 @@ var BespokeServer = (function () {
         };
     };
     return BespokeServer;
-}());
+})();
 exports.BespokeServer = BespokeServer;
+//# sourceMappingURL=bespoke-server.js.map

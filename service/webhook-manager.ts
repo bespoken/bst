@@ -22,7 +22,8 @@ export class WebhookManager {
         this.server = net.createServer(function(socket: Socket) {
             let message: string = "";
             socket.on('data', function(data: Buffer) {
-                console.log('Webhook DATA ' + socket.remoteAddress);
+                console.log('Webhook From ' + socket.remoteAddress);
+                console.log('Webhook Payload ' + data.toString());
 
                 let webhookRequest = new WebhookRequest();
                 webhookRequest.append(data);
