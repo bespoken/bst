@@ -29,7 +29,7 @@ var NodeManager = (function () {
                 }
             });
             // We have a connection - a socket object is assigned to the connection automatically
-            console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
+            console.log('NODE CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
         console.log('NodeServer listening on ' + this.host + ':' + this.port);
     };

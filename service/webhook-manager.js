@@ -25,7 +25,7 @@ var WebhookManager = (function () {
                 }
             });
             // We have a connection - a socket object is assigned to the connection automatically
-            console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
+            console.log('WEBHOOK CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     };
