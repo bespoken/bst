@@ -19,7 +19,7 @@ if (tool == "debug") {
         process.exit(1);
     }
 
-    let host: string  = parseInt(process.argv[3]);
+    let host: string  = process.argv[3];
     let hostPort: number = parseInt(process.argv[4]);
     let targetPort: number = parseInt(process.argv[5]);
 

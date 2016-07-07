@@ -26,7 +26,7 @@ export class WebhookManager {
                 //Throw away the pings - too much noise
                 let dataString = data.toString();
                 if (dataString.length > 4 && dataString.substr(0, 3) != "GET") {
-                    console.log('Webhook From ' + socket.remoteAddress);
+                    console.log('Webhook From ' + socket.remoteAddress + ":" + socket.remotePort);
                     console.log('Webhook Payload ' + BufferUtil.prettyPrint(data));
                 }
 
@@ -44,8 +44,7 @@ export class WebhookManager {
             });
 
             // We have a connection - a socket object is assigned to the connection automatically
-            console.log('WEBHOOK CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
-
+            //console.log('WEBHOOK CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
 
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);

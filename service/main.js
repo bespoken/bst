@@ -1,5 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
-//Startup script for running BST
+"use strict";
 var bespoke_server_1 = require("./bespoke-server");
 var bespoke_client_1 = require("../client/bespoke-client");
 if (process.argv.length < 3) {
@@ -13,7 +12,7 @@ if (tool == "debug") {
         console.error("For debug, must specify host, hostPort, and port to forward to!");
         process.exit(1);
     }
-    var host = parseInt(process.argv[3]);
+    var host = process.argv[3];
     var hostPort = parseInt(process.argv[4]);
     var targetPort = parseInt(process.argv[5]);
     var bespokeClient = new bespoke_client_1.BespokeClient("JPK", host, hostPort, targetPort);

@@ -1,25 +1,13 @@
-Create main routine
-
-deploy it
-
-Connect node to server
-Connect webhook to server
-Have node return response to webhook
 Robustness of TCP connection
-Need a way to pass HTTP headers and what not
 
 Add unique ID for socket connections
 
-Promise is not doing what i expect
-
-What version of node am I using?
-
 Factor part of webhook request into http message class?
 
-How to setup the live-debugger to run as a script?
+Move main routine to bin?
 
 ** IDE
-How to run individual tests?
+Get tsc to work right with WebStorm
 
 ** Design
 Store off which node instance is managing which connection (assumes multiple BSS instances)

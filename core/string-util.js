@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+"use strict";
 var StringUtil = (function () {
     function StringUtil() {
     }
@@ -9,6 +9,6 @@ var StringUtil = (function () {
         return s;
     };
     return StringUtil;
-})();
+}());
 exports.StringUtil = StringUtil;
 //# sourceMappingURL=string-util.js.map

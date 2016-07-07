@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+"use strict";
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest() {
@@ -47,7 +47,6 @@ var WebhookRequest = (function () {
         return contentLength;
     };
     WebhookRequest.prototype.isPing = function () {
-        //console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
         return (this.uri.indexOf("/ping") != -1);
     };
     WebhookRequest.prototype.parseHeaders = function (headersString) {
@@ -56,11 +55,9 @@ var WebhookRequest = (function () {
         var requestLineParts = requestLine.split(" ");
         this.method = requestLineParts[0];
         this.uri = requestLineParts[1];
-        //console.log("QueryString URL: " + this.uri);
         if (this.uri.indexOf('?') >= 0) {
             this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
         }
-        //Handle the headers
         for (var i = 1; i < lines.length; i++) {
             var headerLine = lines[i];
             var headerParts = headerLine.split(":");
@@ -72,11 +69,10 @@ var WebhookRequest = (function () {
     WebhookRequest.prototype.nodeID = function () {
         return this.queryParameters["node-id"];
     };
-    //Turns the webhook HTTP request into straight TCP payload
     WebhookRequest.prototype.toTCP = function () {
         return this.rawContents.toString();
     };
     return WebhookRequest;
-})();
+}());
 exports.WebhookRequest = WebhookRequest;
 //# sourceMappingURL=webhook-request.js.map

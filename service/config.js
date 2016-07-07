@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+"use strict";
 var Config = (function () {
     function Config() {
         this.bespokeServerHost = "bst.xappmedia.com";
@@ -6,6 +6,6 @@ var Config = (function () {
         this.bespokeWebhookPort = 4000;
     }
     return Config;
-})();
+}());
 exports.Config = Config;
 //# sourceMappingURL=config.js.map
