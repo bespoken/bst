@@ -1,4 +1,5 @@
 /// <reference path="../typings/modules/es6-promise/index.d.ts" />
+"use strict";
 var net = require('net');
 var socket_handler_1 = require("../service/socket-handler");
 var webhook_request_1 = require("../service/webhook-request");
@@ -47,6 +48,5 @@ var BespokeClient = (function () {
         this.client.end();
     };
     return BespokeClient;
-})();
+}());
 exports.BespokeClient = BespokeClient;
-//# sourceMappingURL=bespoke-client.js.map

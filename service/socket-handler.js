@@ -1,3 +1,4 @@
+"use strict";
 var global_1 = require("./global");
 var SocketHandler = (function () {
     function SocketHandler(socket, onMessage) {
@@ -40,6 +41,5 @@ var SocketHandler = (function () {
         return this.socket.remoteAddress;
     };
     return SocketHandler;
-})();
+}());
 exports.SocketHandler = SocketHandler;
-//# sourceMappingURL=socket-handler.js.map

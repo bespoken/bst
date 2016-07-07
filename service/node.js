@@ -1,4 +1,5 @@
 /// <reference path="../typings/modules/node-uuid/index.d.ts" />
+"use strict";
 var Node = (function () {
     function Node(id, socketHandler) {
         this.id = id;
@@ -21,6 +22,5 @@ var Node = (function () {
         return this.activeRequest;
     };
     return Node;
-})();
+}());
 exports.Node = Node;
-//# sourceMappingURL=node.js.map

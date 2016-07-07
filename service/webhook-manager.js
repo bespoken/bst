@@ -1,3 +1,4 @@
+"use strict";
 var webhook_request_1 = require("./webhook-request");
 var net = require("net");
 var WebhookManager = (function () {
@@ -30,6 +31,5 @@ var WebhookManager = (function () {
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     };
     return WebhookManager;
-})();
+}());
 exports.WebhookManager = WebhookManager;
-//# sourceMappingURL=webhook-manager.js.map

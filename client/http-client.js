@@ -1,4 +1,5 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
+"use strict";
 var http = require("http");
 var HTTPClient = (function () {
     function HTTPClient() {
@@ -27,6 +28,5 @@ var HTTPClient = (function () {
         post_req.end();
     };
     return HTTPClient;
-})();
+}());
 exports.HTTPClient = HTTPClient;
-//# sourceMappingURL=http-client.js.map

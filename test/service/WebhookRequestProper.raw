@@ -1,0 +1,15 @@
+POST /xapp?node-id=JPK&tag=xappmedia&apiKey=28caaa49-ce89-4fcd-a662-1d5dbb82ca06&appKey=1e748bcb-3fc2-46bf-812d-7afa805d5fec HTTP/1.1
+host: bst.xappmedia.com
+Accept: application/json
+Accept-Charset: utf-8
+Content-Type: application/json; charset=utf-8
+Signature: e1cnyingJl+0xKo87AXzlE6FH8TRPU3QLrtRp6gRNXIU11+PJFcmQHXKkm3APo8DhqW7WYF8qzQQc2z3x2JN4ok/d+yQ5Q612Dm4RRqZM7iUDhOzSDywaAXliEPZ+2DRIOOVfYGzrA6scmMyBkQLJuOcpbSmdNWxxnzAP5B20jd6/yzsE3/81+H+AIahuDjG/dd49HuX7RS/z/jVvEscMsTJKJ+73eUWywELymz7z/gabGndLYaC3WM6IQm9HmLGFOh7M4q8bnjBwHYURPz9s/AETnSxuLdTJn0mCmRslVvaLBNFxItIsU/Dy7U680Na2E//6NHwIO2Ntx7Yu1nIOQ==
+SignatureCertChainUrl: https://s3.amazonaws.com/echo.api/echo-api-cert-3.pem
+User-Agent: Apache-HttpClient/UNAVAILABLE (Java/1.8.0_72)
+X-Forwarded-For: 72.21.217.167
+X-Forwarded-Port: 443
+X-Forwarded-Proto: https
+Content-Length: 603
+Connection: keep-alive
+
+{"version":"1.0","session":{"new":true,"sessionId":"SessionId.269ac2a7-eea0-4ede-9187-fd7f10236448","application":{"applicationId":"amzn1.echo-sdk-ams.app.6a4bbcaf-e5be-4694-981d-38139fc46c20"},"user":{"userId":"amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMNWY4AY66FUR7ILBWANIHQN73QH5N4GZZP4ENDTCK4KQNAEOZH4FBPHLDPIPDSVX3IC6S53FBI4DNQAY5J3TOGDBQ7PP3NBB2WFNDN42HAYQ627PIZB5NRJZQ2JXOFOKL2NLNCE27FSF5FGSFAKEYJRDHXNZKGJNQEKUYA3GC6CRX6ZSGF47Y"}},"request":{"type":"IntentRequest","requestId":"EdwRequestId.bc065557-1dac-4ffc-921d-30802d062306","timestamp":"2016-07-07T19:30:38Z","intent":{"name":"Summary"}}}

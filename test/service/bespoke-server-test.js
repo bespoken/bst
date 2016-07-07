@@ -1,5 +1,6 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
+"use strict";
 var assert = require("assert");
 var bespoke_client_1 = require('../../client/bespoke-client');
 var http_client_1 = require("../../client/http-client");
@@ -23,4 +24,3 @@ describe('BespokeServerTest', function () {
         });
     });
 });
-//# sourceMappingURL=bespoke-server-test.js.map

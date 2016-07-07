@@ -1,4 +1,5 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
+"use strict";
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest() {
@@ -78,6 +79,5 @@ var WebhookRequest = (function () {
         return this.rawContents.toString();
     };
     return WebhookRequest;
-})();
+}());
 exports.WebhookRequest = WebhookRequest;
-//# sourceMappingURL=webhook-request.js.map

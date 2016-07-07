@@ -1,3 +1,4 @@
+"use strict";
 var net = require('net');
 var node_1 = require("./node");
 var socket_handler_1 = require("./socket-handler");
@@ -34,6 +35,5 @@ var NodeManager = (function () {
         console.log('NodeServer listening on ' + this.host + ':' + this.port);
     };
     return NodeManager;
-})();
+}());
 exports.NodeManager = NodeManager;
-//# sourceMappingURL=node-manager.js.map
