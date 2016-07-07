@@ -6,16 +6,16 @@ class TCPClient {
     transmit(host, port, data, callback) {
         var client = new net.Socket();
         client.connect(port, host, function () {
-            console.log('CONNECTED TO: ' + host + ':' + port);
             client.write(data);
         });
         client.on('data', function (data) {
-            console.log('DATA: ' + data);
             callback(data);
         });
         client.on('close', function () {
             console.log('Connection closed');
         });
+    }
+    close() {
     }
 }
 exports.TCPClient = TCPClient;

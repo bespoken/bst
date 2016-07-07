@@ -5,9 +5,10 @@ class Node {
         this.socketHandler = socketHandler;
     }
     forward(sourceSocket, request) {
-        console.log("NODE Forwarding ID:" + this.id);
+        let self = this;
+        console.log("NODE " + this.id + " Forwarding");
         this.socketHandler.call(request.toTCP(), function (data) {
-            console.log("NODE ReplyReceived ID:" + this.id);
+            console.log("NODE " + self.id + " ReplyReceived");
             sourceSocket.write(data, function () {
             });
         });

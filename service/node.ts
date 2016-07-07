@@ -13,9 +13,10 @@ export class Node {
     constructor(public id: string, public socketHandler: SocketHandler) {}
 
     public forward(sourceSocket: Socket, request: WebhookRequest) {
-        console.log("NODE Forwarding ID:" + this.id);
+        let self = this;
+        console.log("NODE " + this.id + " Forwarding");
         this.socketHandler.call(request.toTCP(), function(data: string) {
-            console.log("NODE ReplyReceived ID:" + this.id);
+            console.log("NODE " + self.id + " ReplyReceived");
             sourceSocket.write(data, function() {
                 //sourceSocket.end();
             });

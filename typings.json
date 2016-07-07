@@ -4,6 +4,7 @@
     "node": "registry:dt/node#6.0.0+20160621231320"
   },
   "dependencies": {
-    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958"
+    "es6-promise": "registry:npm/es6-promise#3.0.0+20160211003958",
+    "node-uuid": "registry:npm/node-uuid#1.4.7+20160503013124"
   }
 }

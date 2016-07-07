@@ -29,7 +29,7 @@ export class BespokeClient {
             self.onMessage(data);
         });
 
-        //Use a promise to so that other things wait on the connection
+        //Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
            //As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};

@@ -6,6 +6,8 @@ Factor part of webhook request into http message class?
 
 Move main routine to bin?
 
+Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
+
 ** IDE
 Get tsc to work right with WebStorm
 

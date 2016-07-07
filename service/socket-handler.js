@@ -1,5 +1,7 @@
 "use strict";
 const global_1 = require("./global");
+const string_util_1 = require("../core/string-util");
+const buffer_util_1 = require("../core/buffer-util");
 class SocketHandler {
     constructor(socket, onMessage) {
         this.socket = socket;
@@ -8,7 +10,7 @@ class SocketHandler {
         let self = this;
         this.resetBuffer();
         this.socket.on('data', function (data) {
-            console.log('DATA READ ' + self.socket.remoteAddress + ': ' + data);
+            console.log('DATA READ ' + self.socket.remoteAddress + ': ' + buffer_util_1.BufferUtil.prettyPrint(data));
             let dataString = data.toString();
             if (dataString.indexOf(global_1.Global.MessageDelimiter) == -1) {
                 self.message += dataString;
@@ -27,7 +29,7 @@ class SocketHandler {
         let self = this;
         message = message + global_1.Global.MessageDelimiter;
         this.socket.write(message, function () {
-            console.log("DATA SENT " + self.remoteAddress() + ": " + message);
+            console.log("DATA SENT " + self.remoteAddress() + ": " + string_util_1.StringUtil.prettyPrint(message));
         });
     }
     call(message, onReply) {

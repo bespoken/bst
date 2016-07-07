@@ -1,5 +1,7 @@
 import {Global} from "./global";
 import {Socket} from "net";
+import {StringUtil} from "../core/string-util";
+import {BufferUtil} from "../core/buffer-util";
 export interface OnMessage {
     (message: string): void;
 }
@@ -17,7 +19,7 @@ export class SocketHandler {
 
         // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function(data: Buffer) {
-            console.log('DATA READ ' + self.socket.remoteAddress + ': ' + data);
+            console.log('DATA READ ' + self.socket.remoteAddress + ': ' + BufferUtil.prettyPrint(data));
 
             let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) == -1) {
@@ -41,7 +43,7 @@ export class SocketHandler {
         //Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;
         this.socket.write(message, function() {
-            console.log("DATA SENT " + self.remoteAddress() + ": " + message);
+            console.log("DATA SENT " + self.remoteAddress() + ": " + StringUtil.prettyPrint(message));
         });
     }
 
