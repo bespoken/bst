@@ -1,6 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
 var webhook_request_1 = require("../../service/webhook-request");
+var buffer_util_1 = require("../../core/buffer-util");
 var assert = require("assert");
 var fs = require("fs");
 describe('WebhookRequest', function () {
@@ -26,6 +27,7 @@ describe('WebhookRequest', function () {
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
             var buffer = fs.readFileSync('test/service/WebhookRequestProper.raw');
             var bufferString = buffer.toString();
+            console.log("BUFFER: " + buffer_util_1.BufferUtil.prettyPrint(buffer));
             //Split the buffer into two pieces
             var buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
             var buffer2 = bufferString.substr(bufferString.indexOf("38Z"));

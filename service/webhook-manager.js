@@ -1,5 +1,6 @@
 var webhook_request_1 = require("./webhook-request");
 var net = require("net");
+var buffer_util_1 = require("../core/buffer-util");
 var WebhookManager = (function () {
     function WebhookManager(port) {
         this.port = port;
@@ -11,8 +12,12 @@ var WebhookManager = (function () {
         this.server = net.createServer(function (socket) {
             var message = "";
             socket.on('data', function (data) {
-                console.log('Webhook From ' + socket.remoteAddress);
-                console.log('Webhook Payload ' + data.toString());
+                //Throw away the pings - too much noise
+                var dataString = data.toString();
+                if (dataString.length > 4 && dataString.substr(0, 3) != "GET") {
+                    console.log('Webhook From ' + socket.remoteAddress);
+                    console.log('Webhook Payload ' + buffer_util_1.BufferUtil.prettyPrint(data));
+                }
                 var webhookRequest = new webhook_request_1.WebhookRequest();
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {

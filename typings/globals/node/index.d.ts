@@ -2232,7 +2232,7 @@ declare module "stream" {
     export class PassThrough extends Transform {}
 }
 
-declare module "util" {
+declare module "core" {
     export interface InspectOptions {
         showHidden?: boolean;
         depth?: number;

@@ -2,6 +2,7 @@
 /// <reference path="../../typings/globals/node/index.d.ts" />
 
 import {WebhookRequest} from "../../service/webhook-request";
+import {BufferUtil} from "../../core/buffer-util";
 import * as assert from "assert";
 import * as fs from "fs";
 
@@ -31,6 +32,7 @@ describe('WebhookRequest', function() {
             let buffer: Buffer = fs.readFileSync('test/service/WebhookRequestProper.raw');
             let bufferString: string = buffer.toString();
 
+            console.log("BUFFER: " + BufferUtil.prettyPrint(buffer));
             //Split the buffer into two pieces
             let buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
             let buffer2 = bufferString.substr(bufferString.indexOf("38Z"));

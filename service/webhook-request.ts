@@ -63,7 +63,7 @@ export class WebhookRequest {
     }
 
     public isPing(): boolean {
-        console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
+        //console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
         return (this.uri.indexOf("/ping") != -1);
     }
 
@@ -74,13 +74,12 @@ export class WebhookRequest {
         this.method = requestLineParts[0];
         this.uri = requestLineParts[1];
 
-        console.log("QueryString URL: " + this.uri);
+        //console.log("QueryString URL: " + this.uri);
         if (this.uri.indexOf('?') >= 0) {
             this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
         }
 
         //Handle the headers
-        console.log("Request: " + requestLine);
         for (let i=1;i<lines.length;i++) {
             let headerLine: string = lines[i];
             let headerParts: Array<string> = headerLine.split(":");

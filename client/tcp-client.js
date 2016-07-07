@@ -1,5 +1,4 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
-"use strict";
 var net = require("net");
 var TCPClient = (function () {
     function TCPClient() {
@@ -23,5 +22,6 @@ var TCPClient = (function () {
         });
     };
     return TCPClient;
-}());
+})();
 exports.TCPClient = TCPClient;
+//# sourceMappingURL=tcp-client.js.map
