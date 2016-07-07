@@ -2,7 +2,6 @@
 //Startup script for running BST
 var bespoke_server_1 = require("./bespoke-server");
 var bespoke_client_1 = require("../client/bespoke-client");
-var config_1 = require("./config");
 if (process.argv.length < 3) {
     console.error("No tool specified. Must be first argument.");
     process.exit(1);
@@ -10,13 +9,14 @@ if (process.argv.length < 3) {
 var tool = process.argv[2];
 console.log("Tool: " + tool);
 if (tool == "debug") {
-    if (process.argv.length < 4) {
-        console.error("For debug, must specify port to forward to!");
+    if (process.argv.length < 6) {
+        console.error("For debug, must specify host, hostPort, and port to forward to!");
         process.exit(1);
     }
-    var port = parseInt(process.argv[3]);
-    var config = new config_1.Config();
-    var bespokeClient = new bespoke_client_1.BespokeClient("JPK", config.bespokeServerHost, config.bespokeServerPort, port);
+    var host = parseInt(process.argv[3]);
+    var hostPort = parseInt(process.argv[4]);
+    var targetPort = parseInt(process.argv[5]);
+    var bespokeClient = new bespoke_client_1.BespokeClient("JPK", host, hostPort, targetPort);
     bespokeClient.connect();
 }
 if (tool == "server") {

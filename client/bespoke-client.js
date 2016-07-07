@@ -14,7 +14,6 @@ var BespokeClient = (function () {
         var self = this;
         this.client = new net.Socket();
         this.socketHandler = new socket_handler_1.SocketHandler(this.client, function (data) {
-            console.log("ClientReceived: " + data);
             self.onMessage(data);
         });
         //Use a promise to so that other things wait on the connection
@@ -26,7 +25,6 @@ var BespokeClient = (function () {
         });
         this.onWebhookReceived = function (socket, request) {
             var tcpClient = new tcp_client_1.TCPClient();
-            console.log("Transmit To");
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function (data) {
                 self.socketHandler.send(data);
             });
@@ -37,7 +35,6 @@ var BespokeClient = (function () {
     };
     BespokeClient.prototype.onMessage = function (message) {
         if (message.indexOf("ACK") != -1) {
-            console.log("Client: ACK RECEIVED");
         }
         else {
             this.onWebhookReceived(this.client, webhook_request_1.WebhookRequest.fromString(message));

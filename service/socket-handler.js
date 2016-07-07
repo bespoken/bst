@@ -7,7 +7,7 @@ var SocketHandler = (function () {
         var self = this;
         // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function (data) {
-            console.log('DATA ' + self.socket.remoteAddress + ': ' + data + " DELIM: " + global_1.Global.MessageDelimiter);
+            console.log('DATA READ ' + self.socket.remoteAddress + ': ' + data);
             if (self.message == null) {
                 self.message = "";
             }
@@ -17,22 +17,23 @@ var SocketHandler = (function () {
             }
             else {
                 var completeMessage = dataString.substr(0, dataString.indexOf(global_1.Global.MessageDelimiter));
-                console.log("FullMessage: " + completeMessage);
+                //console.log("FullMessage: " + completeMessage);
                 self.onMessage(completeMessage);
                 self.message = null;
             }
         });
     }
     SocketHandler.prototype.send = function (message) {
-        console.log("SendingMessage: " + message);
+        var self = this;
+        //console.log("SendingMessage: " + message);
         //Use TOKEN as message delimiter
         message = message + global_1.Global.MessageDelimiter;
         this.socket.write(message, function () {
-            console.log("WroteData: " + message);
+            console.log("DATA SENT " + self.remoteAddress() + ": " + message);
         });
     };
     SocketHandler.prototype.call = function (message, onReply) {
-        console.log("CallingWith: " + message);
+        //console.log("CallingWith: " + message);
         this.onMessage = onReply;
         this.send(message);
     };

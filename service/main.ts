@@ -14,14 +14,16 @@ let tool = process.argv[2];
 console.log("Tool: " + tool);
 
 if (tool == "debug") {
-    if (process.argv.length < 4) {
-        console.error("For debug, must specify port to forward to!");
+    if (process.argv.length < 6) {
+        console.error("For debug, must specify host, hostPort, and port to forward to!");
         process.exit(1);
     }
 
-    let port: number = parseInt(process.argv[3]);
-    let config = new Config();
-    let bespokeClient = new BespokeClient("JPK", config.bespokeServerHost, config.bespokeServerPort, port);
+    let host: string  = parseInt(process.argv[3]);
+    let hostPort: number = parseInt(process.argv[4]);
+    let targetPort: number = parseInt(process.argv[5]);
+
+    let bespokeClient = new BespokeClient("JPK", host, hostPort, targetPort);
     bespokeClient.connect();
 }
 

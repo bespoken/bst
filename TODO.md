@@ -8,6 +8,8 @@ Have node return response to webhook
 Robustness of TCP connection
 Need a way to pass HTTP headers and what not
 
+Add unique ID for socket connections
+
 Promise is not doing what i expect
 
 What version of node am I using?

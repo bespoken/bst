@@ -2,7 +2,7 @@
 var Global = (function () {
     function Global() {
     }
-    Global.MessageDelimiter = "GRACE";
+    Global.MessageDelimiter = "4772616365";
     return Global;
 })();
 exports.Global = Global;
