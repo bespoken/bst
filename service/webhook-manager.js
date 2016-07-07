@@ -1,4 +1,3 @@
-"use strict";
 var webhook_request_1 = require("./webhook-request");
 var net = require("net");
 var WebhookManager = (function () {
@@ -16,7 +15,13 @@ var WebhookManager = (function () {
                 var webhookRequest = new webhook_request_1.WebhookRequest();
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
-                    self.onWebhookReceived(socket, webhookRequest);
+                    if (webhookRequest.isPing()) {
+                        socket.write("HTTP/1.0 200 OK\r\n\r\n");
+                        socket.end();
+                    }
+                    else {
+                        self.onWebhookReceived(socket, webhookRequest);
+                    }
                 }
             });
             // We have a connection - a socket object is assigned to the connection automatically
@@ -25,5 +30,6 @@ var WebhookManager = (function () {
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
     };
     return WebhookManager;
-}());
+})();
 exports.WebhookManager = WebhookManager;
+//# sourceMappingURL=webhook-manager.js.map

@@ -1,9 +1,9 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
 var Config = (function () {
     function Config() {
-        this.bespokeServerHost = "localhost";
-        this.bespokeServerPort = 9000;
-        this.bespokeWebhookPort = 8000;
+        this.bespokeServerHost = "192.168.99.100";
+        this.bespokeServerPort = 5000;
+        this.bespokeWebhookPort = 4000;
     }
     return Config;
 })();

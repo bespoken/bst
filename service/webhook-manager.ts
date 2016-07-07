@@ -28,7 +28,12 @@ export class WebhookManager {
                 webhookRequest.append(data);
 
                 if (webhookRequest.done()) {
-                    self.onWebhookReceived(socket, webhookRequest);
+                    if (webhookRequest.isPing()) {
+                        socket.write("HTTP/1.0 200 OK\r\n\r\n");
+                        socket.end();
+                    } else {
+                        self.onWebhookReceived(socket, webhookRequest);
+                    }
                 }
             });
 

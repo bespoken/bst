@@ -1,5 +1,4 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
-"use strict";
 var querystring = require("querystring");
 var WebhookRequest = (function () {
     function WebhookRequest() {
@@ -44,6 +43,10 @@ var WebhookRequest = (function () {
         }
         return contentLength;
     };
+    WebhookRequest.prototype.isPing = function () {
+        console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
+        return (this.uri.indexOf("/ping") != -1);
+    };
     WebhookRequest.prototype.parseHeaders = function (headersString) {
         var lines = headersString.split("\n");
         var requestLine = lines[0];
@@ -72,5 +75,6 @@ var WebhookRequest = (function () {
         return this.rawContents.toString();
     };
     return WebhookRequest;
-}());
+})();
 exports.WebhookRequest = WebhookRequest;
+//# sourceMappingURL=webhook-request.js.map

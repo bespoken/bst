@@ -58,6 +58,11 @@ export class WebhookRequest {
         return contentLength;
     }
 
+    public isPing(): boolean {
+        console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
+        return (this.uri.indexOf("/ping") != -1);
+    }
+
     private parseHeaders (headersString: string): void {
         let lines: Array<string> = headersString.split("\n");
         let requestLine = lines[0];
