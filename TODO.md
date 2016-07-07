@@ -8,6 +8,8 @@ Move main routine to bin?
 
 Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
 
+Added npm install step to docker file?
+
 ** IDE
 Get tsc to work right with WebStorm
 
