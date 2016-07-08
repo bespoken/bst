@@ -11,7 +11,7 @@ if (process.argv.length < 3) {
 }
 
 let tool = process.argv[2];
-console.log("Tool: " + tool);
+//console.log("Tool: " + tool);
 
 if (tool == "debug") {
     if (process.argv.length < 6) {
@@ -37,4 +37,9 @@ if (tool == "server") {
     let serverPort: number = parseInt(process.argv[4]);
     let bespokeServer = new BespokeServer(webhookPort, serverPort);
     bespokeServer.start();
+}
+
+if (tool == "sleep") {
+    console.error("Not until Brooklyn!");
+    process.exit(1);
 }

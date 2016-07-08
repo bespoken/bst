@@ -1,7 +1,13 @@
-Robustness of TCP connection
+Figure out why the thing stops working some times
+    Better tracing?
+    
+Handle chunked message reply from proxied service more exactly
+    Is probably doing a double callback, which could be a problem
 
 Add unique ID for socket connections
 
+Get unit tests passing
+    
 Factor part of webhook request into http message class?
 
 Move main routine to bin?
@@ -10,8 +16,9 @@ Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
 
 Added npm install step to docker file?
 
+Figure out how to make this available
+
 ** IDE
-Get tsc to work right with WebStorm
 
 ** Design
 Store off which node instance is managing which connection (assumes multiple BSS instances)

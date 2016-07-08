@@ -6,7 +6,6 @@ if (process.argv.length < 3) {
     process.exit(1);
 }
 let tool = process.argv[2];
-console.log("Tool: " + tool);
 if (tool == "debug") {
     if (process.argv.length < 6) {
         console.error("For debug, must specify host, hostPort, and port to forward to!");
@@ -27,5 +26,9 @@ if (tool == "server") {
     let serverPort = parseInt(process.argv[4]);
     let bespokeServer = new bespoke_server_1.BespokeServer(webhookPort, serverPort);
     bespokeServer.start();
+}
+if (tool == "sleep") {
+    console.error("Not until Brooklyn!");
+    process.exit(1);
 }
 //# sourceMappingURL=main.js.map
