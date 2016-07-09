@@ -11,7 +11,6 @@ class WebhookManager {
     start() {
         let self = this;
         this.server = net.createServer(function (socket) {
-            let message = "";
             socket.on('data', function (data) {
                 let dataString = data.toString();
                 if (dataString.length > 4 && dataString.substr(0, 3) != "GET") {
@@ -32,6 +31,11 @@ class WebhookManager {
             });
         }).listen(this.port, this.host);
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
+    }
+    stop() {
+        this.server.close(function () {
+            console.log("WebhookManager STOP");
+        });
     }
 }
 exports.WebhookManager = WebhookManager;

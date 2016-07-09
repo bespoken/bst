@@ -98,4 +98,8 @@ export class WebhookRequest {
     public toTCP (): string {
         return this.rawContents.toString();
     }
+
+    public toString(): string {
+        return this.method + " " + this.uri;
+    }
 }

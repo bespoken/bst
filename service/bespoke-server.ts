@@ -27,4 +27,10 @@ export class BespokeServer {
             }
         };
     }
+
+    public stop(): void {
+        this.nodeManager.stop();
+        this.webhookManager.stop();
+    }
+
 }

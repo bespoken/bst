@@ -21,7 +21,6 @@ export class WebhookManager {
         let self = this;
 
         this.server = net.createServer(function(socket: Socket) {
-            let message: string = "";
             socket.on('data', function(data: Buffer) {
                 //Throw away the pings - too much noise
                 let dataString = data.toString();
@@ -48,5 +47,11 @@ export class WebhookManager {
         }).listen(this.port, this.host);
 
         console.log('WebhookServer listening on ' + this.host + ':' + this.port);
+    }
+
+    public stop (): void {
+        this.server.close(function () {
+            console.log("WebhookManager STOP");
+        });
     }
 }

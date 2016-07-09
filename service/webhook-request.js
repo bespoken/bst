@@ -72,6 +72,9 @@ class WebhookRequest {
     toTCP() {
         return this.rawContents.toString();
     }
+    toString() {
+        return this.method + " " + this.uri;
+    }
 }
 exports.WebhookRequest = WebhookRequest;
 //# sourceMappingURL=webhook-request.js.map

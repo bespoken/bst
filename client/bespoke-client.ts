@@ -39,6 +39,7 @@ export class BespokeClient {
         });
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
+            console.log("CLIENT " + self.nodeID + " onWebhook: " + request.toString());
             let tcpClient = new TCPClient();
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string) {
                 self.socketHandler.send(data);

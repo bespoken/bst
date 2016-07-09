@@ -13,7 +13,7 @@ class NodeManager {
     }
     start() {
         let self = this;
-        net.createServer(function (socket) {
+        this.server = net.createServer(function (socket) {
             let initialConnection = true;
             let node = null;
             let socketHandler = new socket_handler_1.SocketHandler(socket, function (message) {
@@ -31,6 +31,11 @@ class NodeManager {
             console.log('NODE CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
         console.log('NodeServer listening on ' + this.host + ':' + this.port);
+    }
+    stop() {
+        this.server.close(function () {
+            console.log("NodeManager STOP");
+        });
     }
 }
 exports.NodeManager = NodeManager;

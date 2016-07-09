@@ -2,6 +2,7 @@ import * as net from 'net';
 import {Node} from "./node";
 import {Socket} from "net";
 import {SocketHandler} from "./socket-handler";
+import {Server} from "net";
 
 export interface OnConnectCallback {
     (node: Node): void;
@@ -19,9 +20,10 @@ export class NodeManager {
     public host:string = '0.0.0.0';
     public onClose:OnCloseCallback;
     public onConnect:OnConnectCallback;
-    public onReceive:OnReceiveCallback;
+    //public onReceive:OnReceiveCallback;
 
     private nodes: {[id: string] : Node } = {};
+    public server: Server;
 
     constructor(private port:number) {}
 
@@ -30,9 +32,8 @@ export class NodeManager {
     }
 
     public start () {
-
         let self = this;
-        net.createServer(function(socket:Socket) {
+        this.server = net.createServer(function(socket:Socket) {
             let initialConnection = true;
             let node: Node = null;
             let socketHandler = new SocketHandler(socket, function(message: string) {
@@ -57,5 +58,11 @@ export class NodeManager {
         }).listen(this.port, this.host);
 
         console.log('NodeServer listening on ' + this.host + ':' + this.port);
+    }
+
+    public stop (): void {
+        this.server.close(function() {
+            console.log("NodeManager STOP");
+        })
     }
 }

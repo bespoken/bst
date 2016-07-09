@@ -4,9 +4,19 @@ Figure out why the thing stops working some times
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
-Add unique ID for socket connections
+Add unique ID for webhook connections
 
 Get unit tests passing
+
+Add tslint
+
+Auto-assign node ID
+
+Figure out how to run unit tests as ts files (rather than js)
+
+Look into BDD best practices
+
+Figure out how to pass-thru the original calling IP to bespoke-client
     
 Factor part of webhook request into http message class?
 
@@ -17,6 +27,12 @@ Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
 Added npm install step to docker file?
 
 Figure out how to make this available
+    Structure of project - what should be in what repository
+    Do we open-source the server-side piece?
+    Make available via npm?   
+ 
+What parameters should be passed?
+    Use key-value args for startup
 
 ** IDE
 

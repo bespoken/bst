@@ -5,7 +5,8 @@ class TCPClient {
     }
     transmit(host, port, data, callback) {
         var client = new net.Socket();
-        client.connect(port, host, function () {
+        client.connect(port, host, function (info) {
+            console.log("Testasdfasdf");
             client.write(data);
         });
         client.on('data', function (data) {

@@ -22,6 +22,10 @@ class BespokeServer {
             }
         };
     }
+    stop() {
+        this.nodeManager.stop();
+        this.webhookManager.stop();
+    }
 }
 exports.BespokeServer = BespokeServer;
 //# sourceMappingURL=bespoke-server.js.map
