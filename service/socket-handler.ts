@@ -2,12 +2,9 @@ import {Global} from "./global";
 import {Socket} from "net";
 import {StringUtil} from "../core/string-util";
 import {BufferUtil} from "../core/buffer-util";
+
 export interface OnMessage {
     (message: string): void;
-}
-
-export interface OnConnect {
-    (): void;
 }
 
 export class SocketHandler {

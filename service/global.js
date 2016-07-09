@@ -1,6 +1,9 @@
+/// <reference path="../typings/globals/node/index.d.ts" />
 "use strict";
-class Global {
-}
-Global.MessageDelimiter = "4772616365";
+var Global = (function () {
+    function Global() {
+    }
+    Global.MessageDelimiter = "4772616365";
+    return Global;
+}());
 exports.Global = Global;
-//# sourceMappingURL=global.js.map

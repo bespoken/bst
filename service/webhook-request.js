@@ -1,26 +1,27 @@
+/// <reference path="../typings/globals/node/index.d.ts" />
 "use strict";
-const querystring = require("querystring");
-class WebhookRequest {
-    constructor() {
+var querystring = require("querystring");
+var WebhookRequest = (function () {
+    function WebhookRequest() {
         this.queryParameters = {};
         this.rawContents = new Buffer("");
         this.body = "";
     }
-    static fromString(payload) {
-        let webhookRequest = new WebhookRequest();
+    WebhookRequest.fromString = function (payload) {
+        var webhookRequest = new WebhookRequest();
         webhookRequest.append(Buffer.from(payload));
         return webhookRequest;
-    }
-    append(data) {
+    };
+    WebhookRequest.prototype.append = function (data) {
         this.rawContents = Buffer.concat([this.rawContents, data]);
         if (this.headers == null) {
             this.headers = {};
-            let contentsString = this.rawContents.toString();
-            let endIndex = contentsString.indexOf("\r\n\r\n");
+            var contentsString = this.rawContents.toString();
+            var endIndex = contentsString.indexOf("\r\n\r\n");
             if (endIndex != -1) {
                 this.parseHeaders(contentsString.substr(0, endIndex));
                 if (endIndex + 4 < contentsString.length) {
-                    let bodyPart = contentsString.substr((endIndex + 4));
+                    var bodyPart = contentsString.substr((endIndex + 4));
                     this.appendBody(bodyPart);
                 }
             }
@@ -28,53 +29,56 @@ class WebhookRequest {
         else {
             this.appendBody(data.toString());
         }
-    }
-    appendBody(bodyPart) {
+    };
+    WebhookRequest.prototype.appendBody = function (bodyPart) {
         this.body += bodyPart;
-    }
-    done() {
+    };
+    WebhookRequest.prototype.done = function () {
         if (this.method == "GET") {
             return true;
         }
         return (this.body.length == this.contentLength());
-    }
-    contentLength() {
-        let contentLength = -1;
+    };
+    WebhookRequest.prototype.contentLength = function () {
+        var contentLength = -1;
         if (this.headers != null) {
-            let contentLengthString = this.headers["Content-Length"];
+            var contentLengthString = this.headers["Content-Length"];
             contentLength = parseInt(contentLengthString);
         }
         return contentLength;
-    }
-    isPing() {
+    };
+    WebhookRequest.prototype.isPing = function () {
+        //console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
         return (this.uri.indexOf("/ping") != -1);
-    }
-    parseHeaders(headersString) {
-        let lines = headersString.split("\n");
-        let requestLine = lines[0];
-        let requestLineParts = requestLine.split(" ");
+    };
+    WebhookRequest.prototype.parseHeaders = function (headersString) {
+        var lines = headersString.split("\n");
+        var requestLine = lines[0];
+        var requestLineParts = requestLine.split(" ");
         this.method = requestLineParts[0];
         this.uri = requestLineParts[1];
+        //console.log("QueryString URL: " + this.uri);
         if (this.uri.indexOf('?') >= 0) {
             this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
         }
-        for (let i = 1; i < lines.length; i++) {
-            let headerLine = lines[i];
-            let headerParts = headerLine.split(":");
-            let key = headerParts[0];
-            let value = headerParts[1].trim();
-            this.headers[key] = value;
+        //Handle the headers
+        for (var i = 1; i < lines.length; i++) {
+            var headerLine = lines[i];
+            var headerParts = headerLine.split(":");
+            var key = headerParts[0];
+            this.headers[key] = headerParts[1].trim();
         }
-    }
-    nodeID() {
+    };
+    WebhookRequest.prototype.nodeID = function () {
         return this.queryParameters["node-id"];
-    }
-    toTCP() {
+    };
+    //Turns the webhook HTTP request into straight TCP payload
+    WebhookRequest.prototype.toTCP = function () {
         return this.rawContents.toString();
-    }
-    toString() {
+    };
+    WebhookRequest.prototype.toString = function () {
         return this.method + " " + this.uri;
-    }
-}
+    };
+    return WebhookRequest;
+}());
 exports.WebhookRequest = WebhookRequest;
-//# sourceMappingURL=webhook-request.js.map

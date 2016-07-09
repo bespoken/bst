@@ -84,9 +84,8 @@ export class WebhookRequest {
             let headerLine: string = lines[i];
             let headerParts: Array<string> = headerLine.split(":");
             let key = headerParts[0];
-            let value = headerParts[1].trim();
-            this.headers[key] = value;
-            //console.log("Header: " + key + "=" + value);
+            this.headers[key] = headerParts[1].trim();
+            //console.log("Header: " + key + "=" + this.headers[key]);
         }
     }
 

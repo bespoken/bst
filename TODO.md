@@ -4,6 +4,8 @@ Figure out why the thing stops working some times
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
+Add mocks for testing sockethandler and bespoke client
+
 Add unique ID for webhook connections
 
 Get unit tests passing

@@ -9,7 +9,7 @@ import {NodeManager} from '../../service/node-manager';
 
 describe('NodeManager', function() {
     describe('Connect', function() {
-        it('Should Connect and Receive Data', function(done) {
+        it('Connected And Received Data', function(done) {
             let nodeManager = new NodeManager(9000);
             let client = new BespokeClient("JPK", "localhost", 9000, 9001);
 
@@ -25,8 +25,8 @@ describe('NodeManager', function() {
         });
     });
 
-    describe('Close Worked', function() {
-        it('Close Worked', function (done) {
+    describe('Close', function() {
+        it('Worked', function (done) {
             let nodeManager = new NodeManager(9000);
 
             nodeManager.start();

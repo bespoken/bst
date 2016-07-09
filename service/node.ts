@@ -1,6 +1,3 @@
-/// <reference path="../typings/modules/node-uuid/index.d.ts" />
-
-import * as uuid from 'node-uuid';
 import {Socket} from "net";
 import {NodeManager} from "./node-manager";
 import {Global} from "./global";
