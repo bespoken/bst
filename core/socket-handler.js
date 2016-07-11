@@ -1,7 +1,7 @@
 "use strict";
-const global_1 = require("./global");
-const string_util_1 = require("../core/string-util");
-const buffer_util_1 = require("../core/buffer-util");
+const global_1 = require("./../service/global");
+const string_util_1 = require("./string-util");
+const buffer_util_1 = require("./buffer-util");
 class SocketHandler {
     constructor(socket, onMessage) {
         this.socket = socket;
@@ -9,7 +9,7 @@ class SocketHandler {
         this.message = null;
         let self = this;
         this.resetBuffer();
-        this.socket.on('data', function (data) {
+        this.onDataCallback = function (data) {
             console.log('DATA READ ' + self.socket.localAddress + ':' + self.socket.localPort + ' ' + buffer_util_1.BufferUtil.prettyPrint(data));
             let dataString = data.toString();
             if (dataString.indexOf(global_1.Global.MessageDelimiter) == -1) {
@@ -18,7 +18,8 @@ class SocketHandler {
             else {
                 self.handleData(dataString);
             }
-        });
+        };
+        this.socket.on('data', this.onDataCallback);
     }
     handleData(dataString) {
         let delimiterIndex = dataString.indexOf(global_1.Global.MessageDelimiter);

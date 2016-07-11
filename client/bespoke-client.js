@@ -1,6 +1,6 @@
 "use strict";
 const net = require('net');
-const socket_handler_1 = require("../service/socket-handler");
+const socket_handler_1 = require("../core/socket-handler");
 const webhook_request_1 = require("../service/webhook-request");
 const tcp_client_1 = require("./tcp-client");
 class BespokeClient {

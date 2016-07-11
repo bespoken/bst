@@ -1,7 +1,7 @@
 import {Socket} from "net";
 import {NodeManager} from "./node-manager";
 import {Global} from "./global";
-import {SocketHandler} from "./socket-handler";
+import {SocketHandler} from "./../core/socket-handler";
 import {WebhookRequest} from "./webhook-request";
 
 export class Node {

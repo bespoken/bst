@@ -9,7 +9,8 @@
     "debug": "node service/main.js test test2"
   },
   "devDependencies": {
-    "mocha": "2.5.3"
+    "mocha": "2.5.3",
+    "typemoq": "^0.2.0"
   },
   "dependencies": {
     "body-parser": "~1.15.1",

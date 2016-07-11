@@ -1,7 +1,7 @@
-import {Global} from "./global";
+import {Global} from "./../service/global";
 import {Socket} from "net";
-import {StringUtil} from "../core/string-util";
-import {BufferUtil} from "../core/buffer-util";
+import {StringUtil} from "./string-util";
+import {BufferUtil} from "./buffer-util";
 
 export interface OnMessage {
     (message: string): void;
@@ -9,13 +9,14 @@ export interface OnMessage {
 
 export class SocketHandler {
     public message: string = null;
+    private onDataCallback: (data: Buffer) => void;
 
     public constructor (private socket: Socket, private onMessage: OnMessage) {
         let self = this;
         this.resetBuffer();
 
-        // Add a 'data' event handler to this instance of socket
-        this.socket.on('data', function(data: Buffer) {
+        //Set this as instance variable to make it easier to test
+        this.onDataCallback = function(data: Buffer) {
             console.log('DATA READ ' + self.socket.localAddress + ':' + self.socket.localPort + ' ' + BufferUtil.prettyPrint(data));
 
             let dataString: string = data.toString();
@@ -24,7 +25,10 @@ export class SocketHandler {
             } else {
                 self.handleData(dataString);
             }
-        });
+        };
+
+        // Add a 'data' event handler to this instance of socket
+        this.socket.on('data', this.onDataCallback);
     }
 
     /**
