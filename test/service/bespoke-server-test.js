@@ -1,18 +1,14 @@
-/// <reference path="../../typings/globals/node/index.d.ts" />
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
 "use strict";
-var assert = require("assert");
-var bespoke_client_1 = require('../../client/bespoke-client');
-var http_client_1 = require("../../client/http-client");
-var bespoke_server_1 = require("../../service/bespoke-server");
+const assert = require("assert");
+const bespoke_client_1 = require('../../client/bespoke-client');
+const http_client_1 = require("../../client/http-client");
+const bespoke_server_1 = require("../../service/bespoke-server");
 describe('BespokeServerTest', function () {
     describe('ReceiveWebhook', function () {
-        it('ConnectClientAndReceiveWebhook', function (done) {
-            //Start the server
-            var server = new bespoke_server_1.BespokeServer(8000, 9000);
+        it('Connects and Receives Callback', function (done) {
+            let server = new bespoke_server_1.BespokeServer(8000, 9000);
             server.start();
-            //Connect a client
-            var bespokeClient = new bespoke_client_1.BespokeClient("JPK", "localhost", 9000, 9001);
+            let bespokeClient = new bespoke_client_1.BespokeClient("JPK", "localhost", 9000, 9001);
             bespokeClient.connect();
             bespokeClient.onWebhookReceived = function (socket, webhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
@@ -21,26 +17,22 @@ describe('BespokeServerTest', function () {
                 bespokeClient.disconnect();
                 done();
             };
-            var webhookCaller = new http_client_1.HTTPClient();
+            let webhookCaller = new http_client_1.HTTPClient();
+            webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
+        });
+        it('Handles Connection Failure', function (done) {
+            this.timeout(1000);
+            let server = new bespoke_server_1.BespokeServer(8000, 9000);
+            server.start();
+            let bespokeClient = new bespoke_client_1.BespokeClient("JPK", "localhost", 9000, 9001);
+            console.log("Test2");
+            bespokeClient.connect();
+            bespokeClient.onError = function (errorType, message) {
+                done();
+            };
+            let webhookCaller = new http_client_1.HTTPClient();
             webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
         });
     });
-    //describe('Receive Webhook Failure', function() {
-    //    it('Connects And Then Fails', function(done) {
-    //        //Start the server
-    //        let server = new BespokeServer(8000, 9000);
-    //        server.start();
-    //
-    //        //Connect a client
-    //        let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
-    //        bespokeClient.connect();
-    //
-    //        let webhookCaller = new HTTPClient();
-    //        webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
-    //
-    //        setTimeout(function () {
-    //            done();
-    //        }, 1500);
-    //    });
-    //});
 });
+//# sourceMappingURL=bespoke-server-test.js.map

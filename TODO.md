@@ -13,6 +13,9 @@ Get unit tests passing
 Add tslint
 
 Auto-assign node ID
+    Should this be MAC address? What is a simple value?
+    
+Add url configurator command
 
 Figure out how to run unit tests as ts files (rather than js)
 

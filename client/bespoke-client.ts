@@ -9,9 +9,11 @@ import {SocketHandler} from "../service/socket-handler";
 import {WebhookReceivedCallback} from "../service/webhook-manager";
 import {WebhookRequest} from "../service/webhook-request";
 import {TCPClient} from "./tcp-client";
+import {NetworkErrorType} from "../service/global";
 
 export class BespokeClient {
     public onWebhookReceived: WebhookReceivedCallback;
+    public onError: (errorType: NetworkErrorType, message: string) => void;
 
     private client: Socket;
     private socketHandler: SocketHandler;
@@ -31,6 +33,7 @@ export class BespokeClient {
 
         //Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
+            console.log("CLIENT " + self.host + ":" + self.port + " Connected");
            //As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
@@ -39,10 +42,19 @@ export class BespokeClient {
         });
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
+            let self = this;
             console.log("CLIENT " + self.nodeID + " onWebhook: " + request.toString());
+
             let tcpClient = new TCPClient();
-            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string) {
-                self.socketHandler.send(data);
+            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
+                if (data != null) {
+                    self.socketHandler.send(data);
+                } else {
+                    console.log("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                    if (self.onError != null) {
+                        self.onError(error, message);
+                    }
+                }
             });
         }
     }
@@ -52,6 +64,7 @@ export class BespokeClient {
     }
 
     public onMessage (message: string) {
+        //First message we get back is an ack
         if (message.indexOf("ACK") != -1) {
             //console.log("Client: ACK RECEIVED");
         } else {

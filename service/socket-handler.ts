@@ -16,18 +16,38 @@ export class SocketHandler {
 
         // Add a 'data' event handler to this instance of socket
         this.socket.on('data', function(data: Buffer) {
-            console.log('DATA READ ' + self.socket.remoteAddress + ': ' + BufferUtil.prettyPrint(data));
+            console.log('DATA READ ' + self.socket.localAddress + ':' + self.socket.localPort + ' ' + BufferUtil.prettyPrint(data));
 
             let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) == -1) {
                 self.message += dataString;
             } else {
-                self.message += dataString.substr(0, dataString.indexOf(Global.MessageDelimiter));
-                //console.log("FullMessage: " + completeMessage);
-                self.onMessage(self.message);
-                self.resetBuffer();
+                self.handleData(dataString);
             }
         });
+    }
+
+    /**
+     * Handles incoming data
+     * Finds the delimiter and sends callbacks, potentially multiple times as multiple messages can be received at once
+     * @param dataString
+     */
+    private handleData(dataString: string): void {
+        let delimiterIndex = dataString.indexOf(Global.MessageDelimiter);
+        if (delimiterIndex == -1) {
+            this.message += dataString;
+        } else {
+            this.message += dataString.substr(0, delimiterIndex);
+            this.onMessage(this.message);
+            this.resetBuffer();
+
+            //If we have received more than one packet at a time, handle it recursively
+            if (dataString.length > (dataString.indexOf(Global.MessageDelimiter) + Global.MessageDelimiter.length)) {
+                dataString = dataString.substr(dataString.indexOf(Global.MessageDelimiter) + Global.MessageDelimiter.length);
+                this.handleData(dataString);
+            }
+        }
+
     }
 
     private resetBuffer(): void {
@@ -40,7 +60,7 @@ export class SocketHandler {
         //Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;
         this.socket.write(message, function() {
-            console.log("DATA SENT " + self.remoteAddress() + ": " + StringUtil.prettyPrint(message));
+            console.log("DATA SENT " + self.socket.localAddress + ":" + self.socket.localPort + " " + StringUtil.prettyPrint(message));
         });
     }
 

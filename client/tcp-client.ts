@@ -2,12 +2,31 @@
 
 import * as net from "net";
 import EventEmitter = NodeJS.EventEmitter;
+import {NetworkErrorType} from "../service/global";
+
+export interface TCPClientCallback {
+    (data: Buffer, errorType:NetworkErrorType, errorMessage): void;
+}
 
 export class TCPClient {
     public constructor () {}
 
-    public transmit(host: string, port: number, data: string, callback: (response: string) => void) {
+    public transmit(host: string, port: number, data: string, callback: TCPClientCallback) {
         var client = new net.Socket();
+        console.log("TCP-CLIENT " + host + ":" + port + " Connected");
+
+        client.setTimeout(1000, function (message: string) {
+            console.log("TCP-CLIENT " + host + ":" + port + " TimedOut");
+            callback(null, NetworkErrorType.TIME_OUT, message);
+        });
+
+        client.on("error", function (e: any) {
+            if (e.code ==  "ECONNREFUSED") {
+                callback(null, NetworkErrorType.CONNECTION_REFUSED, e.message);
+            } else {
+                callback(null, NetworkErrorType.OTHER, e.message);
+            }
+        });
 
         client.connect(port, host, function (info:any) {
             console.log("Testasdfasdf");

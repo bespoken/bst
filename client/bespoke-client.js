@@ -1,50 +1,57 @@
-/// <reference path="../typings/modules/es6-promise/index.d.ts" />
 "use strict";
-var net = require('net');
-var socket_handler_1 = require("../service/socket-handler");
-var webhook_request_1 = require("../service/webhook-request");
-var tcp_client_1 = require("./tcp-client");
-var BespokeClient = (function () {
-    function BespokeClient(nodeID, host, port, targetPort) {
+const net = require('net');
+const socket_handler_1 = require("../service/socket-handler");
+const webhook_request_1 = require("../service/webhook-request");
+const tcp_client_1 = require("./tcp-client");
+class BespokeClient {
+    constructor(nodeID, host, port, targetPort) {
         this.nodeID = nodeID;
         this.host = host;
         this.port = port;
         this.targetPort = targetPort;
     }
-    BespokeClient.prototype.connect = function () {
-        var self = this;
+    connect() {
+        let self = this;
         this.client = new net.Socket();
         this.socketHandler = new socket_handler_1.SocketHandler(this.client, function (data) {
             self.onMessage(data);
         });
-        //Once connected, send the Node ID
         this.client.connect(this.port, this.host, function () {
-            //As soon as we connect, we send our ID
-            var messageJSON = { "id": self.nodeID };
-            var message = JSON.stringify(messageJSON);
+            console.log("CLIENT " + self.host + ":" + self.port + " Connected");
+            let messageJSON = { "id": self.nodeID };
+            let message = JSON.stringify(messageJSON);
             self.send(message);
         });
         this.onWebhookReceived = function (socket, request) {
+            let self = this;
             console.log("CLIENT " + self.nodeID + " onWebhook: " + request.toString());
-            var tcpClient = new tcp_client_1.TCPClient();
-            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function (data) {
-                self.socketHandler.send(data);
+            let tcpClient = new tcp_client_1.TCPClient();
+            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function (data, error, message) {
+                if (data != null) {
+                    self.socketHandler.send(data);
+                }
+                else {
+                    console.log("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                    if (self.onError != null) {
+                        self.onError(error, message);
+                    }
+                }
             });
         };
-    };
-    BespokeClient.prototype.send = function (message) {
+    }
+    send(message) {
         this.socketHandler.send(message);
-    };
-    BespokeClient.prototype.onMessage = function (message) {
+    }
+    onMessage(message) {
         if (message.indexOf("ACK") != -1) {
         }
         else {
             this.onWebhookReceived(this.client, webhook_request_1.WebhookRequest.fromString(message));
         }
-    };
-    BespokeClient.prototype.disconnect = function () {
+    }
+    disconnect() {
         this.client.end();
-    };
-    return BespokeClient;
-}());
+    }
+}
 exports.BespokeClient = BespokeClient;
+//# sourceMappingURL=bespoke-client.js.map
