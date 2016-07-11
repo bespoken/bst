@@ -40,5 +40,19 @@ describe('SocketHandlerTest', function() {
 
             socketHandler.onDataCallback(Buffer.from("TEST" + Global.MessageDelimiter + "TEST2" + Global.MessageDelimiter));
         });
+
+        it("Sends Incomplete Payload", function(done) {
+            let mockSocket:TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            mockSocket.setup(s => s.on(TypeMoq.It.isAnyString(), TypeMoq.It.isAny()));
+
+            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
+                assert.equal("TEST", message);
+                done();
+            });
+
+            socketHandler.onDataCallback(Buffer.from("TEST"));
+            socketHandler.onDataCallback(Buffer.from(Global.MessageDelimiter));
+
+        });
     });
 });

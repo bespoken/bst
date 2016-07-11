@@ -31,6 +31,16 @@ describe('SocketHandlerTest', function () {
             });
             socketHandler.onDataCallback(Buffer.from("TEST" + global_1.Global.MessageDelimiter + "TEST2" + global_1.Global.MessageDelimiter));
         });
+        it("Sends Incomplete Payload", function (done) {
+            let mockSocket = TypeMoq.Mock.ofType(net_1.Socket);
+            mockSocket.setup(s => s.on(TypeMoq.It.isAnyString(), TypeMoq.It.isAny()));
+            let socketHandler = new socket_handler_1.SocketHandler(mockSocket.object, function (message) {
+                assert.equal("TEST", message);
+                done();
+            });
+            socketHandler.onDataCallback(Buffer.from("TEST"));
+            socketHandler.onDataCallback(Buffer.from(global_1.Global.MessageDelimiter));
+        });
     });
 });
 //# sourceMappingURL=socket-handler-test.js.map
