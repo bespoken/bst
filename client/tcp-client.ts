@@ -5,7 +5,7 @@ import EventEmitter = NodeJS.EventEmitter;
 import {NetworkErrorType} from "../service/global";
 
 export interface TCPClientCallback {
-    (data: Buffer, errorType:NetworkErrorType, errorMessage): void;
+    (data: string, errorType:NetworkErrorType, errorMessage): void;
 }
 
 export class TCPClient {
@@ -38,7 +38,7 @@ export class TCPClient {
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
         client.on('data', function(data: string) {
-            callback(data);
+            callback(data, null, null);
         });
 
         // Add a 'close' event handler for the client socket

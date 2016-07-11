@@ -9,7 +9,7 @@ export interface OnMessage {
 
 export class SocketHandler {
     public message: string = null;
-    private onDataCallback: (data: Buffer) => void;
+    public onDataCallback: (data: Buffer) => void;
 
     public constructor (private socket: Socket, private onMessage: OnMessage) {
         let self = this;
@@ -59,13 +59,13 @@ export class SocketHandler {
     }
 
     public send(message: string) {
+        console.log("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + StringUtil.prettyPrint(message));
+
         let self = this;
         //console.log("SendingMessage: " + message);
         //Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;
-        this.socket.write(message, function() {
-            console.log("DATA SENT " + self.socket.localAddress + ":" + self.socket.localPort + " " + StringUtil.prettyPrint(message));
-        });
+        this.socket.write(message, null);
     }
 
     public call(message: string, onReply: OnMessage) {
@@ -76,6 +76,17 @@ export class SocketHandler {
 
     public remoteAddress (): string {
         return this.socket.remoteAddress;
+    }
+
+    public disconnect (): void {
+        if (this.isOpen()) {
+            this.socket.end();
+            this.socket = null;
+        }
+    }
+
+    public isOpen (): boolean {
+        return this.socket != null;
     }
 }
 

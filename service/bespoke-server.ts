@@ -28,8 +28,8 @@ export class BespokeServer {
         };
     }
 
-    public stop(): void {
-        this.nodeManager.stop();
+    public stop(callback: () => void): void {
+        this.nodeManager.stop(callback);
         this.webhookManager.stop();
     }
 

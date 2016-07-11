@@ -27,9 +27,10 @@ describe('BespokeServerTest', function() {
             bespokeClient.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
-                server.stop();
                 bespokeClient.disconnect();
-                done();
+                server.stop(function () {
+                    done();
+                });
             };
 
             let webhookCaller = new HTTPClient();
@@ -47,6 +48,8 @@ describe('BespokeServerTest', function() {
             console.log("Test2");
             bespokeClient.connect();
             bespokeClient.onError = function(errorType: NetworkErrorType, message: string) {
+                bespokeClient.disconnect();
+                server.stop(null);
                 done();
             };
 

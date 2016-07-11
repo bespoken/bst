@@ -1,17 +1,18 @@
 "use strict";
-const global_1 = require("./../service/global");
-const string_util_1 = require("./string-util");
-const buffer_util_1 = require("./buffer-util");
-class SocketHandler {
-    constructor(socket, onMessage) {
+var global_1 = require("./../service/global");
+var string_util_1 = require("./string-util");
+var buffer_util_1 = require("./buffer-util");
+var SocketHandler = (function () {
+    function SocketHandler(socket, onMessage) {
         this.socket = socket;
         this.onMessage = onMessage;
         this.message = null;
-        let self = this;
+        var self = this;
         this.resetBuffer();
+        //Set this as instance variable to make it easier to test
         this.onDataCallback = function (data) {
             console.log('DATA READ ' + self.socket.localAddress + ':' + self.socket.localPort + ' ' + buffer_util_1.BufferUtil.prettyPrint(data));
-            let dataString = data.toString();
+            var dataString = data.toString();
             if (dataString.indexOf(global_1.Global.MessageDelimiter) == -1) {
                 self.message += dataString;
             }
@@ -19,10 +20,16 @@ class SocketHandler {
                 self.handleData(dataString);
             }
         };
+        // Add a 'data' event handler to this instance of socket
         this.socket.on('data', this.onDataCallback);
     }
-    handleData(dataString) {
-        let delimiterIndex = dataString.indexOf(global_1.Global.MessageDelimiter);
+    /**
+     * Handles incoming data
+     * Finds the delimiter and sends callbacks, potentially multiple times as multiple messages can be received at once
+     * @param dataString
+     */
+    SocketHandler.prototype.handleData = function (dataString) {
+        var delimiterIndex = dataString.indexOf(global_1.Global.MessageDelimiter);
         if (delimiterIndex == -1) {
             this.message += dataString;
         }
@@ -30,29 +37,41 @@ class SocketHandler {
             this.message += dataString.substr(0, delimiterIndex);
             this.onMessage(this.message);
             this.resetBuffer();
+            //If we have received more than one packet at a time, handle it recursively
             if (dataString.length > (dataString.indexOf(global_1.Global.MessageDelimiter) + global_1.Global.MessageDelimiter.length)) {
                 dataString = dataString.substr(dataString.indexOf(global_1.Global.MessageDelimiter) + global_1.Global.MessageDelimiter.length);
                 this.handleData(dataString);
             }
         }
-    }
-    resetBuffer() {
+    };
+    SocketHandler.prototype.resetBuffer = function () {
         this.message = "";
-    }
-    send(message) {
-        let self = this;
+    };
+    SocketHandler.prototype.send = function (message) {
+        console.log("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + string_util_1.StringUtil.prettyPrint(message));
+        var self = this;
+        //console.log("SendingMessage: " + message);
+        //Use TOKEN as message delimiter
         message = message + global_1.Global.MessageDelimiter;
-        this.socket.write(message, function () {
-            console.log("DATA SENT " + self.socket.localAddress + ":" + self.socket.localPort + " " + string_util_1.StringUtil.prettyPrint(message));
-        });
-    }
-    call(message, onReply) {
+        this.socket.write(message, null);
+    };
+    SocketHandler.prototype.call = function (message, onReply) {
+        //console.log("CallingWith: " + message);
         this.onMessage = onReply;
         this.send(message);
-    }
-    remoteAddress() {
+    };
+    SocketHandler.prototype.remoteAddress = function () {
         return this.socket.remoteAddress;
-    }
-}
+    };
+    SocketHandler.prototype.disconnect = function () {
+        if (this.isOpen()) {
+            this.socket.end();
+            this.socket = null;
+        }
+    };
+    SocketHandler.prototype.isOpen = function () {
+        return this.socket != null;
+    };
+    return SocketHandler;
+}());
 exports.SocketHandler = SocketHandler;
-//# sourceMappingURL=socket-handler.js.map

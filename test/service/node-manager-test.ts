@@ -15,8 +15,9 @@ describe('NodeManager', function() {
 
             nodeManager.onConnect = function (node: Node) {
                 assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
-                nodeManager.stop();
-                done();
+                nodeManager.stop(function() {
+                    done();
+                });
             };
 
             nodeManager.start();
@@ -32,8 +33,9 @@ describe('NodeManager', function() {
             nodeManager.start();
             //
             setTimeout(function() {
-                nodeManager.stop();
-                done();
+                nodeManager.stop(function () {
+                    done();
+                });
             }, 100);
         });
     });

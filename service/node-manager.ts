@@ -60,9 +60,16 @@ export class NodeManager {
         console.log('NodeServer listening on ' + this.host + ':' + this.port);
     }
 
-    public stop (): void {
-        this.server.close(function() {
-            console.log("NodeManager STOP");
-        })
+    /**
+     * Calling stop tells the server to stop listening
+     * However, connections cannot be closed until all sockets disconnect, so loop through sockets and force a disconnect
+     * @param callback
+     */
+    public stop (callback: () => void): void {
+        for (let key in this.nodes) {
+            let node: Node = this.node(key);
+            node.socketHandler.disconnect();
+        }
+        this.server.close(callback);
     }
 }
