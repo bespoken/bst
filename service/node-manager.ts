@@ -1,4 +1,4 @@
-import * as net from 'net';
+import * as net from "net";
 import {Node} from "./node";
 import {Socket} from "net";
 import {SocketHandler} from "./../core/socket-handler";
@@ -8,24 +8,14 @@ export interface OnConnectCallback {
     (node: Node): void;
 }
 
-export interface OnReceiveCallback {
-    (connection: Node, data: string): void;
-}
-
-export interface OnCloseCallback {
-    (connection: Node): void;
-}
-
 export class NodeManager {
-    public host:string = '0.0.0.0';
-    public onClose:OnCloseCallback;
-    public onConnect:OnConnectCallback;
-    //public onReceive:OnReceiveCallback;
+    public host: string = "0.0.0.0";
+    public onConnect: OnConnectCallback;
 
-    private nodes: {[id: string] : Node } = {};
+    private nodes: {[id: string]: Node } = {};
     public server: Server;
 
-    constructor(private port:number) {}
+    constructor(private port: number) {}
 
     public node (nodeID: string): Node {
         return this.nodes[nodeID];
@@ -33,11 +23,11 @@ export class NodeManager {
 
     public start () {
         let self = this;
-        this.server = net.createServer(function(socket:Socket) {
+        this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
             let node: Node = null;
             let socketHandler = new SocketHandler(socket, function(message: string) {
-                //We do special handling when we first connect
+                // We do special handling when we first connect
                 if (initialConnection) {
                     let connectData = JSON.parse(message);
                     node = new Node(connectData.id, socketHandler);
@@ -53,11 +43,11 @@ export class NodeManager {
             });
 
             // We have a connection - a socket object is assigned to the connection automatically
-            console.log('NODE CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
+            console.log("NODE CONNECTED: " + socket.remoteAddress + ":" + socket.remotePort);
 
         }).listen(this.port, this.host);
 
-        console.log('NodeServer listening on ' + this.host + ':' + this.port);
+        console.log("NodeServer listening on " + this.host + ":" + this.port);
     }
 
     /**
@@ -67,8 +57,10 @@ export class NodeManager {
      */
     public stop (callback: () => void): void {
         for (let key in this.nodes) {
-            let node: Node = this.node(key);
-            node.socketHandler.disconnect();
+            if (this.nodes.hasOwnProperty(key)) {
+                let node: Node = this.node(key);
+                node.socketHandler.disconnect();
+            }
         }
         this.server.close(callback);
     }

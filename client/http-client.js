@@ -10,17 +10,17 @@ var HTTPClient = (function () {
             host: host,
             port: port,
             path: path,
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(data)
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Length": Buffer.byteLength(data)
             }
         };
         // Set up the request
         var post_req = http.request(post_options, function (res) {
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                console.log('Response: ' + chunk);
+            res.setEncoding("utf8");
+            res.on("data", function (chunk) {
+                console.log("Response: " + chunk);
             });
         });
         // post the data

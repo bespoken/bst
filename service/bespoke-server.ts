@@ -18,7 +18,7 @@ export class BespokeServer {
         this.webhookManager = new WebhookManager(this.webhookPort);
         this.webhookManager.start();
         this.webhookManager.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
-            //Lookup the node
+            // Lookup the node
             let node = self.nodeManager.node(webhookRequest.nodeID());
             if (node == null) {
                 console.log("Ignoring this webhook - no matching node");

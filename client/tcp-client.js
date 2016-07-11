@@ -13,26 +13,25 @@ var TCPClient = (function () {
             callback(null, global_1.NetworkErrorType.TIME_OUT, message);
         });
         client.on("error", function (e) {
-            if (e.code == "ECONNREFUSED") {
+            if (e.code === "ECONNREFUSED") {
                 callback(null, global_1.NetworkErrorType.CONNECTION_REFUSED, e.message);
             }
             else {
                 callback(null, global_1.NetworkErrorType.OTHER, e.message);
             }
         });
-        client.connect(port, host, function (info) {
-            console.log("Testasdfasdf");
+        client.connect(port, host, function () {
             // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
             client.write(data);
         });
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
-        client.on('data', function (data) {
+        client.on("data", function (data) {
             callback(data, null, null);
         });
         // Add a 'close' event handler for the client socket
-        client.on('close', function () {
-            console.log('Connection closed');
+        client.on("close", function () {
+            console.log("Connection closed");
         });
     };
     TCPClient.prototype.close = function () {

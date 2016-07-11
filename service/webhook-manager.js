@@ -11,12 +11,12 @@ var WebhookManager = (function () {
     WebhookManager.prototype.start = function () {
         var self = this;
         this.server = net.createServer(function (socket) {
-            socket.on('data', function (data) {
-                //Throw away the pings - too much noise
+            socket.on("data", function (data) {
+                // Throw away the pings - too much noise
                 var dataString = data.toString();
-                if (dataString.length > 4 && dataString.substr(0, 3) != "GET") {
-                    console.log('Webhook From ' + socket.remoteAddress + ":" + socket.remotePort);
-                    console.log('Webhook Payload ' + buffer_util_1.BufferUtil.prettyPrint(data));
+                if (dataString.length > 4 && dataString.substr(0, 3) !== "GET") {
+                    console.log("Webhook From " + socket.remoteAddress + ":" + socket.remotePort);
+                    console.log("Webhook Payload " + buffer_util_1.BufferUtil.prettyPrint(data));
                 }
                 var webhookRequest = new webhook_request_1.WebhookRequest();
                 webhookRequest.append(data);
@@ -30,10 +30,8 @@ var WebhookManager = (function () {
                     }
                 }
             });
-            // We have a connection - a socket object is assigned to the connection automatically
-            //console.log('WEBHOOK CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
         }).listen(this.port, this.host);
-        console.log('WebhookServer listening on ' + this.host + ':' + this.port);
+        console.log("WebhookServer listening on " + this.host + ":" + this.port);
     };
     WebhookManager.prototype.stop = function () {
         this.server.close(function () {

@@ -3,8 +3,8 @@
 //Startup script for running BST
 import {BespokeServer} from "./bespoke-server";
 import {BespokeClient} from "../client/bespoke-client";
-import {Config} from "./config";
 import {WebhookRequest} from "./webhook-request";
+
 if (process.argv.length < 3) {
     console.error("No tool specified. Must be first argument.");
     process.exit(1);

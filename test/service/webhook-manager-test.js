@@ -7,9 +7,9 @@
 var assert = require("assert");
 var webhook_manager_1 = require("../../service/webhook-manager");
 var http_client_1 = require("../../client/http-client");
-describe('WebhookManager', function () {
-    describe('Connect', function () {
-        it('Should Connect and Receive Data', function (done) {
+describe("WebhookManager", function () {
+    describe("Connect", function () {
+        it("Should Connect and Receive Data", function (done) {
             var manager = new webhook_manager_1.WebhookManager(8080);
             manager.onWebhookReceived = function (socket, request) {
                 console.log("NodeID: " + request.nodeID());

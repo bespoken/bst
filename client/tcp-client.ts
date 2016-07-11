@@ -5,14 +5,14 @@ import EventEmitter = NodeJS.EventEmitter;
 import {NetworkErrorType} from "../service/global";
 
 export interface TCPClientCallback {
-    (data: string, errorType:NetworkErrorType, errorMessage): void;
+    (data: string, errorType: NetworkErrorType, errorMessage: string): void;
 }
 
 export class TCPClient {
     public constructor () {}
 
     public transmit(host: string, port: number, data: string, callback: TCPClientCallback) {
-        var client = new net.Socket();
+        let client = new net.Socket();
         console.log("TCP-CLIENT " + host + ":" + port + " Connected");
 
         client.setTimeout(1000, function (message: string) {
@@ -21,15 +21,14 @@ export class TCPClient {
         });
 
         client.on("error", function (e: any) {
-            if (e.code ==  "ECONNREFUSED") {
+            if (e.code ===  "ECONNREFUSED") {
                 callback(null, NetworkErrorType.CONNECTION_REFUSED, e.message);
             } else {
                 callback(null, NetworkErrorType.OTHER, e.message);
             }
         });
 
-        client.connect(port, host, function (info:any) {
-            console.log("Testasdfasdf");
+        client.connect(port, host, function () {
             // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
             client.write(data);
         });
@@ -37,13 +36,13 @@ export class TCPClient {
 
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
-        client.on('data', function(data: string) {
+        client.on("data", function(data: string) {
             callback(data, null, null);
         });
 
         // Add a 'close' event handler for the client socket
-        client.on('close', function() {
-            console.log('Connection closed');
+        client.on("close", function() {
+            console.log("Connection closed");
         });
     }
 

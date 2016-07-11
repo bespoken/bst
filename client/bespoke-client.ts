@@ -1,8 +1,8 @@
 /// <reference path="../typings/modules/es6-promise/index.d.ts" />
 
-import * as net from 'net';
-import {Socket} from 'net';
-import {Promise} from 'es6-promise';
+import * as net from "net";
+import {Socket} from "net";
+import {Promise} from "es6-promise";
 import {Global} from "../service/global";
 import {OnMessage} from "../core/socket-handler";
 import {SocketHandler} from "../core/socket-handler";
@@ -19,11 +19,11 @@ export class BespokeClient {
     private socketHandler: SocketHandler;
 
     constructor(public nodeID: string,
-                private host:string,
-                private port:number,
+                private host: string,
+                private port: number,
                 private targetPort: number) {}
 
-    public connect():void {
+    public connect(): void {
         let self = this;
 
         this.client = new net.Socket();
@@ -31,10 +31,10 @@ export class BespokeClient {
             self.onMessage(data);
         });
 
-        //Once connected, send the Node ID
+        // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
             console.log("CLIENT " + self.host + ":" + self.port + " Connected");
-           //As soon as we connect, we send our ID
+           // As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
 
@@ -56,7 +56,7 @@ export class BespokeClient {
                     }
                 }
             });
-        }
+        };
     }
 
     public send(message: string) {
@@ -64,16 +64,16 @@ export class BespokeClient {
     }
 
     public onMessage (message: string) {
-        //First message we get back is an ack
-        if (message.indexOf("ACK") != -1) {
-            //console.log("Client: ACK RECEIVED");
+        // First message we get back is an ack
+        if (message.indexOf("ACK") !== -1) {
+            // console.log("Client: ACK RECEIVED");
         } else {
             this.onWebhookReceived(this.client, WebhookRequest.fromString(message));
         }
 
     }
 
-    public disconnect():void {
+    public disconnect(): void {
         this.client.end();
     }
 }

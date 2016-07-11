@@ -7,22 +7,22 @@ export class HTTPClient {
 
     public post(host: string, port: number, path: string, data: string) {
         // An object of options to indicate where to post to
-        var post_options = {
+        let post_options = {
             host: host,
             port: port,
             path: path,
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': Buffer.byteLength(data)
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Length": Buffer.byteLength(data)
             }
         };
 
         // Set up the request
-        var post_req = http.request(post_options, function(res) {
-            res.setEncoding('utf8');
-            res.on('data', function (chunk: any) {
-                console.log('Response: ' + chunk);
+        let post_req = http.request(post_options, function(res) {
+            res.setEncoding("utf8");
+            res.on("data", function (chunk: any) {
+                console.log("Response: " + chunk);
             });
         });
 

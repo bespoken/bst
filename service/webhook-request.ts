@@ -7,7 +7,7 @@ export class WebhookRequest {
     public method: string;
     public uri: string;
     public body: string;
-    public headers:{ [id: string] : string };
+    public headers: { [id: string]: string };
     public queryParameters: {[id: string]: string} = {};
 
     public constructor() {
@@ -28,10 +28,10 @@ export class WebhookRequest {
             this.headers = {};
             let contentsString: string = this.rawContents.toString();
             let endIndex = contentsString.indexOf("\r\n\r\n");
-            if (endIndex != -1) {
+            if (endIndex !== -1) {
                 this.parseHeaders(contentsString.substr(0, endIndex));
 
-                if (endIndex+4 < contentsString.length) {
+                if (endIndex + 4 < contentsString.length) {
                     let bodyPart: string = contentsString.substr((endIndex + 4));
                     this.appendBody(bodyPart);
                 }
@@ -46,10 +46,10 @@ export class WebhookRequest {
     }
 
     public done(): boolean {
-        if (this.method == "GET") {
+        if (this.method === "GET") {
             return true;
         }
-        return (this.body.length == this.contentLength());
+        return (this.body.length === this.contentLength());
     }
 
     public contentLength(): number {
@@ -63,8 +63,7 @@ export class WebhookRequest {
     }
 
     public isPing(): boolean {
-        //console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
-        return (this.uri.indexOf("/ping") != -1);
+        return (this.uri.indexOf("/ping") !== -1);
     }
 
     private parseHeaders (headersString: string): void {
@@ -74,26 +73,24 @@ export class WebhookRequest {
         this.method = requestLineParts[0];
         this.uri = requestLineParts[1];
 
-        //console.log("QueryString URL: " + this.uri);
-        if (this.uri.indexOf('?') >= 0) {
-            this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
+        if (this.uri.indexOf("?") >= 0) {
+            this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ""));
         }
 
-        //Handle the headers
-        for (let i=1;i<lines.length;i++) {
+        // Handle the headers
+        for (let i = 1; i < lines.length; i++) {
             let headerLine: string = lines[i];
             let headerParts: Array<string> = headerLine.split(":");
             let key = headerParts[0];
             this.headers[key] = headerParts[1].trim();
-            //console.log("Header: " + key + "=" + this.headers[key]);
         }
     }
 
-    public nodeID ():string {
+    public nodeID (): string {
         return this.queryParameters["node-id"];
     }
 
-    //Turns the webhook HTTP request into straight TCP payload
+    // Turns the webhook HTTP request into straight TCP payload
     public toTCP (): string {
         return this.rawContents.toString();
     }

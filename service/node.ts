@@ -15,18 +15,10 @@ export class Node {
         this.socketHandler.call(request.toTCP(), function(data: string) {
             console.log("NODE " + self.id + " ReplyReceived");
             sourceSocket.write(data, function() {
-                //sourceSocket.end();
+
             });
         });
 
         this.activeRequest = request;
-    }
-
-    public hasActiveRequest(): boolean {
-        return this.activeRequest != null;
-    }
-
-    public webhookRequest(): WebhookRequest {
-        return this.activeRequest;
     }
 }

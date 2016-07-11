@@ -6,17 +6,17 @@
 
 import * as assert from "assert";
 
-import {BespokeClient} from '../../client/bespoke-client';
+import {BespokeClient} from "../../client/bespoke-client";
 import {Node} from "../../service/node";
-import {NodeManager} from '../../service/node-manager';
+import {NodeManager} from "../../service/node-manager";
 import {WebhookManager} from "../../service/webhook-manager";
 import {WebhookRequest} from "../../service/webhook-request";
 import {HTTPClient} from "../../client/http-client";
 import {Socket} from "net";
 
-describe('WebhookManager', function() {
-    describe('Connect', function() {
-        it('Should Connect and Receive Data', function(done) {
+describe("WebhookManager", function() {
+    describe("Connect", function() {
+        it("Should Connect and Receive Data", function(done) {
             let manager = new WebhookManager(8080);
             manager.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
                 console.log("NodeID: " + request.nodeID());

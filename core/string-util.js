@@ -4,7 +4,7 @@ var StringUtil = (function () {
     function StringUtil() {
     }
     StringUtil.replaceAll = function (s, val, newVal) {
-        while (s.indexOf(val) != -1) {
+        while (s.indexOf(val) !== -1) {
             s = s.replace(val, newVal);
         }
         return s;

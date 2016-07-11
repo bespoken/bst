@@ -18,7 +18,7 @@ var WebhookRequest = (function () {
             this.headers = {};
             var contentsString = this.rawContents.toString();
             var endIndex = contentsString.indexOf("\r\n\r\n");
-            if (endIndex != -1) {
+            if (endIndex !== -1) {
                 this.parseHeaders(contentsString.substr(0, endIndex));
                 if (endIndex + 4 < contentsString.length) {
                     var bodyPart = contentsString.substr((endIndex + 4));
@@ -34,10 +34,10 @@ var WebhookRequest = (function () {
         this.body += bodyPart;
     };
     WebhookRequest.prototype.done = function () {
-        if (this.method == "GET") {
+        if (this.method === "GET") {
             return true;
         }
-        return (this.body.length == this.contentLength());
+        return (this.body.length === this.contentLength());
     };
     WebhookRequest.prototype.contentLength = function () {
         var contentLength = -1;
@@ -48,8 +48,7 @@ var WebhookRequest = (function () {
         return contentLength;
     };
     WebhookRequest.prototype.isPing = function () {
-        //console.log("ISPING: " + (this.uri.indexOf("/ping") != -1));
-        return (this.uri.indexOf("/ping") != -1);
+        return (this.uri.indexOf("/ping") !== -1);
     };
     WebhookRequest.prototype.parseHeaders = function (headersString) {
         var lines = headersString.split("\n");
@@ -57,11 +56,10 @@ var WebhookRequest = (function () {
         var requestLineParts = requestLine.split(" ");
         this.method = requestLineParts[0];
         this.uri = requestLineParts[1];
-        //console.log("QueryString URL: " + this.uri);
-        if (this.uri.indexOf('?') >= 0) {
-            this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
+        if (this.uri.indexOf("?") >= 0) {
+            this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ""));
         }
-        //Handle the headers
+        // Handle the headers
         for (var i = 1; i < lines.length; i++) {
             var headerLine = lines[i];
             var headerParts = headerLine.split(":");
@@ -72,7 +70,7 @@ var WebhookRequest = (function () {
     WebhookRequest.prototype.nodeID = function () {
         return this.queryParameters["node-id"];
     };
-    //Turns the webhook HTTP request into straight TCP payload
+    // Turns the webhook HTTP request into straight TCP payload
     WebhookRequest.prototype.toTCP = function () {
         return this.rawContents.toString();
     };

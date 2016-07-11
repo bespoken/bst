@@ -1,6 +1,6 @@
 /// <reference path="../typings/modules/es6-promise/index.d.ts" />
 "use strict";
-var net = require('net');
+var net = require("net");
 var socket_handler_1 = require("../core/socket-handler");
 var webhook_request_1 = require("../service/webhook-request");
 var tcp_client_1 = require("./tcp-client");
@@ -17,10 +17,10 @@ var BespokeClient = (function () {
         this.socketHandler = new socket_handler_1.SocketHandler(this.client, function (data) {
             self.onMessage(data);
         });
-        //Once connected, send the Node ID
+        // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function () {
             console.log("CLIENT " + self.host + ":" + self.port + " Connected");
-            //As soon as we connect, we send our ID
+            // As soon as we connect, we send our ID
             var messageJSON = { "id": self.nodeID };
             var message = JSON.stringify(messageJSON);
             self.send(message);
@@ -46,8 +46,8 @@ var BespokeClient = (function () {
         this.socketHandler.send(message);
     };
     BespokeClient.prototype.onMessage = function (message) {
-        //First message we get back is an ack
-        if (message.indexOf("ACK") != -1) {
+        // First message we get back is an ack
+        if (message.indexOf("ACK") !== -1) {
         }
         else {
             this.onWebhookReceived(this.client, webhook_request_1.WebhookRequest.fromString(message));
