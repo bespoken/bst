@@ -7,10 +7,6 @@ class TCPClient {
     transmit(host, port, data, callback) {
         let client = new net.Socket();
         console.log("TCP-CLIENT " + host + ":" + port + " Connected");
-        client.setTimeout(1000, function (message) {
-            console.log("TCP-CLIENT " + host + ":" + port + " TimedOut");
-            callback(null, global_1.NetworkErrorType.TIME_OUT, message);
-        });
         client.on("error", function (e) {
             if (e.code === "ECONNREFUSED") {
                 callback(null, global_1.NetworkErrorType.CONNECTION_REFUSED, e.message);
@@ -23,7 +19,7 @@ class TCPClient {
             client.write(data);
         });
         client.on("data", function (data) {
-            callback(data, null, null);
+            callback(data.toString(), null, null);
         });
         client.on("close", function () {
             console.log("Connection closed");

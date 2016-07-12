@@ -15,11 +15,6 @@ export class TCPClient {
         let client = new net.Socket();
         console.log("TCP-CLIENT " + host + ":" + port + " Connected");
 
-        client.setTimeout(1000, function (message: string) {
-            console.log("TCP-CLIENT " + host + ":" + port + " TimedOut");
-            callback(null, NetworkErrorType.TIME_OUT, message);
-        });
-
         client.on("error", function (e: any) {
             if (e.code ===  "ECONNREFUSED") {
                 callback(null, NetworkErrorType.CONNECTION_REFUSED, e.message);
@@ -36,8 +31,8 @@ export class TCPClient {
 
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
-        client.on("data", function(data: string) {
-            callback(data, null, null);
+        client.on("data", function(data: Buffer) {
+            callback(data.toString(), null, null);
         });
 
         // Add a 'close' event handler for the client socket

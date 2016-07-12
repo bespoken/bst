@@ -49,7 +49,7 @@ export class BespokeClient {
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
                 if (data != null) {
                     self.socketHandler.send(data);
-                } else {
+                } else if (error === NetworkErrorType.CONNECTION_REFUSED) {
                     console.log("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
                     if (self.onError != null) {
                         self.onError(error, message);

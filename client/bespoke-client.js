@@ -3,6 +3,7 @@ const net = require("net");
 const socket_handler_1 = require("../core/socket-handler");
 const webhook_request_1 = require("../core/webhook-request");
 const tcp_client_1 = require("./tcp-client");
+const global_1 = require("../core/global");
 class BespokeClient {
     constructor(nodeID, host, port, targetPort) {
         this.nodeID = nodeID;
@@ -30,7 +31,7 @@ class BespokeClient {
                 if (data != null) {
                     self.socketHandler.send(data);
                 }
-                else {
+                else if (error === global_1.NetworkErrorType.CONNECTION_REFUSED) {
                     console.log("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
                     if (self.onError != null) {
                         self.onError(error, message);
