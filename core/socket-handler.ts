@@ -1,4 +1,4 @@
-import {Global} from "./../service/global";
+import {Global} from "./global";
 import {Socket} from "net";
 import {StringUtil} from "./string-util";
 import {BufferUtil} from "./buffer-util";

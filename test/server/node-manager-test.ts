@@ -4,8 +4,8 @@
 import * as assert from "assert";
 
 import {BespokeClient} from "../../client/bespoke-client";
-import {Node} from "../../service/node";
-import {NodeManager} from "../../service/node-manager";
+import {Node} from "../../server/node";
+import {NodeManager} from "../../server/node-manager";
 
 describe("NodeManager", function() {
     describe("Connect", function() {

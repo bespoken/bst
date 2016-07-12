@@ -4,7 +4,7 @@
 var assert = require("assert");
 var bespoke_client_1 = require("../../client/bespoke-client");
 var http_client_1 = require("../../client/http-client");
-var bespoke_server_1 = require("../../service/bespoke-server");
+var bespoke_server_1 = require("../../server/bespoke-server");
 describe("BespokeServerTest", function () {
     describe("ReceiveWebhook", function () {
         it("Connects and Receives Callback", function (done) {

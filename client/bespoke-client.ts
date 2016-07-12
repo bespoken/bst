@@ -3,13 +3,13 @@
 import * as net from "net";
 import {Socket} from "net";
 import {Promise} from "es6-promise";
-import {Global} from "../service/global";
+import {Global} from "../core/global";
 import {OnMessage} from "../core/socket-handler";
 import {SocketHandler} from "../core/socket-handler";
-import {WebhookReceivedCallback} from "../service/webhook-manager";
-import {WebhookRequest} from "../service/webhook-request";
+import {WebhookReceivedCallback} from "../server/webhook-manager";
+import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
-import {NetworkErrorType} from "../service/global";
+import {NetworkErrorType} from "../core/global";
 
 export class BespokeClient {
     public onWebhookReceived: WebhookReceivedCallback;

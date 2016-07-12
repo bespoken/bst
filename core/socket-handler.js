@@ -1,5 +1,5 @@
 "use strict";
-var global_1 = require("./../service/global");
+var global_1 = require("./global");
 var string_util_1 = require("./string-util");
 var buffer_util_1 = require("./buffer-util");
 var SocketHandler = (function () {

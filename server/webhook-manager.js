@@ -1,5 +1,5 @@
 "use strict";
-var webhook_request_1 = require("./webhook-request");
+var webhook_request_1 = require("./../core/webhook-request");
 var net = require("net");
 var buffer_util_1 = require("../core/buffer-util");
 var WebhookManager = (function () {

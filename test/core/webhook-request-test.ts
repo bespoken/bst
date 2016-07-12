@@ -1,7 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
 
-import {WebhookRequest} from "../../service/webhook-request";
+import {WebhookRequest} from "../../core/webhook-request";
 import {BufferUtil} from "../../core/buffer-util";
 import * as assert from "assert";
 import * as fs from "fs";
@@ -12,7 +12,7 @@ describe("WebhookRequest", function() {
             let request = new WebhookRequest();
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
-            let buffer: Buffer = fs.readFileSync("test/service/WebhookRequestProper.raw");
+            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
             request.append(buffer);
 
             assert.ok(request.body.indexOf("version") !== -1);
@@ -28,7 +28,7 @@ describe("WebhookRequest", function() {
             let request = new WebhookRequest();
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
-            let buffer: Buffer = fs.readFileSync("test/service/WebhookRequestProper.raw");
+            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
             let bufferString: string = buffer.toString();
 
             console.log("BUFFER: " + BufferUtil.prettyPrint(buffer));

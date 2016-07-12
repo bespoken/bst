@@ -2,7 +2,7 @@
 
 import * as net from "net";
 import EventEmitter = NodeJS.EventEmitter;
-import {NetworkErrorType} from "../service/global";
+import {NetworkErrorType} from "../core/global";
 
 export interface TCPClientCallback {
     (data: string, errorType: NetworkErrorType, errorMessage: string): void;

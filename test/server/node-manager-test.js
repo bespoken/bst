@@ -3,7 +3,7 @@
 "use strict";
 var assert = require("assert");
 var bespoke_client_1 = require("../../client/bespoke-client");
-var node_manager_1 = require("../../service/node-manager");
+var node_manager_1 = require("../../server/node-manager");
 describe("NodeManager", function () {
     describe("Connect", function () {
         it("Connected And Received Data", function (done) {

@@ -7,10 +7,10 @@
 import * as assert from "assert";
 
 import {BespokeClient} from "../../client/bespoke-client";
-import {Node} from "../../service/node";
-import {NodeManager} from "../../service/node-manager";
-import {WebhookManager} from "../../service/webhook-manager";
-import {WebhookRequest} from "../../service/webhook-request";
+import {Node} from "../../server/node";
+import {NodeManager} from "../../server/node-manager";
+import {WebhookManager} from "../../server/webhook-manager";
+import {WebhookRequest} from "../../core/webhook-request";
 import {HTTPClient} from "../../client/http-client";
 import {Socket} from "net";
 

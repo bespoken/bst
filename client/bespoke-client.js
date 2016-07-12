@@ -2,7 +2,7 @@
 "use strict";
 var net = require("net");
 var socket_handler_1 = require("../core/socket-handler");
-var webhook_request_1 = require("../service/webhook-request");
+var webhook_request_1 = require("../core/webhook-request");
 var tcp_client_1 = require("./tcp-client");
 var BespokeClient = (function () {
     function BespokeClient(nodeID, host, port, targetPort) {

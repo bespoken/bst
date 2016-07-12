@@ -7,7 +7,7 @@ import * as assert from "assert";
 
 import {SocketHandler} from "../../core/socket-handler";
 import {Socket} from "net";
-import {Global} from "../../service/global";
+import {Global} from "../../core/global";
 
 describe('SocketHandlerTest', function() {
     describe('Send', function() {

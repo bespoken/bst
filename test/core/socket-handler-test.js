@@ -6,7 +6,7 @@ var TypeMoq = require("typemoq");
 var assert = require("assert");
 var socket_handler_1 = require("../../core/socket-handler");
 var net_1 = require("net");
-var global_1 = require("../../service/global");
+var global_1 = require("../../core/global");
 describe('SocketHandlerTest', function () {
     describe('Send', function () {
         it("Sends Simple Payload", function (done) {

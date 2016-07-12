@@ -1,7 +1,7 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
 "use strict";
-var webhook_request_1 = require("../../service/webhook-request");
+var webhook_request_1 = require("../../core/webhook-request");
 var buffer_util_1 = require("../../core/buffer-util");
 var assert = require("assert");
 var fs = require("fs");
@@ -11,7 +11,7 @@ describe("WebhookRequest", function () {
             var request = new webhook_request_1.WebhookRequest();
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
-            var buffer = fs.readFileSync("test/service/WebhookRequestProper.raw");
+            var buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
             request.append(buffer);
             assert.ok(request.body.indexOf("version") !== -1);
             assert.equal(request.headers["Content-Length"], 603);
@@ -25,7 +25,7 @@ describe("WebhookRequest", function () {
             var request = new webhook_request_1.WebhookRequest();
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
-            var buffer = fs.readFileSync("test/service/WebhookRequestProper.raw");
+            var buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
             var bufferString = buffer.toString();
             console.log("BUFFER: " + buffer_util_1.BufferUtil.prettyPrint(buffer));
             // Split the buffer into two pieces

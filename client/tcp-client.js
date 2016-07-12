@@ -1,7 +1,7 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
 "use strict";
 var net = require("net");
-var global_1 = require("../service/global");
+var global_1 = require("../core/global");
 var TCPClient = (function () {
     function TCPClient() {
     }
