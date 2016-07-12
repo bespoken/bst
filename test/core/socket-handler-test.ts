@@ -9,10 +9,10 @@ import {SocketHandler} from "../../core/socket-handler";
 import {Socket} from "net";
 import {Global} from "../../core/global";
 
-describe('SocketHandlerTest', function() {
-    describe('Send', function() {
+describe("SocketHandlerTest", function() {
+    describe("Send", function() {
         it("Sends Simple Payload", function(done) {
-            let mockSocket:TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
             mockSocket.setup(s => s.on(TypeMoq.It.isAnyString(), TypeMoq.It.isAny()));
 
             let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
@@ -24,13 +24,13 @@ describe('SocketHandlerTest', function() {
         });
 
         it("Sends Multiple Payloads At Once", function(done) {
-            let mockSocket:TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
             mockSocket.setup(s => s.on(TypeMoq.It.isAnyString(), TypeMoq.It.isAny()));
 
             let count = 0;
             let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
                 count++;
-                if (count == 1) {
+                if (count === 1) {
                     assert.equal("TEST", message);
                 } else {
                     assert.equal("TEST2", message);
@@ -42,7 +42,7 @@ describe('SocketHandlerTest', function() {
         });
 
         it("Sends Incomplete Payload", function(done) {
-            let mockSocket:TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
             mockSocket.setup(s => s.on(TypeMoq.It.isAnyString(), TypeMoq.It.isAny()));
 
             let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
@@ -52,7 +52,6 @@ describe('SocketHandlerTest', function() {
 
             socketHandler.onDataCallback(Buffer.from("TEST"));
             socketHandler.onDataCallback(Buffer.from(Global.MessageDelimiter));
-
         });
     });
 });
