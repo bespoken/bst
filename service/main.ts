@@ -1,6 +1,6 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
 
-//Startup script for running BST
+// Startup script for running BST
 import {BespokeServer} from "./bespoke-server";
 import {BespokeClient} from "../client/bespoke-client";
 import {WebhookRequest} from "./webhook-request";
@@ -11,7 +11,7 @@ if (process.argv.length < 3) {
 }
 
 let tool = process.argv[2];
-//console.log("Tool: " + tool);
+// console.log("Tool: " + tool);
 
 if (tool == "debug") {
     if (process.argv.length < 6) {
