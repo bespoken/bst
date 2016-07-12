@@ -1,6 +1,10 @@
 # High Priority
 What parameters should be passed?
     Use key-value args for startup
+ 
+Some times does not reply right away?
+    What is that about?
+    Seems like it may be startup time on the server?
     
 Add url configurator command
  
@@ -14,10 +18,17 @@ Add a license
 
 Move to public repo
 
+# Lower priority
+Add more comments and tests
+
+Handle two people registering with the same ID
+
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
-# Lower priority
+Figure out how to get real IP addresses on AWS
+    There is a proxy mode for load balancer we can use I think
+    
 Factor part of webhook request into http message class?
 
 Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)

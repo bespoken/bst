@@ -7,6 +7,9 @@ export interface OnMessage {
     (message: string): void;
 }
 
+/**
+ * Manages the low-level socket communications
+ */
 export class SocketHandler {
     public message: string = null;
     public onDataCallback: (data: Buffer) => void;

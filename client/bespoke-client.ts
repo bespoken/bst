@@ -11,6 +11,10 @@ import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
 
+/**
+ * Handles between the BeSpoke server and the servic running on the local machine
+ * Initiates a TCP connection with the server
+ */
 export class BespokeClient {
     public onWebhookReceived: WebhookReceivedCallback;
     public onError: (errorType: NetworkErrorType, message: string) => void;
