@@ -1,4 +1,7 @@
 # High Priority
+What parameters should be passed?
+    Use key-value args for startup
+    
 Add url configurator command
  
 Add docs on URL configuration
@@ -14,12 +17,9 @@ Move to public repo
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
-What parameters should be passed?
-    Use key-value args for startup
-
+# Lower priority
 Factor part of webhook request into http message class?
 
-# Lower priority
 Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
 
 Figure out how to run unit tests as ts files (rather than js)
