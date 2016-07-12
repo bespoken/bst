@@ -1,11 +1,7 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
 "use strict";
-var Global = (function () {
-    function Global() {
-    }
-    Global.MessageDelimiter = "4772616365";
-    return Global;
-}());
+class Global {
+}
+Global.MessageDelimiter = "4772616365";
 exports.Global = Global;
 (function (NetworkErrorType) {
     NetworkErrorType[NetworkErrorType["CONNECTION_REFUSED"] = 0] = "CONNECTION_REFUSED";
@@ -13,3 +9,4 @@ exports.Global = Global;
     NetworkErrorType[NetworkErrorType["TIME_OUT"] = 2] = "TIME_OUT";
 })(exports.NetworkErrorType || (exports.NetworkErrorType = {}));
 var NetworkErrorType = exports.NetworkErrorType;
+//# sourceMappingURL=global.js.map

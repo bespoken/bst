@@ -1,25 +1,24 @@
-# Notes on setup
+# Overview
+The Bespoke Tools make it easy to develop for Alexa/Echo (and other products as they become available).
 
-## Setting up typescript with Mocha
-Got some info here:  
-http://jonnyreeves.co.uk/2015/hello-typescript-and-mocha/
+The current version supports a single command - debug.
 
-### Install typings to get TypeScript definitions for libraries
-npm install typings --global
+Keep an eye out as we add more features and commands in the future. Current plans:
+-Deploy: automatically deploy Alexa lambdas to the cloud with a single command
+-Test: run phrases through and get the exact input sent to your Skill service
 
-### Ran this to get typescript definition for mocha
-typings install dt~mocha --global --save
+# Getting Started
+Install NPM (if not already):
+???
 
-### Typings for node
-typings install dt~node --global --save
+Install bespoke-tools:
+`npm install bespoke-tools`
 
-### Did a bunch of other stuff
+# Available Commands
+Debug allows you to make changes to code on your machine and immediately test it with an Alexa device.
 
-## Getting WebStorm working correctly with TSC
-Go To preferences
-Enable typescript compiler
-Point WebStorm at the node_modules/typescript/lib directory for the TypeScript compiler
-Use tsconfig.json settings
+To use, it simply type in the following command:
+`node client/main.js debug JPK bst.xappmedia.com 5000 9999`
 
-### Setting up Javascript
-Set the project preferences to ECMAScript 6
+# Contact
+Email jpk@xappmedia.com with any questions or comments. We love to hear feedback.

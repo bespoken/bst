@@ -1,44 +1,35 @@
-Figure out why the thing stops working some times
-    Better tracing?
-    
+# High Priority
+Add url configurator command
+ 
+Add docs on URL configuration
+
+Add help command
+
+Clean up dependencies
+
+Add a license
+
+Move to public repo
+
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
-Add mocks for testing sockethandler and bespoke client
-
-Add unique ID for webhook connections
-
-Get unit tests passing
-
-Add tslint
-
-Auto-assign node ID
-    Should this be MAC address? What is a simple value?
-    
-Add url configurator command
-
-Figure out how to run unit tests as ts files (rather than js)
-
-Look into BDD best practices
-
-Figure out how to pass-thru the original calling IP to bespoke-client
-    
-Factor part of webhook request into http message class?
-
-Move main routine to bin?
-
-Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
-
-Added npm install step to docker file?
-
-Figure out how to make this available
-    Structure of project - what should be in what repository
-    Do we open-source the server-side piece?
-    Make available via npm?   
- 
 What parameters should be passed?
     Use key-value args for startup
 
+Factor part of webhook request into http message class?
+
+# Lower priority
+Do I need to close sockets once replies are sent? (SourceSocket.end() in Node)
+
+Figure out how to run unit tests as ts files (rather than js)
+
+Add unique ID for webhook connections
+
+Figure out how to pass-thru the original calling IP to bespoke-client
+
+Added npm install step to docker file?
+ 
 ** IDE
 
 ** Design
