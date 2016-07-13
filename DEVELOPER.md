@@ -23,3 +23,9 @@ Use tsconfig.json settings
 
 ### Setting up Javascript
 Set the project preferences to ECMAScript 6
+
+## Setting up NPM
+Ran these commands:
+`npm adduser`
+`npm publish`
+

@@ -12,7 +12,7 @@ Install NPM (if not already):
 ???
 
 Install bespoke-tools:
-`npm install bespoke-tools`
+`npm install bespoke-tools -g`
 
 # Available Commands
 Debug allows you to make changes to code on your machine and immediately test it with an Alexa device.

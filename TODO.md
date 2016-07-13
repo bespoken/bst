@@ -1,8 +1,6 @@
 # High Priority
 Add docs on URL configuration
 
-Add a license
-
 Move to public repo
 
 Add help commands for each command
