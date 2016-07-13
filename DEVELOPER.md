@@ -25,7 +25,14 @@ Use tsconfig.json settings
 Set the project preferences to ECMAScript 6
 
 ## Setting up NPM
-Ran these commands:
+Need to do this the first time to publish:
 `npm adduser`
+
+Updated the version number:
+`npm version minor`
+
+Ran publish command:
 `npm publish`
+
+
 
