@@ -1,22 +1,17 @@
 # High Priority
-What parameters should be passed?
-    Use key-value args for startup
- 
+Add docs on URL configuration
+
 Some times does not reply right away?
     What is that about?
     Seems like it may be startup time on the server?
     
-Add url configurator command
- 
-Add docs on URL configuration
-
-Add help command
-
 Clean up dependencies
 
 Add a license
 
 Move to public repo
+
+Add help commands for each command
 
 # Lower priority
 Add more comments and tests

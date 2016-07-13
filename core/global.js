@@ -2,6 +2,7 @@
 class Global {
 }
 Global.MessageDelimiter = "4772616365";
+Global.BespokeServerHost = "bst.xappmedia.com";
 exports.Global = Global;
 (function (NetworkErrorType) {
     NetworkErrorType[NetworkErrorType["CONNECTION_REFUSED"] = 0] = "CONNECTION_REFUSED";
