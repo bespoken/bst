@@ -13,6 +13,8 @@ Move to public repo
 
 Add help commands for each command
 
+Some times server seems to have a bunch of nonsense received?
+
 # Lower priority
 Add more comments and tests
 

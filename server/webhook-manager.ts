@@ -21,6 +21,7 @@ export class WebhookManager {
         let self = this;
 
         this.server = net.createServer(function(socket: Socket) {
+            let webhookRequest = new WebhookRequest();
             socket.on("data", function(data: Buffer) {
                 // Throw away the pings - too much noise
                 let dataString = data.toString();
@@ -29,11 +30,16 @@ export class WebhookManager {
                     console.log("Webhook Payload " + BufferUtil.prettyPrint(data));
                 }
 
-                let webhookRequest = new WebhookRequest();
-                webhookRequest.append(data);
-
+                // The calling socket just seems to stay open some times
+                //  Would like to force it closed but don't know when to do it
+                //  If we do it on the write callback on the socket, the original caller never gets the response
+                // For now, if we get a second request on the socket, re-initialize the webhookRequest
                 if (webhookRequest.done()) {
-                    console.log("Webhook Done");
+                    webhookRequest = new WebhookRequest();
+                }
+
+                webhookRequest.append(data);
+                if (webhookRequest.done()) {
                     if (webhookRequest.isPing()) {
                         socket.write("HTTP/1.0 200 OK\r\nContent-Length: 10\r\n\r\nbst-server");
                         socket.end();
