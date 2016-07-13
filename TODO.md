@@ -1,12 +1,6 @@
 # High Priority
 Add docs on URL configuration
 
-Some times does not reply right away?
-    What is that about?
-    Seems like it may be startup time on the server?
-    
-Clean up dependencies
-
 Add a license
 
 Move to public repo
@@ -17,6 +11,8 @@ Some times server seems to have a bunch of nonsense received?
 
 # Lower priority
 Add more comments and tests
+
+Add CI
 
 Handle two people registering with the same ID
 

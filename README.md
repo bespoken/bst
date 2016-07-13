@@ -3,8 +3,8 @@ The Bespoke Tools make it easy to develop for Alexa/Echo (and other products as 
 
 The current version supports a single command - debug.
 
-Keep an eye out as we add more features and commands in the future. Current plans:
--Deploy: automatically deploy Alexa lambdas to the cloud with a single command
+Keep an eye out as we add more features and commands in the future. Current plans:  
+-Deploy: automatically deploy Alexa lambdas to the cloud with a single command  
 -Test: run phrases through and get the exact input sent to your Skill service
 
 # Getting Started
