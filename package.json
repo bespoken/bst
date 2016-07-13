@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "pretest": "tsc test/**/*test.ts --module commonjs",
+    "pretest": "tsc",
     "test": "mocha test/**/*-test.js",
     "debug": "node service/main.js test test2"
   },
