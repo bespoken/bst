@@ -1,6 +1,6 @@
 {
   "name": "bespoke-server",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": false,
   "bin": {
     "bst": "client/main.js"
