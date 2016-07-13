@@ -43,6 +43,7 @@ describe("WebhookRequest", function() {
             assert.equal(request.headers["Content-Length"], 603);
             assert.equal(request.body.length, 603);
             assert.equal(request.rawContents.length, 1481);
+            assert.equal(request.done(), true);
             done();
         });
     });

@@ -33,10 +33,12 @@ export class WebhookManager {
                 webhookRequest.append(data);
 
                 if (webhookRequest.done()) {
+                    console.log("Webhook Done");
                     if (webhookRequest.isPing()) {
                         socket.write("HTTP/1.0 200 OK\r\nContent-Length: 10\r\n\r\nbst-server");
                         socket.end();
                     } else {
+                        console.log("Webhook invokeCallback");
                         self.onWebhookReceived(socket, webhookRequest);
                     }
                 }
