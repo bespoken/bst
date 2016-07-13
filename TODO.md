@@ -26,6 +26,8 @@ Handle two people registering with the same ID
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
+Prevent hacking of service?
+
 Figure out how to get real IP addresses on AWS
     There is a proxy mode for load balancer we can use I think
     

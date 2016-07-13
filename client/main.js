@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 "use strict";
 const bespoke_client_1 = require("./bespoke-client");
-if (process.argv.length < 3) {
+const arg_helper_1 = require("../core/arg-helper");
+let argHelper = new arg_helper_1.ArgHelper(process.argv);
+if (argHelper.orderedCount() === 0) {
     console.error("No tool specified. Must be first argument.");
     process.exit(1);
 }
-let tool = process.argv[2];
+let tool = argHelper.forIndex(0);
 if (tool === "debug") {
-    if (process.argv.length <= 6) {
-        console.error("For debug, must specify dev-id, host, hostPort, and port to forward to!");
+    if (argHelper.orderedCount() < 2) {
+        console.error("For debug, must specify agent-id and port to forward to!");
         process.exit(1);
     }
-    let id = process.argv[3];
-    let host = process.argv[4];
-    let hostPort = parseInt(process.argv[5]);
-    let targetPort = parseInt(process.argv[6]);
-    let bespokeClient = new bespoke_client_1.BespokeClient(id, host, hostPort, targetPort);
+    let agentID = argHelper.forIndex(1);
+    let targetPort = parseInt(argHelper.forIndex(2));
+    let serverHost = argHelper.forKeyWithDefaultString("serverHost", "bst.xappmedia.com");
+    let serverPort = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
+    let bespokeClient = new bespoke_client_1.BespokeClient(agentID, serverHost, serverPort, targetPort);
     bespokeClient.connect();
 }
 if (tool === "sleep") {

@@ -10,8 +10,6 @@ export class ArgHelper {
     }
 
     private parse(): void {
-        console.log("arg: " + this.args);
-
         for (let i = 2; i < this.args.length; i++ ) {
             let arg = this.args[i];
 
@@ -46,5 +44,24 @@ export class ArgHelper {
             value = this.keyValueArguments[key];
         }
         return value;
+    }
+
+    public forKeyWithDefaultString(key: string, defaultValue: string): string {
+        let value: string = defaultValue;
+        if (key in this.keyValueArguments) {
+            value = this.keyValueArguments[key];
+        }
+        return value;
+    }
+    public forKeyWithDefaultNumber(key: string, defaultValue: number): number {
+        let value: number = defaultValue;
+        if (key in this.keyValueArguments) {
+            value = parseInt(this.keyValueArguments[key]);
+        }
+        return value;
+    }
+
+    public orderedCount(): number {
+        return this.orderedArguments.length;
     }
 }

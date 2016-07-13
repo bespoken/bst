@@ -4,27 +4,29 @@
 // Startup script for running BST
 import {BespokeClient} from "./bespoke-client";
 import {WebhookRequest} from "./../core/webhook-request";
+import {ArgHelper} from "../core/arg-helper";
 
-if (process.argv.length < 3) {
+let argHelper = new ArgHelper(process.argv);
+
+if (argHelper.orderedCount() === 0) {
     console.error("No tool specified. Must be first argument.");
     process.exit(1);
 }
 
-let tool = process.argv[2];
-// console.log("Tool: " + tool);
-
+let tool = argHelper.forIndex(0);
 if (tool === "debug") {
-    if (process.argv.length <= 6) {
-        console.error("For debug, must specify dev-id, host, hostPort, and port to forward to!");
+    if (argHelper.orderedCount() < 2) {
+        console.error("For debug, must specify agent-id and port to forward to!");
         process.exit(1);
     }
 
-    let id: string  = process.argv[3];
-    let host: string  = process.argv[4];
-    let hostPort: number = parseInt(process.argv[5]);
-    let targetPort: number = parseInt(process.argv[6]);
+    let agentID: string  = argHelper.forIndex(1);
+    let targetPort: number = parseInt(argHelper.forIndex(2));
+    let serverHost: string  = argHelper.forKeyWithDefaultString("serverHost", "bst.xappmedia.com");
+    let serverPort: number = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
 
-    let bespokeClient = new BespokeClient(id, host, hostPort, targetPort);
+
+    let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, targetPort);
     bespokeClient.connect();
 }
 

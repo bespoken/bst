@@ -14,6 +14,9 @@ describe("ArgHelper", function() {
             assert.equal(argHelper.forIndex(2), null);
             assert.equal(argHelper.forKey("key"), "value");
             assert.equal(argHelper.forKey("key3"), null);
+            assert.equal(argHelper.forKeyWithDefaultString("key3", "value3"), "value3");
+            assert.equal(argHelper.forKeyWithDefaultNumber("key4", 5000), 5000);
+            assert.equal(argHelper.orderedCount(), 2);
             done();
         });
 

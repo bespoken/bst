@@ -7,7 +7,6 @@ class ArgHelper {
         this.parse();
     }
     parse() {
-        console.log("arg: " + this.args);
         for (let i = 2; i < this.args.length; i++) {
             let arg = this.args[i];
             if (arg.startsWith("--")) {
@@ -37,6 +36,23 @@ class ArgHelper {
             value = this.keyValueArguments[key];
         }
         return value;
+    }
+    forKeyWithDefaultString(key, defaultValue) {
+        let value = defaultValue;
+        if (key in this.keyValueArguments) {
+            value = this.keyValueArguments[key];
+        }
+        return value;
+    }
+    forKeyWithDefaultNumber(key, defaultValue) {
+        let value = defaultValue;
+        if (key in this.keyValueArguments) {
+            value = parseInt(this.keyValueArguments[key]);
+        }
+        return value;
+    }
+    orderedCount() {
+        return this.orderedArguments.length;
     }
 }
 exports.ArgHelper = ArgHelper;
