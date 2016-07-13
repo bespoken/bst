@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 
 // Startup script for running BST
 import {BespokeClient} from "./bespoke-client";
@@ -7,6 +7,8 @@ import {WebhookRequest} from "./../core/webhook-request";
 import {ArgHelper} from "../core/arg-helper";
 import {Global} from "../core/global";
 import {URLMangler} from "./url-mangler";
+
+Global.initialize();
 
 let argHelper = new ArgHelper(process.argv);
 

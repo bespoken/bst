@@ -1,5 +1,24 @@
 "use strict";
+const winston = require("winston");
 class Global {
+    static initialize() {
+        Global.initializeLogger();
+    }
+    static initializeLogger() {
+        winston.clear();
+        winston.add(winston.transports.Console, {
+            colorize: true,
+            formatter: Global.formatter,
+            level: "info"
+        });
+    }
+    static formatter(options) {
+        return new Date().toISOString() + " "
+            + options.level.toUpperCase() + " "
+            + (undefined !== options.message ? options.message : "")
+            + (options.meta && Object.keys(options.meta).length ? "\n\t"
+                + JSON.stringify(options.meta) : "");
+    }
 }
 Global.MessageDelimiter = "4772616365";
 Global.BespokeServerHost = "bst.xappmedia.com";

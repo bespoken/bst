@@ -17,6 +17,7 @@
     "typemoq": "^0.2.0"
   },
   "dependencies": {
-    "typescript": "^1.8.10"
+    "typescript": "^1.8.10",
+    "winston": "^2.2.0"
   }
 }

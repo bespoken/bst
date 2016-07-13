@@ -4,6 +4,7 @@ const bespoke_client_1 = require("./bespoke-client");
 const arg_helper_1 = require("../core/arg-helper");
 const global_1 = require("../core/global");
 const url_mangler_1 = require("./url-mangler");
+global_1.Global.initialize();
 let argHelper = new arg_helper_1.ArgHelper(process.argv);
 if (argHelper.orderedCount() === 0) {
     console.error("No command specified. Must be first argument.");

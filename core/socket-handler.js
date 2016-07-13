@@ -2,6 +2,7 @@
 const global_1 = require("./global");
 const string_util_1 = require("./string-util");
 const buffer_util_1 = require("./buffer-util");
+const winston = require("winston");
 class SocketHandler {
     constructor(socket, onMessage) {
         this.socket = socket;
@@ -10,7 +11,7 @@ class SocketHandler {
         let self = this;
         this.resetBuffer();
         this.onDataCallback = function (data) {
-            console.log("DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + buffer_util_1.BufferUtil.prettyPrint(data));
+            winston.debug("DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + buffer_util_1.BufferUtil.prettyPrint(data));
             let dataString = data.toString();
             if (dataString.indexOf(global_1.Global.MessageDelimiter) === -1) {
                 self.message += dataString;
@@ -40,7 +41,7 @@ class SocketHandler {
         this.message = "";
     }
     send(message) {
-        console.log("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + string_util_1.StringUtil.prettyPrint(message));
+        winston.debug("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + string_util_1.StringUtil.prettyPrint(message));
         message = message + global_1.Global.MessageDelimiter;
         this.socket.write(message, null);
     }

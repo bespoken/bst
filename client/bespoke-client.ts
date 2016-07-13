@@ -1,8 +1,5 @@
-/// <reference path="../typings/modules/es6-promise/index.d.ts" />
-
 import * as net from "net";
 import {Socket} from "net";
-import {Promise} from "es6-promise";
 import {Global} from "../core/global";
 import {OnMessage} from "../core/socket-handler";
 import {SocketHandler} from "../core/socket-handler";
@@ -10,9 +7,10 @@ import {WebhookReceivedCallback} from "../server/webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
+import * as winston from "winston";
 
 /**
- * Handles between the BeSpoke server and the servic running on the local machine
+ * Handles between the BeSpoke server and the service running on the local machine
  * Initiates a TCP connection with the server
  */
 export class BespokeClient {
@@ -37,7 +35,7 @@ export class BespokeClient {
 
         // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
-            console.log("CLIENT " + self.host + ":" + self.port + " Connected");
+            winston.info("CLIENT " + self.host + ":" + self.port + " Connected");
            // As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
@@ -74,7 +72,6 @@ export class BespokeClient {
         } else {
             this.onWebhookReceived(this.client, WebhookRequest.fromString(message));
         }
-
     }
 
     public disconnect(): void {

@@ -1,4 +1,10 @@
 # High Priority
+Add better logging
+
+Add CI
+
+Add lib folder
+
 Add docs on URL configuration
 
 Move to public repo
@@ -10,7 +16,7 @@ Some times server seems to have a bunch of nonsense received?
 # Lower priority
 Add more comments and tests
 
-Add CI
+Automate publishing
 
 Handle two people registering with the same ID
 
@@ -45,8 +51,6 @@ Figure out how to handle signing from AWS
 
 
 ** Investigate
-Is there a way to do absolute references with typescript?
-
 How to keep typings and packages aligned? What if the versions are different?
 
 Should I use globals or local for typings? What difference does it really make?

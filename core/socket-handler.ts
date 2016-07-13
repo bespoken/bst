@@ -2,6 +2,7 @@ import {Global} from "./global";
 import {Socket} from "net";
 import {StringUtil} from "./string-util";
 import {BufferUtil} from "./buffer-util";
+import * as winston from "winston";
 
 export interface OnMessage {
     (message: string): void;
@@ -20,7 +21,7 @@ export class SocketHandler {
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
-            console.log("DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
+            winston.debug("DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
 
             let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) === -1) {
@@ -62,7 +63,7 @@ export class SocketHandler {
     }
 
     public send(message: string) {
-        console.log("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + StringUtil.prettyPrint(message));
+        winston.debug("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + StringUtil.prettyPrint(message));
 
         // Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;

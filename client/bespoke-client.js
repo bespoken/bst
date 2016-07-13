@@ -4,6 +4,7 @@ const socket_handler_1 = require("../core/socket-handler");
 const webhook_request_1 = require("../core/webhook-request");
 const tcp_client_1 = require("./tcp-client");
 const global_1 = require("../core/global");
+const winston = require("winston");
 class BespokeClient {
     constructor(nodeID, host, port, targetPort) {
         this.nodeID = nodeID;
@@ -18,7 +19,7 @@ class BespokeClient {
             self.onMessage(data);
         });
         this.client.connect(this.port, this.host, function () {
-            console.log("CLIENT " + self.host + ":" + self.port + " Connected");
+            winston.info("CLIENT " + self.host + ":" + self.port + " Connected");
             let messageJSON = { "id": self.nodeID };
             let message = JSON.stringify(messageJSON);
             self.send(message);

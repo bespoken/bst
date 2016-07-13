@@ -1,9 +1,8 @@
 {
   "globalDependencies": {
     "mocha": "registry:dt/mocha#2.2.5+20160619032855",
-    "node": "registry:dt/node#6.0.0+20160621231320"
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "winston": "registry:dt/winston#0.0.0+20160417152829"
   },
-  "dependencies": {
-
-  }
+  "dependencies": {}
 }

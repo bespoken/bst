@@ -1,0 +1,8 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/fb53f430261b292c600b5ccf9056793efb39c2ef/winston/winston.d.ts",
+    "raw": "registry:dt/winston#0.0.0+20160417152829",
+    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/fb53f430261b292c600b5ccf9056793efb39c2ef/winston/winston.d.ts"
+  }
+}
