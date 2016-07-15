@@ -4,7 +4,8 @@
   "engines": {"node": "6.3.0"},
   "private": false,
   "bin": {
-    "bst": "./lib/client/main.js"
+    "bst": "./bin/bst.js",
+    "bst-server": "./bin/bst-server.js"
   },
   "scripts": {
     "start": "node ./bin/www",

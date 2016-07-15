@@ -1,8 +1,8 @@
-/// <reference path="../../typings/index.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 
 // Startup script for running BST
-import {BespokeServer} from "./bespoke-server";
-import {WebhookRequest} from "../../lib/core/webhook-request";
+import {BespokeServer} from "../lib/server/bespoke-server";
+import {WebhookRequest} from "../lib/core/webhook-request";
 
 if (process.argv.length < 3) {
     console.error("No tool specified. Must be first argument.");
@@ -13,7 +13,7 @@ let tool = process.argv[2];
 // console.log("Tool: " + tool);
 
 
-if (tool === "server") {
+if (tool === "start") {
     if (process.argv.length < 5) {
         console.error("For server, must specify port to forward to!");
         process.exit(1);
