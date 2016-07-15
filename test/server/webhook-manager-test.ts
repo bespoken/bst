@@ -6,12 +6,12 @@
 
 import * as assert from "assert";
 
-import {BespokeClient} from "../../client/bespoke-client";
-import {Node} from "../../server/node";
-import {NodeManager} from "../../server/node-manager";
-import {WebhookManager} from "../../server/webhook-manager";
-import {WebhookRequest} from "../../core/webhook-request";
-import {HTTPClient} from "../../client/http-client";
+import {BespokeClient} from "../../lib/client/bespoke-client";
+import {Node} from "../../lib/server/node";
+import {NodeManager} from "../../lib/server/node-manager";
+import {WebhookManager} from "../../lib/server/webhook-manager";
+import {WebhookRequest} from "../../lib/core/webhook-request";
+import {HTTPClient} from "../../lib/client/http-client";
 import {Socket} from "net";
 
 describe("WebhookManager", function() {

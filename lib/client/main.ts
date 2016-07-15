@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/// <reference path="../typings/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 // Startup script for running BST
 import {BespokeClient} from "./bespoke-client";

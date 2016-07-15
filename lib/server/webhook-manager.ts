@@ -1,7 +1,7 @@
-import {WebhookRequest} from "./../core/webhook-request";
+import {WebhookRequest} from "../core/webhook-request";
 import * as net from "net";
 import {Server} from "net";
-import {SocketHandler} from "./../core/socket-handler";
+import {SocketHandler} from "../core/socket-handler";
 import {Socket} from "net";
 import {BufferUtil} from "../core/buffer-util";
 

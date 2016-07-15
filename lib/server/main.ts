@@ -1,8 +1,8 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 // Startup script for running BST
 import {BespokeServer} from "./bespoke-server";
-import {WebhookRequest} from "./../core/webhook-request";
+import {WebhookRequest} from "../../lib/core/webhook-request";
 
 if (process.argv.length < 3) {
     console.error("No tool specified. Must be first argument.");

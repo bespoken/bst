@@ -1,7 +1,7 @@
 import * as net from "net";
 import {Node} from "./node";
 import {Socket} from "net";
-import {SocketHandler} from "./../core/socket-handler";
+import {SocketHandler} from "../core/socket-handler";
 import {Server} from "net";
 
 export interface OnConnectCallback {

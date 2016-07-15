@@ -1,6 +1,6 @@
 import {NodeManager} from "./node-manager";
 import {WebhookManager} from "./webhook-manager";
-import {WebhookRequest} from "./../core/webhook-request";
+import {WebhookRequest} from "../core/webhook-request";
 import {Socket} from "net";
 
 export class BespokeServer {

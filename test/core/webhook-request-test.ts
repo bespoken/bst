@@ -1,8 +1,8 @@
 /// <reference path="../../typings/globals/mocha/index.d.ts" />
 /// <reference path="../../typings/globals/node/index.d.ts" />
 
-import {WebhookRequest} from "../../core/webhook-request";
-import {BufferUtil} from "../../core/buffer-util";
+import {WebhookRequest} from "../../lib/core/webhook-request";
+import {BufferUtil} from "../../lib/core/buffer-util";
 import * as assert from "assert";
 import * as fs from "fs";
 

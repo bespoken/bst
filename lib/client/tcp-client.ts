@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/globals/node/index.d.ts" />
 
 import * as net from "net";
 import EventEmitter = NodeJS.EventEmitter;

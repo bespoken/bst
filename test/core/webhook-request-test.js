@@ -1,6 +1,6 @@
 "use strict";
-const webhook_request_1 = require("../../core/webhook-request");
-const buffer_util_1 = require("../../core/buffer-util");
+const webhook_request_1 = require("../../lib/core/webhook-request");
+const buffer_util_1 = require("../../lib/core/buffer-util");
 const assert = require("assert");
 const fs = require("fs");
 describe("WebhookRequest", function () {

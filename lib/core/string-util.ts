@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 export class StringUtil {
     public static replaceAll(s: string, val: string, newVal: string): string {

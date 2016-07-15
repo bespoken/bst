@@ -1,9 +1,9 @@
 "use strict";
 const TypeMoq = require("typemoq");
 const assert = require("assert");
-const socket_handler_1 = require("../../core/socket-handler");
+const socket_handler_1 = require("../../lib/core/socket-handler");
 const net_1 = require("net");
-const global_1 = require("../../core/global");
+const global_1 = require("../../lib/core/global");
 describe("SocketHandlerTest", function () {
     describe("Send", function () {
         it("Sends Simple Payload", function (done) {

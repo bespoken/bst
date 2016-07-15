@@ -1,7 +1,7 @@
 "use strict";
 const assert = require("assert");
-const url_mangler_1 = require("../../client/url-mangler");
-const global_1 = require("../../core/global");
+const url_mangler_1 = require("../../lib/client/url-mangler");
+const global_1 = require("../../lib/core/global");
 describe("URLMangler", function () {
     describe("#mangle()", function () {
         it("Mangles a URL without a query string", function (done) {

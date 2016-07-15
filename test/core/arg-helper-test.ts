@@ -2,7 +2,7 @@
 
 import * as assert from "assert";
 
-import {ArgHelper} from "../../core/arg-helper";
+import {ArgHelper} from "../../lib/core/arg-helper";
 
 describe("ArgHelper", function() {
     describe("#parse()", function() {

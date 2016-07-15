@@ -5,9 +5,9 @@
 import * as TypeMoq from "typemoq";
 import * as assert from "assert";
 
-import {SocketHandler} from "../../core/socket-handler";
+import {SocketHandler} from "../../lib/core/socket-handler";
 import {Socket} from "net";
-import {Global} from "../../core/global";
+import {Global} from "../../lib/core/global";
 
 describe("SocketHandlerTest", function() {
     describe("Send", function() {

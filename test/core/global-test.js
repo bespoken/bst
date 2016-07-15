@@ -1,5 +1,5 @@
 "use strict";
-const global_1 = require("../../core/global");
+const global_1 = require("../../lib/core/global");
 const winston = require("winston");
 describe("Global", function () {
     describe("#initializeLogger", function () {

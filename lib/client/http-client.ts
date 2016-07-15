@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import * as querystring from "querystring";
 import * as http from "http";

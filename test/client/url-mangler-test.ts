@@ -2,8 +2,8 @@
 /// <reference path="../../typings/globals/node/index.d.ts" />
 
 import * as assert from "assert";
-import {URLMangler} from "../../client/url-mangler";
-import {Global} from "../../core/global";
+import {URLMangler} from "../../lib/client/url-mangler";
+import {Global} from "../../lib/core/global";
 
 describe("URLMangler", function() {
     describe("#mangle()", function() {

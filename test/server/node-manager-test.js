@@ -1,7 +1,7 @@
 "use strict";
 const assert = require("assert");
-const bespoke_client_1 = require("../../client/bespoke-client");
-const node_manager_1 = require("../../server/node-manager");
+const bespoke_client_1 = require("../../lib/client/bespoke-client");
+const node_manager_1 = require("../../lib/server/node-manager");
 describe("NodeManager", function () {
     describe("Connect", function () {
         it("Connected And Received Data", function (done) {

@@ -1,4 +1,4 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import {StringUtil} from "./string-util";
 

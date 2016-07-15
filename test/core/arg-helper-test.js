@@ -1,6 +1,6 @@
 "use strict";
 const assert = require("assert");
-const arg_helper_1 = require("../../core/arg-helper");
+const arg_helper_1 = require("../../lib/core/arg-helper");
 describe("ArgHelper", function () {
     describe("#parse()", function () {
         it("Combination of Indexed and Key-Value Args", function (done) {

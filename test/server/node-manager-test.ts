@@ -3,9 +3,9 @@
 
 import * as assert from "assert";
 
-import {BespokeClient} from "../../client/bespoke-client";
-import {Node} from "../../server/node";
-import {NodeManager} from "../../server/node-manager";
+import {BespokeClient} from "../../lib/client/bespoke-client";
+import {Node} from "../../lib/server/node";
+import {NodeManager} from "../../lib/server/node-manager";
 
 describe("NodeManager", function() {
     describe("Connect", function() {

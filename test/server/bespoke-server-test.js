@@ -1,8 +1,8 @@
 "use strict";
 const assert = require("assert");
-const bespoke_client_1 = require("../../client/bespoke-client");
-const http_client_1 = require("../../client/http-client");
-const bespoke_server_1 = require("../../server/bespoke-server");
+const bespoke_client_1 = require("../../lib/client/bespoke-client");
+const http_client_1 = require("../../lib/client/http-client");
+const bespoke_server_1 = require("../../lib/server/bespoke-server");
 describe("BespokeServerTest", function () {
     describe("ReceiveWebhook", function () {
         it("Connects and Receives Callback", function (done) {

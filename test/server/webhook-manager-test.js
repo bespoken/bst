@@ -1,7 +1,7 @@
 "use strict";
 const assert = require("assert");
-const webhook_manager_1 = require("../../server/webhook-manager");
-const http_client_1 = require("../../client/http-client");
+const webhook_manager_1 = require("../../lib/server/webhook-manager");
+const http_client_1 = require("../../lib/client/http-client");
 describe("WebhookManager", function () {
     describe("Connect", function () {
         it("Should Connect and Receive Data", function (done) {

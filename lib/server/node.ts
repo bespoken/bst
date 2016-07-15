@@ -1,8 +1,8 @@
 import {Socket} from "net";
 import {NodeManager} from "./node-manager";
-import {Global} from "./../core/global";
-import {SocketHandler} from "./../core/socket-handler";
-import {WebhookRequest} from "./../core/webhook-request";
+import {Global} from "../core/global";
+import {SocketHandler} from "../core/socket-handler";
+import {WebhookRequest} from "../core/webhook-request";
 
 export class Node {
     private activeRequest: WebhookRequest;
