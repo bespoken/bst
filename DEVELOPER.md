@@ -29,7 +29,7 @@ Need to do this the first time to publish:
 `npm adduser`
 
 Updated the version number:
-`npm version minor`
+`npm version patch`
 
 Ran publish command:
 `npm publish`

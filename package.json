@@ -11,6 +11,7 @@
   },
   "scripts": {
     "start": "node ./bin/www",
+    "postversion": "git push && git push --tags",
     "pretest": "tsc",
     "test": "mocha test/**/*-test.js"
   },
