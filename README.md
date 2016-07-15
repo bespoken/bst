@@ -8,10 +8,10 @@ Keep an eye out as we add more features and commands in the future. Current plan
 -Test: run phrases through and get the exact input sent to your Skill service
 
 # Getting Started
-Install NPM (if not already):
+Install NPM (if not already):  
 ???
 
-Install bespoke-tools:
+Install bespoke-tools:  
 `npm install bespoke-tools -g`
 
 # Available Commands

@@ -1,9 +1,7 @@
 # High Priority
-Add better logging
+Move mains to bin
 
 Add CI
-
-Add lib folder
 
 Add docs on URL configuration
 
