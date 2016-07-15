@@ -7,8 +7,9 @@ import {WebhookReceivedCallback} from "../server/webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
-import * as winston from "winston";
+import {LoggingHelper} from "../core/logging-helper";
 
+let Logger = "BST-CLIENT";
 /**
  * Handles between the BeSpoke server and the service running on the local machine
  * Initiates a TCP connection with the server
@@ -35,7 +36,7 @@ export class BespokeClient {
 
         // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
-            winston.info("CLIENT " + self.host + ":" + self.port + " Connected");
+            LoggingHelper.info(Logger, self.host + ":" + self.port + " Connected");
            // As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
@@ -45,7 +46,7 @@ export class BespokeClient {
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
             let self = this;
-            console.log("CLIENT " + self.nodeID + " onWebhook: " + request.toString());
+            LoggingHelper.info(Logger, self.nodeID + " onWebhook: " + request.toString());
 
             let tcpClient = new TCPClient();
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {

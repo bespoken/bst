@@ -3,6 +3,7 @@ import {Socket} from "net";
 import {StringUtil} from "./string-util";
 import {BufferUtil} from "./buffer-util";
 import * as winston from "winston";
+import {LoggingHelper} from "./logging-helper";
 
 export interface OnMessage {
     (message: string): void;
@@ -21,7 +22,7 @@ export class SocketHandler {
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
-            winston.debug("DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
+            LoggingHelper.debug("SOCKET", "DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
 
             let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) === -1) {

@@ -6,11 +6,12 @@ import {ArgHelper} from "../../lib/core/arg-helper";
 import {Global} from "../../lib/core/global";
 
 import * as winston from "winston";
+import {LoggingHelper} from "../../lib/core/logging-helper";
 
-describe("Global", function() {
-    describe("#initializeLogger", function() {
+describe("LoggingHelper", function() {
+    describe("#initialize", function() {
         it("Logs correctly", function(done) {
-            Global.initializeLogger();
+            LoggingHelper.initialize();
             winston.error("Test", function () {
                 done();
             });

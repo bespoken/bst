@@ -3,17 +3,22 @@
 import * as net from "net";
 import EventEmitter = NodeJS.EventEmitter;
 import {NetworkErrorType} from "../core/global";
+import {LoggingHelper} from "../core/logging-helper";
+
+let Logger = "TCP-CLIENT";
 
 export interface TCPClientCallback {
     (data: string, errorType: NetworkErrorType, errorMessage: string): void;
 }
 
 export class TCPClient {
+
+
     public constructor () {}
 
     public transmit(host: string, port: number, data: string, callback: TCPClientCallback) {
         let client = new net.Socket();
-        console.log("TCP-CLIENT " + host + ":" + port + " Connected");
+        LoggingHelper.info(Logger, host + ":" + port + " Connected");
 
         client.on("error", function (e: any) {
             if (e.code ===  "ECONNREFUSED") {
@@ -37,7 +42,7 @@ export class TCPClient {
 
         // Add a 'close' event handler for the client socket
         client.on("close", function() {
-            console.log("Connection closed");
+            LoggingHelper.info(Logger, "Connection closed");
         });
     }
 

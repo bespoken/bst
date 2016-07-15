@@ -23,6 +23,8 @@ Handle two people registering with the same ID
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem
 
+Figure out how to use colors with Winston and 
+
 Prevent hacking of service?
 
 Figure out how to get real IP addresses on AWS
