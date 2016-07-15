@@ -6,8 +6,7 @@ class Global {
     }
     static initializeLogger() {
         winston.clear();
-        winston.add(winston.transports.Console, {
-            colorize: true,
+        let logger = winston.add(winston.transports.Console, {
             formatter: Global.formatter,
             level: "info"
         });

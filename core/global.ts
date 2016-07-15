@@ -14,9 +14,8 @@ export class Global {
     public static initializeLogger(): void {
         winston.clear();
         // winston.add(winston.transports.File, { filename: "./output.log", level: "info" });
-        winston.add(winston.transports.Console,
+        let logger = winston.add(winston.transports.Console,
             {
-                colorize: true,
                 formatter: Global.formatter,
                 level: "info"
             }
