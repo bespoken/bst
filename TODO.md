@@ -1,7 +1,4 @@
 # High Priority
-Move mains to bin
-    Use this as reference: http://wiki.commonjs.org/wiki/Packages/1.1
-    
 Add docs on URL configuration
 
 Move to public repo
