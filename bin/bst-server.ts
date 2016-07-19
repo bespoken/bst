@@ -12,7 +12,6 @@ if (process.argv.length < 3) {
 let tool = process.argv[2];
 // console.log("Tool: " + tool);
 
-
 if (tool === "start") {
     if (process.argv.length < 5) {
         console.error("For server, must specify port to forward to!");

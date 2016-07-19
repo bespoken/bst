@@ -4,6 +4,7 @@ import {Server} from "net";
 import {SocketHandler} from "../core/socket-handler";
 import {Socket} from "net";
 import {BufferUtil} from "../core/buffer-util";
+import {HTTPHelper} from "../core/http-helper";
 
 export interface WebhookReceivedCallback {
     (socket: Socket, webhookRequest: WebhookRequest): void;
@@ -40,13 +41,7 @@ export class WebhookManager {
 
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
-                    if (webhookRequest.isPing()) {
-                        socket.write("HTTP/1.0 200 OK\r\nContent-Length: 10\r\n\r\nbst-server");
-                        socket.end();
-                    } else {
-                        console.log("Webhook invokeCallback");
-                        self.onWebhookReceived(socket, webhookRequest);
-                    }
+                    self.onWebhookReceived(socket, webhookRequest);
                 }
             });
         }).listen(this.port, this.host);

@@ -1,11 +1,21 @@
 # High Priority
-Add docs on URL configuration
+Add HTTP response with clear message when there is no agent?
+    I think absence of agent caused server to die?
+    
+Figure out which license to use
+
+Add better docs for each command
 
 Move to public repo
 
-Add help commands for each command
-
 Some times server seems to have a bunch of nonsense received?
+
+Cleanup npm warnings
+    npm WARN bespoke-server@0.4.1 No repository field.
+    npm WARN bespoke-server@0.4.1 No license field.
+    
+Need to remove this file and developer before distributing?
+    
 
 # Lower priority
 Add more comments and tests
