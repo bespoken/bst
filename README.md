@@ -58,7 +58,7 @@ Example:
 Your skill must be setup to point at our server. For example, if the URL for your skill is normally:  
 https://myskill.example.com/skillA
 
-It should instead be configured to point at our server, like so:  
+It should instead be configured to point at the bst server, like so:  
 https://bst.xappmedia.com/skillA?node-id=JPK
 
 _Also note that that node ID set with the proxy command must be passed in the query string_  
@@ -66,7 +66,7 @@ Here is it set as ?node-id=JPK
 
 The rest of the URL path and query string should be unchanged.
 
-You can enter the command for help transforming your URL:  
+You can enter the following command for help transforming your URL:  
 `bst proxy-url <NODE_ID> <URL>`
 
 This value should be entered as the endpoint on the Configuration section for your Alexa skill.
