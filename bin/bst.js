@@ -5,7 +5,17 @@ const arg_helper_1 = require("../lib/core/arg-helper");
 const global_1 = require("../lib/core/global");
 const url_mangler_1 = require("../lib/client/url-mangler");
 const lambda_runner_1 = require("../lib/client/lambda-runner");
+const logging_helper_1 = require("../lib/core/logging-helper");
+let Logger = "BST";
 global_1.Global.initialize();
+logging_helper_1.LoggingHelper.info(Logger, "Node Version: " + process.version);
+let nodeMajorVersion = parseInt(process.version.substr(1, 2));
+logging_helper_1.LoggingHelper.info(Logger, "Major Version: " + nodeMajorVersion);
+if (nodeMajorVersion < 6) {
+    logging_helper_1.LoggingHelper.error(Logger, "!!!!Node version must be >= 6!!!!");
+    logging_helper_1.LoggingHelper.error(Logger, "Please install to use bst");
+    process.exit(1);
+}
 let argHelper = new arg_helper_1.ArgHelper(process.argv);
 let command = "help";
 if (argHelper.orderedCount() === 0) {

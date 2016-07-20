@@ -8,8 +8,20 @@ import {ArgHelper} from "../lib/core/arg-helper";
 import {Global} from "../lib/core/global";
 import {URLMangler} from "../lib/client/url-mangler";
 import {LambdaRunner} from "../lib/client/lambda-runner";
+import {LoggingHelper} from "../lib/core/logging-helper";
+
+let Logger = "BST";
 
 Global.initialize();
+LoggingHelper.info(Logger, "Node Version: " + process.version);
+let nodeMajorVersion = parseInt(process.version.substr(1, 2));
+LoggingHelper.info(Logger, "Major Version: " + nodeMajorVersion);
+
+if (nodeMajorVersion < 6) {
+    LoggingHelper.error(Logger, "!!!!Node version must be >= 6!!!!");
+    LoggingHelper.error(Logger, "Please install to use bst");
+    process.exit(1);
+}
 
 let argHelper = new ArgHelper(process.argv);
 

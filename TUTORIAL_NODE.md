@@ -34,7 +34,7 @@ https://bst.xappmedia.com?node-id=@YOUR_NODE@
 Set account linking to "No"
 
 __Configure SSL__  
-Select " My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
+Select "My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
 
 __Test!__  
 Go to the service simulator, and type: "Hello World"  

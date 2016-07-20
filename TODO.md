@@ -14,7 +14,11 @@ Create sample projects:
     Java
     Node
     
+Hide connection closed
+    
 Make Lambda runner robust
+
+Add auto-reload on Lambda
 
 Move to public repo
 
