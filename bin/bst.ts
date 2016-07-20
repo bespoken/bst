@@ -12,12 +12,14 @@ Global.initialize();
 
 let argHelper = new ArgHelper(process.argv);
 
+// By default, use help as the command
+let command = "help";
 if (argHelper.orderedCount() === 0) {
     console.error("No command specified. Must be first argument.");
-    process.exit(1);
+} else {
+   command = argHelper.forIndex(0);
 }
 
-let command = argHelper.forIndex(0);
 if (command === "proxy") {
     if (argHelper.orderedCount() < 2) {
         console.error("For proxy, must specify node ID and port to forward to!");
@@ -57,7 +59,7 @@ if (command === "help") {
     console.log("Usage: bst <command>");
     console.log("");
     console.log("Commands:");
-    console.log("bst debug <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
-    console.log("bst debug-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
+    console.log("bst proxy <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
+    console.log("bst proxy-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
     console.log("");
 }

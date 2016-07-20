@@ -6,11 +6,13 @@ const global_1 = require("../lib/core/global");
 const url_mangler_1 = require("../lib/client/url-mangler");
 global_1.Global.initialize();
 let argHelper = new arg_helper_1.ArgHelper(process.argv);
+let command = "help";
 if (argHelper.orderedCount() === 0) {
     console.error("No command specified. Must be first argument.");
-    process.exit(1);
 }
-let command = argHelper.forIndex(0);
+else {
+    command = argHelper.forIndex(0);
+}
 if (command === "proxy") {
     if (argHelper.orderedCount() < 2) {
         console.error("For proxy, must specify node ID and port to forward to!");
@@ -43,8 +45,8 @@ if (command === "help") {
     console.log("Usage: bst <command>");
     console.log("");
     console.log("Commands:");
-    console.log("bst debug <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
-    console.log("bst debug-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
+    console.log("bst proxy <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
+    console.log("bst proxy-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
     console.log("");
 }
 //# sourceMappingURL=bst.js.map

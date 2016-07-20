@@ -9,16 +9,12 @@ Add better docs for each command
 
 Move to public repo
 
-Some times server seems to have a bunch of nonsense received?
-
-Cleanup npm warnings
-    npm WARN bespoke-server@0.4.1 No repository field.
-    npm WARN bespoke-server@0.4.1 No license field.
-    
 Need to remove this file and developer before distributing?
     
 # Lower priority
 Add more comments and tests
+
+Add npmignore to publish less NPM stuff
 
 Figure out how to do batch lint
 
