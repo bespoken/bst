@@ -1,8 +1,8 @@
 # Overview
-The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.
-We plan to support other voice-first products (like Google Home) as they become available.
+The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
+AND we plan to support other voice-first products (like Google Home) as they become available.
 
-The current version provides two commands - proxy and proxy-lambda.  
+The current version provides two commands - **proxy** and **proxy-lambda**.  
 These proxies makes it super-easy to develop and debug your Alexa skill on your local machine.  
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.
 
@@ -19,7 +19,7 @@ Install bespoke-tools:
 
 # Available Commands
 ## Proxy
-**Running Proxy**
+**Running Proxy**  
 Proxy allows you to make changes to code on your machine and immediately test it with an Alexa device.
 
 To use, it simply type in the following command:
@@ -35,7 +35,7 @@ The second parameter, port, represents the port that your local Alexa service is
 
 Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
 
-**Configuring Your Skill**
+**Configuring Your Skill**  
 Your skill must be setup to point at our server. For example, if the URL for your skill is normally:
 https://myskill.example.com/skillA
 
@@ -53,17 +53,17 @@ You can enter the command for help transforming your URL:
 This value should be entered as the endpoint on the Configuration section for your Alexa skill.
 
 ## Proxy Lambda (Experimental)
-**Overview**
+**Overview**  
 The proxy-lambda command allows you to run a lambda as a local service your machine.
 
 The command currently only supports Node Lambdas.
 
-**Usage**
+**Usage**  
 To use it, invoke it with the full path to the Lambda file to run, along with your machine's node-id.
 
 The Lambda will automatically be passed the incoming request.
 
-Syntax:
+Syntax:  
 `bst proxy-lambda <NODE_ID> <FULL_PATH_TO_LAMBDA>`
 
 Example:  
