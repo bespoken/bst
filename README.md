@@ -61,7 +61,7 @@ https://myskill.example.com/skillA
 It should instead be configured to point at our server, like so:  
 https://bst.xappmedia.com/skillA?node-id=JPK
 
-_Also note that that node ID set with the proxy command must be passed in the query string__
+_Also note that that node ID set with the proxy command must be passed in the query string_  
 Here is it set as ?node-id=JPK
 
 The rest of the URL path and query string should be unchanged.
