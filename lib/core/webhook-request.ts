@@ -89,7 +89,11 @@ export class WebhookRequest {
     }
 
     public nodeID (): string {
-        return this.queryParameters["node-id"];
+        let nodeValue: string = null;
+        if ("node-id" in this.queryParameters) {
+            nodeValue = this.queryParameters["node-id"];
+        }
+        return nodeValue;
     }
 
     // Turns the webhook HTTP request into straight TCP payload

@@ -18,9 +18,9 @@ if (argHelper.orderedCount() === 0) {
 }
 
 let command = argHelper.forIndex(0);
-if (command === "debug") {
+if (command === "proxy") {
     if (argHelper.orderedCount() < 2) {
-        console.error("For debug, must specify agent-id and port to forward to!");
+        console.error("For proxy, must specify node ID and port to forward to!");
         process.exit(1);
     }
 
@@ -39,7 +39,7 @@ if (command === "sleep") {
     process.exit(1);
 }
 
-if (command === "debug-url") {
+if (command === "proxy-url") {
     let agentID: string  = argHelper.forIndex(1);
     let url: string = argHelper.forIndex(2);
 
@@ -57,7 +57,7 @@ if (command === "help") {
     console.log("Usage: bst <command>");
     console.log("");
     console.log("Commands:");
-    console.log("bst debug <agent-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
-    console.log("bst debug-url <agent-id> <alexa-url>       Takes a normal URL and modifies to include the <agent-id> in the query string");
+    console.log("bst debug <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
+    console.log("bst debug-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
     console.log("");
 }

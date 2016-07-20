@@ -1,7 +1,10 @@
 # Overview
-The Bespoke Tools make it easy to develop for Alexa/Echo (and other products as they become available).
+The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.
+We plan to support other voice-first products (like Google Home) as they become available.
 
-The current version supports a single command - debug.
+The current version provides a single command - proxy.  
+Proxy makes it super-easy to develop and debug your Alexa skill on your local machine.  
+Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 -Deploy: automatically deploy Alexa lambdas to the cloud with a single command  
@@ -15,18 +18,18 @@ Install bespoke-tools:
 `npm install bespoke-tools -g`
 
 # Available Commands
-## Debug
-**Running Debug**
-Debug allows you to make changes to code on your machine and immediately test it with an Alexa device.
+## Proxy
+**Running Proxy**
+Proxy allows you to make changes to code on your machine and immediately test it with an Alexa device.
 
 To use, it simply type in the following command:
-`bst debug <SERVICE_NAME> <PORT>`
+`bst proxy <NODE_ID> <PORT>`
 
 For example:
-`bst debug JPK 9999`
+`bst proxy JPK 9999`
 
-The value service name value, "JPK", is the name for your service. It uniquely identifies it to our server.
-We use this so we know which callbacks from Alexa to forward to your client.
+The node ID value, "JPK", is the name for your machine. It uniquely identifies it to our server.
+We use this so we know which calls from Alexa to forward to your machine.
 
 The second parameter, port, represents the port that your local Alexa service is listening on.
 
@@ -39,15 +42,15 @@ https://myskill.example.com/skillA
 It should instead be configured to point at our server, like so:
 https://bst.xappmedia.com/skillA?node-id=JPK
 
-_Also note that that service name set with the debug command must be passed in the query string__
+_Also note that that node ID set with the proxy command must be passed in the query string__
 Here is it set as ?node-id=JPK
 
 The rest of the URL path and query string should be unchanged.
 
 You can enter the command for help transforming your URL:
-`bst debug-url <SERVICE_NAME> <URL>`
+`bst proxy-url <NODE_ID> <URL>`
 
-This value should be entered as the endpoint on the Configuration section for your Alexa skill:
+This value should be entered as the endpoint on the Configuration section for your Alexa skill.
 
 # Contact
 Email jpk@xappmedia.com with any questions or comments. We love to hear feedback.

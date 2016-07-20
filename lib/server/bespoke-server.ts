@@ -21,32 +21,22 @@ export class BespokeServer {
         this.webhookManager.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
             // Check if this is a ping
             if (webhookRequest.isPing()) {
-                self.respond(socket, HTTPHelper.response(200, "bst-server"));
+                HTTPHelper.respond(socket, 200, "bst-server");
 
             } else {
                 if (webhookRequest.nodeID() === null) {
-                    self.respond(socket, HTTPHelper.response(404, "No node specified with the querystring: node-id"));
+                    HTTPHelper.respond(socket, 400, "No node specified. Must be included with the querystring as node-id.");
                 } else {
                     // Lookup the node
                     let node = self.nodeManager.node(webhookRequest.nodeID());
                     if (node == null) {
-                        self.respond(socket, HTTPHelper.response(404, "Node is not active: " + webhookRequest.nodeID()));
+                        HTTPHelper.respond(socket, 404, "Node is not active: " + webhookRequest.nodeID() + ".");
                     } else {
                         node.forward(socket, webhookRequest);
                     }
                 }
             }
         };
-    }
-
-    /**
-     * Sends the HTTP response payload through the socket and closes it
-     * @param socket
-     * @param payload
-     */
-    private respond(socket: Socket, payload: string) {
-        socket.write(payload);
-        socket.end();
     }
 
     public stop(callback: () => void): void {

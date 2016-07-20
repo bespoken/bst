@@ -1,9 +1,10 @@
 # High Priority
-Add HTTP response with clear message when there is no agent?
-    I think absence of agent caused server to die?
-    
-Figure out which license to use
+Handle multiple registrations of same node
+    How to make this secure?
 
+Figure out which license to use
+    Include at the top of the file
+    
 Add better docs for each command
 
 Move to public repo
@@ -16,13 +17,12 @@ Cleanup npm warnings
     
 Need to remove this file and developer before distributing?
     
-
 # Lower priority
 Add more comments and tests
 
-Automate publishing
+Figure out how to do batch lint
 
-Handle two people registering with the same ID
+Automate publishing
 
 Handle chunked message reply from proxied service more exactly
     Is probably doing a double callback, which could be a problem

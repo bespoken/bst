@@ -47,4 +47,26 @@ describe("WebhookRequest", function() {
             done();
         });
     });
+
+    describe("#nodeID", function () {
+        it("Returns null when not specified", function(done) {
+            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+            let bufferString: string = buffer.toString();
+            bufferString = bufferString.replace("node-id", "dummy");
+
+            let request = new WebhookRequest();
+            request.append(Buffer.from(bufferString));
+            assert.equal(request.nodeID(), null);
+            done();
+        });
+
+        it("Returns value when specified", function(done) {
+            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+
+            let request = new WebhookRequest();
+            request.append(buffer);
+            assert.equal(request.nodeID(), "JPK");
+            done();
+        });
+    });
 });
