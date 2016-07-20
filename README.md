@@ -1,6 +1,5 @@
 # Overview
 The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
-AND we plan to support other voice-first products (like Google Home) as they become available.
 
 The current version provides two commands - **proxy** and **proxy-lambda**.  
 These proxies makes it super-easy to develop and debug your Alexa skill on your local machine.  
@@ -35,23 +34,6 @@ The second parameter, port, represents the port that your local Alexa service is
 
 Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
 
-**Configuring Your Skill**  
-Your skill must be setup to point at our server. For example, if the URL for your skill is normally:  
-https://myskill.example.com/skillA
-
-It should instead be configured to point at our server, like so:  
-https://bst.xappmedia.com/skillA?node-id=JPK
-
-_Also note that that node ID set with the proxy command must be passed in the query string__
-Here is it set as ?node-id=JPK
-
-The rest of the URL path and query string should be unchanged.
-
-You can enter the command for help transforming your URL:  
-`bst proxy-url <NODE_ID> <URL>`
-
-This value should be entered as the endpoint on the Configuration section for your Alexa skill.
-
 ## Proxy Lambda (Experimental)
 **Overview**  
 The proxy-lambda command allows you to run a lambda as a local service your machine.
@@ -68,6 +50,23 @@ Syntax:
 
 Example:  
 `bst proxy-lambda JPK /Users/jpk/dev/samples/src/index.js`
+
+## Skill Configuration For Proxies
+Your skill must be setup to point at our server. For example, if the URL for your skill is normally:  
+https://myskill.example.com/skillA
+
+It should instead be configured to point at our server, like so:  
+https://bst.xappmedia.com/skillA?node-id=JPK
+
+_Also note that that node ID set with the proxy command must be passed in the query string__
+Here is it set as ?node-id=JPK
+
+The rest of the URL path and query string should be unchanged.
+
+You can enter the command for help transforming your URL:  
+`bst proxy-url <NODE_ID> <URL>`
+
+This value should be entered as the endpoint on the Configuration section for your Alexa skill.
 
 # Contact
 Email jpk@xappmedia.com with any questions or comments. We love to hear feedback.
