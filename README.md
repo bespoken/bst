@@ -23,7 +23,7 @@ Proxy allows you to interact with a local service running on your machine (on a 
 
 It essentially allows any local HTTP service to be accessed via Alexa.
 
-**Usage**
+**Usage**  
 To use, it simply type in the following command:  
 `bst proxy <NODE_ID> <PORT>`
 
