@@ -16,8 +16,6 @@ Create sample projects:
 Add init function
     Creates config file - generates ID
     
-Hide connection closed
-
 Change @ symbols to angles in tutorials
     Add examples
     

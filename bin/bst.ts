@@ -43,7 +43,7 @@ if (command === "proxy") {
 
     let agentID: string  = argHelper.forIndex(1);
     let targetPort: number = parseInt(argHelper.forIndex(2));
-    let serverHost: string  = argHelper.forKeyWithDefaultString("serverHost", Global.BespokeServerHost);
+    let serverHost: string = argHelper.forKeyWithDefaultString("serverHost", Global.BespokeServerHost);
     let serverPort: number = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
 
 
