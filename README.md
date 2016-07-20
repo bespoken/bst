@@ -1,11 +1,12 @@
 # Overview
-The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
+The **bst** (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
 
 The current version provides two commands - **proxy** and **proxy-lambda**.  
 These proxies make it super-easy to develop and debug your Alexa skill on your local machine.  
-Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.
+Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
+  
 It works by forwarding traffic from Alexa to our server, which in turns sends it to your machine.  
-(The magic of TCP/IP!!!)
+The magic of TCP/IP!!!  
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 -Deploy: automatically deploy Alexa lambdas to the cloud with a single command  
@@ -73,5 +74,5 @@ You can enter the following command for help transforming your URL:
 
 This value should be entered as the endpoint on the Configuration section for your Alexa skill.
 
-# Contact
+# Questions/Feedback?
 Email jpk@xappmedia.com with any questions or comments. We love to hear feedback.
