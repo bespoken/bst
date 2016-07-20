@@ -24,7 +24,7 @@ __Fill out the Interaction Model__
 Copy the Intent Schema from here:  
 https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speechAssets/IntentSchema.json
 
-Copy the Utterances from here:
+Copy the Utterances from here:  
 https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speechAssets/SampleUtterances.txt
 
 __Configure the Endpoint:__  
