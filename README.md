@@ -2,8 +2,10 @@
 The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
 
 The current version provides two commands - **proxy** and **proxy-lambda**.  
-These proxies makes it super-easy to develop and debug your Alexa skill on your local machine.  
+These proxies make it super-easy to develop and debug your Alexa skill on your local machine.  
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.
+It works by forwarding traffic from Alexa to our server, which in turns sends it to your machine.  
+(The magic of TCP/IP!!!)
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 -Deploy: automatically deploy Alexa lambdas to the cloud with a single command  
@@ -61,8 +63,8 @@ https://myskill.example.com/skillA
 It should instead be configured to point at the bst server, like so:  
 https://bst.xappmedia.com/skillA?node-id=JPK
 
-_Also note that that node ID set with the proxy command must be passed in the query string_  
-Here is it set as ?node-id=JPK
+_Also note that the node ID set with the proxy command must be passed in the query string_  
+This is what ties off your local proxy with our server.  
 
 The rest of the URL path and query string should be unchanged.
 
