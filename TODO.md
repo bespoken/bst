@@ -8,6 +8,13 @@ Figure out which license to use
     Include at the top of the file
     
 Add better docs for each command
+    Use the readthedocs.org
+    
+Create sample projects:
+    Java
+    Node
+    
+Make Lambda runner robust
 
 Move to public repo
 
