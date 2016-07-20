@@ -50,7 +50,6 @@ export class WebhookRequest {
             return true;
         }
 
-        console.log("WebhookRequest Done Body-Length: " + this.body.length + " Content-Length: " + this.contentLength());
         return (this.body.length === this.contentLength());
     }
 

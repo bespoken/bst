@@ -31,8 +31,11 @@ Need to do this the first time to publish:
 Updated the version number:
 `npm version patch`
 
-Ran publish command:
+Run publish command to push new client to NPM:
 `npm publish`
+
+Deploy new server version (from Docker Templates):
+`python ecs_manager.py deploy conf/bst-server bst-server.json dev`
 
 
 
