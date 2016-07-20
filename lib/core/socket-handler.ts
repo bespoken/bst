@@ -46,7 +46,7 @@ export class SocketHandler {
         });
 
         this.socket.on("close", function() {
-            if (self.onCloseCallback() != null) {
+            if (self.onCloseCallback != null) {
                 self.onCloseCallback();
             }
         });

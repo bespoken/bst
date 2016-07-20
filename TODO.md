@@ -14,6 +14,11 @@ Need to remove this file and developer before distributing?
 # Lower priority
 Add more comments and tests
 
+Add socket labels
+
+Better sockethandler tests
+    Better mocks? Or use actual sockets?
+    
 Add npmignore to publish less NPM stuff
 
 Figure out how to do batch lint
