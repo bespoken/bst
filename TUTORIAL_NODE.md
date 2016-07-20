@@ -8,7 +8,7 @@ https://github.com/amzn/alexa-skills-kit-js
 - Setup the Bespoke Tools (instructions here):  
 https://github.com/XappMedia/bst/blob/master/README.md
 
-- Run the helloWorld Sample project
+- Run the helloWorld Sample project  
 `bst proxy-lambda <YOUR_ID> <SKILLS_KIT_JS>/samples/helloWorld/src/index.js`
 
 - Sign up for Amazon Developer account (if you have not already):
@@ -29,7 +29,7 @@ https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speec
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
-https://bst.xappmedia.com?node-id=<YOUR_NODE>
+https://bst.xappmedia.com?node-id=@YOUR_NODE@
 
 Set account linking to "No"
 
