@@ -2,6 +2,8 @@
 Handle multiple registrations of same node
     How to make this secure?
 
+Add lots of tests for lambda runner
+
 Figure out which license to use
     Include at the top of the file
     

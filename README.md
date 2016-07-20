@@ -2,8 +2,8 @@
 The bst (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.
 We plan to support other voice-first products (like Google Home) as they become available.
 
-The current version provides a single command - proxy.  
-Proxy makes it super-easy to develop and debug your Alexa skill on your local machine.  
+The current version provides two commands - proxy and proxy-lambda.  
+These proxies makes it super-easy to develop and debug your Alexa skill on your local machine.  
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
@@ -52,15 +52,21 @@ You can enter the command for help transforming your URL:
 
 This value should be entered as the endpoint on the Configuration section for your Alexa skill.
 
-## Lambda (Experimental)
+## Proxy Lambda (Experimental)
 **Overview**
-The lambda command allows you to run a lambda as a local service on a port.
+The proxy-lambda command allows you to run a lambda as a local service your machine.
+
+The command currently only supports Node Lambdas.
 
 **Usage**
-To use it, invoke it with the full path to the lambda file to run.
+To use it, invoke it with the full path to the Lambda file to run, along with your machine's node-id.
 
 The Lambda will automatically be passed the incoming request.
 
+Syntax:
+`bst proxy-lambda <NODE_ID> <FULL_PATH_TO_LAMBDA>`
+
+Example:  
 `bst proxy-lambda JPK /Users/jpk/dev/samples/src/index.js`
 
 # Contact
