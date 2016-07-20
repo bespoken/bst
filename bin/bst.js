@@ -14,7 +14,7 @@ else {
     command = argHelper.forIndex(0);
 }
 if (command === "proxy") {
-    if (argHelper.orderedCount() < 2) {
+    if (argHelper.orderedCount() < 3) {
         console.error("For proxy, must specify node ID and port to forward to!");
         process.exit(1);
     }

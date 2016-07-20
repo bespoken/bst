@@ -9,12 +9,17 @@ export interface OnMessage {
     (message: string): void;
 }
 
+export interface OnClose {
+    (): void;
+}
+
 /**
  * Manages the low-level socket communications
  */
 export class SocketHandler {
     public message: string = null;
     public onDataCallback: (data: Buffer) => void;
+    public onCloseCallback: OnClose;
 
     public constructor (private socket: Socket, private onMessage: OnMessage) {
         let self = this;
@@ -34,6 +39,17 @@ export class SocketHandler {
 
         // Add a 'data' event handler to this instance of socket
         this.socket.on("data", this.onDataCallback);
+
+        // Do some basic error-handling - needs to be improved
+        this.socket.on("error", function (e: any) {
+            console.log("SocketError: " + e.code + " Message: " + e.message);
+        });
+
+        this.socket.on("close", function() {
+            if (self.onCloseCallback() != null) {
+                self.onCloseCallback();
+            }
+        });
     }
 
     /**
