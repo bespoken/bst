@@ -18,9 +18,12 @@ Install bespoke-tools:
 
 # Available Commands
 ## Proxy
-**Running Proxy**  
-Proxy allows you to make changes to code on your machine and immediately test it with an Alexa device.
+**Overview**  
+Proxy allows you to interact with a local service running on your machine (on a port) via an Alexa device.  
 
+It essentially allows any local HTTP service to be accessed via Alexa.
+
+**Usage**
 To use, it simply type in the following command:  
 `bst proxy <NODE_ID> <PORT>`
 
