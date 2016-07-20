@@ -16,30 +16,30 @@ https://developer.amazon.com/appsandservices
 Click on the Sign In or Create Account link on the top-right
 
 # Configure your skill
-__Select the Alexa tab__
-__Choose Get Started__
-__Choose Add a New Skill__
-__Fill out the Information tab (give a name and invocation phrase)__
-__Fill out the Interaction Model__
+__Select the Alexa tab__  
+__Choose Get Started__  
+__Choose Add a New Skill__  
+__Fill out the Information tab (give a name and invocation phrase)__  
+__Fill out the Interaction Model__  
 Copy the Intent Schema from here:  
 https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speechAssets/IntentSchema.json
 
 Copy the Utterances from here:
 https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speechAssets/SampleUtterances.txt
 
-__Configure the Endpoint:__
+__Configure the Endpoint:__  
 The endpoint should be set to:  
 https://bst.xappmedia.com?node-id=<YOUR_NODE>
 
 Set account linking to "No"
 
-__Configure SSL__
+__Configure SSL__  
 Select " My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
 
-__Test!__
-Go to the service simulator, and type: "Hello World"
-Hit "Ask Test"
-You should get a valid JSON in reply
+__Test!__  
+Go to the service simulator, and type: "Hello World"  
+Hit "Ask Test"  
+You should get a valid JSON in reply  
 
 # Next Steps
 You can now start adding functionality to your skill. To learn more about coding Alexa skills, look here:
