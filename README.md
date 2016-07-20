@@ -22,10 +22,10 @@ Install bespoke-tools:
 **Running Proxy**  
 Proxy allows you to make changes to code on your machine and immediately test it with an Alexa device.
 
-To use, it simply type in the following command:
+To use, it simply type in the following command:  
 `bst proxy <NODE_ID> <PORT>`
 
-For example:
+For example:  
 `bst proxy JPK 9999`
 
 The node ID value, "JPK", is the name for your machine. It uniquely identifies it to our server.
@@ -36,10 +36,10 @@ The second parameter, port, represents the port that your local Alexa service is
 Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
 
 **Configuring Your Skill**  
-Your skill must be setup to point at our server. For example, if the URL for your skill is normally:
+Your skill must be setup to point at our server. For example, if the URL for your skill is normally:  
 https://myskill.example.com/skillA
 
-It should instead be configured to point at our server, like so:
+It should instead be configured to point at our server, like so:  
 https://bst.xappmedia.com/skillA?node-id=JPK
 
 _Also note that that node ID set with the proxy command must be passed in the query string__
@@ -47,7 +47,7 @@ Here is it set as ?node-id=JPK
 
 The rest of the URL path and query string should be unchanged.
 
-You can enter the command for help transforming your URL:
+You can enter the command for help transforming your URL:  
 `bst proxy-url <NODE_ID> <URL>`
 
 This value should be entered as the endpoint on the Configuration section for your Alexa skill.
