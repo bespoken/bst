@@ -7,6 +7,7 @@ import {WebhookRequest} from "../lib/core/webhook-request";
 import {ArgHelper} from "../lib/core/arg-helper";
 import {Global} from "../lib/core/global";
 import {URLMangler} from "../lib/client/url-mangler";
+import {LambdaRunner} from "../lib/client/lambda-runner";
 
 Global.initialize();
 
@@ -36,10 +37,6 @@ if (command === "proxy") {
     bespokeClient.connect();
 }
 
-if (command === "sleep") {
-    console.error("Not until Brooklyn!");
-    process.exit(1);
-}
 
 if (command === "proxy-url") {
     let agentID: string  = argHelper.forIndex(1);
@@ -54,6 +51,27 @@ if (command === "proxy-url") {
     console.log("");
 }
 
+
+if (command === "proxy-lambda") {
+    let agentID: string  = argHelper.forIndex(1);
+    let handler: string  = argHelper.forIndex(2);
+
+    let serverHost: string  = argHelper.forKeyWithDefaultString("serverHost", Global.BespokeServerHost);
+    let serverPort: number = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
+
+    let lambdaPort: number = 10000;
+    let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, lambdaPort);
+    bespokeClient.connect();
+
+    let lambdaRunner = new LambdaRunner();
+    lambdaRunner.start(handler, lambdaPort);
+}
+
+if (command === "sleep") {
+    console.error("Not until Brooklyn!");
+    process.exit(1);
+}
+
 if (command === "help") {
     console.log("");
     console.log("Usage: bst <command>");
@@ -61,5 +79,7 @@ if (command === "help") {
     console.log("Commands:");
     console.log("bst proxy <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
     console.log("bst proxy-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
+    console.log("bst proxy-lambda <node-id> <handler-file> Runs a lambda as a local service. Must be the full path to the lambda file.");
+
     console.log("");
 }

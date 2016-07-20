@@ -19,6 +19,8 @@ Add socket labels
 Better sockethandler tests
     Better mocks? Or use actual sockets?
     
+What to do with Alexa request signatures?
+
 Add npmignore to publish less NPM stuff
 
 Figure out how to do batch lint

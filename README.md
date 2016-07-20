@@ -52,5 +52,16 @@ You can enter the command for help transforming your URL:
 
 This value should be entered as the endpoint on the Configuration section for your Alexa skill.
 
+## Lambda (Experimental)
+**Overview**
+The lambda command allows you to run a lambda as a local service on a port.
+
+**Usage**
+To use it, invoke it with the full path to the lambda file to run.
+
+The Lambda will automatically be passed the incoming request.
+
+`bst proxy-lambda JPK /Users/jpk/dev/samples/src/index.js`
+
 # Contact
 Email jpk@xappmedia.com with any questions or comments. We love to hear feedback.

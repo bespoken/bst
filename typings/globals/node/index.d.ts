@@ -1955,7 +1955,7 @@ declare module "tls" {
          * loss or reordering. However, smaller fragments add extra TLS framing bytes and CPU overhead,
          * which may decrease overall server throughput.
          * @param {number} size - TLS fragment size (default and maximum value is: 16384, minimum is: 512).
-         * @returns {boolean} - Returns true on success, false otherwise.
+         * @returns {boolean} - Returns true on success, false otheuise.
          */
         setMaxSendFragment(size: number): boolean;
     }
