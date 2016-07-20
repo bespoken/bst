@@ -15,10 +15,9 @@ let Logger = "BST";
 Global.initialize();
 LoggingHelper.info(Logger, "Node Version: " + process.version);
 let nodeMajorVersion = parseInt(process.version.substr(1, 2));
-LoggingHelper.info(Logger, "Major Version: " + nodeMajorVersion);
 
-if (nodeMajorVersion < 6) {
-    LoggingHelper.error(Logger, "!!!!Node version must be >= 6!!!!");
+if (nodeMajorVersion < 4) {
+    LoggingHelper.error(Logger, "!!!!Node version must be >= 4!!!!");
     LoggingHelper.error(Logger, "Please install to use bst");
     process.exit(1);
 }
@@ -26,7 +25,8 @@ if (nodeMajorVersion < 6) {
 let argHelper = new ArgHelper(process.argv);
 
 // By default, use help as the command
-let command = "help";
+let command: string = null;
+let matchedCommand = false;
 if (argHelper.orderedCount() === 0) {
     console.error("No command specified. Must be first argument.");
 } else {
@@ -34,6 +34,8 @@ if (argHelper.orderedCount() === 0) {
 }
 
 if (command === "proxy") {
+    matchedCommand = true;
+
     if (argHelper.orderedCount() < 3) {
         console.error("For proxy, must specify node ID and port to forward to!");
         process.exit(1);
@@ -47,10 +49,9 @@ if (command === "proxy") {
 
     let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, targetPort);
     bespokeClient.connect();
-}
+} else if (command === "proxy-url") {
+    matchedCommand = true;
 
-
-if (command === "proxy-url") {
     let agentID: string  = argHelper.forIndex(1);
     let url: string = argHelper.forIndex(2);
 
@@ -61,10 +62,9 @@ if (command === "proxy-url") {
     console.log("");
     console.log("   " + newUrl);
     console.log("");
-}
+} else if (command === "proxy-lambda") {
+    matchedCommand = true;
 
-
-if (command === "proxy-lambda") {
     let agentID: string  = argHelper.forIndex(1);
     let handler: string  = argHelper.forIndex(2);
 
@@ -77,14 +77,14 @@ if (command === "proxy-lambda") {
 
     let lambdaRunner = new LambdaRunner();
     lambdaRunner.start(handler, lambdaPort);
-}
+} else if (command === "sleep") {
+    matchedCommand = true;
 
-if (command === "sleep") {
     console.error("Not until Brooklyn!");
     process.exit(1);
 }
 
-if (command === "help") {
+if (command === "help" || !matchedCommand) {
     console.log("");
     console.log("Usage: bst <command>");
     console.log("");

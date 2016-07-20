@@ -1,6 +1,4 @@
-/// <reference path="../../typings/globals/node/index.d.ts" />
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../node_modules/typemoq/typemoq.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import * as TypeMoq from "typemoq";
 import * as assert from "assert";
@@ -10,6 +8,7 @@ import {SocketHandler} from "../../lib/core/socket-handler";
 import {Socket} from "net";
 import {Global} from "../../lib/core/global";
 import {Server} from "net";
+import {BufferUtil} from "../../lib/core/buffer-util";
 
 describe("SocketHandlerTest", function() {
     let server: Server = null;
@@ -34,7 +33,7 @@ describe("SocketHandlerTest", function() {
                 done();
             });
 
-            socketHandler.onDataCallback(Buffer.from("TEST" + Global.MessageDelimiter));
+            socketHandler.onDataCallback(BufferUtil.fromString("TEST" + Global.MessageDelimiter));
         });
 
         it("Sends Multiple Payloads At Once", function(done) {
@@ -51,7 +50,7 @@ describe("SocketHandlerTest", function() {
                 }
             });
 
-            socketHandler.onDataCallback(Buffer.from("TEST" + Global.MessageDelimiter + "TEST2" + Global.MessageDelimiter));
+            socketHandler.onDataCallback(BufferUtil.fromString("TEST" + Global.MessageDelimiter + "TEST2" + Global.MessageDelimiter));
         });
 
         it("Sends Incomplete Payload", function(done) {
@@ -62,8 +61,8 @@ describe("SocketHandlerTest", function() {
                 done();
             });
 
-            socketHandler.onDataCallback(Buffer.from("TEST"));
-            socketHandler.onDataCallback(Buffer.from(Global.MessageDelimiter));
+            socketHandler.onDataCallback(BufferUtil.fromString("TEST"));
+            socketHandler.onDataCallback(BufferUtil.fromString(Global.MessageDelimiter));
         });
     });
 

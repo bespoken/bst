@@ -2,6 +2,7 @@
 
 import {Global} from "./global";
 import * as winston from "winston";
+import {StringUtil} from "./string-util";
 
 export class LoggingHelper {
     public static debug (logger: string, message: string): void {
@@ -21,7 +22,9 @@ export class LoggingHelper {
     }
 
     private static log(level: string, logger: string, message: string) {
-        winston.log(level, logger + " " + message);
+        // Rpad and then truncate the logger name
+        let loggerString = StringUtil.rpad(logger, " ", 10).substr(0, 10);
+        winston.log(level, loggerString + "  " + message);
     }
 
     public static initialize (): void {

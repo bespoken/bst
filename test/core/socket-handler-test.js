@@ -5,6 +5,7 @@ const net = require("net");
 const socket_handler_1 = require("../../lib/core/socket-handler");
 const net_1 = require("net");
 const global_1 = require("../../lib/core/global");
+const buffer_util_1 = require("../../lib/core/buffer-util");
 describe("SocketHandlerTest", function () {
     let server = null;
     beforeEach(function () {
@@ -22,7 +23,7 @@ describe("SocketHandlerTest", function () {
                 assert.equal("TEST", message);
                 done();
             });
-            socketHandler.onDataCallback(Buffer.from("TEST" + global_1.Global.MessageDelimiter));
+            socketHandler.onDataCallback(buffer_util_1.BufferUtil.fromString("TEST" + global_1.Global.MessageDelimiter));
         });
         it("Sends Multiple Payloads At Once", function (done) {
             let mockSocket = TypeMoq.Mock.ofType(net_1.Socket);
@@ -37,7 +38,7 @@ describe("SocketHandlerTest", function () {
                     done();
                 }
             });
-            socketHandler.onDataCallback(Buffer.from("TEST" + global_1.Global.MessageDelimiter + "TEST2" + global_1.Global.MessageDelimiter));
+            socketHandler.onDataCallback(buffer_util_1.BufferUtil.fromString("TEST" + global_1.Global.MessageDelimiter + "TEST2" + global_1.Global.MessageDelimiter));
         });
         it("Sends Incomplete Payload", function (done) {
             let mockSocket = TypeMoq.Mock.ofType(net_1.Socket);
@@ -45,8 +46,8 @@ describe("SocketHandlerTest", function () {
                 assert.equal("TEST", message);
                 done();
             });
-            socketHandler.onDataCallback(Buffer.from("TEST"));
-            socketHandler.onDataCallback(Buffer.from(global_1.Global.MessageDelimiter));
+            socketHandler.onDataCallback(buffer_util_1.BufferUtil.fromString("TEST"));
+            socketHandler.onDataCallback(buffer_util_1.BufferUtil.fromString(global_1.Global.MessageDelimiter));
         });
     });
     describe("#close", function () {

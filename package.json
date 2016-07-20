@@ -17,7 +17,7 @@
     "typemoq": "^0.2.0"
   },
   "engines": {
-    "node": "6.3.0"
+    "node": "4.4.7"
   },
   "repository": {
     "type": "git",

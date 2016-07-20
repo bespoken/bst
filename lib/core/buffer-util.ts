@@ -7,4 +7,8 @@ export class BufferUtil {
         let s = buffer.toString();
         return StringUtil.prettyPrint(s);
     }
+
+    public static fromString(s: string): Buffer {
+        return new Buffer(s);
+    }
 }

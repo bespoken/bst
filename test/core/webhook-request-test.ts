@@ -1,5 +1,4 @@
-/// <reference path="../../typings/globals/mocha/index.d.ts" />
-/// <reference path="../../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import {WebhookRequest} from "../../lib/core/webhook-request";
 import {BufferUtil} from "../../lib/core/buffer-util";
@@ -36,8 +35,8 @@ describe("WebhookRequest", function() {
             let buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
             let buffer2 = bufferString.substr(bufferString.indexOf("38Z"));
 
-            request.append(Buffer.from(buffer1));
-            request.append(Buffer.from(buffer2));
+            request.append(BufferUtil.fromString(buffer1));
+            request.append(BufferUtil.fromString(buffer2));
 
             assert.ok(request.body.indexOf("version") !== -1);
             assert.equal(request.headers["Content-Length"], 603);
@@ -55,7 +54,7 @@ describe("WebhookRequest", function() {
             bufferString = bufferString.replace("node-id", "dummy");
 
             let request = new WebhookRequest();
-            request.append(Buffer.from(bufferString));
+            request.append(BufferUtil.fromString(bufferString));
             assert.equal(request.nodeID(), null);
             done();
         });

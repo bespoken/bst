@@ -2,8 +2,9 @@ import {Global} from "./global";
 import {Socket} from "net";
 import {StringUtil} from "./string-util";
 import {BufferUtil} from "./buffer-util";
-import * as winston from "winston";
 import {LoggingHelper} from "./logging-helper";
+
+let Logger = "SOCKET";
 
 export interface OnMessage {
     (message: string): void;
@@ -27,7 +28,7 @@ export class SocketHandler {
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
-            LoggingHelper.debug("SOCKET", "DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
+            LoggingHelper.debug(Logger, "DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
 
             let dataString: string = data.toString();
             if (dataString.indexOf(Global.MessageDelimiter) === -1) {
@@ -42,7 +43,7 @@ export class SocketHandler {
 
         // Do some basic error-handling - needs to be improved
         this.socket.on("error", function (e: any) {
-            console.log("SocketError: " + e.code + " Message: " + e.message);
+            LoggingHelper.error(Logger, "SocketError: " + e.code + " Message: " + e.message);
         });
 
         this.socket.on("close", function() {
@@ -80,7 +81,7 @@ export class SocketHandler {
     }
 
     public send(message: string) {
-        winston.debug("DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + StringUtil.prettyPrint(message));
+        LoggingHelper.debug(Logger, "DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + StringUtil.prettyPrint(message));
 
         // Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;

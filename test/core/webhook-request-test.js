@@ -24,8 +24,8 @@ describe("WebhookRequest", function () {
             console.log("BUFFER: " + buffer_util_1.BufferUtil.prettyPrint(buffer));
             let buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
             let buffer2 = bufferString.substr(bufferString.indexOf("38Z"));
-            request.append(Buffer.from(buffer1));
-            request.append(Buffer.from(buffer2));
+            request.append(buffer_util_1.BufferUtil.fromString(buffer1));
+            request.append(buffer_util_1.BufferUtil.fromString(buffer2));
             assert.ok(request.body.indexOf("version") !== -1);
             assert.equal(request.headers["Content-Length"], 603);
             assert.equal(request.body.length, 603);
@@ -40,7 +40,7 @@ describe("WebhookRequest", function () {
             let bufferString = buffer.toString();
             bufferString = bufferString.replace("node-id", "dummy");
             let request = new webhook_request_1.WebhookRequest();
-            request.append(Buffer.from(bufferString));
+            request.append(buffer_util_1.BufferUtil.fromString(bufferString));
             assert.equal(request.nodeID(), null);
             done();
         });

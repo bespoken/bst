@@ -1,4 +1,4 @@
-/// <reference path="../../typings/globals/node/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import * as net from "net";
 import EventEmitter = NodeJS.EventEmitter;
@@ -42,7 +42,7 @@ export class TCPClient {
 
         // Add a 'close' event handler for the client socket
         client.on("close", function() {
-            LoggingHelper.info(Logger, "Connection closed");
+            LoggingHelper.debug(Logger, "Connection closed");
         });
     }
 

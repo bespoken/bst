@@ -1,6 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as querystring from "querystring";
+import {BufferUtil} from "./buffer-util";
 
 export class WebhookRequest {
     public rawContents: Buffer;
@@ -17,7 +18,7 @@ export class WebhookRequest {
 
     public static fromString(payload: string): WebhookRequest {
         let webhookRequest = new WebhookRequest();
-        webhookRequest.append(Buffer.from(payload));
+        webhookRequest.append(BufferUtil.fromString(payload));
         return webhookRequest;
     }
 

@@ -13,4 +13,11 @@ export class StringUtil {
         s = StringUtil.replaceAll(s, "\n", "\\n");
         return s;
     }
+
+    public static rpad(s: string, padString: string, length: number): string {
+        let str = s;
+        while (str.length < length)
+            str = str + padString;
+        return str;
+    }
 }

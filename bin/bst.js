@@ -10,14 +10,14 @@ let Logger = "BST";
 global_1.Global.initialize();
 logging_helper_1.LoggingHelper.info(Logger, "Node Version: " + process.version);
 let nodeMajorVersion = parseInt(process.version.substr(1, 2));
-logging_helper_1.LoggingHelper.info(Logger, "Major Version: " + nodeMajorVersion);
-if (nodeMajorVersion < 6) {
-    logging_helper_1.LoggingHelper.error(Logger, "!!!!Node version must be >= 6!!!!");
+if (nodeMajorVersion < 4) {
+    logging_helper_1.LoggingHelper.error(Logger, "!!!!Node version must be >= 4!!!!");
     logging_helper_1.LoggingHelper.error(Logger, "Please install to use bst");
     process.exit(1);
 }
 let argHelper = new arg_helper_1.ArgHelper(process.argv);
-let command = "help";
+let command = null;
+let matchedCommand = false;
 if (argHelper.orderedCount() === 0) {
     console.error("No command specified. Must be first argument.");
 }
@@ -25,6 +25,7 @@ else {
     command = argHelper.forIndex(0);
 }
 if (command === "proxy") {
+    matchedCommand = true;
     if (argHelper.orderedCount() < 3) {
         console.error("For proxy, must specify node ID and port to forward to!");
         process.exit(1);
@@ -36,7 +37,8 @@ if (command === "proxy") {
     let bespokeClient = new bespoke_client_1.BespokeClient(agentID, serverHost, serverPort, targetPort);
     bespokeClient.connect();
 }
-if (command === "proxy-url") {
+else if (command === "proxy-url") {
+    matchedCommand = true;
     let agentID = argHelper.forIndex(1);
     let url = argHelper.forIndex(2);
     let mangler = new url_mangler_1.URLMangler(url, agentID);
@@ -47,7 +49,8 @@ if (command === "proxy-url") {
     console.log("   " + newUrl);
     console.log("");
 }
-if (command === "proxy-lambda") {
+else if (command === "proxy-lambda") {
+    matchedCommand = true;
     let agentID = argHelper.forIndex(1);
     let handler = argHelper.forIndex(2);
     let serverHost = argHelper.forKeyWithDefaultString("serverHost", global_1.Global.BespokeServerHost);
@@ -58,11 +61,12 @@ if (command === "proxy-lambda") {
     let lambdaRunner = new lambda_runner_1.LambdaRunner();
     lambdaRunner.start(handler, lambdaPort);
 }
-if (command === "sleep") {
+else if (command === "sleep") {
+    matchedCommand = true;
     console.error("Not until Brooklyn!");
     process.exit(1);
 }
-if (command === "help") {
+if (command === "help" || !matchedCommand) {
     console.log("");
     console.log("Usage: bst <command>");
     console.log("");
