@@ -1,0 +1,21 @@
+{
+  "name": "node-lambda-bst-template",
+  "version": "0.0.1",
+  "description": "The bare minimum for a node.js app running on Amazon Lambda.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rebelmail/node-lambda-bst-template.git"
+  },
+  "author": "bvizy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rebelmail/node-lambda-template/issues"
+  },
+  "homepage": "https://github.com/rebelmail/bst",
+  "dependencies": {
+    "async": "^2.0.0"
+  },
+  "scripts": {
+  }
+}

@@ -7,6 +7,7 @@ import {WebhookRequest} from "../lib/core/webhook-request";
 import {ArgHelper} from "../lib/core/arg-helper";
 import {Global} from "../lib/core/global";
 import {URLMangler} from "../lib/client/url-mangler";
+import {LambdaClient} from "../lib/client/lambda-client"
 
 Global.initialize();
 
@@ -60,4 +61,14 @@ if (command === "help") {
     console.log("bst debug <agent-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
     console.log("bst debug-url <agent-id> <alexa-url>       Takes a normal URL and modifies to include the <agent-id> in the query string");
     console.log("");
+}
+
+if (command === "lambda-package") {
+    let lambdaClient = new LambdaClient();
+    lambdaClient.pack();
+}
+
+if (command === "lambda-deploy") {
+    let lambdaClient = new LambdaClient();
+    lambdaClient.deploy();
 }

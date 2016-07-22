@@ -21,7 +21,12 @@
     "typemoq": "^0.2.0"
   },
   "dependencies": {
+    "async": "^2.0.0",
+    "aws-sdk": "^2.4.8",
+    "dotenv": "^2.0.0",
+    "node-zip": "^1.1.1",
     "typescript": "^1.8.10",
-    "winston": "^2.2.0"
+    "winston": "^2.2.0",
+    "wrench": "^1.5.9"
   }
 }

@@ -1,8 +1,12 @@
 {
   "globalDependencies": {
+    "async": "registry:dt/async#1.4.2+20160602152629",
+    "aws-sdk": "registry:dt/aws-sdk#0.0.0+20160709061101",
+    "dotenv": "registry:dt/dotenv#2.0.0+20160327131627",
     "mocha": "registry:dt/mocha#2.2.5+20160619032855",
-    "node": "registry:dt/node#6.0.0+20160621231320",
-    "winston": "registry:dt/winston#0.0.0+20160417152829"
+    "node": "registry:dt/node#6.0.0+20160709114037",
+    "winston": "registry:dt/winston#0.0.0+20160417152829",
+    "wrench": "registry:dt/wrench#0.0.0+20160316155526"
   },
   "dependencies": {}
 }

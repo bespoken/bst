@@ -4,6 +4,7 @@ const bespoke_client_1 = require("../lib/client/bespoke-client");
 const arg_helper_1 = require("../lib/core/arg-helper");
 const global_1 = require("../lib/core/global");
 const url_mangler_1 = require("../lib/client/url-mangler");
+const lambda_client_1 = require("../lib/client/lambda-client");
 global_1.Global.initialize();
 let argHelper = new arg_helper_1.ArgHelper(process.argv);
 if (argHelper.orderedCount() === 0) {
@@ -46,5 +47,13 @@ if (command === "help") {
     console.log("bst debug <agent-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
     console.log("bst debug-url <agent-id> <alexa-url>       Takes a normal URL and modifies to include the <agent-id> in the query string");
     console.log("");
+}
+if (command === "lambda-package") {
+    let lambdaClient = new lambda_client_1.LambdaClient();
+    lambdaClient.pack();
+}
+if (command === "lambda-deploy") {
+    let lambdaClient = new lambda_client_1.LambdaClient();
+    lambdaClient.deploy();
 }
 //# sourceMappingURL=bst.js.map

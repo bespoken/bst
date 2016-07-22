@@ -1,2 +1,6 @@
+npm-debug.log
 node_modules/
 .idea/
+typings/
+test/skills/node-lambda-template/build/
+
