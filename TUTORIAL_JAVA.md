@@ -13,10 +13,10 @@ https://maven.apache.org/install.html
 
 __Run the Sample Java Skill__  
 Go to the samples/java directory under the Bespoke Tools project.  
-Compile it with this command:
+Compile it with this command:  
 `mvn compile`  
 
-Run it with this command:
+Run it with this command:  
 `mvn exec:java -Dexec.executable="java" -DdisableRequestSignatureCheck=true -Dexec.args=$@`
 
 The service will listen on port 9999 by default.
