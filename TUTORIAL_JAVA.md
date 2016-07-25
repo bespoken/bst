@@ -44,7 +44,7 @@ __Configure the Endpoint:__
 The endpoint should be set to:  
 https://bst.xappmedia.com/hello?node-id=@YOUR_NODE@
 
-For example, if my node-id is JPK, it should be:
+For example, if my node-id is JPK, it should be:  
 https://bst.xappmedia.com/hello?node-id=JPK
 
 Set account linking to "No"
@@ -58,7 +58,7 @@ Hit "Ask Test"
 You should get a valid JSON in reply  
 
 # Next Steps
-You can now start adding functionality to your skill. To learn more about coding Alexa skills, look here:
+You can now start adding functionality to your skill. To learn more about coding Alexa skills, look here:  
 https://github.com/amzn/alexa-skills-kit-java
 
 You can also try it out on an Alexa device like an Echo, as long as it is registered with your account.
