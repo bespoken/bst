@@ -47,7 +47,7 @@ The second parameter, port, represents the port that your local Alexa service is
 
 Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
 
-You can learn more here:
+You can learn more here:  
 https://github.com/XappMedia/bst/blob/master/TUTORIAL_JAVA.md
 
 ## Proxy Lambda (Experimental)
@@ -67,7 +67,7 @@ Syntax:
 Example:  
 `bst proxy lambda JPK /Users/jpk/dev/samples/src/index.js`
 
-You can learn more here:
+You can learn more here:  
 https://github.com/XappMedia/bst/blob/master/TUTORIAL_NODE.md
 
 ## Skill Configuration For Proxies
