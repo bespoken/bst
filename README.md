@@ -1,12 +1,12 @@
 # Overview
 The **bst** (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
   
-The current version provides two commands - **proxy** and **proxy-lambda**.  
+The current version provides two commands - **proxy http** and **proxy lambda**.  
 These proxies make it super-easy to develop and debug your Alexa skill on your local machine.  
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
   
-The proxies can work either with a service listening on a port (**proxy**),  
-or directly with a Lambda written with Node/JavaScript (**proxy-lambda**).
+The proxies can work either with a service listening on a port (**proxy http**),  
+or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
   
 It works by forwarding traffic from Alexa to our server, which in turns sends it to your machine.  
 A node ID that you designate is how we know which traffic should come to you.    
@@ -23,7 +23,7 @@ Install bespoke-tools:
 `npm install bespoke-tools -g`
 
 # Available Commands
-## Proxy
+## Proxy HTTP
 **Overview**  
 Proxy allows you to interact with a local service running on your machine (on a port) via an Alexa device.  
 
@@ -31,10 +31,10 @@ It essentially allows any local HTTP service to be accessed via Alexa.
 
 **Usage**  
 To use, it simply type in the following command:  
-`bst proxy <NODE_ID> <PORT>`
+`bst proxy http <NODE_ID> <PORT>`
 
 For example:  
-`bst proxy JPK 9999`
+`bst proxy http JPK 9999`
 
 The node ID value, "JPK", is the name for your machine. It uniquely identifies it to our server.
 We use this so we know which calls from Alexa to forward to your machine.
@@ -45,7 +45,7 @@ Set this to whatever port your local server is running on. All traffic coming fr
 
 ## Proxy Lambda (Experimental)
 **Overview**  
-The proxy-lambda command allows you to run a lambda as a local service your machine.
+The proxy lambda command allows you to run a lambda as a local service your machine.
 
 The command currently only supports Node Lambdas.
 
@@ -55,10 +55,10 @@ To use it, invoke it with the full path to the Lambda file to run, along with yo
 The Lambda will automatically be passed the incoming request.
 
 Syntax:  
-`bst proxy-lambda <NODE_ID> <FULL_PATH_TO_LAMBDA>`
+`bst proxy lambda <NODE_ID> <FULL_PATH_TO_LAMBDA>`
 
 Example:  
-`bst proxy-lambda JPK /Users/jpk/dev/samples/src/index.js`
+`bst proxy lambda JPK /Users/jpk/dev/samples/src/index.js`
 
 ## Skill Configuration For Proxies
 Your skill must be setup to point at our server. For example, if the URL for your skill is normally:  

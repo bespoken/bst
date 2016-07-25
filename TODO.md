@@ -30,11 +30,14 @@ Need to remove this file and developer before distributing?
 # Important
 Add better docs for each command
     Use the readthedocs.org
-        
+  
+Add support for auto-recompile in Sample Java project
+
+Print out bst version number on start
+
 Create diagrams for it
 
 Figure out how to do whole project recompile
-
     
 Add debug level
     Set in config?
