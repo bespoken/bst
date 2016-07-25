@@ -35,10 +35,10 @@ __Choose Add a New Skill__
 __Fill out the Information tab (give a name and invocation phrase)__  
 __Fill out the Interaction Model__  
 Copy the Intent Schema from here:  
-https://raw.githubusercontent.com/XappMedia/bst/master/samples/java/src/main/java/helloworld/speechAssets/IntentSchema.json
+https://github.com/XappMedia/bst/blob/master/samples/java/src/main/java/helloworld/speechAssets/IntentSchema.json
 
 Copy the Utterances from here:  
-https://raw.githubusercontent.com/XappMedia/bst/master/samples/java/src/main/java/helloworld/speechAssets/SampleUtterances.txt
+https://github.com/XappMedia/bst/blob/master/samples/java/src/main/java/helloworld/speechAssets/SampleUtterances.txt
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  

@@ -1,17 +1,12 @@
-# Pre-Release
+# High Priority
 Handle multiple registrations of same node
     How to make this secure?
     Auto-generate IDs
     
-Change tools names to proxy-http and proxy-lambda
-
 Add lots of tests for lambda runner
 
 Figure out which license to use
     Include at the top of the file
-    
-Create sample projects:
-    Java
     
 Add init function
     Creates config file - generates ID
@@ -27,7 +22,7 @@ Move to public repo
 
 Need to remove this file and developer before distributing?
 
-# Important
+# Medium
 Add better docs for each command
     Use the readthedocs.org
   
