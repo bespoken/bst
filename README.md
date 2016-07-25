@@ -26,7 +26,7 @@ If you are on MacOS and the command fails, it is probably because you need to ru
 `sudo npm install bespoke-tools -g`
 
 Ensure you have a compatible version of node installed.  
-We support node version 4.x.x and higher. Check by entering:
+We support node version 4.x.x and higher. Check by entering:  
 `node --version`
 
 # Available Commands

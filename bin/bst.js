@@ -40,6 +40,10 @@ if (command === "proxy") {
     let serverHost = argHelper.forKeyWithDefaultString("serverHost", global_1.Global.BespokeServerHost);
     let serverPort = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
     if (subCommand === "http") {
+        if (argHelper.orderedCount() < 4) {
+            console.error("The node-id and port for the HTTP service must be specified");
+            process.exit(1);
+        }
         let targetPort = parseInt(argHelper.forIndex(3));
         let bespokeClient = new bespoke_client_1.BespokeClient(agentID, serverHost, serverPort, targetPort);
         bespokeClient.connect();

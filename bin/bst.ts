@@ -53,6 +53,11 @@ if (command === "proxy") {
     let serverPort: number = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
 
     if (subCommand === "http") {
+        if (argHelper.orderedCount() < 4) {
+            console.error("The node-id and port for the HTTP service must be specified");
+            process.exit(1);
+        }
+
         let targetPort: number = parseInt(argHelper.forIndex(3));
 
         let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, targetPort);
