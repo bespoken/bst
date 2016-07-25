@@ -22,6 +22,10 @@ http://blog.npmjs.org/post/85484771375/how-to-install-npm
 Install bespoke-tools:  
 `npm install bespoke-tools -g`
 
+Ensure you have a compatible version of node installed.  
+We support node version 4.x.x and higher. Check by entering:
+`node --version`
+
 # Available Commands
 ## Proxy HTTP
 **Overview**  

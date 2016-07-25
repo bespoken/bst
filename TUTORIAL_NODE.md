@@ -31,6 +31,9 @@ __Configure the Endpoint:__
 The endpoint should be set to:  
 https://bst.xappmedia.com?node-id=@YOUR_NODE@
 
+For example, if my node-id is JPK, it should be:
+https://bst.xappmedia.com/hello?node-id=JPK
+
 Set account linking to "No"
 
 __Configure SSL__  
