@@ -2,8 +2,8 @@
 This tutorial shows you how to get started developing for Alexa with Java and Maven.  
 
 # Getting Started
-__Clone the XAPP Alexa Skills Project:__  
-https://github.com/XappMedia/XappAlexa
+__Clone the Bespoke Tools Project:__  
+https://github.com/XappMedia/bst
 
 __Setup the Bespoke Tools (instructions here):__  
 https://github.com/XappMedia/bst/blob/master/README.md
@@ -11,8 +11,8 @@ https://github.com/XappMedia/bst/blob/master/README.md
 __Install Maven__  
 https://maven.apache.org/install.html
 
-__Run the XAPP Alexa Skill__  
-Go to the directory where it is installed.  
+__Run the Sample Java Skill__  
+Go to the samples/java directory under the Bespoke Tools project.  
 Compile it with this command:
 `mvn compile`  
 
@@ -22,7 +22,7 @@ Run it with this command:
 The service will listen on port 9999 by default.
 
 __Startup the bst proxy__  
-`bst proxy <YOUR_ID> 9999`
+`bst proxy http <YOUR_ID> 9999`
 
 __Sign up for Amazon Developer account (if you have not already):__  
 https://developer.amazon.com/appsandservices  
@@ -34,10 +34,6 @@ __Choose Get Started__
 __Choose Add a New Skill__  
 __Fill out the Information tab (give a name and invocation phrase)__  
 __Fill out the Interaction Model__  
-Copy the slots definitions from here:
-https://github.com/XappMedia/XappAlexa/tree/master/src/main/java/skill/minecrafthelper/speechAssets/customSlotTypes
-** Enter the slot definitions first - the other pieces rely on them**  
-
 Copy the Intent Schema from here:  
 https://github.com/XappMedia/XappAlexa/blob/master/src/main/java/skill/minecrafthelper/speechAssets/IntentSchema.json
 
@@ -46,7 +42,7 @@ https://github.com/XappMedia/XappAlexa/blob/master/src/main/java/skill/minecraft
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
-https://bst.xappmedia.com/minecraft?node-id=@YOUR_NODE@
+https://bst.xappmedia.com/hello?node-id=@YOUR_NODE@
 
 Set account linking to "No"
 

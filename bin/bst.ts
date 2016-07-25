@@ -9,6 +9,7 @@ import {Global} from "../lib/core/global";
 import {URLMangler} from "../lib/client/url-mangler";
 import {LambdaRunner} from "../lib/client/lambda-runner";
 import {LoggingHelper} from "../lib/core/logging-helper";
+import {StringUtil} from "../lib/core/string-util";
 
 let Logger = "BST";
 
@@ -36,47 +37,59 @@ if (argHelper.orderedCount() === 0) {
 if (command === "proxy") {
     matchedCommand = true;
 
-    if (argHelper.orderedCount() < 3) {
-        console.error("For proxy, must specify node ID and port to forward to!");
+    if (argHelper.orderedCount() === 1) {
+        console.error("For proxy, must specify sub-command - either http, lambda or urlgen");
         process.exit(1);
     }
 
-    let agentID: string  = argHelper.forIndex(1);
-    let targetPort: number = parseInt(argHelper.forIndex(2));
+    let subCommand: string  = argHelper.forIndex(1);
+    if (!StringUtil.isIn(subCommand, ["http", "lambda", "urlgen"])) {
+        console.error("Invalid sub-command - must be either http, lambda or urlgen");
+        process.exit(1);
+    }
+
+    let agentID: string  = argHelper.forIndex(2);
     let serverHost: string = argHelper.forKeyWithDefaultString("serverHost", Global.BespokeServerHost);
     let serverPort: number = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
 
+    if (subCommand === "http") {
+        let targetPort: number = parseInt(argHelper.forIndex(3));
 
-    let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, targetPort);
-    bespokeClient.connect();
-} else if (command === "proxy-url") {
-    matchedCommand = true;
+        let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, targetPort);
+        bespokeClient.connect();
 
-    let agentID: string  = argHelper.forIndex(1);
-    let url: string = argHelper.forIndex(2);
+    } else if (subCommand === "lambda") {
+        if (argHelper.orderedCount() < 4) {
+            console.error("The node-id and full-path to the Lambda entry-point must be specified");
+            process.exit(1);
+        }
 
-    let mangler = new URLMangler(url, agentID);
-    let newUrl = mangler.mangle();
-    console.log("");
-    console.log("Use this URL in the Alexa Skills configuration:");
-    console.log("");
-    console.log("   " + newUrl);
-    console.log("");
-} else if (command === "proxy-lambda") {
-    matchedCommand = true;
+        let lambdaPort: number = 10000;
+        let handler: string  = argHelper.forIndex(3);
 
-    let agentID: string  = argHelper.forIndex(1);
-    let handler: string  = argHelper.forIndex(2);
+        let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, lambdaPort);
+        bespokeClient.connect();
 
-    let serverHost: string  = argHelper.forKeyWithDefaultString("serverHost", Global.BespokeServerHost);
-    let serverPort: number = argHelper.forKeyWithDefaultNumber("serverPort", 5000);
+        let lambdaRunner = new LambdaRunner();
+        lambdaRunner.start(handler, lambdaPort);
 
-    let lambdaPort: number = 10000;
-    let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, lambdaPort);
-    bespokeClient.connect();
+    } else if (subCommand === "urlgen") {
+        if (argHelper.orderedCount() < 4) {
+            console.error("For urlgen, must specify the node-id and original URL to be transformed");
+            process.exit(1);
+        }
 
-    let lambdaRunner = new LambdaRunner();
-    lambdaRunner.start(handler, lambdaPort);
+        let url: string = argHelper.forIndex(3);
+
+        let mangler = new URLMangler(url, agentID);
+        let newUrl = mangler.mangle();
+        console.log("");
+        console.log("Use this URL in the Alexa Skills configuration:");
+        console.log("");
+        console.log("   " + newUrl);
+        console.log("");
+    }
+
 } else if (command === "sleep") {
     matchedCommand = true;
 
@@ -89,9 +102,10 @@ if (command === "help" || !matchedCommand) {
     console.log("Usage: bst <command>");
     console.log("");
     console.log("Commands:");
-    console.log("bst proxy <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
-    console.log("bst proxy-url <node-id> <alexa-url>       Takes a normal URL and modifies to include the <node-id> in the query string");
-    console.log("bst proxy-lambda <node-id> <handler-file> Runs a lambda as a local service. Must be the full path to the lambda file.");
+    console.log("bst proxy http <node-id> <service-port>        Forwards traffic from Alexa to your local Skill service, listening on <service-port>");
+    console.log("bst proxy lambda <node-id> <handler-file>      Runs a lambda as a local service. Must be the full path to the lambda file.");
+    console.log("bst proxy urlgen <node-id> <alexa-url>            Takes a normal URL and modifies to include the <node-id> in the query string");
 
     console.log("");
 }
+

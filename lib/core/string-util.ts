@@ -20,4 +20,15 @@ export class StringUtil {
             str = str + padString;
         return str;
     }
+
+    public static isIn(input: string, values: Array<string>): boolean {
+        let match = false;
+        for (let s of values) {
+            if (input === s) {
+                match = true;
+                break;
+            }
+        }
+        return match;
+    }
 }

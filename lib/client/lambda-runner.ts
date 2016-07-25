@@ -19,7 +19,6 @@ export class LambdaRunner {
             });
 
             request.on("end", function () {
-                //console.log("body: " + requestBody);
                 self.invoke(file, requestBody, response);
             });
         });
@@ -33,7 +32,7 @@ export class LambdaRunner {
             path = [process.cwd(), file].join("/");
         }
 
-        // console.log("path: " + path);
+        LoggingHelper.info(Logger, "LambdaPath: " + path);
         let bodyJSON: any = JSON.parse(body);
         let lambda: any = require(path);
         // let lambda = System.import("./" + file);
