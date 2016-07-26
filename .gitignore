@@ -3,4 +3,3 @@ node_modules/
 *.log
 **/*.iml
 target/
-.env
