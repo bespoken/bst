@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master)](https://travis-ci.org/bespoken/bst)
+
+
 # Overview
 The **bst** (aka Bespoken Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.
   
