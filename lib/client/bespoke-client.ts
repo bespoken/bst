@@ -11,7 +11,7 @@ import {LoggingHelper} from "../core/logging-helper";
 
 let Logger = "BST-CLIENT";
 /**
- * Handles between the BeSpoke server and the service running on the local machine
+ * Handles between the bespoken server and the service running on the local machine
  * Initiates a TCP connection with the server
  */
 export class BespokeClient {

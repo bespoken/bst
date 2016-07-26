@@ -1,4 +1,4 @@
-# Bespoke Java Sample
+# Bespoken Java Sample
 Alexa Demo
 
 ## Concepts

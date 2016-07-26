@@ -2,17 +2,17 @@
 This tutorial shows you how to get started developing for Alexa with Java and Maven.  
 
 # Getting Started
-__Clone the Bespoke Tools Project:__  
-https://github.com/XappMedia/bst
+__Clone the Bespoken Tools Project:__
+https://github.com/bespoken/bst
 
-__Setup the Bespoke Tools (instructions here):__  
-https://github.com/XappMedia/bst/blob/master/README.md
+__Setup the Bespoken Tools (instructions here):__
+https://github.com/bespoken/bst/blob/master/README.md
 
 __Install Maven__  
 https://maven.apache.org/install.html
 
 __Run the Sample Java Skill__  
-Go to the samples/java directory under the Bespoke Tools project.  
+Go to the samples/java directory under the Bespoken Tools project.
 Compile it with this command:  
 `mvn compile`  
 
