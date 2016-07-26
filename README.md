@@ -1,5 +1,5 @@
 # Overview
-The **bst** (aka Bespoke Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.  
+The **bst** (aka Bespoken Tools aka the BEAST :-)) makes it easy to develop for Alexa/Echo.
   
 The current version provides two commands - **proxy http** and **proxy lambda**.  
 These proxies make it super-easy to develop and debug your Alexa skill on your local machine.  
@@ -19,11 +19,11 @@ Keep an eye out as we add more features and commands in the future. Current plan
 Install NPM (if not already):  
 http://blog.npmjs.org/post/85484771375/how-to-install-npm
 
-Install bespoke-tools:  
-`npm install bespoke-tools -g`
+Install bespoken-tools:
+`npm install bespoken-tools -g`
 
 If you are on MacOS and the command fails, it is probably because you need to run it with sudo, like this:  
-`sudo npm install bespoke-tools -g`
+`sudo npm install bespoken-tools -g`
 
 Ensure you have a compatible version of node installed.  
 We support node version 4.x.x and higher. Check by entering:  
