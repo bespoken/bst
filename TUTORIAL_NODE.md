@@ -5,8 +5,8 @@ This tutorial shows you how to get started developing for Alexa with Node.
 - Clone the Amazon Alexa Skills Kit for JavaScript repo:  
 https://github.com/amzn/alexa-skills-kit-js
 
-- Setup the Bespoke Tools (instructions here):  
-https://github.com/XappMedia/bst/blob/master/README.md
+- Setup the Bespoken Tools (instructions here):
+https://github.com/bespoken/bst/blob/master/README.md
 
 - Run the helloWorld Sample project  
 `bst proxy-lambda <YOUR_ID> <SKILLS_KIT_JS>/samples/helloWorld/src/index.js`
