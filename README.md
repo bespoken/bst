@@ -117,6 +117,8 @@ _Also note that the Node ID set with the proxy command must be passed in the que
 
 The rest of the URL path and query string should be unchanged.
 
+For more information on configuring your Skill see [Skill Configuration](https://github.com/XappMedia/bst/blob/master/docs/SKILL_CONFIGURATION.md).
+
 **Usage**
 
 The proxy urlgen command can help generate the endpoint.
