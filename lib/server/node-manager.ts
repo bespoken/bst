@@ -44,8 +44,10 @@ export class NodeManager {
 
             // When the socket closes, remove it from the dictionary
             socketHandler.onCloseCallback = function() {
-                console.log("NODE CLOSED: " + node.id);
-                delete self.nodes[node.id];
+                if (node !== null) {
+                    console.log("NODE CLOSED: " + node.id);
+                    delete self.nodes[node.id];
+                }
             };
 
             // We have a connection - a socket object is assigned to the connection automatically

@@ -3,7 +3,7 @@ Handle multiple registrations of same node
     How to make this secure?
     Auto-generate IDs
     
-Add lots of tests for lambda runner
+Add lots of tests for lambda runner and bst.ts
 
 Figure out which license to use
     Include at the top of the file
@@ -20,11 +20,13 @@ Add auto-reload on Lambda
 
 Move to public repo
 
-Need to remove this file and developer before distributing?
+Add release notes
 
 # Medium
 Add better docs for each command
     Use the readthedocs.org
+    
+Add usage tracking?
   
 Add support for auto-recompile in Sample Java project
 
@@ -42,12 +44,12 @@ Add more comments and tests
 
 Add socket labels
 
-Better sockethandler tests
+Better SocketHandler tests
     Better mocks? Or use actual sockets?
     
 What to do with Alexa request signatures?
 
-Add npmignore to publish less NPM stuff
+Add NPM ignore to publish less NPM stuff
 
 Figure out how to do batch lint
 
@@ -71,7 +73,7 @@ Figure out how to run unit tests as ts files (rather than js)
 
 Add unique ID for webhook connections
 
-Figure out how to pass-thru the original calling IP to bespoke-client
+Figure out how to pass-through the original calling IP to bespoke-client
 
 Added npm install step to docker file?
  

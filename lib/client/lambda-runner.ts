@@ -7,7 +7,6 @@ import {LoggingHelper} from "../core/logging-helper";
 let Logger = "BST-LAMBDA";
 
 export class LambdaRunner {
-    System: any;
     public start (file: string, port: number): void {
         let self = this;
         let server = http.createServer();
