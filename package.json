@@ -29,7 +29,7 @@
   "scripts": {
     "postversion": "git push && git push --tags",
     "pretest": "tsc",
-    "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec",
+    "coverage": "istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec",
     "coveralls": "npm run coverage && coveralls < coverage/lcov.info",
     "test": "mocha test/**/*-test.js"
   }
