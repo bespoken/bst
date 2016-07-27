@@ -1,6 +1,6 @@
 ## Configuring Your Skill For bst proxy
 
-In order to leverage the bst proxy functionality, you must configure your skill to point to the bst server.
+In order to leverage the bst proxy functionality, you must configure your skill from the Amazon Develop Console to point to the bst server.
 
 ### Configure the Endpoint ###
 
@@ -14,14 +14,14 @@ It should instead be configured to point like so:
 https://bst.xappmedia.com/skillA?node-id=JPK
 ```
 
-Navigate to the Configuration step and update the HTTPS endpoint
+From your [Skill's list](https://developer.amazon.com/edw/home.html#/skills/list), click edit and navigate the Configuration step and update the HTTPS endpoint
 <p align="center">
   <img src="https://bespoken.tools/img/skill-configuration-http.png" />
 </p>
 
-Also, account linking should be set to "No"
+__Please Note__ Account linking should be set to "No"
 
-To help generate your the URL, see [$ bst proxy urlgen](https://github.com/bespoken/bst#proxy-urlgen)
+To help generate your the URL, see [$ bst proxy urlgen](https://github.com/bespoken/bst#-proxy-urlgen)
 
 
 ### SSL Certificate ###

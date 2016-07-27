@@ -1,4 +1,4 @@
-bst - Tools for Alexa Skills Development
+Bespoken Tools (bst) - CLI Tools for Alexa Skills Development
 ====================
 
 [![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master)](https://travis-ci.org/bespoken/bst)
@@ -15,7 +15,7 @@ The proxies can work either with a service listening on a port (**proxy http**),
 or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
   
 It works by forwarding traffic from Alexa to our server, which in turns sends it to your machine.  
-A node ID that you designate is how we know which traffic should come to you.    
+A Node ID that you designate is how we know which traffic should come to you.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 - **deploy**: Automatically deploy Alexa Lambdas to the cloud with a single command
@@ -30,7 +30,7 @@ $ node --version && npm --version
 We support node version `4.x.x` and above.  For help installing, see see [How To Install NPM](http://blog.npmjs.org/post/85484771375/how-to-install-npm)
 
 
-Install the bespoken tools command line tool:
+Next, install the bespoken tools command line tool (bst):
 ```
 $ npm install bespoken-tools -g
 ```
@@ -51,7 +51,7 @@ The proxy command allows you to interact with a local service running on your ma
 
 You will need to determine a unique identifier to pass to **bst** so the bst server can identify which calls to point to your local machine.  It essentially allows any local HTTP service to be accessed via Alexa.
 
-Your node id can be any unique alphanumeric string.
+Your Node ID can be any unique alphanumeric string.
 
 ### $ proxy http
 **Overview**  
@@ -80,7 +80,7 @@ The proxy lambda command allows you to run a Lambda as a local service your mach
 
 **Note**
 - The command currently only supports Node Lambdas.
-- The command **must** be restarted after changes to your Lambda.
+- The command **must** be restarted after changes are made to your Lambda.
 
 **Usage**  
 To use it, invoke it with the full path to the Lambda file to run, along with your machine's Node ID.
