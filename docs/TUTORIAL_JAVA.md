@@ -14,15 +14,21 @@ https://maven.apache.org/install.html
 __Run the Sample Java Skill__  
 Go to the samples/java directory under the Bespoken Tools project.
 Compile it with this command:  
-`mvn compile`  
+```
+$ mvn compile
+```
 
 Run it with this command:  
-`mvn exec:java -Dexec.executable="java" -DdisableRequestSignatureCheck=true -Dexec.args=$@`
+```
+$ mvn exec:java -Dexec.executable="java" -DdisableRequestSignatureCheck=true -Dexec.args=$@
+```
 
 The service will listen on port 9999 by default.
 
 __Startup the bst proxy__  
-`bst proxy http <YOUR_ID> 9999`
+```
+$ bst proxy http <NODE_ID> 9999
+```
 
 __Sign up for Amazon Developer account (if you have not already):__  
 https://developer.amazon.com/appsandservices  

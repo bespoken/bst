@@ -72,7 +72,7 @@ The `<NODE_ID>` value, "JPK", is the name for your machine.
 
 The second parameter, `<PORT>`, represents the port that your local Alexa service is listening on.  Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
 
-You can learn more here at our [JAVA Tutorial](https://github.com/XappMedia/bst/blob/master/TUTORIAL_JAVA.md)
+You can learn more here at our [JAVA Tutorial](https://github.com/XappMedia/bst/blob/master/docs/TUTORIAL_JAVA.md)
 
 ### $ proxy lambda (Experimental)
 **Overview**  
@@ -97,7 +97,7 @@ Example:
 $ bst proxy lambda JPK /Users/jpk/dev/samples/src/index.js
 ```
 
-You can learn more here at our [NODE Tutorial](https://github.com/XappMedia/bst/blob/master/TUTORIAL_NODE.md):
+You can learn more here at our [NODE Tutorial](https://github.com/XappMedia/bst/blob/master/docs/TUTORIAL_NODE.md):
 
 ## $ proxy urlgen
 
