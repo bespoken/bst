@@ -9,10 +9,13 @@ https://github.com/amzn/alexa-skills-kit-js
 https://github.com/bespoken/bst/blob/master/README.md
 
 - Run the helloWorld Sample project  
-`bst proxy-lambda <YOUR_ID> <SKILLS_KIT_JS>/samples/helloWorld/src/index.js`
+```
+$ bst proxy lambda <NODE_ID> <SKILLS_KIT_JS>/samples/helloWorld/src/index.js
+```
 
 - Sign up for Amazon Developer account (if you have not already):  
-https://developer.amazon.com/appsandservices  
+https://developer.amazon.com/appsandservices
+
 Click on the Sign In or Create Account link on the top-right
 
 # Configure your skill
