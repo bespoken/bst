@@ -12,7 +12,10 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.11",
+    "istanbul": "^0.4.4",
     "mocha": "2.5.3",
+    "mocha-lcov-reporter": "^1.2.0",
     "tslint": "^3.13.0",
     "typemoq": "^0.2.0"
   },
@@ -26,6 +29,8 @@
   "scripts": {
     "postversion": "git push && git push --tags",
     "pretest": "tsc",
+    "coverage": "istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec",
+    "coveralls": "npm run coverage && coveralls < coverage/lcov.info",
     "test": "mocha test/**/*-test.js"
   }
 }
