@@ -5,9 +5,6 @@ Handle multiple registrations of same node
     
 Add lots of tests for lambda runner and bst.ts
 
-Figure out which license to use
-    Include at the top of the file
-    
 Add init function
     Creates config file - generates ID
     
@@ -18,9 +15,9 @@ Make Lambda runner robust
 
 Add auto-reload on Lambda
 
-Move to public repo
+Add node sweeper handler
 
-Add release notes
+Add user tracking
 
 # Medium
 Add better docs for each command
