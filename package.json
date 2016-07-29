@@ -1,8 +1,8 @@
 {
-  "name": "bespoke-tools",
+  "name": "bespoken-tools",
   "license": "MIT",
   "private": false,
-  "version": "0.4.6",
+  "version": "0.4.7",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js"
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/xappmedia/bst.git"
+    "url": "git://github.com/bespoken/bst.git"
   },
   "scripts": {
     "postversion": "git push && git push --tags",
