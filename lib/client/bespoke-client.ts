@@ -10,11 +10,13 @@ import {NetworkErrorType} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
 
 let Logger = "BST-CLIENT";
+let KeepAlivePeriod = 5000;
 /**
  * Handles between the bespoken server and the service running on the local machine
  * Initiates a TCP connection with the server
  */
 export class BespokeClient {
+    public onConnect: () => void = null;
     public onWebhookReceived: WebhookReceivedCallback;
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
@@ -34,19 +36,17 @@ export class BespokeClient {
             self.onMessage(data);
         });
 
-        // If the socket closes, re-connect - this happens due to timeout and other reasons
-        this.socketHandler.onCloseCallback = function () {
-            self.connect();
-        };
-
         // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
             LoggingHelper.info(Logger, self.host + ":" + self.port + " Connected");
-           // As soon as we connect, we send our ID
+            // As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
 
             self.send(message);
+            if (self.onConnect !== null) {
+                self.onConnect();
+            }
         });
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
@@ -65,6 +65,27 @@ export class BespokeClient {
                 }
             });
         };
+
+        this.keepAliveTimer();
+    }
+
+    /**
+     * Pings the server on a 5-second period to keep the connection alive
+     */
+    private keepAliveTimer (): void {
+        let self = this;
+        setTimeout(function () {
+            self.keepAlive();
+        }, KeepAlivePeriod);
+    }
+
+    /**
+     * Pings the server with a keep-alive message
+     */
+    public keepAlive(): void {
+        LoggingHelper.debug(Logger, "KeepAlive PING");
+        this.send(Global.KeepAliveMessage);
+        this.keepAliveTimer();
     }
 
     public send(message: string) {

@@ -9,7 +9,6 @@
     - Add examples
 - [ ] Make Lambda runner robust
 - [ ] Add auto-reload on Lambda
-- [x] Move to public repo
 - [ ] Need to remove this file and developer before distributing?
 
 # Medium
@@ -23,7 +22,7 @@
     - Set in config?
 - [ ] Add user tracking
 - [ ] Add node sweeper execption handler
-- [ ] Add keep alive packets
+- [ ] Add graceful error-handling for the client if the server shuts down
     
 # Lower priority
 - [ ] Add more comments and tests

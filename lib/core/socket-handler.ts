@@ -89,11 +89,6 @@ export class SocketHandler {
         this.socket.write(message, null);
     }
 
-    public call(message: string, onReply: OnMessage) {
-        this.onMessage = onReply;
-        this.send(message);
-    }
-
     public remoteAddress (): string {
         return this.socket.remoteAddress;
     }

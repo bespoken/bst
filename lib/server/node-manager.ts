@@ -3,14 +3,19 @@ import {Node} from "./node";
 import {Socket} from "net";
 import {SocketHandler} from "../core/socket-handler";
 import {Server} from "net";
+import {Global} from "../core/global";
 
 export interface OnConnectCallback {
     (node: Node): void;
 }
 
+export interface OnKeepAliveCallback {
+    (node: Node): void;
+}
 export class NodeManager {
     public host: string = "0.0.0.0";
-    public onConnect: OnConnectCallback;
+    public onConnect: OnConnectCallback = null;
+    public onKeepAliveCallback: OnKeepAliveCallback = null;
 
     private nodes: {[id: string]: Node } = {};
     public server: Server;
@@ -35,10 +40,18 @@ export class NodeManager {
 
                     socketHandler.send("ACK");
                     initialConnection = false;
-                }
 
-                if (self.onConnect != null) {
-                    self.onConnect(node);
+                    if (self.onConnect != null) {
+                        self.onConnect(node);
+                    }
+                } else if (message === Global.KeepAliveMessage) {
+                    if (self.onKeepAliveCallback !== null) {
+                        self.onKeepAliveCallback(node);
+                    }
+
+                } else if (node.handlingRequest()) {
+                    // Handle the case where the data received is a reply from the node to data sent to it
+                    node.onReply(message);
                 }
             });
 
