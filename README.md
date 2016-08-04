@@ -72,7 +72,7 @@ The `<NODE_ID>` value, "JPK", is the name for your machine.
 
 The second parameter, `<PORT>`, represents the port that your local Alexa service is listening on.  Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
 
-You can learn more here at our [JAVA Tutorial](https://github.com/XappMedia/bst/blob/master/docs/TUTORIAL_JAVA.md)
+You can learn more here at our [JAVA Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_JAVA.md)
 
 ### $ proxy lambda (Experimental)
 **Overview**  
@@ -97,7 +97,7 @@ Example:
 $ bst proxy lambda JPK /Users/jpk/dev/samples/src/index.js
 ```
 
-You can learn more here at our [NODE Tutorial](https://github.com/XappMedia/bst/blob/master/docs/TUTORIAL_NODE.md):
+You can learn more here at our [NODE Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_NODE.md):
 
 ## $ proxy urlgen
 
@@ -110,14 +110,14 @@ https://myskill.example.com/skillA
 
 It should instead be configured to point at the bst server, like so:
 ```
-https://bst.xappmedia.com/skillA?node-id=JPK
+https://proxy.bespoken.tools/skillA?node-id=JPK
 ```
 
 _Also note that the Node ID set with the proxy command must be passed in the query string.  This is what ties off your local proxy with our server._
 
 The rest of the URL path and query string should be unchanged.
 
-For more information on configuring your Skill see [Skill Configuration](https://github.com/XappMedia/bst/blob/master/docs/SKILL_CONFIGURATION.md).
+For more information on configuring your Skill see [Skill Configuration](https://github.com/bespoken/bst/blob/master/docs/SKILL_CONFIGURATION.md).
 
 **Usage**
 

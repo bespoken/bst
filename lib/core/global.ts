@@ -5,7 +5,7 @@ import {LoggingHelper} from "./logging-helper";
 export class Global {
     public static MessageDelimiter = "4772616365";
     public static KeepAliveMessage = "KEEPALIVE";
-    public static BespokeServerHost = "bst.xappmedia.com";
+    public static BespokeServerHost = "proxy.bespoken.tools";
 
     public static initialize(): void {
         LoggingHelper.initialize();

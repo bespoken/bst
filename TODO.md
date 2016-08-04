@@ -23,6 +23,7 @@
 - [ ] Add user tracking
 - [ ] Add node sweeper execption handler
 - [ ] Add graceful error-handling for the client if the server shuts down
+- [ ] Pull JS files out of repo?
     
 # Lower priority
 - [ ] Add more comments and tests
