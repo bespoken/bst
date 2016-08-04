@@ -32,10 +32,10 @@ https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speec
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
-https://bst.xappmedia.com?node-id=@YOUR_NODE@
+https://proxy.bespoken.tools?node-id=@YOUR_NODE@
 
 For example, if my node-id is JPK, it should be:  
-https://bst.xappmedia.com/hello?node-id=JPK
+https://proxy.bespoken.tools/hello?node-id=JPK
 
 Set account linking to "No"
 
