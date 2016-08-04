@@ -16,6 +16,7 @@
     "istanbul": "^0.4.4",
     "mocha": "2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
+    "remap-istanbul": "^0.6.4",
     "tslint": "^3.13.0",
     "typemoq": "^0.2.0"
   },
@@ -29,8 +30,8 @@
   "scripts": {
     "postversion": "git push && git push --tags",
     "pretest": "tsc",
-    "coverage": "istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec",
-    "coveralls": "npm run coverage && coveralls < coverage/lcov.info",
+    "coverage": "tsc && istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
+    "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
     "test": "mocha test/**/*-test.js"
   }
 }
