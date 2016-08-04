@@ -4,3 +4,9 @@ node_modules/
 **/*.iml
 target/
 coverage/
+
+# Do not track the generated javascript and map files from typescript
+lib/**/*.js
+lib/**/*.map
+test/**/*.js
+test/**/*.map
