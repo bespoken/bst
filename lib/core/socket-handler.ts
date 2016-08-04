@@ -47,6 +47,7 @@ export class SocketHandler {
         });
 
         this.socket.on("close", function() {
+            LoggingHelper.info(Logger, "Socket closed");
             if (self.onCloseCallback != null) {
                 self.onCloseCallback();
             }
@@ -86,11 +87,6 @@ export class SocketHandler {
         // Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;
         this.socket.write(message, null);
-    }
-
-    public call(message: string, onReply: OnMessage) {
-        this.onMessage = onReply;
-        this.send(message);
     }
 
     public remoteAddress (): string {

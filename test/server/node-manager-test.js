@@ -29,5 +29,26 @@ describe("NodeManager", function () {
             }, 100);
         });
     });
+    describe("KeepAlive", function () {
+        it("Received", function (done) {
+            let nodeManager = new node_manager_1.NodeManager(9000);
+            nodeManager.start();
+            let keepAlives = 0;
+            nodeManager.onKeepAliveCallback = function (node) {
+                keepAlives++;
+            };
+            let bespokeClient = new bespoke_client_1.BespokeClient("JPK", "localhost", 9000, 9001);
+            bespokeClient.onConnect = function () {
+                bespokeClient.keepAlive();
+            };
+            bespokeClient.connect();
+            setTimeout(function () {
+                assert.equal(1, keepAlives);
+                nodeManager.stop(function () {
+                    done();
+                });
+            }, 100);
+        });
+    });
 });
 //# sourceMappingURL=node-manager-test.js.map
