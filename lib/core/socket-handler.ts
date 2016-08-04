@@ -47,6 +47,7 @@ export class SocketHandler {
         });
 
         this.socket.on("close", function() {
+            LoggingHelper.info(Logger, "Socket closed");
             if (self.onCloseCallback != null) {
                 self.onCloseCallback();
             }

@@ -34,6 +34,11 @@ export class BespokeClient {
             self.onMessage(data);
         });
 
+        // If the socket closes, re-connect - this happens due to timeout and other reasons
+        this.socketHandler.onCloseCallback = function () {
+            self.connect();
+        };
+
         // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
             LoggingHelper.info(Logger, self.host + ":" + self.port + " Connected");

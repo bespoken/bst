@@ -3,8 +3,6 @@
     - How to make this secure?
     - Auto-generate IDs
 - [ ] Add lots of tests for lambda runner
-- [ ] Figure out which license to use
-    - Include at the top of the file
 - [ ] Add init function
     - Creates config file - generates ID
 - [ ] Change @ symbols to angles in tutorials
@@ -25,6 +23,7 @@
     - Set in config?
 - [ ] Add user tracking
 - [ ] Add node sweeper execption handler
+- [ ] Add keep alive packets
     
 # Lower priority
 - [ ] Add more comments and tests
