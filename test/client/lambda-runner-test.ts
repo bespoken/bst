@@ -9,7 +9,7 @@ import {HTTPClient} from "../../lib/client/http-client";
 describe("LambdaRunner", function() {
     describe("#start()", function() {
         it("Starts Correctly", function(done) {
-            let runner = new LambdaRunner("test/client/ExampleLambda.js", 9999);
+            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 9999);
             runner.start();
 
             let client = new HTTPClient();
@@ -24,7 +24,7 @@ describe("LambdaRunner", function() {
         });
 
         it("Handles Lambda Fail Correctly", function(done) {
-            let runner = new LambdaRunner("test/client/ExampleLambda.js", 9999);
+            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 9999);
             runner.start();
 
             let client = new HTTPClient();
@@ -40,7 +40,7 @@ describe("LambdaRunner", function() {
 
     describe("#stop()", function() {
         it("Stops Correctly", function(done) {
-            let runner = new LambdaRunner("test/client/ExampleLambda.js", 9999);
+            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 9999);
             runner.start();
 
             let client = new HTTPClient();

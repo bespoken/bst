@@ -12,3 +12,6 @@ lib/**/*.js
 lib/**/*.map
 test/**/*.js
 test/**/*.map
+
+# Include all stuff under test/resources
+!test/resources/*
