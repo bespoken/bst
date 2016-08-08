@@ -21,21 +21,18 @@ describe("NodeManager", function() {
 
             nodeManager.start();
             client.connect();
-            setTimeout(function () { console.log("Time UP"); }, 2000);
         });
     });
 
     describe("Close", function() {
-        it("Worked", function (done) {
+        it("Closed Successfully", function (done) {
             let nodeManager = new NodeManager(9000);
 
-            nodeManager.start();
-
-            setTimeout(function() {
+            nodeManager.start(function() {
                 nodeManager.stop(function () {
                     done();
                 });
-            }, 100);
+            });
         });
     });
 
@@ -43,6 +40,7 @@ describe("NodeManager", function() {
         it("Received", function (done) {
             let nodeManager = new NodeManager(9000);
             nodeManager.start();
+
             let keepAlives = 0;
             nodeManager.onKeepAliveCallback = function(node: Node) {
                 keepAlives++;
