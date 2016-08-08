@@ -7,28 +7,32 @@ import {LoggingHelper} from "../core/logging-helper";
 let Logger = "BST-LAMBDA";
 
 export class LambdaRunner {
-    public start (file: string, port: number): void {
+    private server: Server = null;
+
+    public constructor(public file: string, public port: number) {}
+
+    public start (): void {
         let self = this;
-        let server = http.createServer();
-        server.listen(port);
-        server.on("request", function(request: IncomingMessage, response: ServerResponse) {
+        this.server = http.createServer();
+        this.server.listen(this.port);
+        this.server.on("request", function(request: IncomingMessage, response: ServerResponse) {
             let requestBody: string = "";
             request.on("data", function(chunk: Buffer) {
                 requestBody += chunk.toString();
             });
 
             request.on("end", function () {
-                self.invoke(file, requestBody, response);
+                self.invoke(requestBody, response);
             });
         });
 
-        LoggingHelper.info(Logger, "LambdaRunner started on port: " + port);
+        LoggingHelper.info(Logger, "LambdaRunner started on port: " + this.server.address().port.toString());
     }
 
-    public invoke (file: string, body: string, response: ServerResponse): void {
-        let path: string = file;
+    public invoke (body: string, response: ServerResponse): void {
+        let path: string = this.file;
         if (!path.startsWith("/")) {
-            path = [process.cwd(), file].join("/");
+            path = [process.cwd(), this.file].join("/");
         }
 
         LoggingHelper.info(Logger, "LambdaPath: " + path);
@@ -37,6 +41,10 @@ export class LambdaRunner {
         // let lambda = System.import("./" + file);
         let context: LambdaContext = new LambdaContext(response);
         lambda.handler(bodyJSON, context);
+    }
+
+    public stop (): void {
+        this.server.close();
     }
 }
 
@@ -61,6 +69,7 @@ export class LambdaContext {
         } else {
             statusCode = 500;
             contentType = "text/plain";
+            bodyString = body.toString();
         }
 
         this.response.writeHead(statusCode, {

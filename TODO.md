@@ -32,7 +32,6 @@
     - Better mocks? Or use actual sockets?
 - [ ] What to do with Alexa request signatures?
 - [ ] Add npmignore to publish less NPM stuff
-- [ ] Figure out how to do batch lint
 - [ ] Automate publishing
 - [ ] Handle chunked message reply from proxied service more exactly
     - Is probably doing a double callback, which could be a problem

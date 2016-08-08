@@ -73,7 +73,7 @@ export class NodeManager {
 
     /**
      * Calling stop tells the server to stop listening
-     * However, connections cannot be closed until all sockets disconnect, so loop through sockets and force a disconnect
+     * However, connections are not closed until all sockets disconnect, so loop through sockets and force a disconnect
      * @param callback
      */
     public stop (callback: () => void): void {
