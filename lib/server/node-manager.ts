@@ -4,6 +4,9 @@ import {Socket} from "net";
 import {SocketHandler} from "../core/socket-handler";
 import {Server} from "net";
 import {Global} from "../core/global";
+import {LoggingHelper} from "../core/logging-helper";
+
+let Logger = "NODEMGR";
 
 export interface OnConnectCallback {
     (node: Node): void;
@@ -26,7 +29,7 @@ export class NodeManager {
         return this.nodes[nodeID];
     }
 
-    public start () {
+    public start (callback?: () => void) {
         let self = this;
         this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
@@ -58,22 +61,30 @@ export class NodeManager {
             // When the socket closes, remove it from the dictionary
             socketHandler.onCloseCallback = function() {
                 if (node !== null) {
-                    console.log("NODE CLOSED: " + node.id);
+                    LoggingHelper.info(Logger, "NODE CLOSED: " + node.id);
                     delete self.nodes[node.id];
                 }
             };
 
             // We have a connection - a socket object is assigned to the connection automatically
-            console.log("NODE CONNECTED: " + socket.remoteAddress + ":" + socket.remotePort);
+            LoggingHelper.info(Logger, "NODE CONNECTED: " + socket.remoteAddress + ":" + socket.remotePort);
 
         }).listen(this.port, this.host);
 
-        console.log("NodeServer listening on " + this.host + ":" + this.port);
+        // Make a callback when the server starts up
+        this.server.on("listening", function () {
+            // On startup, call callback if defined
+            if (callback !== undefined && callback !== null) {
+                callback();
+            }
+        });
+
+        LoggingHelper.info(Logger, "NodeServer listening on " + this.host + ":" + this.port);
     }
 
     /**
      * Calling stop tells the server to stop listening
-     * However, connections cannot be closed until all sockets disconnect, so loop through sockets and force a disconnect
+     * However, connections are not closed until all sockets disconnect, so loop through sockets and force a disconnect
      * @param callback
      */
     public stop (callback: () => void): void {
@@ -81,8 +92,18 @@ export class NodeManager {
             if (this.nodes.hasOwnProperty(key)) {
                 let node: Node = this.node(key);
                 node.socketHandler.disconnect();
+                LoggingHelper.info(Logger, "NODE CLOSING: " + node.id);
             }
         }
-        this.server.close(callback);
+
+        this.server.close(function (error: any) {
+            if (error !== undefined) {
+                LoggingHelper.error(Logger, "ERROR! NodeManager not stopped: " + error);
+            } else {
+                LoggingHelper.info(Logger, "STOPPED");
+                callback();
+            }
+
+        });
     }
 }

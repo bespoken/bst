@@ -16,12 +16,15 @@ import {Socket} from "net";
 describe("WebhookManager", function() {
     describe("Connect", function() {
         it("Should Connect and Receive Data", function(done) {
+            this.timeout(5000);
             let manager = new WebhookManager(8080);
             manager.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
                 console.log("NodeID: " + request.nodeID());
                 assert.equal("10", request.nodeID());
                 assert.equal("Test", request.body);
-                done();
+                manager.stop(function () {
+                    done();
+                });
             };
 
             manager.start();

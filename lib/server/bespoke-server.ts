@@ -40,8 +40,17 @@ export class BespokeServer {
     }
 
     public stop(callback: () => void): void {
-        this.nodeManager.stop(callback);
-        this.webhookManager.stop();
+        // Use a counter to see that both callbacks have completed
+        // The beauty of Node - use non-synchronized counter variables like this safely :-)
+        let count = 0;
+        let callbackFunction = function () {
+            count++;
+            if (count === 2) {
+                callback();
+            }
+        };
+        this.nodeManager.stop(callbackFunction);
+        this.webhookManager.stop(callbackFunction);
     }
 
 }

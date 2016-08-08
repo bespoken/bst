@@ -75,8 +75,8 @@ if (command === "proxy") {
         let bespokeClient = new BespokeClient(agentID, serverHost, serverPort, lambdaPort);
         bespokeClient.connect();
 
-        let lambdaRunner = new LambdaRunner();
-        lambdaRunner.start(handler, lambdaPort);
+        let lambdaRunner = new LambdaRunner(handler, lambdaPort);
+        lambdaRunner.start();
 
     } else if (subCommand === "urlgen") {
         if (argHelper.orderedCount() < 4) {
