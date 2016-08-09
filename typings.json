@@ -1,5 +1,6 @@
 {
   "globalDependencies": {
+    "commander": "registry:dt/commander#2.3.0+20160317120654",
     "mocha": "registry:dt/mocha#2.2.5+20160619032855",
     "node-4": "registry:dt/node-4#4.0.0+20160720000508",
     "winston": "registry:dt/winston#0.0.0+20160417152829"
