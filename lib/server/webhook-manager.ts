@@ -12,6 +12,7 @@ export interface WebhookReceivedCallback {
 export class WebhookManager {
     private server: Server;
     private host: string;
+    private socketMap: {[id: number]: Socket} = {};
     public onWebhookReceived: WebhookReceivedCallback = null;
 
     constructor (private port: number) {
@@ -21,8 +22,13 @@ export class WebhookManager {
     public start(): void {
         let self = this;
 
+        let socketIndex = 0;
         this.server = net.createServer(function(socket: Socket) {
             let webhookRequest = new WebhookRequest();
+            socketIndex++;
+
+            let socketKey = socketIndex;
+            self.socketMap[socketIndex] = socket;
             socket.on("data", function(data: Buffer) {
                 // Throw away the pings - too much noise
                 let dataString = data.toString();
@@ -44,14 +50,27 @@ export class WebhookManager {
                     self.onWebhookReceived(socket, webhookRequest);
                 }
             });
+
+            socket.on("close", function () {
+                delete self.socketMap[socketKey];
+            });
+
         }).listen(this.port, this.host);
 
         console.log("WebhookServer listening on " + this.host + ":" + this.port);
     }
 
-    public stop (): void {
+    public stop (callback?: () => void): void {
+        let self: WebhookManager = this;
+        for (let key in self.socketMap) {
+            let socket = self.socketMap[key];
+            socket.end();
+        }
+
         this.server.close(function () {
-            console.log("WebhookManager STOP");
+            if (callback !== undefined && callback !== null) {
+                callback();
+            }
         });
     }
 }

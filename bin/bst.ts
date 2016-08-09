@@ -18,3 +18,4 @@ program
     .version(Global.version())
     .command("proxy (http|lambda)", "launches the bst proxy")
     .parse(process.argv);
+

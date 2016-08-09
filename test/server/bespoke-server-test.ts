@@ -15,12 +15,13 @@ import {NetworkErrorType} from "../../lib/core/global";
 describe("BespokeServerTest", function() {
     describe("ReceiveWebhook", function() {
         it("Connects and Receives Callback", function(done) {
+            this.timeout(5000);
             // Start the server
-            let server = new BespokeServer(8000, 9000);
+            let server = new BespokeServer(8010, 9010);
             server.start();
 
             // Connect a client
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 9011);
             bespokeClient.connect();
 
             bespokeClient.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
@@ -33,23 +34,23 @@ describe("BespokeServerTest", function() {
             };
 
             let webhookCaller = new HTTPClient();
-            webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
+            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "Test");
         });
 
         it("Handles Connection Failure", function(done) {
-            this.timeout(1000);
+            this.timeout(2000);
             // Start the server
             let server = new BespokeServer(8000, 9000);
             server.start();
 
             // Connect a client
             let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
-            console.log("Test2");
             bespokeClient.connect();
             bespokeClient.onError = function() {
                 bespokeClient.disconnect();
-                server.stop(null);
-                done();
+                server.stop(function () {
+                    done();
+                });
             };
 
             let webhookCaller = new HTTPClient();
