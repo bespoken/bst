@@ -13,6 +13,9 @@ export enum ProxyType {
 
 const DefaultLambdaPort = 10000;
 
+/**
+ * Exposes the BST proxy command for use
+ */
 export class BSTProxy {
     private bespokenClient: BespokeClient = null;
     private lambdaRunner: LambdaRunner = null;
@@ -24,29 +27,57 @@ export class BSTProxy {
 
     public constructor(public proxyType: ProxyType, public nodeID: string) {}
 
+    /**
+     * Starts an HTTP proxy with specified node and target port
+     * @param nodeID
+     * @param targetPort
+     * @returns {BSTProxy}
+     */
     public static http(nodeID: string, targetPort: number): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.HTTP, nodeID);
         tool.httpPort = targetPort;
         return tool;
     }
 
+    /**
+     * Starts a lambda proxy with the specified node and lambda file
+     * @param nodeID
+     * @param lambdaFile
+     * @returns {BSTProxy}
+     */
     public static lambda(nodeID: string, lambdaFile: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA, nodeID);
         tool.httpPort = DefaultLambdaPort;
         return tool;
     }
 
+    /**
+     * Generates the URL to be used for Alexa configuration
+     * @param nodeID
+     * @param url
+     * @returns {string}
+     */
     public static urlgen(nodeID: string, url: string): string {
         let mangler = new URLMangler(url, nodeID);
         return mangler.mangle();
     }
 
+    /**
+     * Specifies the host and port of the bespoken server to connect to
+     * @param host
+     * @param port
+     * @returns {BSTProxy}
+     */
     public bespokenServer(host: string, port: number): BSTProxy {
         this.bespokenHost = host;
         this.bespokenPort = port;
         return this;
     }
 
+    /**
+     * Specifies the port the Lambda runner should listen on. Only for lambda proxies.
+     * @param port
+     */
     public lambdaPort(port: number) {
         this.httpPort = port;
     }

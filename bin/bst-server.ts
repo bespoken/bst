@@ -10,7 +10,7 @@ program.version(Global.version());
 
 program
     .command("start <webhookPort> <nodePort>")
-    .description("Proxies an HTTP service running at the specified port")
+    .description("Starts the BST server")
     .action(function (nodeID: string, port: number, options: any) {
         let webhookPort: number = parseInt(process.argv[3]);
         let serverPort: number = parseInt(process.argv[4]);
