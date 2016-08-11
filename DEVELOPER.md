@@ -10,9 +10,6 @@ npm install typings --global
 ### Run npm install to setup packages
 npm install
 
-### Run this to get typescript setup
-typings install
-
 ## Getting WebStorm working correctly with TSC
 Go To preferences
 Enable typescript compiler
