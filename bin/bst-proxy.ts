@@ -15,7 +15,6 @@ program
     .command("http <node-id> <http-port>")
     .option("-h, --bstHost <bstHost>", "The host name of the BST server")
     .option("-p, --bstPort <bstPort>", "The port of the BST server", parseInt)
-    .usage("http <node-id> <http-port> [options]")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (nodeID: string, port: number, options: any) {
         let proxy: BSTProxy = BSTProxy.http(nodeID, port);
@@ -40,6 +39,11 @@ program
     .action(function (nodeID: string, url: string) {
         BSTProxy.urlgen(nodeID, url);
     });
+
+// Forces help to be printed
+if (process.argv.slice(2).length === 0) {
+    program.outputHelp();
+}
 
 program.parse(process.argv);
 
