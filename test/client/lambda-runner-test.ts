@@ -10,12 +10,12 @@ Global.initialize();
 describe("LambdaRunner", function() {
     describe("#start()", function() {
         it("Starts Correctly", function(done) {
-            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 9999);
+            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 10000);
             runner.start();
 
             let client = new HTTPClient();
             let inputData = {"data": "Test"};
-            client.post("localhost", 9999, "", JSON.stringify(inputData), function(data: Buffer) {
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
                 assert.equal("{\"success\":true}", responseString);
                 runner.stop();
@@ -25,12 +25,12 @@ describe("LambdaRunner", function() {
         });
 
         it("Handles Lambda Fail Correctly", function(done) {
-            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 9999);
+            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 10000);
             runner.start();
 
             let client = new HTTPClient();
             let inputData = {"data": "Test", "doFailure": true};
-            client.post("localhost", 9999, "", JSON.stringify(inputData), function(data: Buffer) {
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
                 assert.equal(responseString, "Failure!");
                 runner.stop();
@@ -41,14 +41,14 @@ describe("LambdaRunner", function() {
 
     describe("#stop()", function() {
         it("Stops Correctly", function(done) {
-            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 9999);
+            let runner = new LambdaRunner("test/resources/ExampleLambda.js", 10000);
             runner.start();
 
             let client = new HTTPClient();
             let inputData = {"data": "Test"};
-            client.post("localhost", 9999, "", JSON.stringify(inputData), function(data: Buffer) {
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 runner.stop();
-                client.post("localhost", 9999, "", JSON.stringify(inputData), function(data: Buffer, success: boolean) {
+                client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer, success: boolean) {
                     assert.equal(data.toString().indexOf("connect ECONNREFUSED") !== -1, true);
                     assert.equal(success, false);
                     done();

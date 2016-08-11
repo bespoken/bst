@@ -50,7 +50,11 @@ export class LambdaRunner {
     }
 
     public stop (onStop?: () => void): void {
-        this.server.close(onStop);
+        this.server.close(function () {
+            if (onStop !== undefined && onStop !== null) {
+                onStop();
+            }
+        });
     }
 }
 
