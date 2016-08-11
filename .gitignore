@@ -13,5 +13,8 @@ lib/**/*.map
 test/**/*.js
 test/**/*.map
 
+typings/globals/
+typings/modules/
+
 # Include all stuff under test/resources
 !test/resources/*

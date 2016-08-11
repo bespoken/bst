@@ -1,4 +1,4 @@
-export interface Command {
+export interface Tool {
     execute(): void;
     validate(): string;
 }

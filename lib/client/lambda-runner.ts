@@ -43,8 +43,8 @@ export class LambdaRunner {
         lambda.handler(bodyJSON, context);
     }
 
-    public stop (): void {
-        this.server.close();
+    public stop (onStop?: () => void): void {
+        this.server.close(onStop);
     }
 }
 

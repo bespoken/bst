@@ -7,13 +7,11 @@ http://jonnyreeves.co.uk/2015/hello-typescript-and-mocha/
 ### Install typings to get TypeScript definitions for libraries
 npm install typings --global
 
-### Ran this to get typescript definition for mocha
-typings install dt~mocha --global --save
+### Run npm install to setup packages
+npm install
 
-### Typings for node
-typings install dt~node --global --save
-
-### Did a bunch of other stuff
+### Run this to get typescript setup
+typings install
 
 ## Getting WebStorm working correctly with TSC
 Go To preferences

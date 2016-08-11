@@ -1,6 +1,6 @@
+import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
-import * as program from "commander";
 
 let Logger = "BST";
 
@@ -16,6 +16,7 @@ if (nodeMajorVersion < 4) {
 
 program
     .version(Global.version())
-    .command("proxy (http|lambda)", "launches the bst proxy")
-    .parse(process.argv);
+    .command("proxy (lambda|http)", "Proxies a Lambda or http service");
+
+program.parse(process.argv);
 

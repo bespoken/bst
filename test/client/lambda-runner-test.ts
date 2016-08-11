@@ -1,7 +1,6 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
-import {URLMangler} from "../../lib/client/url-mangler";
 import {Global} from "../../lib/core/global";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
 import {HTTPClient} from "../../lib/client/http-client";

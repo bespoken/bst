@@ -9,11 +9,12 @@ export class Global {
 
     public static initialize(): void {
         LoggingHelper.initialize();
+
     }
 
     public static version(): string {
         let packageInfo: any = require("../../package.json");
-        return packageInfo.applicationVersion;
+        return packageInfo.version;
     }
 }
 
