@@ -3,6 +3,8 @@ import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
 import {BSTProxy} from "../lib/client/bst-proxy";
 
+Global.initialize();
+
 let handleOptions = function(proxy: BSTProxy, options: any) {
     if (options.bstHost !== undefined) {
         proxy.bespokenServer(options.bstHost, options.bstPort);
