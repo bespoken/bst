@@ -5,6 +5,9 @@ import {SocketHandler} from "../core/socket-handler";
 import {Socket} from "net";
 import {BufferUtil} from "../core/buffer-util";
 import {HTTPHelper} from "../core/http-helper";
+import {LoggingHelper} from "../core/logging-helper";
+
+let Logger = "WEBHOOK";
 
 export interface WebhookReceivedCallback {
     (socket: Socket, webhookRequest: WebhookRequest): void;
@@ -33,8 +36,8 @@ export class WebhookManager {
                 // Throw away the pings - too much noise
                 let dataString = data.toString();
                 if (dataString.length > 4 && dataString.substr(0, 3) !== "GET") {
-                    console.log("Webhook From " + socket.remoteAddress + ":" + socket.remotePort);
-                    console.log("Webhook Payload " + BufferUtil.prettyPrint(data));
+                    LoggingHelper.info(Logger, "Webhook From " + socket.remoteAddress + ":" + socket.remotePort);
+                    LoggingHelper.info(Logger, "Webhook Payload " + BufferUtil.prettyPrint(data));
                 }
 
                 // The calling socket just seems to stay open some times
@@ -57,7 +60,7 @@ export class WebhookManager {
 
         }).listen(this.port, this.host);
 
-        console.log("WebhookServer listening on " + this.host + ":" + this.port);
+        LoggingHelper.info(Logger, "Listening on " + this.host + ":" + this.port);
     }
 
     public stop (callback?: () => void): void {

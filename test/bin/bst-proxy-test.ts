@@ -3,13 +3,9 @@
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as program from "commander";
-import * as TypeMoq from "typemoq";
 import {URLMangler} from "../../lib/client/url-mangler";
 import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
-import {exec} from "child_process";
-import SinonSandbox = Sinon.SinonSandbox;
-import SinonMockStatic = Sinon.SinonMockStatic;
 
 describe("bst-proxy", function() {
     let mockModule: any = {
@@ -53,12 +49,13 @@ describe("bst-proxy", function() {
             process.argv = command("node bst-proxy.js");
 
             let capture: string = "";
+            // Confirm the help prints out
             (<any> process.stdout).write = function (data: Buffer) {
                 let dataString: string = data.toString();
                 if (dataString.indexOf("Usage") !== -1) {
                     done();
                 }
-            }
+            };
 
             NodeUtil.runJS("../../bin/bst-proxy.js");
         });
