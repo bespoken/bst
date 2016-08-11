@@ -2,7 +2,6 @@
 
 import * as assert from "assert";
 
-import {ArgHelper} from "../../lib/core/arg-helper";
 import {Global} from "../../lib/core/global";
 
 import * as winston from "winston";

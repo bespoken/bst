@@ -26,7 +26,13 @@ export class LambdaRunner {
             });
         });
 
-        LoggingHelper.info(Logger, "LambdaRunner started on port: " + this.server.address().port.toString());
+        this.server.on("error", function (message: string) {
+            LoggingHelper.error(Logger, "LambdaRunner encountered error: " + message);
+        });
+
+        this.server.on("listening", function () {
+            LoggingHelper.info(Logger, "LambdaRunner started on port: " + self.server.address().port.toString());
+        });
     }
 
     public invoke (body: string, response: ServerResponse): void {
@@ -43,8 +49,12 @@ export class LambdaRunner {
         lambda.handler(bodyJSON, context);
     }
 
-    public stop (): void {
-        this.server.close();
+    public stop (onStop?: () => void): void {
+        this.server.close(function () {
+            if (onStop !== undefined && onStop !== null) {
+                onStop();
+            }
+        });
     }
 }
 

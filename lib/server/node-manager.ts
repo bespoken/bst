@@ -79,7 +79,7 @@ export class NodeManager {
             }
         });
 
-        LoggingHelper.info(Logger, "NodeServer listening on " + this.host + ":" + this.port);
+        LoggingHelper.info(Logger, "Listening on " + this.host + ":" + this.port);
     }
 
     /**
