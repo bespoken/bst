@@ -5,6 +5,8 @@ import {Global} from "../../lib/core/global";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
 import {HTTPClient} from "../../lib/client/http-client";
 
+Global.initialize();
+
 describe("LambdaRunner", function() {
     describe("#start()", function() {
         it("Starts Correctly", function(done) {

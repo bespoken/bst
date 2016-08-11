@@ -28,7 +28,7 @@ describe("bst-server", function() {
 
                     this.start = function () {
                         done();
-                    }
+                    };
                     return this;
                 }
             });

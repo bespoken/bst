@@ -47,6 +47,7 @@ export class BSTProxy {
      */
     public static lambda(nodeID: string, lambdaFile: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA, nodeID);
+        tool.lambdaFile = lambdaFile;
         tool.httpPort = DefaultLambdaPort;
         return tool;
     }
