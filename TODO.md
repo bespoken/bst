@@ -2,26 +2,21 @@
 - [ ] Handle multiple registrations of same node
     - How to make this secure?
     - Auto-generate IDs
-- [ ] Add lots of tests for lambda runner
 - [ ] Add init function
     - Creates config file - generates ID
 - [ ] Change @ symbols to angles in tutorials
     - Add examples
-- [ ] Make Lambda runner robust
 - [ ] Add auto-reload on Lambda
-- [ ] Need to remove this file and developer before distributing?
 
 # Medium
 - [ ] Add better docs for each command
     - Use the readthedocs.org
 - [ ] Add support for auto-recompile in Sample Java project
-- [ ] Print out bst version number on start
 - [ ] Create diagrams for it
-- [ ] Figure out how to do whole project recompile
 - [ ] Add debug level
     - Set in config?
 - [ ] Add user tracking
-- [ ] Add node sweeper execption handler
+- [ ] Add node sweeper exception handler
 - [ ] Add graceful error-handling for the client if the server shuts down
 - [ ] Add Gitter?
     
