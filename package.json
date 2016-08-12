@@ -34,7 +34,6 @@
   "scripts": {
     "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
     "postversion": "git push && git push --tags",
-    "postinstall": "typings install",
     "pretest": "tsc && npm run lint",
     "coverage": "tsc && istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "coveralls < coverage/lcov-ts.info",
