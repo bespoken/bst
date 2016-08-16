@@ -3,6 +3,7 @@ import {IncomingMessage} from "http";
 import {ServerResponse} from "http";
 import {Server} from "http";
 import {LoggingHelper} from "../core/logging-helper";
+import {NodeUtil} from "../core/node-util";
 
 let Logger = "BST-LAMBDA";
 
@@ -43,7 +44,7 @@ export class LambdaRunner {
 
         LoggingHelper.info(Logger, "LambdaPath: " + path);
         let bodyJSON: any = JSON.parse(body);
-        let lambda: any = require(path);
+        let lambda: any = NodeUtil.load(path);
         // let lambda = System.import("./" + file);
         let context: LambdaContext = new LambdaContext(response);
         lambda.handler(bodyJSON, context);
