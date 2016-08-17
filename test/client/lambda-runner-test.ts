@@ -48,7 +48,7 @@ describe("LambdaRunner", function() {
         });
 
         it("Handles Project Correctly", function(done) {
-            process.chdir("exampleProject")
+            process.chdir("exampleProject");
             let runner = new LambdaRunner("ExampleLambda.js", 10000);
             runner.start();
 
@@ -113,7 +113,7 @@ describe("LambdaRunner", function() {
 
             let client = new HTTPClient();
             let inputData = {"data": "Test"};
-            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function() {
                 runner.stop();
                 client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer, success: boolean) {
                     assert.equal(data.toString().indexOf("connect ECONNREFUSED") !== -1, true);
