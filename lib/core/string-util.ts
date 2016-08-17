@@ -14,10 +14,22 @@ export class StringUtil {
         return s;
     }
 
+    /**
+     * Pads a string on the right - truncates if it is longer than length
+     * @param s
+     * @param padString
+     * @param length
+     * @returns {string}
+     */
     public static rpad(s: string, padString: string, length: number): string {
         let str = s;
         while (str.length < length)
             str = str + padString;
+
+        if (str.length > length) {
+            str = str.substr(0, length);
+        }
+
         return str;
     }
 

@@ -57,7 +57,7 @@ describe("bst-proxy", function() {
                 }
             };
 
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
     });
 
@@ -67,7 +67,7 @@ describe("bst-proxy", function() {
             mockProxy.start = function () {
                 done();
             };
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
 
         it("Calls HTTP proxy with options", function(done) {
@@ -87,7 +87,7 @@ describe("bst-proxy", function() {
                 optionsSet = true;
             };
 
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
 
         it("Calls HTTP proxy with short options", function(done) {
@@ -108,7 +108,7 @@ describe("bst-proxy", function() {
             };
 
 
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
     });
 
@@ -118,7 +118,7 @@ describe("bst-proxy", function() {
             mockProxy.start = function () {
                 done();
             };
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
 
         it("Calls Lambda proxy with options", function(done) {
@@ -137,7 +137,7 @@ describe("bst-proxy", function() {
                 optionsSet = true;
             };
 
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
     });
 
@@ -151,7 +151,7 @@ describe("bst-proxy", function() {
                 done();
             };
 
-            NodeUtil.runJS("../../bin/bst-proxy.js");
+            NodeUtil.load("../../bin/bst-proxy.js");
         });
     });
 });

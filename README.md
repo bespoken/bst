@@ -84,18 +84,19 @@ The proxy lambda command allows you to run a Lambda as a local service your mach
 - The command **must** be restarted after changes are made to your Lambda.
 
 **Usage**  
-To use it, invoke it with the full path to the Lambda file to run, along with your machine's Node ID.
+To use it, invoke it with the Lambda file to run, along with your machine's Node ID.
 
-The Lambda will automatically be passed the incoming request.
+The Lambda will automatically be passed the incoming request.  
+*AND - any changes you make to your Lambda code will be automatically reloaded!*
 
 Syntax:
 ```
-$ bst proxy lambda <NODE_ID> <FULL_PATH_TO_LAMBDA>
+$ bst proxy lambda <NODE_ID> <PATH_TO_LAMBDA>
 ```
 
 Example:  
 ```
-$ bst proxy lambda JPK /Users/jpk/dev/samples/src/index.js
+$ bst proxy lambda JPK index.js
 ```
 
 You can learn more here at our [NODE Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_NODE.md):
