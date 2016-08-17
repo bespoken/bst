@@ -40,7 +40,12 @@ program
     .command("urlgen <node-id> <alexa-url>")
     .description("Generates the URL to be used in the Alexa Skill configuration")
     .action(function (nodeID: string, url: string) {
-        BSTProxy.urlgen(nodeID, url);
+        let bstURL: string = BSTProxy.urlgen(nodeID, url);
+        console.log();
+        console.log("Enter this URL on the Configuration tab of your skill:");
+        console.log();
+        console.log("\t" + bstURL);
+        console.log();
     });
 
 // Forces help to be printed
