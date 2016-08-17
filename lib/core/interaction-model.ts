@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import {FileUtil} from "./file-util";
 
 /**
  * Parses and interprets an interaction model
@@ -8,8 +9,8 @@ import * as fs from "fs";
 export class InteractionModel {
     public constructor() {}
 
-    public loadIntentSchema(file: string): void {
-        fs.readFile(file, "UTF-8", function (error: string, data: string) {
+    public loadIntentSchema(intentSchemaFile: string): void {
+        FileUtil.readFile(intentSchemaFile, function (data: Buffer) {
 
         });
     }

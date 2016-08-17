@@ -28,4 +28,14 @@ export class FileUtil {
             }
         }
     }
+
+    public static readFile(source: string, callback: (data: Buffer) => void) {
+        fs.readFile(source, "UTF-8", function (error: NodeJS.ErrnoException, data: Buffer) {
+            if (error !== null) {
+                callback(null);
+            } else {
+                callback(data);
+            }
+        });
+    }
 }
