@@ -3,7 +3,7 @@
 import * as assert from "assert";
 import {Global} from "../../lib/core/global";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
-import {HTTPClient} from "../../lib/client/http-client";
+import {HTTPClient} from "../../lib/core/http-client";
 import {FileUtil} from "../../lib/core/file-util";
 
 Global.initialize();

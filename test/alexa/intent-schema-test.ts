@@ -1,7 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
-import {IntentSchema} from "../../lib/core/intent-schema";
+import {IntentSchema} from "../../lib/alexa/intent-schema";
 
 
 describe("IntentSchema", function() {

@@ -7,7 +7,7 @@ import {Node} from "../../lib/server/node";
 import {NodeManager} from "../../lib/server/node-manager";
 import {WebhookManager} from "../../lib/server/webhook-manager";
 import {WebhookRequest} from "../../lib/core/webhook-request";
-import {HTTPClient} from "../../lib/client/http-client";
+import {HTTPClient} from "../../lib/core/http-client";
 import {BespokeServer} from "../../lib/server/bespoke-server";
 import {Socket} from "net";
 import {NetworkErrorType} from "../../lib/core/global";

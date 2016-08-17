@@ -2,7 +2,7 @@
 
 import * as querystring from "querystring";
 import * as http from "http";
-import {BufferUtil} from "../core/buffer-util";
+import {BufferUtil} from "./buffer-util";
 
 export class HTTPClient {
 

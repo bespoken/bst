@@ -1,6 +1,27 @@
+import {FileUtil} from "../core/file-util";
+import {LoggingHelper} from "../core/logging-helper";
+const Logger = "SCHEMA";
+
 export class IntentSchema {
     public constructor(public schemaJSON: any) {
 
+    }
+
+    public static fromFile(file: string, callback: (intentSchema: IntentSchema) => void): void {
+        FileUtil.readFile(file, function (data: Buffer) {
+            if (data !== null) {
+                let json = JSON.parse(data.toString());
+                let schema = new IntentSchema(json);
+                callback(schema);
+            } else {
+                LoggingHelper.error(Logger, "File not found: " + file);
+                callback(null);
+            }
+        });
+    }
+
+    public static fromJSON(schemaJSON: any): IntentSchema {
+        return new IntentSchema(schemaJSON);
     }
 
     public intents(): Array<Intent> {
@@ -15,6 +36,14 @@ export class IntentSchema {
             intentArray.push(intent);
         }
         return intentArray;
+    }
+
+    /**
+     * Formats a JSON-payload that can be sent to an Alexa service for the specified intent
+     * @param intentName
+     */
+    public requestForIntent(intentName: string) {
+
     }
 }
 
