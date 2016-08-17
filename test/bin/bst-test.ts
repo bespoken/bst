@@ -28,7 +28,7 @@ describe("bst", function() {
             mockProgram.expects("executeSubCommand")
                 .withArgs(command("node bst.js proxy http jpk@xappmedia.com 9000"), command("proxy http jpk@xappmedia.com 9000"), []);
 
-            NodeUtil.runJS("../../bin/bst.js");
+            NodeUtil.load("../../bin/bst.js");
             mockProgram.verify();
             done();
         });
@@ -39,7 +39,7 @@ describe("bst", function() {
             mockProgram.expects("executeSubCommand")
                 .withArgs(command("node bst.js proxy lambda JPK lambda.js"), command("proxy lambda JPK lambda.js"), []);
 
-            NodeUtil.runJS("../../bin/bst.js");
+            NodeUtil.load("../../bin/bst.js");
             mockProgram.verify();
             done();
         });
@@ -81,7 +81,7 @@ describe("bst", function() {
                 }
             });
 
-            NodeUtil.runJS("../../bin/bst.js");
+            NodeUtil.load("../../bin/bst.js");
         });
 
         it("Accepts a correct version", function(done) {
@@ -102,7 +102,7 @@ describe("bst", function() {
                 }
             });
 
-            NodeUtil.runJS("../../bin/bst.js");
+            NodeUtil.load("../../bin/bst.js");
             setTimeout(function () {
                 done();
             }, 100);

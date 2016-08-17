@@ -33,7 +33,7 @@ describe("bst-server", function() {
                 }
             });
 
-            NodeUtil.runJS("../../bin/bst-server.js");
+            NodeUtil.load("../../bin/bst-server.js");
         });
 
     });
