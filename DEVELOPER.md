@@ -29,6 +29,10 @@ Updated the version number:
 Run publish command to push new client to NPM:
 `npm publish`
 
+To test your new package before publishing, follow these instructions:  
+https://docs.npmjs.com/misc/developers
+
+## Deploying server versions
 Deploy new server version (from Docker Templates):
 `python ecs_manager.py deploy conf/bst-server bst-server.json dev`
 
