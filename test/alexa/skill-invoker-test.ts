@@ -12,7 +12,8 @@ describe("SkillInvoker", function() {
     // The intent schema we will use in these tests
     let intentSchemaJSON = {
         "intents": [
-            {"intent": "NearestLocation"}
+            {"intent": "NearestLocation"},
+            {"intent": "AnotherIntent"}
         ]
     };
 
@@ -49,7 +50,7 @@ describe("SkillInvoker", function() {
         });
 
         it("Handles error on bad Intent", function(done) {
-            let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("No Matching", function (data: any, error: string) {
                 assert(error);
@@ -58,12 +59,11 @@ describe("SkillInvoker", function() {
             });
         });
 
-        it("Handles error on bad Phrase", function(done) {
-            let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+        it("Handles default on bad Phrase", function(done) {
+            let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("NotMatching", function (data: any, error: string) {
-                assert(error);
-                assert.equal(error, "No matching intent for phrase: NotMatching");
+                assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
                 done();
             });
         });
