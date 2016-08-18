@@ -15,25 +15,30 @@ export class SkillInvoker {
      * @param phrase
      * @param callback
      */
-    public say(phrase: string, callback: (response: any) => void): any {
+    public say(phrase: string, callback: (response: any, error?: string) => void): any {
         let intent = this.interactionModel.sampleUtterances.intentForPhrase(phrase);
         if (intent === null) {
-            throw new Error("No matching intent for phrase: " + intent);
+            callback(null, "No matching intent for phrase: " + phrase);
+            return;
         }
 
-        let requestJSON = this.serviceRequest.intentRequest(intent);
-        let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
-            if (error) {
-                throw new Error("No matching intent for phrase: " + error);
-            } else {
-                callback(body);
-            }
-        };
+        try {
+            let requestJSON = this.serviceRequest.intentRequest(intent);
+            let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
+                if (error) {
+                    callback(null, error.message);
+                } else {
+                    callback(body);
+                }
+            };
 
-        request.post({
-            url: this.skillURL,
-            method: "POST",
-            json: requestJSON,
-        }, responseHandler);
+            request.post({
+                url: this.skillURL,
+                method: "POST",
+                json: requestJSON,
+            }, responseHandler);
+        } catch (e) {
+            callback(null, e.message);
+        }
     }
 }

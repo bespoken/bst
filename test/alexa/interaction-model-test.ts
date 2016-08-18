@@ -17,6 +17,16 @@ describe("InteractionModel", function() {
                 }
             );
         });
+
+        it("Cannot find a file", function(done) {
+            InteractionModel.fromFiles("test/alexa/resources/IntentSchema2.json",
+                "test/alexa/resources/SampleUtterances.txt",
+                function(model: InteractionModel, error: string) {
+                    assert.equal(error, "File not found: test/alexa/resources/IntentSchema2.json");
+                    done();
+                }
+            );
+        });
     });
 });
 

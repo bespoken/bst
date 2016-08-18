@@ -81,7 +81,7 @@ export class ServiceRequest {
      */
     private static timestamp() {
         let timestamp = new Date().toISOString();
-        return timestamp.substring(0, 18) + "Z";
+        return timestamp.substring(0, 19) + "Z";
     }
 
     public toJSON() {

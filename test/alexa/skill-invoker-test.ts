@@ -17,7 +17,8 @@ describe("SkillInvoker", function() {
     };
 
     let sampleUtterancesJSON = {
-        "NearestLocation": ["Nearest Location", "Location"]
+        "NearestLocation": ["Nearest Location", "Location"],
+        "NoMatchingIntent": ["No Matching"]
     };
 
     let model: InteractionModel = new InteractionModel(
@@ -32,6 +33,37 @@ describe("SkillInvoker", function() {
             invoker.say("Nearest Location", function (data: any) {
                 assert(data.response.outputSpeech.ssml !== null);
                 assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+                done();
+            });
+        });
+
+        it("Handles error on bad URL", function(done) {
+            this.timeout(5000);
+            let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            let invoker = new SkillInvoker(skillURL, model, "MyApp");
+            invoker.say("Nearest Location", function (data: any, error: string) {
+                assert(error);
+                assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmdia.com alexa.xappmdia.com:443");
+                done();
+            });
+        });
+
+        it("Handles error on bad Intent", function(done) {
+            let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            let invoker = new SkillInvoker(skillURL, model, "MyApp");
+            invoker.say("No Matching", function (data: any, error: string) {
+                assert(error);
+                assert.equal(error, "Interaction model has no intent named: NoMatchingIntent");
+                done();
+            });
+        });
+
+        it("Handles error on bad Phrase", function(done) {
+            let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            let invoker = new SkillInvoker(skillURL, model, "MyApp");
+            invoker.say("Natching", function (data: any, error: string) {
+                assert(error);
+                assert.equal(error, "No matching intent for phrase: Natching");
                 done();
             });
         });

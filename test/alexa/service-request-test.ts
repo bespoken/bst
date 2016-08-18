@@ -29,7 +29,7 @@ describe("ServiceRequest", function() {
 
     let model: InteractionModel = new InteractionModel(new IntentSchema(intentSchemaJSON), null);
 
-    describe("#createIntentRequest", function() {
+    describe("#intentRequest()", function() {
         it("Correctly parses intents", function(done) {
             let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
 
@@ -45,6 +45,18 @@ describe("ServiceRequest", function() {
             assert.equal(request2.session.new, false);
             assert.equal(request2.session.sessionId, request.session.sessionId);
             done();
+        });
+
+        it("Handles error", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+
+            try {
+                let request: any = requester.intentRequest("Test2").toJSON();
+            } catch (e) {
+                assert(e.message, "Interaction model has no intent named: Test2");
+                done();
+            }
+
         });
     });
 });
