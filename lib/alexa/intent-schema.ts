@@ -44,6 +44,21 @@ export class IntentSchema {
         }
         return intentArray;
     }
+
+    public intent(intentString: string): Intent {
+        let intent: Intent = null;
+        for (let o of this.intents()) {
+            if (o.name === intentString) {
+                intent = o;
+                break;
+            }
+        }
+        return intent;
+    }
+
+    public hasIntent(intentString: string): boolean {
+        return this.intent(intentString) !== null;
+    }
 }
 
 export class Intent {

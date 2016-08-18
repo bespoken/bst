@@ -40,6 +40,24 @@ describe("IntentSchema", function() {
         });
     });
 
+    describe("#intent()", function() {
+        it("Correctly parses intents", function(done) {
+            let schema: IntentSchema = new IntentSchema(intentJSON);
+            assert.equal(schema.intent("Test").name, "Test");
+            assert.equal(schema.intent("WithSlot").name, "WithSlot");
+            done();
+        });
+    });
+
+    describe("#hasIntent()", function() {
+        it("Correctly parses intents", function(done) {
+            let schema: IntentSchema = new IntentSchema(intentJSON);
+            assert(schema.hasIntent("WithSlot"));
+            assert(schema.hasIntent("WithSlot2") === false);
+            done();
+        });
+    });
+
     describe("#fromJSON()", function() {
         it("Correctly loads schema", function(done) {
             let schema: IntentSchema = IntentSchema.fromJSON(intentJSON);
