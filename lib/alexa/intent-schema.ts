@@ -65,8 +65,6 @@ export class Intent {
 }
 
 export class IntentSlot {
-    public constructor(public name: string, public type: string) {
-
-    }
+    public constructor(public name: string, public type: string) {}
 }
 

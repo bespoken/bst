@@ -50,21 +50,21 @@ describe("IntentSchema", function() {
 
     describe("#fromFile()", function() {
         it("Correctly loads schema", function(done) {
-            IntentSchema.fromFile("test/alexa/IntentSchema.json", function (schema: IntentSchema, error?: string) {
+            IntentSchema.fromFile("test/alexa/resources/IntentSchema.json", function (schema: IntentSchema, error?: string) {
                 assert.equal(schema.intents().length, 5);
                 done();
             });
         });
 
         it("Passes error when files does not exist", function(done) {
-            IntentSchema.fromFile("test/alexa/InentSchema.json", function (schema: IntentSchema, error?: string) {
+            IntentSchema.fromFile("test/alexa/resources/InentSchema.json", function (schema: IntentSchema, error?: string) {
                 assert(error.indexOf("not found") !== -1);
                 done();
             });
         });
 
         it("Passes error with bad JSON", function(done) {
-            IntentSchema.fromFile("test/alexa/IntentSchemaBad.txt", function (schema: IntentSchema, error?: string) {
+            IntentSchema.fromFile("test/alexa/resources/IntentSchemaBad.txt", function (schema: IntentSchema, error?: string) {
                 assert(error.indexOf("Bad JSON") !== -1);
                 done();
             });
