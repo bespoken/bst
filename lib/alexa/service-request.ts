@@ -27,11 +27,30 @@ export class ServiceRequest {
         this.resetSession();
     }
 
+    /**
+     * Generates an intentName request with the specified IntentName
+     * @param intentName
+     * @returns {ServiceRequest}
+     */
     public intentRequest(intentName: string): any {
         if (!this.interactionModel.hasIntent(intentName)) {
-            throw new Error("Interaction model has no intent named: " + intentName);
+            throw new Error("Interaction model has no intentName named: " + intentName);
         }
         this.requestJSON = this.generateRequest(RequestType.IntentRequest, intentName);
+        return this;
+    }
+
+    /**
+     * Adds a slot to the intentName request (it must be an intentName request)
+     * @param slotName
+     * @param slotValue
+     * @returns {ServiceRequest}
+     */
+    public withSlot(slotName: string, slotValue: string): ServiceRequest {
+        if (this.requestJSON.request.type !== "IntentRequest") {
+            throw Error("Adding slot to non-intentName request - not allowed!");
+        }
+        this.requestJSON.request.intent.slots[slotName] = { "name": slotName, "value": slotValue };
         return this;
     }
 

@@ -17,7 +17,9 @@
     "timestamp": "2016-08-17T21:05:47Z",
     "intent": {
       "name": "CurrentOffers",
-      "slots": {}
+      "slots": {
+        "slot1": {"name": "slotName", "value": "slotValue"}
+      }
     }
   },
   "version": "1.0"

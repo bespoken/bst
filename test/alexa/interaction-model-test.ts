@@ -12,7 +12,7 @@ describe("InteractionModel", function() {
                 "test/alexa/resources/SampleUtterances.txt",
                 function(model: InteractionModel) {
                     assert(model.hasIntent("Test"));
-                    assert.equal(model.intentForUtterance("Another Test"), "AnotherTest");
+                    assert.equal(model.intentForUtterance("Another Test").intentName, "AnotherTest");
                     done();
                 }
             );

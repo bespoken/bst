@@ -40,7 +40,7 @@ describe("IntentSchema", function() {
         });
     });
 
-    describe("#intent()", function() {
+    describe("#intentName()", function() {
         it("Correctly parses intents", function(done) {
             let schema: IntentSchema = new IntentSchema(intentJSON);
             assert.equal(schema.intent("Test").name, "Test");

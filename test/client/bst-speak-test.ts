@@ -42,7 +42,7 @@ describe("BSTSpeak", function() {
         it("Speak phrase", function (done) {
             process.chdir("test/resources");
             let speak = new BSTSpeak("http://localhost:10000");
-            speak.initialize(function (error: string) {
+            speak.initialize(function () {
                 let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
                 lambdaRunner.start();
                 speak.speak("Hello", function(data: any) {
@@ -59,7 +59,7 @@ describe("BSTSpeak", function() {
         it("Speak non-grammar phrase", function (done) {
             process.chdir("test/resources");
             let speak = new BSTSpeak("http://localhost:10000");
-            speak.initialize(function (error: string) {
+            speak.initialize(function () {
                 let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
                 lambdaRunner.start();
                 speak.speak("Dumb", function(data: any) {

@@ -9,16 +9,20 @@ import {SkillInvoker} from "../../lib/alexa/skill-invoker";
 
 
 describe("SkillInvoker", function() {
-    // The intent schema we will use in these tests
+    // The intentName schema we will use in these tests
     let intentSchemaJSON = {
         "intents": [
             {"intent": "NearestLocation"},
-            {"intent": "AnotherIntent"}
+            {"intent": "AnotherIntent"},
+            {"intent": "TakeMeToWalmart", "slots": [
+                {"name": "SlotName", "type": "SLOT_TYPE"}
+            ]}
         ]
     };
 
     let sampleUtterancesJSON = {
         "NearestLocation": ["Nearest Location", "Location"],
+        "TakeMeToWalmart": ["Take Me To Walmart {SlotName}"],
         "NoMatchingIntent": ["No Matching"]
     };
 
@@ -34,6 +38,17 @@ describe("SkillInvoker", function() {
             invoker.say("Nearest Location", function (data: any) {
                 assert(data.response.outputSpeech.ssml !== null);
                 assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+                done();
+            });
+        });
+
+        it("Handle With Slot", function(done) {
+            this.timeout(5000);
+            let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            let invoker = new SkillInvoker(skillURL, model, "MyApp");
+            invoker.say("Take Me To Walmart {A}", function (data: any) {
+                assert(data.response.outputSpeech.ssml !== null);
+                assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3\" /></speak>");
                 done();
             });
         });
@@ -54,15 +69,17 @@ describe("SkillInvoker", function() {
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("No Matching", function (data: any, error: string) {
                 assert(error);
-                assert.equal(error, "Interaction model has no intent named: NoMatchingIntent");
+                assert.equal(error, "Interaction model has no intentName named: NoMatchingIntent");
                 done();
             });
         });
 
         it("Handles default on bad Phrase", function(done) {
+            this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("NotMatching", function (data: any, error: string) {
+            invoker.say("NotMatching", function (data: any) {
+                // Treats this as the first intentName, Nearest Location
                 assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
                 done();
             });

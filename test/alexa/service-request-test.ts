@@ -8,7 +8,7 @@ import {SessionEndedReason} from "../../lib/alexa/service-request";
 
 
 describe("ServiceRequest", function() {
-    // The intent schema we will use in these tests
+    // The intentName schema we will use in these tests
     let intentSchemaJSON = {
         "intents": [
             {"intent": "Test"},
@@ -54,9 +54,24 @@ describe("ServiceRequest", function() {
             try {
                 let request: any = requester.intentRequest("Test2").toJSON();
             } catch (e) {
-                assert(e.message, "Interaction model has no intent named: Test2");
+                assert(e.message, "Interaction model has no intentName named: Test2");
                 done();
             }
+
+        });
+
+        it("With Slot", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+
+            let request: any = requester.intentRequest("WithSlot").withSlot("SlotName", "Value").toJSON();
+            assert.equal(request.session.application.applicationId, "MyApp");
+            assert.equal(request.session.new, true);
+            assert.equal(request.version, "1.0");
+            assert.equal(request.request.type, "IntentRequest");
+            assert.equal(request.request.intent.slots["SlotName"].name, "SlotName");
+            assert.equal(request.request.intent.slots["SlotName"].value, "Value");
+            assert.equal(request.request.timestamp.length, 20);
+            done();
 
         });
     });

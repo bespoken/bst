@@ -1,10 +1,11 @@
 import {IntentSchema} from "./intent-schema";
 import {SampleUtterances} from "./sample-utterances";
+import {UtteredIntent} from "./sample-utterances";
 
 /**
  * Parses and interprets an interaction model
- * Takes in intent schema and sample utterances from files
- * Then can take a phrase and create an intent request based on it
+ * Takes in intentName schema and sample utterances from files
+ * Then can take a phrase and create an intentName request based on it
  */
 export class InteractionModel {
     public static fromFiles(intentSchemaFile: string,
@@ -53,8 +54,8 @@ export class InteractionModel {
     public constructor(public intentSchema: IntentSchema, public sampleUtterances: SampleUtterances) {}
 
 
-    public intentForUtterance(utterance: string): string {
-        return this.sampleUtterances.intentForPhrase(utterance);
+    public intentForUtterance(utterance: string): UtteredIntent {
+        return this.sampleUtterances.intentForUtterance(utterance);
     }
 
     public hasIntent(intent: string): boolean {
