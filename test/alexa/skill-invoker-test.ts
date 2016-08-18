@@ -12,7 +12,7 @@ describe("SkillInvoker", function() {
     // The intent schema we will use in these tests
     let intentSchemaJSON = {
         "intents": [
-            {"intent": "CurrentOffers"}
+            {"intent": "NearestLocation"}
         ]
     };
 

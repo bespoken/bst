@@ -1,10 +1,10 @@
 {
   "globalDependencies": {
     "commander": "registry:dt/commander#2.3.0+20160317120654",
+    "form-data": "registry:dt/form-data#0.0.0+20160724024111",
     "mocha": "registry:dt/mocha#2.2.5+20160619032855",
     "mockery": "registry:dt/mockery#1.4.0+20160316155526",
     "node-4": "registry:dt/node-4#4.0.0+20160720000508",
-    "node-uuid": "registry:dt/node-uuid#0.0.0+20160316155526",
     "request": "registry:dt/request#0.0.0+20160726020908",
     "sinon": "registry:dt/sinon#1.16.0+20160517064723",
     "winston": "registry:dt/winston#0.0.0+20160417152829"

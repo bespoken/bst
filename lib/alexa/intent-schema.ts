@@ -1,21 +1,28 @@
 import {FileUtil} from "../core/file-util";
 import {LoggingHelper} from "../core/logging-helper";
-const Logger = "SCHEMA";
+const Logger = "INTENTS";
 
 export class IntentSchema {
     public constructor(public schemaJSON: any) {
 
     }
 
-    public static fromFile(file: string, callback: (intentSchema: IntentSchema) => void): void {
+    public static fromFile(file: string, callback: (intentSchema: IntentSchema, error?: string) => void): void {
         FileUtil.readFile(file, function (data: Buffer) {
             if (data !== null) {
-                let json = JSON.parse(data.toString());
-                let schema = new IntentSchema(json);
-                callback(schema);
+                let json: any = null;
+                try {
+                    json = JSON.parse(data.toString());
+                    let schema = new IntentSchema(json);
+                    callback(schema);
+                } catch (e) {
+                    LoggingHelper.error(Logger, e.message);
+                    callback(null, "Bad JSON: " + e.message);
+                }
             } else {
-                LoggingHelper.error(Logger, "File not found: " + file);
-                callback(null);
+                let error = "File not found: " + file;
+                LoggingHelper.error(Logger, error);
+                callback(null, error);
             }
         });
     }
@@ -36,14 +43,6 @@ export class IntentSchema {
             intentArray.push(intent);
         }
         return intentArray;
-    }
-
-    /**
-     * Formats a JSON-payload that can be sent to an Alexa service for the specified intent
-     * @param intentName
-     */
-    public requestForIntent(intentName: string) {
-
     }
 }
 
