@@ -2,6 +2,9 @@ import {InteractionModel} from "./interaction-model";
 import {ServiceRequest} from "./service-request";
 import * as request from "request";
 import * as http from "http";
+import {LoggingHelper} from "../core/logging-helper";
+
+const Logger = "INVOKER";
 
 export class SkillInvoker {
     public serviceRequest: ServiceRequest;
@@ -18,8 +21,9 @@ export class SkillInvoker {
     public say(phrase: string, callback: (response: any, error?: string) => void): any {
         let intent = this.interactionModel.sampleUtterances.intentForPhrase(phrase);
         if (intent === null) {
-            callback(null, "No matching intent for phrase: " + phrase);
-            return;
+            // Just grab the first intent for now
+            intent = this.interactionModel.intentSchema.intents()[0].name;
+            LoggingHelper.warn(Logger, "No intent matches phrase: " + phrase + ". Using fallback intent: " + intent);
         }
 
         try {
