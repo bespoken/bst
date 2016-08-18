@@ -8,6 +8,12 @@ export enum RequestType {
     SessionEndedRequest
 }
 
+export enum SessionEndedReason {
+    ERROR,
+    EXCEEDED_MAX_REPROMPTS,
+    USER_INITIATED
+}
+
 /**
  * Creates a the JSON for a Service Request programmatically
  */
@@ -29,7 +35,17 @@ export class ServiceRequest {
         return this;
     }
 
-    private generateRequest(requestType: RequestType, intentName: string): any {
+    public launchRequest(): any {
+        this.requestJSON = this.generateRequest(RequestType.LaunchRequest, null);
+        return this;
+    }
+
+    public sessionEndedRequest(reason: SessionEndedReason): any {
+        this.requestJSON = this.generateRequest(RequestType.SessionEndedRequest, null, reason);
+        return this;
+    }
+
+    private generateRequest(requestType: RequestType, intentName?: string, reason?: SessionEndedReason): any {
         let applicationID = this.getApplicationID();
         // For user ID, take the prefix and tack on a UUID - this is not what Amazon does but should be okay
         if (this.userID === null) {
@@ -55,6 +71,10 @@ export class ServiceRequest {
         // Add on the appropriate request type
         if (requestType === RequestType.IntentRequest) {
             request.request = ServiceRequest.generateIntentRequest(intentName);
+        } else if (requestType === RequestType.LaunchRequest) {
+            request.request = ServiceRequest.generateLaunchRequest();
+        } else if (requestType === RequestType.SessionEndedRequest) {
+            request.request = ServiceRequest.generateSessionEndedRequest(reason);
         }
 
         this.newSession = false;
@@ -62,7 +82,7 @@ export class ServiceRequest {
     }
 
     private static generateIntentRequest(intentName: string): any {
-        let requestID = "EdwRequestId." + uuid.v4();
+        let requestID = ServiceRequest.requestID();
         let timestamp = ServiceRequest.timestamp();
         return {
             "type": "IntentRequest",
@@ -76,12 +96,39 @@ export class ServiceRequest {
         };
     }
 
+    private static generateLaunchRequest(): any {
+        let requestID = ServiceRequest.requestID();
+        let timestamp = ServiceRequest.timestamp();
+        return {
+            "type": "LaunchRequest",
+            "requestId": requestID,
+            "timestamp": timestamp
+        };
+    }
+
+    private static generateSessionEndedRequest(reason: SessionEndedReason): any {
+        let requestID = ServiceRequest.requestID();
+        let timestamp = ServiceRequest.timestamp();
+        let reasonString = SessionEndedReason[reason];
+
+        return {
+            "type": "SessionEndedRequest",
+            "requestId": requestID,
+            "timestamp": timestamp,
+            "reason": reasonString
+        };
+    }
+
     /**
      * The timestamp is a normal JS timestamp without the milliseconds
      */
     private static timestamp() {
         let timestamp = new Date().toISOString();
         return timestamp.substring(0, 19) + "Z";
+    }
+
+    private static requestID() {
+        return "EdwRequestId." + uuid.v4();
     }
 
     public toJSON() {

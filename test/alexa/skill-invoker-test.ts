@@ -39,11 +39,11 @@ describe("SkillInvoker", function() {
 
         it("Handles error on bad URL", function(done) {
             this.timeout(5000);
-            let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("Nearest Location", function (data: any, error: string) {
                 assert(error);
-                assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmdia.com alexa.xappmdia.com:443");
+                assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
                 done();
             });
         });
@@ -61,9 +61,9 @@ describe("SkillInvoker", function() {
         it("Handles error on bad Phrase", function(done) {
             let skillURL = "https://alexa.xappmdia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("Natching", function (data: any, error: string) {
+            invoker.say("NotMatching", function (data: any, error: string) {
                 assert(error);
-                assert.equal(error, "No matching intent for phrase: Natching");
+                assert.equal(error, "No matching intent for phrase: NotMatching");
                 done();
             });
         });

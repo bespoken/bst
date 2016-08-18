@@ -4,6 +4,7 @@ import * as assert from "assert";
 import {IntentSchema} from "../../lib/alexa/intent-schema";
 import {ServiceRequest} from "../../lib/alexa/service-request";
 import {InteractionModel} from "../../lib/alexa/interaction-model";
+import {SessionEndedReason} from "../../lib/alexa/service-request";
 
 
 describe("ServiceRequest", function() {
@@ -57,6 +58,37 @@ describe("ServiceRequest", function() {
                 done();
             }
 
+        });
+    });
+
+    describe("#launchRequest()", function() {
+        it("Correctly parses intents", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+
+            let request: any = requester.launchRequest().toJSON();
+            assert.equal(request.session.application.applicationId, "MyApp");
+            assert.equal(request.session.new, true);
+            assert.equal(request.version, "1.0");
+            assert.equal(request.request.type, "LaunchRequest");
+            assert.equal(request.request.timestamp.length, 20);
+
+            done();
+        });
+    });
+
+    describe("#sessionEndedRequest()", function() {
+        it("Correctly parses intents", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+
+            let request: any = requester.sessionEndedRequest(SessionEndedReason.ERROR).toJSON();
+            assert.equal(request.session.application.applicationId, "MyApp");
+            assert.equal(request.session.new, true);
+            assert.equal(request.version, "1.0");
+            assert.equal(request.request.type, "SessionEndedRequest");
+            assert.equal(request.request.reason, "ERROR");
+            assert.equal(request.request.timestamp.length, 20);
+
+            done();
         });
     });
 });
