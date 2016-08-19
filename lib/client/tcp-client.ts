@@ -18,7 +18,7 @@ export class TCPClient {
 
     public transmit(host: string, port: number, data: string, callback: TCPClientCallback) {
         let client = new net.Socket();
-        LoggingHelper.info(Logger, host + ":" + port + " Connected");
+        LoggingHelper.info(Logger, "Forwarding " + host + ":" + port);
 
         client.on("error", function (e: any) {
             if (e.code ===  "ECONNREFUSED") {
