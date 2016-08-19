@@ -16,8 +16,7 @@ if (nodeMajorVersion < 4) {
 }
 
 program
-    .version(Global.version())
-    .command("proxy (lambda|http)", "Proxies a Lambda or http service")
+    .command("proxy <lambda|http>", "Proxies a Lambda or http service")
     .command("speak <utterance>", "Sends an intent with the specified utterance to your service");
 
 program.parse(process.argv);

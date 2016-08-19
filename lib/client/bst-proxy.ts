@@ -7,6 +7,7 @@ import {LambdaRunner} from "./lambda-runner";
 import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
+import {LoggingHelper} from "../core/logging-helper";
 
 export enum ProxyType {
     HTTP,
@@ -61,8 +62,7 @@ export class BSTProxy {
      * @returns {string}
      */
     public static urlgen(url: string): string {
-        let mangler = new URLMangler(url, Global.config().nodeID());
-        return mangler.mangle();
+        return URLMangler.mangle(url, Global.config().nodeID());
     }
 
     /**

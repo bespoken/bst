@@ -38,7 +38,7 @@ export class BespokeClient {
 
         // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
-            LoggingHelper.info(Logger, self.host + ":" + self.port + " Connected");
+            LoggingHelper.info(Logger, "Connected - " + self.host + ":" + self.port);
             // As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);

@@ -80,7 +80,7 @@ describe("bst-speak", function() {
                         done();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {}
+                    this.speak = function (utterance: string, callback: any) {};
                 }
             });
 

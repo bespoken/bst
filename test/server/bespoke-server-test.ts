@@ -27,14 +27,23 @@ describe("BespokeServerTest", function() {
             bespokeClient.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
+
+                // Dummy response from a non-existent HTTP service
+                let response = "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\n";
+                response += JSON.stringify({"data": "test"});
+                bespokeClient.send(response);
+            };
+
+            let webhookCaller = new HTTPClient();
+            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "Test", function (data: Buffer) {
+                console.log("data: " + data.toString());
+                let json = JSON.parse(data.toString());
+                assert.equal(json.data, "test");
                 bespokeClient.disconnect();
                 server.stop(function () {
                     done();
                 });
-            };
-
-            let webhookCaller = new HTTPClient();
-            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "Test");
+            });
         });
 
         it("Handles Connection Failure", function(done) {
