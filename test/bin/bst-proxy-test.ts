@@ -115,6 +115,7 @@ describe("bst-proxy", function() {
             mockProxy.start = function () {
                 done();
             };
+
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
@@ -139,12 +140,41 @@ describe("bst-proxy", function() {
     });
 
     describe("urlgen", function() {
+        let originalFunction: any = null;
+        beforeEach (function () {
+            originalFunction = process.stdout.write;
+        });
+
+        afterEach (function () {
+            process.stdout.write = originalFunction;
+        });
+
         it("Calls urlgen", function(done) {
             process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");
 
             mockProxy.urlgen = function (url: string) {
                 assert.equal(url, "http://jpk.com/test");
                 done();
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
+        it("Prints the BST URL", function(done) {
+            process.argv = command("node bst-proxy.js urlgen JPK http://jpk.com/test");
+            mockProxy.urlgen = function (nodeID: string, url: string) {
+                return url;
+            };
+
+            let capture: string = "";
+            let count = 0;
+            // Confirm the help prints out
+            (<any> process.stdout).write = function (data: Buffer) {
+                let dataString: string = data.toString();
+                count++;
+                if (count === 4 && dataString.indexOf("http") !== -1) {
+                    done();
+                }
             };
 
             NodeUtil.load("../../bin/bst-proxy.js");

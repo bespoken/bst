@@ -48,7 +48,11 @@ program
     .command("urlgen <alexa-url>")
     .description("Generates the URL to be used in the Alexa Skill configuration")
     .action(function (url: string) {
-        BSTProxy.urlgen(url);
+        let bstURL: string = BSTProxy.urlgen(url);
+        console.log("Enter this URL on the Configuration tab of your skill:");
+        console.log();
+        console.log("\t" + bstURL);
+        console.log();
     });
 
 // Forces help to be printed
