@@ -26,7 +26,7 @@ describe("LambdaRunner", function() {
             let inputData = {"data": "Test"};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal("{\"success\":true}", responseString);
+                assert.equal(responseString, "{\"success\":true}");
                 runner.stop();
                 done();
             });

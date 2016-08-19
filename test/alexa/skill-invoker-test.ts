@@ -35,9 +35,10 @@ describe("SkillInvoker", function() {
             this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("Nearest Location", function (data: any) {
-                assert(data.response.outputSpeech.ssml !== null);
-                assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+            invoker.say("Nearest Location", function (request: any, response: any) {
+                assert(request);
+                assert(response.response.outputSpeech.ssml !== null);
+                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
                 done();
             });
         });
@@ -46,9 +47,9 @@ describe("SkillInvoker", function() {
             this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("Take Me To Walmart {A}", function (data: any) {
-                assert(data.response.outputSpeech.ssml !== null);
-                assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3\" /></speak>");
+            invoker.say("Take Me To Walmart {A}", function (request: any, response: any) {
+                assert(response.response.outputSpeech.ssml !== null);
+                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3\" /></speak>");
                 done();
             });
         });
@@ -57,7 +58,7 @@ describe("SkillInvoker", function() {
             this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("Nearest Location", function (data: any, error: string) {
+            invoker.say("Nearest Location", function (request: any, response: any, error: string) {
                 assert(error);
                 assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
                 done();
@@ -67,7 +68,7 @@ describe("SkillInvoker", function() {
         it("Handles error on bad Intent", function(done) {
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("No Matching", function (data: any, error: string) {
+            invoker.say("No Matching", function (request: any, response: any, error: string) {
                 assert(error);
                 assert.equal(error, "Interaction model has no intentName named: NoMatchingIntent");
                 done();
@@ -78,9 +79,9 @@ describe("SkillInvoker", function() {
             this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
-            invoker.say("NotMatching", function (data: any) {
+            invoker.say("NotMatching", function (request: any, response: any) {
                 // Treats this as the first intentName, Nearest Location
-                assert.equal(data.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
                 done();
             });
         });

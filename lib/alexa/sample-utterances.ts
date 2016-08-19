@@ -105,6 +105,9 @@ export class SampleUtterances {
     }
 }
 
+/**
+ * Helper class for handling phrases - breaks out the slots within a phrase
+ */
 export class Phrase {
     public slots: Array<string> = [];
     public normalizedPhrase: string = null;
@@ -113,6 +116,12 @@ export class Phrase {
         this.normalizeSlots(this.phrase);
     }
 
+    /**
+     * Takes a phrase like "This is a {Slot}" and turns it into "This is a {}"
+     * This is so we can compare the sample utterances (which have names that tie off to the slot names defined in the
+     *  intent schema) with the actual utterance, which have values in the slot positions (as opposed to the names)
+     * @param utterance
+     */
     public normalizeSlots(utterance: string): void {
         // Slots are indicated by {braces}
         let slotlessUtterance = "";
@@ -153,9 +162,7 @@ export class Phrase {
  * Helpful for handling slots
  */
 export class UtteredIntent {
-    public constructor(public intentName: string, public utterance: string, public matchedPhrase: Phrase) {
-
-    }
+    public constructor(public intentName: string, public utterance: string, public matchedPhrase: Phrase) {}
 
     public slotCount(): number {
         return this.matchedPhrase.slots.length;

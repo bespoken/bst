@@ -15,11 +15,11 @@ export class BSTSpeak {
                        public intentSchemaFile?: string,
                        public sampleUtterancesFile?: string,
                        public applicationID?: string) {
-        if (this.intentSchemaFile === undefined) {
+        if (this.intentSchemaFile === undefined || this.intentSchemaFile === null) {
             this.intentSchemaFile = DefaultIntentSchemaLocation;
         }
 
-        if (this.sampleUtterancesFile === undefined) {
+        if (this.sampleUtterancesFile === undefined || this.sampleUtterancesFile === null) {
             this.sampleUtterancesFile = DefaultSampleUtterancesLocation;
         }
     }
@@ -37,7 +37,7 @@ export class BSTSpeak {
         });
     }
 
-    public speak(phrase: string, callback: (data: any, error?: string) => void) {
+    public speak(phrase: string, callback: (request: any, response: any, error?: string) => void) {
         this.skillInvoker.say(phrase, callback);
     }
 

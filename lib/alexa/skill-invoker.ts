@@ -19,7 +19,7 @@ export class SkillInvoker {
      * @param utterance
      * @param callback
      */
-    public say(utterance: string, callback: (response: any, error?: string) => void): any {
+    public say(utterance: string, callback: (request: any, response: any, error?: string) => void): any {
         let intent: UtteredIntent = this.interactionModel.sampleUtterances.intentForUtterance(utterance);
 
         // If we don't match anything, we use the default utterance - simple algorithm for this
@@ -38,9 +38,9 @@ export class SkillInvoker {
 
             let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
                 if (error) {
-                    callback(null, error.message);
+                    callback(null, null, error.message);
                 } else {
-                    callback(body);
+                    callback(requestJSON, body);
                 }
             };
 
@@ -50,7 +50,7 @@ export class SkillInvoker {
                 json: requestJSON,
             }, responseHandler);
         } catch (e) {
-            callback(null, e.message);
+            callback(null, null, e.message);
         }
     }
 }

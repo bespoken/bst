@@ -45,8 +45,8 @@ describe("BSTSpeak", function() {
             speak.initialize(function () {
                 let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
                 lambdaRunner.start();
-                speak.speak("Hello", function(data: any) {
-                    assert.equal(data.output, "Well, Hello To You");
+                speak.speak("Hello", function(request: any, response: any) {
+                    assert.equal(response.output, "Well, Hello To You");
 
                     lambdaRunner.stop(function() {
                         process.chdir("../..");
@@ -62,10 +62,10 @@ describe("BSTSpeak", function() {
             speak.initialize(function () {
                 let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
                 lambdaRunner.start();
-                speak.speak("Dumb", function(data: any) {
-                    assert(data.output === undefined);
-                    assert(data.success);
-                    assert.equal(data.intent, "Test");
+                speak.speak("Dumb", function(request: any, response: any) {
+                    assert(response.output === undefined);
+                    assert(response.success);
+                    assert.equal(response.intent, "Test");
 
                     lambdaRunner.stop(function() {
                         process.chdir("../..");

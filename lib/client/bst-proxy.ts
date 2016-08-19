@@ -5,6 +5,8 @@ import ICommand = commander.ICommand;
 import {BespokeClient} from "./bespoke-client";
 import {LambdaRunner} from "./lambda-runner";
 import {URLMangler} from "./url-mangler";
+import {BSTProcess} from "./bst-config";
+import {Global} from "../core/global";
 
 export enum ProxyType {
     HTTP,
@@ -25,7 +27,7 @@ export class BSTProxy {
     private httpPort: number;
     private lambdaFile: string;
 
-    public constructor(public proxyType: ProxyType, public nodeID: string) {}
+    public constructor(public proxyType: ProxyType) {}
 
     /**
      * Starts an HTTP proxy with specified node and target port
@@ -33,8 +35,8 @@ export class BSTProxy {
      * @param targetPort
      * @returns {BSTProxy}
      */
-    public static http(nodeID: string, targetPort: number): BSTProxy {
-        let tool: BSTProxy = new BSTProxy(ProxyType.HTTP, nodeID);
+    public static http(targetPort: number): BSTProxy {
+        let tool: BSTProxy = new BSTProxy(ProxyType.HTTP);
         tool.httpPort = targetPort;
         return tool;
     }
@@ -45,8 +47,8 @@ export class BSTProxy {
      * @param lambdaFile
      * @returns {BSTProxy}
      */
-    public static lambda(nodeID: string, lambdaFile: string): BSTProxy {
-        let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA, nodeID);
+    public static lambda(lambdaFile: string): BSTProxy {
+        let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA);
         tool.lambdaFile = lambdaFile;
         tool.httpPort = DefaultLambdaPort;
         return tool;
@@ -58,8 +60,8 @@ export class BSTProxy {
      * @param url
      * @returns {string}
      */
-    public static urlgen(nodeID: string, url: string): string {
-        let mangler = new URLMangler(url, nodeID);
+    public static urlgen(url: string): string {
+        let mangler = new URLMangler(url, Global.config().nodeID());
         return mangler.mangle();
     }
 
@@ -84,7 +86,10 @@ export class BSTProxy {
     }
 
     public start(onStarted?: () => void): void {
-        this.bespokenClient = new BespokeClient(this.nodeID, this.bespokenHost, this.bespokenPort, this.httpPort);
+        // Every proxy has a process file associated with it
+        BSTProcess.run(this.httpPort, this.proxyType, process.pid);
+
+        this.bespokenClient = new BespokeClient(Global.config().nodeID(), this.bespokenHost, this.bespokenPort, this.httpPort);
         if (onStarted !== undefined) {
             this.bespokenClient.onConnect = onStarted;
         }

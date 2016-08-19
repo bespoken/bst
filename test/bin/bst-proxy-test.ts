@@ -10,14 +10,12 @@ import {NodeUtil} from "../../lib/core/node-util";
 describe("bst-proxy", function() {
     let mockModule: any = {
         BSTProxy: {
-            http: function (nodeID: string, targetPort: number) {
-                assert.equal(nodeID, "JPK");
+            http: function (targetPort: number) {
                 assert.equal(targetPort, 9000);
                 return this;
             },
 
-            lambda: function (nodeID: string, lambdaFile: string) {
-                assert.equal(nodeID, "JPK");
+            lambda: function (lambdaFile: string) {
                 assert.equal(lambdaFile, "lambda.js");
                 return this;
             }
@@ -48,7 +46,6 @@ describe("bst-proxy", function() {
         it("Prints help with no-args", function(done) {
             process.argv = command("node bst-proxy.js");
 
-            let capture: string = "";
             // Confirm the help prints out
             (<any> process.stdout).write = function (data: Buffer) {
                 let dataString: string = data.toString();
@@ -63,7 +60,7 @@ describe("bst-proxy", function() {
 
     describe("http command", function() {
         it("Calls HTTP proxy", function(done) {
-            process.argv = command("node bst-proxy.js http JPK 9000");
+            process.argv = command("node bst-proxy.js http 9000");
             mockProxy.start = function () {
                 done();
             };
@@ -71,7 +68,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --bstHost localhost --bstPort 9000 http JPK 9000");
+            process.argv = command("node bst-proxy.js --bstHost localhost --bstPort 9000 http 9000");
 
             let optionsSet = false;
             mockProxy.start = function () {
@@ -91,7 +88,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with short options", function(done) {
-            process.argv = command("node bst-proxy.js -h localhost3 -p 9003 http JPK 9000");
+            process.argv = command("node bst-proxy.js -h localhost3 -p 9003 http 9000");
 
             let optionsSet = false;
             mockProxy.start = function () {
@@ -114,7 +111,7 @@ describe("bst-proxy", function() {
 
     describe("lambda command", function() {
         it("Calls Lambda proxy", function(done) {
-            process.argv = command("node bst-proxy.js lambda JPK lambda.js");
+            process.argv = command("node bst-proxy.js lambda lambda.js");
             mockProxy.start = function () {
                 done();
             };
@@ -122,7 +119,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls Lambda proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js -h localhost2 -p 9001 lambda JPK lambda.js");
+            process.argv = command("node bst-proxy.js -h localhost2 -p 9001 lambda lambda.js");
             let optionsSet = false;
             mockProxy.start = function () {
                 if (!optionsSet) {
@@ -143,10 +140,9 @@ describe("bst-proxy", function() {
 
     describe("urlgen", function() {
         it("Calls urlgen", function(done) {
-            process.argv = command("node bst-proxy.js urlgen JPK http://jpk.com/test");
+            process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");
 
-            mockProxy.urlgen = function (nodeID: string, url: string) {
-                assert.equal(nodeID, "JPK");
+            mockProxy.urlgen = function (url: string) {
                 assert.equal(url, "http://jpk.com/test");
                 done();
             };
