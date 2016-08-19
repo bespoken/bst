@@ -139,6 +139,36 @@ describe("bst-speak", function() {
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
+        it("Has no interaction model", function(done) {
+            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
+            mockery.registerMock("../lib/client/bst-speak", {
+                BSTSpeak: function () {
+                    this.initialize = function(ready: Function) {
+                        ready("There was an error");
+                    };
+
+                    this.speak = function (utterance: string) {
+                        assert.equal(utterance, "Hello There Ladies And Gentlemen");
+                        return this;
+                    };
+                }
+            });
+
+            sandbox.stub(process, "exit", function(exitCode: number) {
+                assert.equal(exitCode, 0);
+                done();
+            });
+
+            let count = 0;
+            sandbox.stub(console, "error", function(data: Buffer) {
+                count++;
+                if (count === 2) {
+                    assert(data.toString().indexOf("Message") !== -1);
+                }
+            });
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
         it("Has No Process", function(done) {
             sandbox.stub(process, "exit", function(exitCode: number) {
                 assert.equal(exitCode, 0);

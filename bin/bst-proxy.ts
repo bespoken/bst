@@ -19,7 +19,6 @@ program
     .option("-p, --bstPort <bstPort>", "The port of the BST server", parseInt)
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
-        console.log("");
         console.log("Your URL for Alexa Skill configuration:");
         console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().nodeID()));
         console.log("(Be sure to put in your real path and other query string parameters!)");
@@ -36,7 +35,6 @@ program
     .option("-p, --bstPort <bstPort>", "The port of the BST server", parseInt)
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, options: any) {
-        console.log("");
         console.log("Your URL for Alexa Skill configuration:");
         console.log(URLMangler.mangleNoPath(Global.config().nodeID()));
         console.log("");

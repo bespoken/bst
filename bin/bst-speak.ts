@@ -16,7 +16,7 @@ program
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-v, --verbose", "Prints out the full request that was sent")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
-    .action(function () {
+    .action(function (error: string) {
         // To handle utterances with multiple words, we need to look at the args
         let utterance: string = "";
         for (let i = 0; i < program.args.length; i++ ) {
@@ -45,7 +45,6 @@ program
         if (options.url === undefined) {
             let proxyProcess = Global.running();
             if (proxyProcess === null) {
-                console.log("");
                 console.log("No URL specified and no proxy is currently running");
                 console.log("");
                 console.log("URL (--url) must be specified if no proxy is currently running");
@@ -59,10 +58,16 @@ program
         }
 
         let speaker = new BSTSpeak(url, intentSchemaPath, samplesPath, null);
-        speaker.initialize(function () {
+        speaker.initialize(function (error) {
+            if (error !== undefined) {
+                console.error("Error loading Interaction Model!");
+                console.error("");
+                process.exit(0);
+                return;
+            }
+
             speaker.speak(utterance, function(request: any, response: any) {
                 let jsonPretty = JSON.stringify(response, null, 4);
-                console.log("");
                 console.log("Spoke: " + utterance);
                 console.log("");
                 if (verbose) {
