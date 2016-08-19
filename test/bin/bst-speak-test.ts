@@ -61,7 +61,7 @@ describe("bst-speak", function() {
             let count = 0;
             sandbox.stub(console, "log", function(data: Buffer) {
                 count++;
-                if (count === 5) {
+                if (count === 4) {
                     assert(data.toString().indexOf("response") !== -1);
                     done();
                 }
@@ -84,14 +84,6 @@ describe("bst-speak", function() {
                 }
             });
 
-            let count = 0;
-            sandbox.stub(console, "log", function(data: Buffer) {
-                count++;
-                if (count === 5) {
-                    assert(data.toString().indexOf("response") !== -1);
-                    done();
-                }
-            });
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
@@ -113,7 +105,7 @@ describe("bst-speak", function() {
             let count = 0;
             sandbox.stub(console, "log", function(data: Buffer) {
                 count++;
-                if (count === 5) {
+                if (count === 4) {
                     assert(data.toString().indexOf("request") !== -1);
                     done();
                 }
@@ -159,27 +151,20 @@ describe("bst-speak", function() {
                 done();
             });
 
-            let count = 0;
-            sandbox.stub(console, "error", function(data: Buffer) {
-                count++;
-                if (count === 2) {
-                    assert(data.toString().indexOf("Message") !== -1);
-                }
-            });
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
         it("Has No Process", function(done) {
             sandbox.stub(process, "exit", function(exitCode: number) {
                 assert.equal(exitCode, 0);
-                done();
             });
 
             let count = 0;
             sandbox.stub(console, "log", function(data: Buffer) {
                 count++;
-                if (count === 6) {
+                if (count === 5) {
                     assert(data.toString().indexOf("proxy is running") !== -1);
+                    done();
                 }
             });
 

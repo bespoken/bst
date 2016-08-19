@@ -3,11 +3,15 @@
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as program from "commander";
+import * as sinon from "sinon";
 import {URLMangler} from "../../lib/client/url-mangler";
 import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
+import SinonSandbox = Sinon.SinonSandbox;
 
 describe("bst-proxy", function() {
+    let sandbox: SinonSandbox = null;
+
     let mockModule: any = {
         BSTProxy: {
             http: function (targetPort: number) {
@@ -27,9 +31,11 @@ describe("bst-proxy", function() {
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/client/bst-proxy", mockModule);
+        sandbox = sinon.sandbox.create();
     });
 
     afterEach(function () {
+        sandbox.restore();
         mockery.disable();
     });
 
@@ -140,15 +146,6 @@ describe("bst-proxy", function() {
     });
 
     describe("urlgen", function() {
-        let originalFunction: any = null;
-        beforeEach (function () {
-            originalFunction = process.stdout.write;
-        });
-
-        afterEach (function () {
-            process.stdout.write = originalFunction;
-        });
-
         it("Calls urlgen", function(done) {
             process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");
 
@@ -161,21 +158,23 @@ describe("bst-proxy", function() {
         });
 
         it("Prints the BST URL", function(done) {
-            process.argv = command("node bst-proxy.js urlgen JPK http://jpk.com/test");
-            mockProxy.urlgen = function (nodeID: string, url: string) {
+            process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");
+            mockProxy.urlgen = function (url: string) {
                 return url;
             };
 
             let capture: string = "";
             let count = 0;
             // Confirm the help prints out
-            (<any> process.stdout).write = function (data: Buffer) {
-                let dataString: string = data.toString();
+            sandbox.stub(console, "log", function (data: Buffer) {
                 count++;
-                if (count === 4 && dataString.indexOf("http") !== -1) {
+                if (data !== undefined) {
+                    console.error("Date: " + data.toString());
+                }
+                if (count === 3 && data.toString().indexOf("http") !== -1) {
                     done();
                 }
-            };
+            });
 
             NodeUtil.load("../../bin/bst-proxy.js");
         });

@@ -16,7 +16,7 @@ program
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-v, --verbose", "Prints out the full request that was sent")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
-    .action(function (error: string) {
+    .action(function () {
         // To handle utterances with multiple words, we need to look at the args
         let utterance: string = "";
         for (let i = 0; i < program.args.length; i++ ) {
