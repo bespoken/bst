@@ -55,8 +55,8 @@ program
         console.log();
     });
 
-// Forces help to be printed
-if (process.argv.slice(2).length === 0) {
+// Forces help to be printed if neither lambda nor HTTP is printed
+if (process.argv.length < 3) {
     program.outputHelp();
 }
 
