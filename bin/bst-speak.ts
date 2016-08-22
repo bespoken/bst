@@ -10,7 +10,7 @@ Global.initializeCLI();
 program.version(Global.version());
 
 program
-    .usage("<utterance>")
+    .usage("[options] <utterance>")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")

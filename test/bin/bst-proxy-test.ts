@@ -92,27 +92,6 @@ describe("bst-proxy", function() {
 
             NodeUtil.load("../../bin/bst-proxy.js");
         });
-
-        it("Calls HTTP proxy with short options", function(done) {
-            process.argv = command("node bst-proxy.js -h localhost3 -p 9003 http 9000");
-
-            let optionsSet = false;
-            mockProxy.start = function () {
-                if (!optionsSet) {
-                    assert.fail("Options not set");
-                }
-                done();
-            };
-
-            mockProxy.bespokenServer = function (host: string, port: number) {
-                assert.equal(host, "localhost3");
-                assert.equal(port, "9003");
-                optionsSet = true;
-            };
-
-
-            NodeUtil.load("../../bin/bst-proxy.js");
-        });
     });
 
     describe("lambda command", function() {
@@ -126,7 +105,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls Lambda proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js -h localhost2 -p 9001 lambda lambda.js");
+            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 lambda lambda.js");
             let optionsSet = false;
             mockProxy.start = function () {
                 if (!optionsSet) {
