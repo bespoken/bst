@@ -68,3 +68,9 @@ $ bst speak Hello World, my name is {John}
 ```
 
 The value John will then be automatically placed in the Name slot for the utterance on the request.
+
+## Other Notes
+**Default Utterances**  
+We currently use a simple algorithm to pick out a default Intent if none of the sample utterances match the supplied utterance.  
+This algorithm is - the first utterance of the first intent defined in the sample file.  
+This is meant to loosely mimic the behavior of the Alexa Simulator, which also seems to randomly select an intent/utterance when none matches.
