@@ -12,6 +12,12 @@ export class NodeUtil {
         return require(file);
     }
 
+    public static run(file: string): any {
+        // Invalidates local files every time - basically forces a reload
+        delete require.cache[require.resolve(file)];
+        return require(file);
+    }
+
     /**
      * Invalidates the require cache for files that are in the working directory
      * Excludes files in the node_modules
