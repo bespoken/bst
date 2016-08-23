@@ -58,11 +58,9 @@ describe("bst-speak", function() {
                 }
             });
 
-            let count = 0;
+            let completed = false;
             sandbox.stub(console, "log", function(data: Buffer) {
-                count++;
-                if (count === 4) {
-                    assert(data.toString().indexOf("response") !== -1);
+                if (data.indexOf("Response:") !== -1) {
                     done();
                 }
             });
@@ -88,7 +86,7 @@ describe("bst-speak", function() {
         });
 
         it("Speaks One Word With Verbose", function(done) {
-            process.argv = command("node bst-speak.js Hello -v");
+            process.argv = command("node bst-speak.js Hello");
             mockery.registerMock("../lib/client/bst-speak", {
                 BSTSpeak: function () {
                     this.initialize = function(ready: Function) {
