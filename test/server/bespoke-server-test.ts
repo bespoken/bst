@@ -15,7 +15,7 @@ import {NetworkErrorType} from "../../lib/core/global";
 describe("BespokeServerTest", function() {
     describe("ReceiveWebhook", function() {
         it("Connects and Receives Callback", function(done) {
-            this.timeout(5000);
+            this.timeout(10000);
             // Start the server
             let server = new BespokeServer(8010, 9010);
             server.start();

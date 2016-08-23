@@ -13,6 +13,8 @@ import SinonSandbox = Sinon.SinonSandbox;
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
     beforeEach(function () {
+        // Program state gets messed up by repeatedly calling it - lets dump it every time
+        delete require.cache[require.resolve("commander")];
         sandbox = sinon.sandbox.create();
     });
 
@@ -23,25 +25,54 @@ describe("bst", function() {
     describe("proxy command", function() {
 
         it("Calls proxy for http", function(done) {
-            process.argv = command("node bst.js proxy http jpk@xappmedia.com 9000");
-            let mockProgram = sandbox.mock(program);
-            mockProgram.expects("executeSubCommand")
-                .withArgs(command("node bst.js proxy http jpk@xappmedia.com 9000"), command("proxy http jpk@xappmedia.com 9000"), []);
+            process.argv = command("node bst.js proxy http 9000");
 
-            NodeUtil.load("../../bin/bst.js");
+            let mockProgram = sandbox.mock(require("commander"));
+            mockProgram.expects("executeSubCommand")
+                .withArgs(command("node bst.js proxy http 9000"), command("proxy http 9000"));
+
+            NodeUtil.run("../../bin/bst.js");
+            mockProgram.verify();
+            setTimeout(done, 100);
+        });
+
+        it("Calls proxy for lambda", function(done) {
+            process.argv = command("node bst.js proxy lambda lambda.js");
+            let mockProgram = sandbox.mock(require("commander"));
+            mockProgram.expects("executeSubCommand")
+                .withArgs(command("node bst.js proxy lambda lambda.js"), command("proxy lambda lambda.js"));
+
+            NodeUtil.run("../../bin/bst.js");
+
             mockProgram.verify();
             done();
         });
 
-        it("Calls proxy for lambda", function(done) {
-            process.argv = command("node bst.js proxy lambda JPK lambda.js");
-            let mockProgram = sandbox.mock(program);
-            mockProgram.expects("executeSubCommand")
-                .withArgs(command("node bst.js proxy lambda JPK lambda.js"), command("proxy lambda JPK lambda.js"), []);
+        describe("speak command", function() {
 
-            NodeUtil.load("../../bin/bst.js");
-            mockProgram.verify();
-            done();
+            it("Calls speak", function(done) {
+                process.argv = command("node bst.js speak Hello World");
+                let mockProgram = sandbox.mock(require("commander"));
+                mockProgram.expects("executeSubCommand")
+                    .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
+
+                NodeUtil.run("../../bin/bst.js");
+                mockProgram.verify();
+                done();
+            });
+        });
+
+        describe("sleep command", function() {
+            it("Calls speak", function(done) {
+                process.argv = command("node bst.js speak Hello World");
+                let mockProgram = sandbox.mock(require("commander"));
+                mockProgram.expects("executeSubCommand")
+                    .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
+
+                NodeUtil.run("../../bin/bst.js");
+                mockProgram.verify();
+                done();
+            });
         });
     });
 
@@ -81,7 +112,7 @@ describe("bst", function() {
                 }
             });
 
-            NodeUtil.load("../../bin/bst.js");
+            NodeUtil.run("../../bin/bst.js");
         });
 
         it("Accepts a correct version", function(done) {
@@ -102,7 +133,7 @@ describe("bst", function() {
                 }
             });
 
-            NodeUtil.load("../../bin/bst.js");
+            NodeUtil.run("../../bin/bst.js");
             setTimeout(function () {
                 done();
             }, 100);
