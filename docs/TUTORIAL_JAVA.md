@@ -48,7 +48,7 @@ https://github.com/bespoken/bst/blob/master/samples/java/src/main/java/helloworl
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
-https://proxy.bespoken.tools/hello?node-id=\<YOUR_NODE>
+https://proxy.bespoken.tools/hello?node-id=&lt;YOUR_NODE&gt;
 
 Here is an example endpoint:  
 https://proxy.bespoken.tools/hello?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
