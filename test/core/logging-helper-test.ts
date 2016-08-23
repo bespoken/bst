@@ -10,7 +10,7 @@ import {LoggingHelper} from "../../lib/core/logging-helper";
 describe("LoggingHelper", function() {
     describe("#initialize", function() {
         it("Logs correctly", function(done) {
-            LoggingHelper.initialize();
+            LoggingHelper.initialize(true);
             winston.error("Test", function () {
                 done();
             });

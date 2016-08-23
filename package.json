@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "commander": "^2.9.0",
+    "node-uuid": "1.4.7",
+    "request": "^2.74.0",
     "sinon": "^1.17.5",
     "typescript": "^1.8.10",
     "winston": "^2.2.0"

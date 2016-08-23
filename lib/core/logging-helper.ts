@@ -5,6 +5,8 @@ import * as winston from "winston";
 import {StringUtil} from "./string-util";
 
 export class LoggingHelper {
+    private static cli: boolean = false;
+
     public static debug (logger: string, message: string): void {
         LoggingHelper.log("debug", logger, message);
     }
@@ -24,17 +26,31 @@ export class LoggingHelper {
     private static log(level: string, logger: string, message: string) {
         // Rpad and then truncate the logger name
         let loggerString = StringUtil.rpad(logger, " ", 10).substr(0, 10);
-        winston.log(level, loggerString + "  " + message);
+        if (LoggingHelper.cli) {
+            winston.log(level, message);
+        } else {
+            winston.log(level, loggerString + "  " + message);
+        }
     }
 
-    public static initialize (): void {
+    public static initialize (cli: boolean): void {
+        LoggingHelper.cli = cli;
         winston.clear();
-        winston.add(winston.transports.Console,
-            {
-                formatter: LoggingHelper.formatter,
-                level: "info"
-            }
-        );
+        if (LoggingHelper.cli) {
+            winston.add(winston.transports.Console,
+                {
+                    formatter: LoggingHelper.cliFormatter,
+                    level: "info"
+                }
+            );
+        } else {
+            winston.add(winston.transports.Console,
+                {
+                    formatter: LoggingHelper.formatter,
+                    level: "info"
+                }
+            );
+        }
     }
 
     private static formatter(options: any): string {
@@ -44,4 +60,9 @@ export class LoggingHelper {
             + (options.meta && Object.keys(options.meta).length ? "\n\t"
             + JSON.stringify(options.meta) : "" );
     }
+
+    private static cliFormatter(options: any): string {
+        return options.message;
+    }
+
 }

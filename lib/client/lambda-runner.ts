@@ -42,7 +42,7 @@ export class LambdaRunner {
             path = [process.cwd(), this.file].join("/");
         }
 
-        LoggingHelper.info(Logger, "LambdaPath: " + path);
+        LoggingHelper.info(Logger, "Invoked Lambda: " + this.file);
         let bodyJSON: any = JSON.parse(body);
         let lambda: any = NodeUtil.load(path);
         // let lambda = System.import("./" + file);
