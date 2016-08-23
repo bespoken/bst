@@ -32,10 +32,17 @@ https://github.com/amzn/alexa-skills-kit-js/blob/master/samples/helloWorld/speec
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
-https://proxy.bespoken.tools?node-id=@YOUR_NODE@
+```
+https://proxy.bespoken.tools?node-id=<YOUR_NODE>
+```
 
 For example, if my node-id is JPK, it should be:  
-https://proxy.bespoken.tools/hello?node-id=JPK
+```
+https://proxy.bespoken.tools/hello?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
+```
+
+The proxy tool prints out the URL to be used when it starts up.  
+You can also generate it for an existing URL via the `proxy urlgen` command. 
 
 Set account linking to "No"
 
@@ -52,4 +59,4 @@ You can now start adding functionality to your skill. To learn more about coding
 https://github.com/amzn/alexa-skills-kit-js
 
 You can also try it out on an Alexa device like an Echo, as long as it is registered with your account.
-Just say "Open @Invocation Name@" to use it.
+Just say "Open \<Invocation Name>" to use it.

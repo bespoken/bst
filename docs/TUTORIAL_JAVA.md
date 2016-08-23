@@ -2,10 +2,10 @@
 This tutorial shows you how to get started developing for Alexa with Java and Maven.  
 
 # Getting Started
-__Clone the Bespoken Tools Project:__
+__Clone the Bespoken Tools Project:__  
 https://github.com/bespoken/bst
 
-__Setup the Bespoken Tools (instructions here):__
+__Setup the Bespoken Tools (instructions here):__  
 https://github.com/bespoken/bst/blob/master/README.md
 
 __Install Maven__  
@@ -41,19 +41,15 @@ __Choose Add a New Skill__
 __Fill out the Information tab (give a name and invocation phrase)__  
 __Fill out the Interaction Model__  
 Copy the Intent Schema from here:
-```
 https://github.com/bespoken/bst/blob/master/samples/java/src/main/java/helloworld/speechAssets/IntentSchema.json
-```
 
 Copy the Utterances from here:  
-```
 https://github.com/bespoken/bst/blob/master/samples/java/src/main/java/helloworld/speechAssets/SampleUtterances.txt
-```
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
 ```
-https://proxy.bespoken.tools/hello?node-id=<YOUR_NODE>;
+https://proxy.bespoken.tools/hello?node-id=<YOUR_NODE>
 ```
 
 Here is an example endpoint:  

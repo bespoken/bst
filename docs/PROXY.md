@@ -15,7 +15,7 @@ The two commands are described below, as well as the urlgen helper command.
 The proxy lambda command allows you to run a Lambda as a local service your machine.
 
 **Note**
-- The command currently only supports Node Lambdas.
+- The command currently only supports Node/JavaScript Lambdas.
 
 **Usage**  
 To use it, invoke it with the Lambda file to run.  

@@ -7,20 +7,19 @@ Bespoken Tools (bst) - CLI Tools for Alexa Skills Development
 ## Overview
 The **bst** (aka Bespoken Tools aka the BEAST) makes it easy to develop for Alexa/Echo.
 
-The current version provides two commands - **proxy http** and **proxy lambda**.
+The current version provides three commands - **proxy http**, **proxy lambda** and **speak**.
 
-These proxies make it super-easy to develop and debug your Alexa skill on your local machine.
+The proxies make it super-easy to develop and debug your Alexa skill on your local machine.
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
 
 The proxies can work either with a service listening on a port (**proxy http**),  
 or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
 
-It works by forwarding traffic from Alexa to our server, which in turns sends it to your machine.  
-A Node ID that you designate is how we know which traffic should come to you.
+The speak command simulates the Alexa service by sending any utterance from the command-line to your service.  
+The request sent to your service is a properly formatted intent request.  
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 - **deploy**: Automatically deploy Alexa Lambdas to the cloud with a single command
-- **test**: Run phrases through and get the exact input sent to your Skill service
 
 ## Getting Started
 
@@ -46,8 +45,17 @@ $ bst
 
 ## bst proxy Command
 
-The proxy command allows you to interact with a local service running on your machine via an Alexa device.
+The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
+Read more here:  
+https://github.com/bespoken/bst/blob/master/docs/PROXY.md
 
+## bst speak Command
+
+The speak command generates intent requests for your service as if they were coming from Alexa itself.  
+It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
+
+Read more here:  
+https://github.com/bespoken/bst/blob/master/docs/SPEAK.md
 
 
 ## Questions/Feedback?
