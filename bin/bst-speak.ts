@@ -14,7 +14,6 @@ program
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
-    .option("-v, --verbose", "Prints out the full request that was sent")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
@@ -33,11 +32,6 @@ program
 
         // Just by casting program to options, we can get all the options which are set on it
         let options: any = program;
-        let verbose = false;
-        if (options.verbose) {
-            verbose = true;
-        }
-
         let url = options.url;
         let intentSchemaPath = options.intents;
         let samplesPath = options.samples;
@@ -70,11 +64,9 @@ program
                 let jsonPretty = JSON.stringify(response, null, 4);
                 console.log("Spoke: " + utterance);
                 console.log("");
-                if (verbose) {
-                    console.log("Request:");
-                    console.log(JSON.stringify(request, null, 4));
-                    console.log("");
-                }
+                console.log("Request:");
+                console.log(JSON.stringify(request, null, 4));
+                console.log("");
                 console.log("Response:");
                 console.log(jsonPretty);
                 console.log("");
