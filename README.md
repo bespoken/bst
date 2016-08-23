@@ -15,8 +15,9 @@ Just point the bst at the local service running on your machine, and your code c
 The proxies can work either with a service listening on a port (**proxy http**),  
 or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
 
-The speak command simulates the Alexa service by sending any utterance from the command-line to your service.  
+The **speak** command simulates the Alexa service by sending any utterance from the command-line to your service.  
 The request sent to your service is a properly formatted intent request.  
+It then prints out the JSON payload returned by your service.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 - **deploy**: Automatically deploy Alexa Lambdas to the cloud with a single command
