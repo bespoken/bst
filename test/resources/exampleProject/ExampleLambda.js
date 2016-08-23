@@ -7,6 +7,14 @@ ExampleLambda.execute = function (event, context) {
     var em = new module.ExampleModule("test");
     if (event.doFailure !== undefined && event.doFailure === true) {
         context.fail("Failure!");
+    } else if (event.request !== undefined && event.request.intent !== undefined) {
+        if (event.request.intent.name === "HelloIntent") {
+            var responseData = {"success": true, "output": "Well, Hello To You"}
+            context.succeed(responseData);
+        } else {
+            var responseData = {"success": true, "intent": event.request.intent.name }
+            context.succeed(responseData);
+        }
     } else {
         var value = em.loop(1000, 0);
         var responseData = {"success": true, "math": value}

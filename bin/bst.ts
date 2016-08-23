@@ -5,8 +5,9 @@ import {LoggingHelper} from "../lib/core/logging-helper";
 
 let Logger = "BST";
 
-Global.initialize();
-LoggingHelper.info(Logger, "Node Version: " + process.version);
+Global.initializeCLI();
+LoggingHelper.info(Logger, "BST: v" + Global.version() + "  Node: " + process.version);
+LoggingHelper.info(Logger, "");
 let nodeMajorVersion = parseInt(process.version.substr(1, 2));
 
 if (nodeMajorVersion < 4) {
@@ -16,8 +17,8 @@ if (nodeMajorVersion < 4) {
 }
 
 program
-    .version(Global.version())
-    .command("proxy (lambda|http)", "Proxies a Lambda or http service");
+    .command("proxy <lambda|http>", "Proxies a Lambda or http service")
+    .command("speak <utterance>", "Sends an intent with the specified utterance to your service");
 
 program.parse(process.argv);
 

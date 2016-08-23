@@ -3,7 +3,7 @@
 import * as assert from "assert";
 import {Global} from "../../lib/core/global";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
-import {HTTPClient} from "../../lib/client/http-client";
+import {HTTPClient} from "../../lib/core/http-client";
 import {FileUtil} from "../../lib/core/file-util";
 
 Global.initialize();
@@ -26,7 +26,7 @@ describe("LambdaRunner", function() {
             let inputData = {"data": "Test"};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal("{\"success\":true}", responseString);
+                assert.equal(responseString, "{\"success\":true}");
                 runner.stop();
                 done();
             });

@@ -2,7 +2,7 @@
 
 import * as querystring from "querystring";
 import * as http from "http";
-import {BufferUtil} from "../core/buffer-util";
+import {BufferUtil} from "./buffer-util";
 
 export class HTTPClient {
 
@@ -14,7 +14,7 @@ export class HTTPClient {
             path: path,
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/json",
                 "Content-Length": Buffer.byteLength(data)
             }
         };

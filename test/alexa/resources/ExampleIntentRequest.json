@@ -1,0 +1,26 @@
+{
+  "session": {
+    "sessionId": "SessionId.b3e16d0b-0954-4713-94c9-d75fd6add325",
+    "application": {
+      "applicationId": "amzn1.echo-sdk-ams.app.6a4bbcaf-e5be-4694-981d-38139fc46c20"
+    },
+    "attributes": {},
+    "user": {
+      "userId": "amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMNWY4AY66FUR7ILBWANIHQN73QH5N4GZZP4ENDTCK4KQNAEOZH4FBPHLDPIPDSVX3IC6S53FBI4DNQAY5J3TOGDBQ7PP3NBB2WFNDN42HAYQ627PIZB5NRJZQ2JXOFOKL2NLNCE27FSF5FGSFAKEYJRDHXNZKGJNQEKUYA3GC6CRX6ZSGF47Y"
+    },
+    "new": true
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "EdwRequestId.7cc88d3b-fa3c-4e01-ab04-641ea4c572c2",
+    "locale": "en-US",
+    "timestamp": "2016-08-17T21:05:47Z",
+    "intent": {
+      "name": "CurrentOffers",
+      "slots": {
+        "slot1": {"name": "slotName", "value": "slotValue"}
+      }
+    }
+  },
+  "version": "1.0"
+}

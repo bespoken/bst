@@ -2,14 +2,32 @@
 
 
 import {LoggingHelper} from "./logging-helper";
+import {BSTConfig} from "../client/bst-config";
+import {BSTProcess} from "../client/bst-config";
 export class Global {
     public static MessageDelimiter = "4772616365";
     public static KeepAliveMessage = "KEEPALIVE";
     public static BespokeServerHost = "proxy.bespoken.tools";
+    private static configuration: BSTConfig = null;
 
-    public static initialize(): void {
-        LoggingHelper.initialize();
+    public static initializeCLI(): void {
+        Global.initialize(true);
+        Global.configuration = BSTConfig.load();
+    }
 
+    public static config(): BSTConfig {
+        return Global.configuration;
+    }
+
+    public static running(): BSTProcess {
+        return BSTProcess.running();
+    }
+
+    public static initialize(cli?: boolean): void {
+        if (cli === undefined) {
+            cli = false;
+        }
+        LoggingHelper.initialize(cli);
     }
 
     public static version(): string {

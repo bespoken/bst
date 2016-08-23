@@ -1,0 +1,18 @@
+{
+  "intents": [
+    "intent": "Test"},
+    {"intent": "Another Test"},
+    {"intent": "AMAZON.HelpIntent"},
+    {"intent": "WithSlot",
+      "slots": [
+        {"name": "SlotName", "type": "SLOT_TYPE"}
+      ]
+    },
+    {"intent": "WithMultiSlot",
+      "slots": [
+        {"name": "SlotName", "type": "SLOT_TYPE"},
+        {"name": "SlotName2", "type": "SLOT_TYPE2"}
+      ]
+    }
+  ]
+}

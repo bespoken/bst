@@ -38,7 +38,7 @@ export class BespokeClient {
 
         // Once connected, send the Node ID
         this.client.connect(this.port, this.host, function() {
-            LoggingHelper.info(Logger, self.host + ":" + self.port + " Connected");
+            LoggingHelper.info(Logger, "Connected - " + self.host + ":" + self.port);
             // As soon as we connect, we send our ID
             let messageJSON = {"id": self.nodeID};
             let message = JSON.stringify(messageJSON);
@@ -51,7 +51,7 @@ export class BespokeClient {
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
             let self = this;
-            LoggingHelper.info(Logger, self.nodeID + " onWebhook: " + request.toString());
+            LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
 
             let tcpClient = new TCPClient();
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
