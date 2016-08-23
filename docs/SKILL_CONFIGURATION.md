@@ -11,7 +11,7 @@ https://myskill.example.com/skillA
 
 It should instead be configured to point like so:
 ```
-https://proxy.bespoken.tools/skillA?node-id=JPK
+https://proxy.bespoken.tools/skillA?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
 ```
 
 From your [Skill's list](https://developer.amazon.com/edw/home.html#/skills/list), click edit and navigate the Configuration step and update the HTTPS endpoint
