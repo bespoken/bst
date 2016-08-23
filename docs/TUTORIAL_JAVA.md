@@ -40,18 +40,26 @@ __Choose Get Started__
 __Choose Add a New Skill__  
 __Fill out the Information tab (give a name and invocation phrase)__  
 __Fill out the Interaction Model__  
-Copy the Intent Schema from here:  
+Copy the Intent Schema from here:
+```
 https://github.com/bespoken/bst/blob/master/samples/java/src/main/java/helloworld/speechAssets/IntentSchema.json
+```
 
 Copy the Utterances from here:  
+```
 https://github.com/bespoken/bst/blob/master/samples/java/src/main/java/helloworld/speechAssets/SampleUtterances.txt
+```
 
 __Configure the Endpoint:__  
 The endpoint should be set to:  
-https://proxy.bespoken.tools/hello?node-id=&lt;YOUR_NODE&gt;
+```
+https://proxy.bespoken.tools/hello?node-id=<YOUR_NODE>;
+```
 
 Here is an example endpoint:  
+```
 https://proxy.bespoken.tools/hello?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
+```
 
 The proxy tool prints out the URL to be used when it starts up.  
 You can also generate it for an existing URL via the `proxy urlgen` command.  
@@ -68,7 +76,9 @@ You should get a valid JSON in reply
 
 # Next Steps
 You can now start adding functionality to your skill. To learn more about coding Alexa skills, look here:  
+```
 https://github.com/amzn/alexa-skills-kit-java
+```
 
 You can also try it out on an Alexa device like an Echo, as long as it is registered with your account.
 Just say "Open \<Invocation Name>" to use it.
