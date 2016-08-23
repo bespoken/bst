@@ -7,20 +7,20 @@ Bespoken Tools (bst) - CLI Tools for Alexa Skills Development
 ## Overview
 The **bst** (aka Bespoken Tools aka the BEAST) makes it easy to develop for Alexa/Echo.
 
-The current version provides two commands - **proxy http** and **proxy lambda**.
+The current version provides three commands - **proxy http**, **proxy lambda** and **speak**.
 
-These proxies make it super-easy to develop and debug your Alexa skill on your local machine.
+The proxies make it super-easy to develop and debug your Alexa skill on your local machine.
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
 
 The proxies can work either with a service listening on a port (**proxy http**),  
 or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
 
-It works by forwarding traffic from Alexa to our server, which in turns sends it to your machine.  
-A Node ID that you designate is how we know which traffic should come to you.
+The **speak** command simulates the Alexa service by sending any utterance from the command-line to your service.  
+The request sent to your service is a properly formatted intent request.  
+It then prints out the JSON payload returned by your service.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
 - **deploy**: Automatically deploy Alexa Lambdas to the cloud with a single command
-- **test**: Run phrases through and get the exact input sent to your Skill service
 
 ## Getting Started
 
@@ -46,96 +46,17 @@ $ bst
 
 ## bst proxy Command
 
-The proxy command allows you to interact with a local service running on your machine via an Alexa device.
+The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
+Read more here:  
+https://github.com/bespoken/bst/blob/master/docs/PROXY.md
 
-### Your Node ID
+## bst speak Command
 
-You will need to determine a unique identifier to pass to **bst** so the bst server can identify which calls to point to your local machine.  It essentially allows any local HTTP service to be accessed via Alexa.
+The speak command generates intent requests for your service as if they were coming from Alexa itself.  
+It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
-Your Node ID can be any unique alphanumeric string.
-
-### $ proxy http
-**Overview**  
-Proxy http allows you to interact with a local service running on your machine (on a port) via an Alexa device.
-
-**Usage**  
-Syntax:
-```
-$ bst proxy http <NODE_ID> <PORT>
-```
-
-Example:
-```
-$ bst proxy http JPK 9999
-```
-
-The `<NODE_ID>` value, "JPK", is the name for your machine.
-
-The second parameter, `<PORT>`, represents the port that your local Alexa service is listening on.  Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.
-
-You can learn more here at our [JAVA Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_JAVA.md)
-
-### $ proxy lambda (Experimental)
-**Overview**  
-The proxy lambda command allows you to run a Lambda as a local service your machine.
-
-**Note**
-- The command currently only supports Node Lambdas.
-- The command **must** be restarted after changes are made to your Lambda.
-
-**Usage**  
-To use it, invoke it with the Lambda file to run, along with your machine's Node ID.
-
-The Lambda will automatically be passed the incoming request.  
-*AND - any changes you make to your Lambda code will be automatically reloaded!*
-
-Syntax:
-```
-$ bst proxy lambda <NODE_ID> <PATH_TO_LAMBDA>
-```
-
-Example:  
-```
-$ bst proxy lambda JPK index.js
-```
-
-You can learn more here at our [NODE Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_NODE.md):
-
-## $ proxy urlgen
-
-**Overview**
-
-Your skill must be setup to point at our server. For example, if the URL for your skill is normally:
-```
-https://myskill.example.com/skillA
-```
-
-It should instead be configured to point at the bst server, like so:
-```
-https://proxy.bespoken.tools/skillA?node-id=JPK
-```
-
-_Also note that the Node ID set with the proxy command must be passed in the query string.  This is what ties off your local proxy with our server._
-
-The rest of the URL path and query string should be unchanged.
-
-For more information on configuring your Skill see [Skill Configuration](https://github.com/bespoken/bst/blob/master/docs/SKILL_CONFIGURATION.md).
-
-**Usage**
-
-The proxy urlgen command can help generate the endpoint.
-
-Syntax:
-```
-$ bst proxy urlgen <NODE_ID> <URL>
-```
-
-Example:
-```
-$ bst proxy urlgen JPK https://myskill.example.com/skillA
-```
-
-The above example command will then provide you with HTTPS Endpoint that is required during the configuration step when you setup your Alexa Skill.
+Read more here:  
+https://github.com/bespoken/bst/blob/master/docs/SPEAK.md
 
 
 ## Questions/Feedback?

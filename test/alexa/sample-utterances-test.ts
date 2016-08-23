@@ -28,6 +28,8 @@ describe("SamplesUtterances", function() {
                 assert(utterances.hasIntent("Test"));
                 assert.equal(utterances.intentForUtterance("Test2").intentName, "Test");
                 assert.equal(utterances.intentForUtterance("another test").intentName, "AnotherTest");
+                assert.equal(utterances.intentForUtterance("With Slot {JPK}").intentName, "WithSlot");
+                assert.equal(utterances.intentForUtterance("With Slot {JPK}").slotValue(0), "JPK");
                 done();
             });
         });
@@ -134,6 +136,12 @@ describe("Phrase", function() {
         it("Correctly matches phrase", function(done) {
             let phrase = new Phrase("Hi {ABC}");
             assert(phrase.matchesUtterance("hi {John}"));
+            done();
+        });
+
+        it("Correctly matches phrase", function(done) {
+            let phrase = new Phrase("With Slot {ABC}");
+            assert(phrase.matchesUtterance("With Slot {John}"));
             done();
         });
     });
