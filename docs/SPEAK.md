@@ -26,13 +26,15 @@ For example:
 $ bst speak Hello World
 ```
 
+The speak command will return the full request and response of the interaction with your Skill service.  
+
 By default, the system will:
 * Use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
 * Use the service currently running via the `bst proxy` command
 
 If no service is currently running via bst proxy, and HTTP endpoint can be specified with the `--url` option:
 ```
-$ bst speak --url https://my.skill.com/skill/path Hello World
+$ bst speak Hello World --url https://my.skill.com/skill/path 
 ```
 
 ## Speech Asset Format and Location
@@ -42,13 +44,14 @@ If your speech assets  (Intent Model and Sample Utterances) are not stored under
 
 Example:
 ```
-$ bst speak -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt https://my.skill.com/skill/path Hello World
+$ bst speak https://my.skill.com/skill/path Hello World -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt 
 ```
 
 The format of these files is the same as they are entered in the Alexa Skill configuration.  
  
-The Intent Schema is a JSON file. Samples utterances is a space-delimited text file.  
-An example of these files is here:  
+The Intent Schema is a JSON file. Samples utterances is a space-delimited text file. 
+
+An example of these files can be found here:  
 https://github.com/amzn/alexa-skills-kit-js/tree/master/samples/helloWorld/speechAssets
 
 ## Working With Slots
@@ -72,5 +75,7 @@ The value John will then be automatically placed in the Name slot for the uttera
 ## Other Notes
 **Default Utterances**  
 We currently use a simple algorithm to pick out a default Intent if none of the sample utterances match the supplied utterance.  
+
 This algorithm is - the first utterance of the first intent defined in the sample file.  
+
 This is meant to loosely mimic the behavior of the Alexa Simulator, which also seems to randomly select an intent/utterance when none matches.
