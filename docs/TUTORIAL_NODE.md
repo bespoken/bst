@@ -36,7 +36,7 @@ The endpoint should be set to:
 https://proxy.bespoken.tools?node-id=<YOUR_NODE>
 ```
 
-For example, if my node-id is JPK, it should be:  
+Here is an example endpoint:  
 ```
 https://proxy.bespoken.tools/hello?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
 ```
