@@ -31,7 +31,7 @@ MAKE sure you are creating it off of master :-)
 This is necessary because master is a protected branch - changes cannot be pushed directly to it.
 
 Create a remote version of the new branch:
-`get push --set-upstream origin <NewBranch>`
+`git push --set-upstream origin <NewBranch>`
 
 Updated the version number:
 `npm version patch`

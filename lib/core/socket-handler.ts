@@ -15,16 +15,22 @@ export class SocketHandler {
     public message: string = null;
     public onDataCallback: (data: Buffer) => void;
     public onCloseCallback: () => void = null;
-    private onConnect: (error?: any) => void;
-    private connected: boolean = false;
+    private connected: boolean = true;
 
     public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string) => void): SocketHandler {
         let socket = new net.Socket();
         let handler = new SocketHandler(socket, onMessage);
-        handler.onConnect = onConnect;
+        handler.connected = false;
+
         socket.connect(port, host, function () {
-            this.connected = true;
-            handler.onConnect();
+            handler.connected = true;
+            onConnect();
+        });
+
+        socket.on("error", function (error: any) {
+            if (!handler.connected) {
+                onConnect(error);
+            }
         });
         return handler;
     }
@@ -43,10 +49,7 @@ export class SocketHandler {
 
         // Do some basic error-handling - needs to be improved
         this.socket.on("error", function (e: any) {
-            if (e.code === "ECONNREFUSED") {
-                // Could not connect
-                self.onConnect(e);
-            } else {
+            if (self.connected) {
                 LoggingHelper.debug(Logger, "SocketError From: " + self.remoteEndPoint() + " Error: " + e.code + " Message: " + e.message);
             }
         });
@@ -54,7 +57,7 @@ export class SocketHandler {
         this.socket.on("close", function() {
             // Don't worry about this unless connected
             // This gets called on connection failures, which is silly
-            if (this.connected) {
+            if (self.connected) {
                 if (self.onCloseCallback != null) {
                     self.onCloseCallback();
                 } else {

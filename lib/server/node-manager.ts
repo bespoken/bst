@@ -15,6 +15,7 @@ export interface OnConnectCallback {
 export class NodeManager {
     public host: string = "0.0.0.0";
     public onConnect: OnConnectCallback = null;
+    public onNodeRemoved: (node: Node) => void = null; // Added for testability
 
     private nodes: {[id: string]: Node } = {};
     private server: Server;
@@ -57,6 +58,9 @@ export class NodeManager {
                 if (node !== null) {
                     LoggingHelper.info(Logger, "NODE CLOSED: " + node.id);
                     delete self.nodes[node.id];
+                    if (self.onNodeRemoved !== undefined && self.onNodeRemoved !== null) {
+                        self.onNodeRemoved(node);
+                    }
                 }
             };
 
