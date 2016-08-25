@@ -25,7 +25,7 @@ describe("KeepAlive", function() {
             }).listen(9000);
 
             let socket = net.connect(9000, "localhost", function () {
-                let handler = new SocketHandler(socket, function (message: string) {
+                let handler = new SocketHandler(socket, function () {
                     keepAlive.received();
 
                     if ((<any> keepAlive).keepAlivesInPeriod(500).length >= 20) {
@@ -52,7 +52,7 @@ describe("KeepAlive", function() {
             let count = 0;
 
             let server: Server = net.createServer(function(socket: Socket) {
-                serverSocket = new SocketHandler(socket, function (message: string) {
+                serverSocket = new SocketHandler(socket, function () {
                     count++;
                     console.log("Count: " + count);
 
@@ -66,7 +66,7 @@ describe("KeepAlive", function() {
             }).listen(9000);
 
             let socket = net.connect(9000, "localhost", function () {
-                let handler = new SocketHandler(socket, function (message: string) {
+                let handler = new SocketHandler(socket, function () {
                     keepAlive.received();
                 });
 
@@ -80,6 +80,37 @@ describe("KeepAlive", function() {
                     socket.end();
                     done();
                 });
+            });
+        });
+    });
+
+    describe("#stop()", function() {
+        it("Stops and sends callback", function (done) {
+            let server: Server = net.createServer(function(socket: Socket) {
+                let socketHandler = new SocketHandler(socket, function () {
+                    socketHandler.send(Global.KeepAliveMessage);
+                });
+            }).listen(9000);
+
+            let socket = net.connect(9000, "localhost", function () {
+                let handler = new SocketHandler(socket, function () {
+                    keepAlive.received();
+                });
+
+                let keepAlive = new KeepAlive(handler);
+                keepAlive.pingPeriod = 20;
+                keepAlive.warningThreshold = 12;
+                keepAlive.windowPeriod = 500;
+                keepAlive.start(function () {
+
+                });
+
+                setTimeout(function () {
+                    keepAlive.stop(function () {
+                        server.close();
+                        done();
+                    });
+                }, 100);
             });
         });
     });

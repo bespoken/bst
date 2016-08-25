@@ -16,12 +16,13 @@ const Logger = "BST-CLIENT";
  * Initiates a TCP connection with the server
  */
 export class BespokeClient {
-    public onConnect: () => void = null;
+    public onConnect: (error?: any) => void = null;
     public onWebhookReceived: WebhookReceivedCallback;
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
     private keepAlive: KeepAlive;
     private socketHandler: SocketHandler;
+    private shuttingDown: boolean = false;
 
     constructor(public nodeID: string,
                 private host: string,
@@ -43,11 +44,13 @@ export class BespokeClient {
         // If the socket gets closed, probably server-side issue
         // We do not do anything in this case other than
         this.socketHandler.onCloseCallback = function() {
-            LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
-            LoggingHelper.error(Logger, "Check your network settings - and try connecting again.");
-            LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
-            LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
-            self.shutdown();
+            if (!self.shuttingDown) {
+                LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
+                LoggingHelper.error(Logger, "Check your network settings - and try connecting again.");
+                LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+                LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+                self.shutdown();
+            }
         };
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
@@ -67,13 +70,18 @@ export class BespokeClient {
             });
         };
 
-        this.keepAlive = new KeepAlive(this.socketHandler);
+        this.keepAlive = this.newKeepAlive(this.socketHandler);
         this.keepAlive.start(function () {
             LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
             LoggingHelper.error(Logger, "Check your network settings - and maybe try connecting again.");
             LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
             LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
         });
+    }
+
+    // Factory method for testability
+    protected newKeepAlive(handler: SocketHandler): KeepAlive {
+        return new KeepAlive(handler);
     }
 
     public send(message: string) {
@@ -84,7 +92,9 @@ export class BespokeClient {
         if (error !== undefined && error !== null) {
             LoggingHelper.error(Logger, "Unable to connect to: " + this.host + ":" + this.port);
             this.shutdown();
-
+            if (this.onConnect !== undefined && this.onConnect !== null) {
+                this.onConnect(error);
+            }
         } else {
             LoggingHelper.info(Logger, "Connected - " + this.host + ":" + this.port);
             // As soon as we connect, we send our ID
@@ -92,7 +102,7 @@ export class BespokeClient {
             let message = JSON.stringify(messageJSON);
 
             this.send(message);
-            if (this.onConnect !== null) {
+            if (this.onConnect !== undefined  && this.onConnect !== null) {
                 this.onConnect();
             }
         }
@@ -109,9 +119,20 @@ export class BespokeClient {
         }
     }
 
-    public shutdown(): void {
+    public shutdown(callback?: () => void): void {
+        let self = this;
+
         LoggingHelper.info(Logger, "Shutting down proxy");
-        this.keepAlive.stop();
-        this.socketHandler.disconnect();
+        // We track that we are shutting down because a "close" event is sent
+        //  We don't want to print out any errors in this case as it is expected
+        this.shuttingDown = true;
+        // Do not disconnect until keep alive has stopped
+        //  Otherwise it may try to push data through the socket
+        this.keepAlive.stop(function () {
+            self.socketHandler.disconnect();
+            if (callback !== undefined && callback !== null) {
+                callback();
+            }
+        });
     }
 }

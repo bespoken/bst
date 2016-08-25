@@ -82,7 +82,7 @@ export class BSTProxy {
         this.httpPort = port;
     }
 
-    public start(onStarted?: () => void): void {
+    public start(onStarted?: (error?: any) => void): void {
         // Every proxy has a process file associated with it
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
 

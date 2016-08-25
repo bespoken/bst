@@ -12,16 +12,12 @@ export interface OnConnectCallback {
     (node: Node): void;
 }
 
-export interface OnKeepAliveCallback {
-    (node: Node): void;
-}
 export class NodeManager {
     public host: string = "0.0.0.0";
     public onConnect: OnConnectCallback = null;
-    public onKeepAliveCallback: OnKeepAliveCallback = null;
 
     private nodes: {[id: string]: Node } = {};
-    public server: Server;
+    private server: Server;
 
     constructor(private port: number) {}
 
@@ -48,11 +44,7 @@ export class NodeManager {
                         self.onConnect(node);
                     }
                 } else if (message === Global.KeepAliveMessage) {
-                    // Reply with the same message on a Keep Alive
-                    socketHandler.send(Global.KeepAliveMessage);
-                    if (self.onKeepAliveCallback !== null) {
-                        self.onKeepAliveCallback(node);
-                    }
+                    NodeManager.onKeepAliveReceived(node);
 
                 } else if (node.handlingRequest()) {
                     // Handle the case where the data received is a reply from the node to data sent to it
@@ -84,6 +76,10 @@ export class NodeManager {
         LoggingHelper.info(Logger, "Listening on " + this.host + ":" + this.port);
     }
 
+    private static onKeepAliveReceived(node: Node): void {
+        // Reply with the same message on a Keep Alive
+        node.socketHandler.send(Global.KeepAliveMessage);
+    }
     /**
      * Calling stop tells the server to stop listening
      * However, connections are not closed until all sockets disconnect, so loop through sockets and force a disconnect

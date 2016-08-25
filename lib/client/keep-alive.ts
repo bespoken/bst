@@ -3,7 +3,6 @@ import {LoggingHelper} from "../core/logging-helper";
 import {SocketHandler} from "../core/socket-handler";
 import {Global} from "../core/global";
 
-const Logger = "KEEP";
 const KeepAlivePeriod = 1000;
 const KeepAliveWindowPeriod = 60000;
 const KeepAliveWarningThreshold = 3;
@@ -21,6 +20,7 @@ export class KeepAlive {
     private startedTimestamp: number;
     private shuttingDown: boolean = false;
     private onFailureCallback: () => void;
+    private onStopCallback: () => void;
 
     public constructor (private socket: SocketHandler) {}
 
@@ -45,11 +45,16 @@ export class KeepAlive {
             this.keepAliveArray = this.keepAlivesInPeriod(this.windowPeriod);
             if (this.keepAliveArray.length <= this.warningThreshold) {
                 this.onFailureCallback();
+                this.reset();
             }
         }
 
         setTimeout(function () {
-            if (!self.shuttingDown) {
+            if (self.shuttingDown) {
+                if (self.onStopCallback !== undefined && self.onStopCallback !== null) {
+                    self.onStopCallback();
+                }
+            } else {
                 self.socket.send(Global.KeepAliveMessage);
                 self.keepAlive();
             }
@@ -76,7 +81,8 @@ export class KeepAlive {
         this.keepAliveArray.push(new Date().getTime());
     }
 
-    public stop(): void {
+    public stop(stopped?: () => void): void {
+        this.onStopCallback = stopped;
         this.shuttingDown = true;
     }
 }
