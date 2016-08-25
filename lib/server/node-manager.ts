@@ -48,6 +48,8 @@ export class NodeManager {
                         self.onConnect(node);
                     }
                 } else if (message === Global.KeepAliveMessage) {
+                    // Reply with the same message on a Keep Alive
+                    socketHandler.send(Global.KeepAliveMessage);
                     if (self.onKeepAliveCallback !== null) {
                         self.onKeepAliveCallback(node);
                     }

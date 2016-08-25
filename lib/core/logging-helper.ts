@@ -3,9 +3,22 @@
 import {Global} from "./global";
 import * as winston from "winston";
 import {StringUtil} from "./string-util";
+import {LoggerInstance} from "winston";
 
 export class LoggingHelper {
     private static cli: boolean = false;
+    private static verbose: boolean = false;
+    private static logger: LoggerInstance = null;
+
+    public static setVerbose(enableVerbose: boolean) {
+        LoggingHelper.verbose = enableVerbose;
+
+        if (LoggingHelper.verbose) {
+            (<any> LoggingHelper.logger.transports).console.level = "debug";
+        } else {
+            (<any> LoggingHelper.logger.transports).console.level = "info";
+        }
+    }
 
     public static debug (logger: string, message: string): void {
         LoggingHelper.log("debug", logger, message);
@@ -37,14 +50,14 @@ export class LoggingHelper {
         LoggingHelper.cli = cli;
         winston.clear();
         if (LoggingHelper.cli) {
-            winston.add(winston.transports.Console,
+            LoggingHelper.logger = winston.add(winston.transports.Console,
                 {
                     formatter: LoggingHelper.cliFormatter,
                     level: "info"
                 }
             );
         } else {
-            winston.add(winston.transports.Console,
+            LoggingHelper.logger = winston.add(winston.transports.Console,
                 {
                     formatter: LoggingHelper.formatter,
                     level: "info"
@@ -62,7 +75,11 @@ export class LoggingHelper {
     }
 
     private static cliFormatter(options: any): string {
-        return options.message;
+       return StringUtil.rpad(options.level.toUpperCase(), " ", 5) + " "
+            + new Date().toISOString() + " "
+            + (undefined !== options.message ? options.message : "")
+            + (options.meta && Object.keys(options.meta).length ? "\n\t"
+            + JSON.stringify(options.meta) : "" );
     }
 
 }

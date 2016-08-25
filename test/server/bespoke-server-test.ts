@@ -39,7 +39,7 @@ describe("BespokeServerTest", function() {
                 console.log("data: " + data.toString());
                 let json = JSON.parse(data.toString());
                 assert.equal(json.data, "test");
-                bespokeClient.disconnect();
+                bespokeClient.shutdown();
                 server.stop(function () {
                     done();
                 });
@@ -56,7 +56,7 @@ describe("BespokeServerTest", function() {
             let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
             bespokeClient.connect();
             bespokeClient.onError = function() {
-                bespokeClient.disconnect();
+                bespokeClient.shutdown();
                 server.stop(function () {
                     done();
                 });

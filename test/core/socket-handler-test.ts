@@ -66,21 +66,43 @@ describe("SocketHandlerTest", function() {
         });
     });
 
+    describe("#newSocket", function () {
+        it("Sends callback on failure to connect", function (done) {
+            let client = new net.Socket();
+
+            let socketHandler = SocketHandler.connect("localhost", 10001,
+                function (error: any) {
+                    assert(error);
+                    done();
+                },
+                function (message: string) {
+
+                }
+            );
+
+            client.end();
+        });
+    });
+
     describe("#close", function() {
         it("Sends callback on close", function (done) {
             let client = new net.Socket();
-            client.connect(10000, "localhost", function () {
-                let socketHandler = new SocketHandler(client, function (message: string) {
-
-                });
-
-                socketHandler.onCloseCallback = function() {
-                    console.log("Closed!");
+            let socketHandler = SocketHandler.connect("localhost", 10001,
+                function (error: any) {
+                    assert(error);
                     done();
-                };
+                },
+                function (message: string) {
 
-                client.end();
-            });
+                }
+            );
+
+            socketHandler.onCloseCallback = function() {
+                console.log("Closed!");
+                done();
+            };
+
+            client.end();
         });
 
         it("No error when no callback registered on close", function (done) {

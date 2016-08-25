@@ -23,8 +23,24 @@ Set the project preferences to ECMAScript 6
 Need to do this the first time to publish:
 `npm adduser`
 
+Create a branch to do NPM work - use the next version as the branch name:
+`git checkout -b v0-6-5`
+
+MAKE sure you are creating it off of master :-)
+
+This is necessary because master is a protected branch - changes cannot be pushed directly to it.
+
+Create a remote version of the new branch:
+`get push --set-upstream origin <NewBranch>`
+
 Updated the version number:
 `npm version patch`
+
+Create a pull request. Merge the pull request.
+
+Checkout master locally and get the latest:
+`git checkout master`
+`git pull`
 
 Run publish command to push new client to NPM:
 `npm publish`

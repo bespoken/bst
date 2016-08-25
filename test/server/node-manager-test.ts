@@ -35,29 +35,4 @@ describe("NodeManager", function() {
             });
         });
     });
-
-    describe("KeepAlive", function() {
-        it("Received", function (done) {
-            let nodeManager = new NodeManager(9000);
-            nodeManager.start();
-
-            let keepAlives = 0;
-            nodeManager.onKeepAliveCallback = function(node: Node) {
-                keepAlives++;
-            };
-
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
-            bespokeClient.onConnect = function () {
-                bespokeClient.keepAlive();
-            };
-            bespokeClient.connect();
-
-            setTimeout(function() {
-                assert.equal(1, keepAlives);
-                nodeManager.stop(function () {
-                    done();
-                });
-            }, 100);
-        });
-    });
 });
