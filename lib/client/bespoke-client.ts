@@ -1,27 +1,28 @@
 import * as net from "net";
 import {Socket} from "net";
 import {Global} from "../core/global";
-import {OnMessage} from "../core/socket-handler";
 import {SocketHandler} from "../core/socket-handler";
 import {WebhookReceivedCallback} from "../server/webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
+import {KeepAlive} from "./keep-alive";
 
-let Logger = "BST-CLIENT";
-let KeepAlivePeriod = 5000;
+const Logger = "BST-CLIENT";
+
 /**
  * Handles between the bespoken server and the service running on the local machine
  * Initiates a TCP connection with the server
  */
 export class BespokeClient {
-    public onConnect: () => void = null;
+    public onConnect: (error?: any) => void = null;
     public onWebhookReceived: WebhookReceivedCallback;
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
-    private client: Socket;
+    private keepAlive: KeepAlive;
     private socketHandler: SocketHandler;
+    private shuttingDown: boolean = false;
 
     constructor(public nodeID: string,
                 private host: string,
@@ -31,23 +32,26 @@ export class BespokeClient {
     public connect(): void {
         let self = this;
 
-        this.client = new net.Socket();
-        this.socketHandler = new SocketHandler(this.client, function(data: string) {
-            self.onMessage(data);
-        });
-
-        // Once connected, send the Node ID
-        this.client.connect(this.port, this.host, function() {
-            LoggingHelper.info(Logger, "Connected - " + self.host + ":" + self.port);
-            // As soon as we connect, we send our ID
-            let messageJSON = {"id": self.nodeID};
-            let message = JSON.stringify(messageJSON);
-
-            self.send(message);
-            if (self.onConnect !== null) {
-                self.onConnect();
+        this.socketHandler = SocketHandler.connect(this.host, this.port,
+            function(error: any) {
+                self.connected(error);
+            },
+            function(data: string) {
+                self.messageReceived(data);
             }
-        });
+        );
+
+        // If the socket gets closed, probably server-side issue
+        // We do not do anything in this case other than
+        this.socketHandler.onCloseCallback = function() {
+            if (!self.shuttingDown) {
+                LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
+                LoggingHelper.error(Logger, "Check your network settings - and try connecting again.");
+                LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+                LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+                self.shutdown();
+            }
+        };
 
         this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
             let self = this;
@@ -58,7 +62,7 @@ export class BespokeClient {
                 if (data != null) {
                     self.socketHandler.send(data);
                 } else if (error === NetworkErrorType.CONNECTION_REFUSED) {
-                    console.log("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                    LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
                     if (self.onError != null) {
                         self.onError(error, message);
                     }
@@ -66,42 +70,69 @@ export class BespokeClient {
             });
         };
 
-        this.keepAliveTimer();
+        this.keepAlive = this.newKeepAlive(this.socketHandler);
+        this.keepAlive.start(function () {
+            LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
+            LoggingHelper.error(Logger, "Check your network settings - and maybe try connecting again.");
+            LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+            LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+        });
     }
 
-    /**
-     * Pings the server on a 5-second period to keep the connection alive
-     */
-    private keepAliveTimer (): void {
-        let self = this;
-        setTimeout(function () {
-            self.keepAlive();
-        }, KeepAlivePeriod);
-    }
-
-    /**
-     * Pings the server with a keep-alive message
-     */
-    public keepAlive(): void {
-        LoggingHelper.debug(Logger, "KeepAlive PING");
-        this.send(Global.KeepAliveMessage);
-        this.keepAliveTimer();
+    // Factory method for testability
+    protected newKeepAlive(handler: SocketHandler): KeepAlive {
+        return new KeepAlive(handler);
     }
 
     public send(message: string) {
         this.socketHandler.send(message);
     }
 
-    public onMessage (message: string) {
-        // First message we get back is an ack
-        if (message.indexOf("ACK") !== -1) {
-            // console.log("Client: ACK RECEIVED");
+    private connected(error?: any): void {
+        if (error !== undefined && error !== null) {
+            LoggingHelper.error(Logger, "Unable to connect to: " + this.host + ":" + this.port);
+            this.shutdown();
+            if (this.onConnect !== undefined && this.onConnect !== null) {
+                this.onConnect(error);
+            }
         } else {
-            this.onWebhookReceived(this.client, WebhookRequest.fromString(message));
+            LoggingHelper.info(Logger, "Connected - " + this.host + ":" + this.port);
+            // As soon as we connect, we send our ID
+            let messageJSON = {"id": this.nodeID};
+            let message = JSON.stringify(messageJSON);
+
+            this.send(message);
+            if (this.onConnect !== undefined  && this.onConnect !== null) {
+                this.onConnect();
+            }
         }
     }
 
-    public disconnect(): void {
-        this.client.end();
+    private messageReceived (message: string) {
+        // First message we get back is an ack
+        if (message.indexOf("ACK") !== -1) {
+            // console.log("Client: ACK RECEIVED");
+        } else if (message.indexOf(Global.KeepAliveMessage) !== -1) {
+            this.keepAlive.received();
+        } else {
+            this.onWebhookReceived(this.socketHandler.socket, WebhookRequest.fromString(message));
+        }
+    }
+
+    public shutdown(callback?: () => void): void {
+        let self = this;
+
+        LoggingHelper.info(Logger, "Shutting down proxy");
+        // We track that we are shutting down because a "close" event is sent
+        //  We don't want to print out any errors in this case as it is expected
+        this.shuttingDown = true;
+        // Do not disconnect until keep alive has stopped
+        //  Otherwise it may try to push data through the socket
+        this.keepAlive.stop(function () {
+            self.socketHandler.disconnect();
+            if (callback !== undefined && callback !== null) {
+                callback();
+            }
+        });
     }
 }

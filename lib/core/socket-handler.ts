@@ -4,15 +4,9 @@ import {StringUtil} from "./string-util";
 import {BufferUtil} from "./buffer-util";
 import {LoggingHelper} from "./logging-helper";
 
+import * as net from "net";
+
 let Logger = "SOCKET";
-
-export interface OnMessage {
-    (message: string): void;
-}
-
-export interface OnClose {
-    (): void;
-}
 
 /**
  * Manages the low-level socket communications
@@ -20,22 +14,34 @@ export interface OnClose {
 export class SocketHandler {
     public message: string = null;
     public onDataCallback: (data: Buffer) => void;
-    public onCloseCallback: OnClose;
+    public onCloseCallback: () => void = null;
+    private connected: boolean = true;
 
-    public constructor (private socket: Socket, private onMessage: OnMessage) {
+    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string) => void): SocketHandler {
+        let socket = new net.Socket();
+        let handler = new SocketHandler(socket, onMessage);
+        handler.connected = false;
+
+        socket.connect(port, host, function () {
+            handler.connected = true;
+            onConnect();
+        });
+
+        socket.on("error", function (error: any) {
+            if (!handler.connected) {
+                onConnect(error);
+            }
+        });
+        return handler;
+    }
+
+    public constructor (public socket: Socket, private onMessage: (message: string) => void) {
         let self = this;
         this.resetBuffer();
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
-            LoggingHelper.debug(Logger, "DATA READ " + self.socket.localAddress + ":" + self.socket.localPort + " " + BufferUtil.prettyPrint(data));
-
-            let dataString: string = data.toString();
-            if (dataString.indexOf(Global.MessageDelimiter) === -1) {
-                self.message += dataString;
-            } else {
-                self.handleData(dataString);
-            }
+            self.handleData(data.toString());
         };
 
         // Add a 'data' event handler to this instance of socket
@@ -43,13 +49,20 @@ export class SocketHandler {
 
         // Do some basic error-handling - needs to be improved
         this.socket.on("error", function (e: any) {
-            LoggingHelper.error(Logger, "SocketError: " + e.code + " Message: " + e.message);
+            if (self.connected) {
+                LoggingHelper.debug(Logger, "SocketError From: " + self.remoteEndPoint() + " Error: " + e.code + " Message: " + e.message);
+            }
         });
 
         this.socket.on("close", function() {
-            LoggingHelper.info(Logger, "Socket closed");
-            if (self.onCloseCallback != null) {
-                self.onCloseCallback();
+            // Don't worry about this unless connected
+            // This gets called on connection failures, which is silly
+            if (self.connected) {
+                if (self.onCloseCallback != null) {
+                    self.onCloseCallback();
+                } else {
+                    LoggingHelper.debug(Logger, "Socket closed");
+                }
             }
         });
     }
@@ -65,6 +78,8 @@ export class SocketHandler {
             this.message += dataString;
         } else {
             this.message += dataString.substr(0, delimiterIndex);
+            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(this.message));
+
             this.onMessage(this.message);
             this.resetBuffer();
 
@@ -82,7 +97,7 @@ export class SocketHandler {
     }
 
     public send(message: string) {
-        LoggingHelper.debug(Logger, "DATA SENT " + this.socket.localAddress + ":" + this.socket.localPort + " " + StringUtil.prettyPrint(message));
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(message));
 
         // Use TOKEN as message delimiter
         message = message + Global.MessageDelimiter;
@@ -91,6 +106,13 @@ export class SocketHandler {
 
     public remoteAddress (): string {
         return this.socket.remoteAddress;
+    }
+
+    public remoteEndPoint (): string {
+        if (this.socket === null) {
+            return "";
+        }
+        return this.socket.remoteAddress + ":" + this.socket.remotePort;
     }
 
     public disconnect (): void {

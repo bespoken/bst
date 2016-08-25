@@ -32,7 +32,6 @@ export class BSTProxy {
 
     /**
      * Starts an HTTP proxy with specified node and target port
-     * @param nodeID
      * @param targetPort
      * @returns {BSTProxy}
      */
@@ -44,7 +43,6 @@ export class BSTProxy {
 
     /**
      * Starts a lambda proxy with the specified node and lambda file
-     * @param nodeID
      * @param lambdaFile
      * @returns {BSTProxy}
      */
@@ -57,7 +55,6 @@ export class BSTProxy {
 
     /**
      * Generates the URL to be used for Alexa configuration
-     * @param nodeID
      * @param url
      * @returns {string}
      */
@@ -85,7 +82,7 @@ export class BSTProxy {
         this.httpPort = port;
     }
 
-    public start(onStarted?: () => void): void {
+    public start(onStarted?: (error?: any) => void): void {
         // Every proxy has a process file associated with it
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
 
@@ -103,7 +100,7 @@ export class BSTProxy {
 
     public stop(onStopped?: () => void): void {
         if (this.bespokenClient !== null) {
-            this.bespokenClient.disconnect();
+            this.bespokenClient.shutdown();
         }
 
         if (this.lambdaRunner !== null) {

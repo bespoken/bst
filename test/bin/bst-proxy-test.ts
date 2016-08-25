@@ -8,6 +8,7 @@ import {URLMangler} from "../../lib/client/url-mangler";
 import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
+import {LoggingHelper} from "../../lib/core/logging-helper";
 
 describe("bst-proxy", function() {
     let sandbox: SinonSandbox = null;
@@ -74,13 +75,19 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --bstHost localhost --bstPort 9000 http 9000");
+            process.argv = command("node bst-proxy.js --verbose --bstHost localhost --bstPort 9000 http 9000");
+
+            let verboseCalled = false;
+            let mock = sandbox.stub(console, "log", function (log: string) {
+                if (log.indexOf("Enabling verbose logging") !== -1) {
+                    verboseCalled = true;
+                }
+            });
 
             let optionsSet = false;
             mockProxy.start = function () {
-                if (!optionsSet) {
-                    assert.fail("Options not set");
-                }
+                assert(optionsSet, "Options not set");
+                assert(verboseCalled, "Verbose must be set");
                 done();
             };
 
@@ -90,8 +97,10 @@ describe("bst-proxy", function() {
                 optionsSet = true;
             };
 
+
             NodeUtil.load("../../bin/bst-proxy.js");
         });
+
     });
 
     describe("lambda command", function() {

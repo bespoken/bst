@@ -11,12 +11,18 @@ let handleOptions = function(proxy: BSTProxy, options: any) {
     if (options.bstHost !== undefined) {
         proxy.bespokenServer(options.bstHost, options.bstPort);
     }
+
+    if (options.verbose !== undefined && options.verbose) {
+        console.log("Enabling verbose logging");
+        LoggingHelper.setVerbose(true);
+    }
 };
 
 program
     .command("http <http-port>")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
+    .option("--verbose", "Print out verbose diagnostics")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
@@ -33,6 +39,7 @@ program
     .command("lambda <lambda-file>")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
+    .option("--verbose", "Print out verbose diagnostics")
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
