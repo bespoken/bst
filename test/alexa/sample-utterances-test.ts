@@ -41,9 +41,10 @@ describe("SamplesUtterances", function() {
             });
         });
 
-        it("Passes error when bad file with blank line", function(done) {
+        it("No error when bad file with blank line", function(done) {
             SampleUtterances.fromFile("test/alexa/resources/SampleUtterancesBlankLine.txt", function (utterances: SampleUtterances, error?: string) {
-                assert(error.indexOf("blank line") !== -1);
+                assert(error === undefined);
+                assert(utterances);
                 done();
             });
         });

@@ -20,7 +20,6 @@ export class SampleUtterances {
                 }
             } else {
                 let error = "File not found: " + file;
-                LoggingHelper.error(Logger, error);
                 callback(null, error);
             }
         });
@@ -83,7 +82,8 @@ export class SampleUtterances {
         let lines = fileData.split("\n");
         for (let line of lines) {
             if (line.trim().length === 0) {
-                throw Error("Invalid sample utterance - contains blank line");
+                // We skip blank lines - which is what Alexa does
+                continue;
             }
 
             let index = line.indexOf(" ");

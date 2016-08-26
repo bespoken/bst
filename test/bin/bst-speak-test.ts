@@ -146,7 +146,15 @@ describe("bst-speak", function() {
 
             sandbox.stub(process, "exit", function(exitCode: number) {
                 assert.equal(exitCode, 0);
+                assert(messageReceived);
                 done();
+            });
+
+            let messageReceived = false;
+            sandbox.stub(console, "error", function(message: string) {
+                if (message.indexOf("Cause: ") !== -1) {
+                    messageReceived = true;
+                }
             });
 
             NodeUtil.load("../../bin/bst-speak.js");

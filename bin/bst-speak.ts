@@ -52,9 +52,10 @@ program
         }
 
         let speaker = new BSTSpeak(url, intentSchemaPath, samplesPath, null);
-        speaker.initialize(function (error) {
+        speaker.initialize(function (error: string) {
             if (error !== undefined) {
                 console.error("Error loading Interaction Model!");
+                console.error("Cause: " + error);
                 console.error("");
                 process.exit(0);
                 return;
