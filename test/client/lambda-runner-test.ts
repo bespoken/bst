@@ -47,6 +47,20 @@ describe("LambdaRunner", function() {
             });
         });
 
+        it("Handles Lambda Exception Correctly", function(done) {
+            let runner = new LambdaRunner("ExampleLambdaBad.js", 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test", "doFailure": true};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                let responseString = data.toString();
+                assert.equal(responseString, "Exception: Cannot read property 'call' of undefined");
+                runner.stop();
+                done();
+            });
+        });
+
         it("Handles Project Correctly", function(done) {
             process.chdir("exampleProject");
             let runner = new LambdaRunner("ExampleLambda.js", 10000);

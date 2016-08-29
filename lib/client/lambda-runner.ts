@@ -47,7 +47,11 @@ export class LambdaRunner {
         let lambda: any = NodeUtil.load(path);
         // let lambda = System.import("./" + file);
         let context: LambdaContext = new LambdaContext(response);
-        lambda.handler(bodyJSON, context);
+        try {
+            lambda.handler(bodyJSON, context);
+        } catch (e) {
+            context.fail("Exception: " + e.message);
+        }
     }
 
     public stop (onStop?: () => void): void {
@@ -60,6 +64,7 @@ export class LambdaRunner {
 }
 
 export class LambdaContext {
+
     public constructor(public response: ServerResponse) {}
 
     public fail(body: any) {
