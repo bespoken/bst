@@ -37,14 +37,14 @@ For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/
 
 The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
 
-Read the docs [here](http://docs.bespoken.tools/en/latest/commands/proxy.html)
+Read the docs [here](http://docs.bespoken.tools/en/latest/commands/proxy.html).
 
 ## bst speak Command
 
 The speak command generates intent requests for your service as if they were coming from Alexa itself.  
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
-Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html)
+Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html).
 
 ## Tutorials
 
@@ -53,6 +53,6 @@ Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html)
 
 ## Questions/Feedback?
 
-Email jpk@xappmedia.com with any questions or comments or open an issue. 
+Email jpk@xappmedia.com with any questions or comments or open an [issue](https://github.com/bespoken/bst/issues/new). 
 
 We love to hear feedback.
