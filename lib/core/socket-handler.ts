@@ -73,7 +73,6 @@ export class SocketHandler {
      */
     private handleData(dataString: string): void {
         if (dataString !== null) {
-            LoggingHelper.debug(Logger, "DATA RAW " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(dataString));
             this.buffer += dataString;
         }
 
