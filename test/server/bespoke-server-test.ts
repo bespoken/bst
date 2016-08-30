@@ -11,6 +11,10 @@ import {HTTPClient} from "../../lib/core/http-client";
 import {BespokeServer} from "../../lib/server/bespoke-server";
 import {Socket} from "net";
 import {NetworkErrorType} from "../../lib/core/global";
+import {LambdaRunner} from "../../lib/client/lambda-runner";
+import * as request from "request";
+import {IncomingMessage} from "http";
+import {Global} from "../../lib/core/global";
 
 describe("BespokeServerTest", function() {
     describe("ReceiveWebhook", function() {
@@ -39,31 +43,126 @@ describe("BespokeServerTest", function() {
                 console.log("data: " + data.toString());
                 let json = JSON.parse(data.toString());
                 assert.equal(json.data, "test");
-                bespokeClient.shutdown();
-                server.stop(function () {
-                    done();
+                bespokeClient.shutdown(function () {
+                    server.stop(function () {
+                        done();
+                    });
                 });
             });
         });
 
-        it("Handles Connection Failure", function(done) {
+        it("Connects Multiple Lambdas", function(done) {
             this.timeout(2000);
             // Start the server
-            let server = new BespokeServer(8000, 9000);
+            let server = new BespokeServer(8010, 9010);
             server.start();
 
             // Connect a client
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
             bespokeClient.connect();
-            bespokeClient.onError = function() {
-                bespokeClient.shutdown();
-                server.stop(function () {
-                    done();
-                });
-            };
+
+            let lambdaRunner = new LambdaRunner("./test/resources/DelayedLambda.js", 10000);
+            lambdaRunner.start();
 
             let webhookCaller = new HTTPClient();
-            webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
+            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                console.log("data: " + data.toString());
+                let json = JSON.parse(data.toString());
+                assert(json.success);
+                lambdaRunner.stop(function () {
+                    bespokeClient.shutdown(function () {
+                        server.stop(function () {
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+
+        it("Handles Error Connecting To Target Server", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8000, 9000);
+            server.start(function () {
+                // Connect a client
+                let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
+                bespokeClient.onConnect = function () {
+                    let webhookCaller = new HTTPClient();
+                    webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
+                };
+
+                bespokeClient.connect();
+                bespokeClient.onError = function() {
+                    bespokeClient.shutdown();
+                    server.stop(function () {
+                        done();
+                    });
+                };
+            });
+        });
+
+        it("Handles Bad Node", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8000, 9000);
+            const options = {
+                body: {
+                    foo: "bar"
+                },
+                json: true
+            };
+            server.start(function () {
+                let webhookCaller = new HTTPClient();
+                webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test", function (body: any, statusCode: number, success: boolean) {
+                    assert.equal(body, "Node is not active: JPK");
+                    assert.equal(statusCode, 404);
+
+                    server.stop(function () {
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("Handles No Node", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8000, 9000);
+            const options = {
+                body: {
+                    foo: "bar"
+                },
+                json: true
+            };
+            server.start(function () {
+                let webhookCaller = new HTTPClient();
+                webhookCaller.post("localhost", 8000, "/test", "Test", function (body: any, statusCode: number, success: boolean) {
+                    assert.equal(body, "No node specified. Must be included with the querystring as node-id.");
+                    assert.equal(statusCode, 400);
+
+                    server.stop(function () {
+                        done();
+                    });
+                });
+            });
+        });
+    });
+
+    describe("Receive Ping", function() {
+        it("Pings", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8000, 9000);
+            server.start(function () {
+                request.get("http://localhost:8000/ping", function (error: any, response: IncomingMessage, body: Buffer) {
+                    assert(!error);
+                    assert.equal(response.statusCode, 200);
+                    assert.equal(body, "bst-server-" + Global.version());
+                    server.stop(function () {
+                        done();
+                    });
+                });
+            });
         });
     });
 

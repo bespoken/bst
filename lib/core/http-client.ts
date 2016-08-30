@@ -6,7 +6,7 @@ import {BufferUtil} from "./buffer-util";
 
 export class HTTPClient {
 
-    public post(host: string, port: number, path: string, data: string, callback?: (data: Buffer, success: boolean) => void) {
+    public post(host: string, port: number, path: string, data: string, callback?: (data: Buffer, statusCode: number, success: boolean) => void) {
         // An object of options to indicate where to post to
         let post_options = {
             host: host,
@@ -33,19 +33,18 @@ export class HTTPClient {
 
             response.on("end", function () {
                 if (callback !== undefined && callback !== null) {
-                    callback(responseData, true);
+                    callback(responseData, response.statusCode, true);
                 }
             });
         });
 
         post_req.on("error", function (error: any) {
             if (callback !== undefined && callback !== null) {
-                callback(BufferUtil.fromString(error.message), false);
+                callback(BufferUtil.fromString(error.message), 0, false);
             }
         });
         // post the data
         post_req.write(data);
         post_req.end();
-
     }
 }

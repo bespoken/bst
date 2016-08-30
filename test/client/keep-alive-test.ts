@@ -60,7 +60,6 @@ describe("KeepAlive", function() {
                         serverSocket.send(Global.KeepAliveMessage);
                     } else {
                         serverSocket.disconnect();
-                        server.close();
                     }
                 });
             }).listen(9000);
@@ -78,7 +77,9 @@ describe("KeepAlive", function() {
                     // This should get hit
                     keepAlive.stop();
                     socket.end();
-                    done();
+                    server.close(function () {
+                        done();
+                    });
                 });
             });
         });
@@ -86,13 +87,18 @@ describe("KeepAlive", function() {
 
     describe("#stop()", function() {
         it("Stops and sends callback", function (done) {
+            let stopped = false;
             let server: Server = net.createServer(function(socket: Socket) {
                 let socketHandler = new SocketHandler(socket, function () {
                     socketHandler.send(Global.KeepAliveMessage);
+
+                    if (stopped) {
+                        assert(false, "This should not happen - no messages after stop");
+                    }
                 });
             }).listen(9000);
 
-            let socket = net.connect(9000, "localhost", function () {
+            let socket: Socket = net.connect(9000, "localhost", function () {
                 let handler = new SocketHandler(socket, function () {
                     keepAlive.received();
                 });
@@ -106,10 +112,14 @@ describe("KeepAlive", function() {
                 });
 
                 setTimeout(function () {
-                    keepAlive.stop(function () {
-                        server.close();
-                        done();
-                    });
+                    stopped = true;
+                    keepAlive.stop();
+                    setTimeout(function () {
+                        socket.end();
+                        server.close(function () {
+                            done();
+                        });
+                    }, 100);
                 }, 100);
             });
         });

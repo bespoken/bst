@@ -3,13 +3,10 @@ var ExampleLambda = function () {
 };
 
 ExampleLambda.execute = function (event, context) {
-    if (event.doFailure !== undefined && event.doFailure === true) {
-        context.fail("Failure!");
-    } else {
+    setTimeout(function () {
         var responseData = {"success": true}
         context.succeed(responseData);
-    }
-
+    }, 100);
 }
 
 // Create the handler that responds to the Alexa Request.
