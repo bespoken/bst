@@ -98,24 +98,69 @@ describe("LambdaRunner", function() {
             FileUtil.copyFile("ExampleLambda.js", tempFile, function() {
                 let runner = new LambdaRunner(tempFile, 10000);
                 runner.start();
+                runner.onDirty = function () {
+                    client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                        let o = JSON.parse(data.toString());
+                        assert.equal(o.success, true);
+                        assert.equal(o.reloaded, true);
+                        runner.stop();
+                        done();
+                    });
+                };
 
                 let client = new HTTPClient();
                 let inputData = {"data": "Test"};
                 client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
-                    let o: any = JSON.parse(data.toString());
+                    let o = JSON.parse(data.toString());
                     assert.equal(o.success, true);
                     assert.notEqual(o.hasOwnProperty("reloaded"), true);
 
                     FileUtil.copyFile("ExampleLambda2.js", tempFile, function() {
-                        client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
-                            o = JSON.parse(data.toString());
-                            assert.equal(o.success, true);
-                            assert.equal(o.reloaded, true);
-                            runner.stop();
-                            done();
-                        });
+
                     });
                 });
+            });
+        });
+
+        it("Handles No Reload after stop", function(done) {
+            let tempFile = "ExampleLambdaCopy.js";
+            let runner = new LambdaRunner(tempFile, 10000);
+            let dirtyCalled = false;
+            runner.onDirty = function () {
+                dirtyCalled = true;
+            };
+
+            runner.start(function () {
+                runner.stop();
+                FileUtil.copyFile("ExampleLambda.js", tempFile, function() {
+
+                });
+            });
+
+            setTimeout(function () {
+                assert.equal(dirtyCalled, false);
+                done();
+            }, 100);
+        });
+
+        it("Handles Two at once", function(done) {
+            let runner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                let o: any = JSON.parse(data.toString());
+                assert.equal(true, o.success);
+                assert.equal(2000, o.math);
+            });
+
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                let o: any = JSON.parse(data.toString());
+                assert.equal(true, o.success);
+                assert.equal(2000, o.math);
+                runner.stop();
+                done();
             });
         });
     });
@@ -129,7 +174,7 @@ describe("LambdaRunner", function() {
             let inputData = {"data": "Test"};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function() {
                 runner.stop();
-                client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer, success: boolean) {
+                client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer, statusCode: number, success: boolean) {
                     assert.equal(data.toString().indexOf("connect ECONNREFUSED") !== -1, true);
                     assert.equal(success, false);
                     done();

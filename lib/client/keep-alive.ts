@@ -3,9 +3,9 @@ import {LoggingHelper} from "../core/logging-helper";
 import {SocketHandler} from "../core/socket-handler";
 import {Global} from "../core/global";
 
-const KeepAlivePeriod = 1000;
-const KeepAliveWindowPeriod = 60000;
-const KeepAliveWarningThreshold = 3;
+const KeepAlivePeriod = 30000; // Ping every 30 seconds
+const KeepAliveWindowPeriod = 300000; // Check over a 5 Minute period
+const KeepAliveWarningThreshold = 5; // Need to get more than five pings in that period
 
 /**
  * Handles keeping the client connection alive.
@@ -18,9 +18,8 @@ export class KeepAlive {
 
     private keepAliveArray: Array<number> = []; // Rolling window of timestamps that correspond to errors
     private startedTimestamp: number;
-    private shuttingDown: boolean = false;
     private onFailureCallback: () => void;
-    private onStopCallback: () => void;
+    private timeout: any = null;
 
     public constructor (private socket: SocketHandler) {}
 
@@ -49,15 +48,9 @@ export class KeepAlive {
             }
         }
 
-        setTimeout(function () {
-            if (self.shuttingDown) {
-                if (self.onStopCallback !== undefined && self.onStopCallback !== null) {
-                    self.onStopCallback();
-                }
-            } else {
-                self.socket.send(Global.KeepAliveMessage);
-                self.keepAlive();
-            }
+        this.timeout = setTimeout(function () {
+            self.socket.send(Global.KeepAliveMessage);
+            self.keepAlive();
         }, this.pingPeriod);
     }
 
@@ -81,8 +74,9 @@ export class KeepAlive {
         this.keepAliveArray.push(new Date().getTime());
     }
 
-    public stop(stopped?: () => void): void {
-        this.onStopCallback = stopped;
-        this.shuttingDown = true;
+    public stop(): void {
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+        }
     }
 }

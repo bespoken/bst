@@ -1,19 +1,38 @@
+import * as fs from "fs";
 import * as http from "http";
 import {IncomingMessage} from "http";
 import {ServerResponse} from "http";
 import {Server} from "http";
 import {LoggingHelper} from "../core/logging-helper";
 import {NodeUtil} from "../core/node-util";
+import {FSWatcher} from "fs";
 
 let Logger = "BST-LAMBDA";
 
 export class LambdaRunner {
     private server: Server = null;
+    private dirty: boolean = false;
+    private lambda: any = null;
+    private watcher: FSWatcher = null;
+    public onDirty: () => void = null; // Callback for test-ability
 
     public constructor(public file: string, public port: number) {}
 
-    public start (): void {
+    public start (callback?: () => void): void {
         let self = this;
+
+        // Add a watch to the current directory
+        let watchOptions = {"persistent": false, "recursive": true};
+        this.watcher = fs.watch(process.cwd(), watchOptions, function(event: string, filename: string) {
+            if (filename.indexOf("node_modules") === -1) {
+                LoggingHelper.info(Logger, "FS.Watch Event: " + event + ". File: " + filename + ". Reloading.");
+                self.dirty = true;
+                if (self.onDirty !== undefined && self.onDirty !== null) {
+                    self.onDirty();
+                }
+            }
+        });
+
         this.server = http.createServer();
         this.server.listen(this.port);
         this.server.on("request", function(request: IncomingMessage, response: ServerResponse) {
@@ -27,12 +46,11 @@ export class LambdaRunner {
             });
         });
 
-        this.server.on("error", function (message: string) {
-            LoggingHelper.error(Logger, "LambdaRunner encountered error: " + message);
-        });
-
         this.server.on("listening", function () {
             LoggingHelper.info(Logger, "LambdaRunner started on port: " + self.server.address().port.toString());
+            if (callback !== undefined && callback !== null) {
+                callback();
+            }
         });
     }
 
@@ -44,17 +62,22 @@ export class LambdaRunner {
 
         LoggingHelper.info(Logger, "Invoked Lambda: " + this.file);
         let bodyJSON: any = JSON.parse(body);
-        let lambda: any = NodeUtil.load(path);
+        if (this.lambda === null || this.dirty) {
+            this.lambda = NodeUtil.load(path);
+            this.dirty = false;
+        }
+
         // let lambda = System.import("./" + file);
         let context: LambdaContext = new LambdaContext(response);
         try {
-            lambda.handler(bodyJSON, context);
+            this.lambda.handler(bodyJSON, context);
         } catch (e) {
             context.fail("Exception: " + e.message);
         }
     }
 
     public stop (onStop?: () => void): void {
+        this.watcher.close();
         this.server.close(function () {
             if (onStop !== undefined && onStop !== null) {
                 onStop();
@@ -76,6 +99,8 @@ export class LambdaContext {
     }
 
     private done(success: boolean, body: any) {
+        let self = this;
+
         let statusCode: number = 200;
         let contentType: string = "application/json";
         let bodyString: string = null;
@@ -93,8 +118,10 @@ export class LambdaContext {
         });
 
         if (body) {
-            this.response.write(bodyString);
+            this.response.end(new Buffer(bodyString));
+        } else {
+            this.response.end();
         }
-        this.response.end();
+
     }
 }

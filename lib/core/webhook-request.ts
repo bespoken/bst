@@ -10,10 +10,12 @@ export class WebhookRequest {
     public body: string;
     public headers: { [id: string]: string };
     public queryParameters: {[id: string]: string} = {};
+    private requestTimestamp: number;
 
     public constructor() {
         this.rawContents = new Buffer("");
         this.body = "";
+        this.requestTimestamp = new Date().getTime();
     }
 
     public static fromString(payload: string): WebhookRequest {
@@ -103,5 +105,9 @@ export class WebhookRequest {
 
     public toString(): string {
         return this.method + " " + this.uri;
+    }
+
+    public id(): string {
+        return this.requestTimestamp + "";
     }
 }

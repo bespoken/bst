@@ -3,6 +3,7 @@ import {WebhookManager} from "./webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {Socket} from "net";
 import {HTTPHelper} from "../core/http-helper";
+import {Global} from "../core/global";
 
 export class BespokeServer {
     private nodeManager: NodeManager;
@@ -10,18 +11,29 @@ export class BespokeServer {
 
     public constructor (private webhookPort: number, private nodePort: number) {}
 
-    public start (): void {
+    public start (started?: () => void): void {
         let self = this;
 
+        let count = 0;
+        // Make sure both NodeManager and WebhookManager have started
+        let callbackCounter = function () {
+            count++;
+            if (count === 2) {
+                if (started !== undefined && started !== null) {
+                    started();
+                }
+            }
+        };
+
         this.nodeManager = new NodeManager(this.nodePort);
-        this.nodeManager.start();
+        this.nodeManager.start(callbackCounter);
 
         this.webhookManager = new WebhookManager(this.webhookPort);
-        this.webhookManager.start();
+        this.webhookManager.start(callbackCounter);
         this.webhookManager.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
             // Check if this is a ping
             if (webhookRequest.isPing()) {
-                HTTPHelper.respond(socket, 200, "bst-server");
+                HTTPHelper.respond(socket, 200, "bst-server-" + Global.version());
 
             } else {
                 if (webhookRequest.nodeID() === null) {
@@ -30,7 +42,7 @@ export class BespokeServer {
                     // Lookup the node
                     let node = self.nodeManager.node(webhookRequest.nodeID());
                     if (node == null) {
-                        HTTPHelper.respond(socket, 404, "Node is not active: " + webhookRequest.nodeID() + ".");
+                        HTTPHelper.respond(socket, 404, "Node is not active: " + webhookRequest.nodeID());
                     } else {
                         node.forward(socket, webhookRequest);
                     }

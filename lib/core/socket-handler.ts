@@ -12,7 +12,7 @@ let Logger = "SOCKET";
  * Manages the low-level socket communications
  */
 export class SocketHandler {
-    public message: string = null;
+    public buffer: string = "";
     public onDataCallback: (data: Buffer) => void;
     public onCloseCallback: () => void = null;
     private connected: boolean = true;
@@ -37,7 +37,6 @@ export class SocketHandler {
 
     public constructor (public socket: Socket, private onMessage: (message: string) => void) {
         let self = this;
-        this.resetBuffer();
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
@@ -73,27 +72,24 @@ export class SocketHandler {
      * @param dataString
      */
     private handleData(dataString: string): void {
-        let delimiterIndex = dataString.indexOf(Global.MessageDelimiter);
-        if (delimiterIndex === -1) {
-            this.message += dataString;
-        } else {
-            this.message += dataString.substr(0, delimiterIndex);
-            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(this.message));
-
-            this.onMessage(this.message);
-            this.resetBuffer();
-
-            // If we have received more than one packet at a time, handle it recursively
-            if (dataString.length > (dataString.indexOf(Global.MessageDelimiter) + Global.MessageDelimiter.length)) {
-                dataString = dataString.substr(dataString.indexOf(Global.MessageDelimiter) + Global.MessageDelimiter.length);
-                this.handleData(dataString);
-            }
+        if (dataString !== null) {
+            LoggingHelper.debug(Logger, "DATA RAW " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(dataString));
+            this.buffer += dataString;
         }
 
-    }
+        let delimiterIndex = this.buffer.indexOf(Global.MessageDelimiter);
+        if (delimiterIndex > -1) {
+            let message = this.buffer.substring(0, delimiterIndex);
+            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(message));
 
-    private resetBuffer(): void {
-        this.message = "";
+            this.onMessage(message);
+            this.buffer = this.buffer.slice(delimiterIndex + Global.MessageDelimiter.length);
+
+            // If we have received more than one packet at a time, handle it recursively
+            if (this.buffer.indexOf(Global.MessageDelimiter) !== -1) {
+                this.handleData(null);
+            }
+        }
     }
 
     public send(message: string) {
