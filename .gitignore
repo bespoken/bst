@@ -13,6 +13,8 @@ lib/**/*.map
 test/**/*.js
 test/**/*.map
 
+**/.DS_Store
+
 typings/globals/
 typings/modules/
 
