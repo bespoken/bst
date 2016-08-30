@@ -14,6 +14,11 @@ Table of Contents:
 
     getting_started
     alexa_skills_kit_configuration
+
+..  toctree::
+    :maxdepth: 2
+    :caption: bst Commands
+
     commands/proxy
     commands/speak
 
