@@ -3,8 +3,8 @@ import {LoggingHelper} from "../core/logging-helper";
 import {SocketHandler} from "../core/socket-handler";
 import {Global} from "../core/global";
 
-const KeepAlivePeriod = 30000; // Ping every 30 seconds
-const KeepAliveWindowPeriod = 300000; // Check over a 5 Minute period
+const KeepAlivePeriod = 300000; // Ping every 30 seconds
+const KeepAliveWindowPeriod = 3000000; // Check over a 5 Minute period
 const KeepAliveWarningThreshold = 5; // Need to get more than five pings in that period
 
 /**
