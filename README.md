@@ -1,10 +1,9 @@
-Bespoken Tools (bst) - CLI Tools for Alexa Skills Development
+Bespoken Tools (bst) - Tools for Alexa Skills Kit Development
 ====================
 
-[![Join the chat at https://gitter.im/bespoken/bst](https://badges.gitter.im/bespoken/bst.svg)](https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master)](https://travis-ci.org/bespoken/bst) [![Coverage Status](https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master)](https://coveralls.io/github/bespoken/bst?branch=master) [![npm version](https://img.shields.io/npm/v/bespoken-tools.svg)](https://www.npmjs.com/package/bespoken-tools)
-[![Stories in Ready](https://badge.waffle.io/bespoken/bst.svg?label=ready&title=Ready)](http://waffle.io/bespoken/bst)
+[![Stories in Ready](https://badge.waffle.io/bespoken/bst.svg?label=ready&title=Ready)](http://waffle.io/bespoken/bst) [![Join the chat at https://gitter.im/bespoken/bst](https://badges.gitter.im/bespoken/bst.svg)](https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 ## Overview
 The **bst** (aka Bespoken Tools aka the BEAST) makes it easy to develop for Alexa/Echo.
@@ -24,42 +23,36 @@ It then prints out the JSON payload returned by your service.
 Keep an eye out as we add more features and commands in the future. Current plans:  
 - **deploy**: Automatically deploy Alexa Lambdas to the cloud with a single command
 
-## Getting Started
+## Installation
 
-Make sure you have NPM and node installed:
-```
-$ node --version && npm --version
-```
-We support node version `4.x.x` and above.  For help installing, see see [How To Install NPM](http://blog.npmjs.org/post/85484771375/how-to-install-npm)
+Using NPM:
 
-
-Next, install the bespoken tools command line tool (bst):
-```
+```bash
 $ npm install bespoken-tools -g
 ```
-__Note:__ If you are on MacOS and the command fails, it is probably because you need to run it with sudo, like this:
-```
-$ sudo npm install bespoken-tools -g
-```
-Verify the installation by typing:
-```
-$ bst
-```
+
+For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting-started.html)
 
 ## bst proxy Command
 
 The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
-Read more here:  
-https://github.com/bespoken/bst/blob/master/docs/PROXY.md
+
+Read the docs [here](http://docs.bespoken.tools/en/latest/commands/proxy.html).
 
 ## bst speak Command
 
 The speak command generates intent requests for your service as if they were coming from Alexa itself.  
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
-Read more here:  
-https://github.com/bespoken/bst/blob/master/docs/SPEAK.md
+Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html).
 
+## Tutorials
+
+* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java.html)
+* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs.html)
 
 ## Questions/Feedback?
-Email jpk@xappmedia.com with any questions or comments. We love to hear feedback.
+
+Email jpk@xappmedia.com with any questions or comments, also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
+
+We love to hear feedback.
