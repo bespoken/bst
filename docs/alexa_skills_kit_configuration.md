@@ -22,7 +22,7 @@ From your [Skill's list](https://developer.amazon.com/edw/home.html#/skills/list
 
 Make sure Account linking is set to "No" and on the SSL Certificate step select "My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority".
 
-__ Note__ To help generate your configuration URL, you can also use [$ bst proxy urlgen](/commands/proxy.html#bst-proxy-urlgen)
+__ Note__ To help generate your configuration URL, you can also use [bst proxy urlgen](/en/latest/commands/proxy.html#bst-proxy-urlgen)
 
 ## Path Component for proxy http
 

@@ -7,7 +7,7 @@ The proxy command allows you to interact with a local service running on your ma
 The proxy tool works either directly with Node/JavaScript lambda code - **proxy lambda**.  Or it can proxy any http service using **proxy http**.  
 
 The two commands are described below, as well as the urlgen helper command.
- 
+
 ## bst proxy lambda
 
 **Overview**  
@@ -32,7 +32,7 @@ Example:
 $ bst proxy lambda index.js
 ```
 
-You can learn more here at our [Node.js Tutorial](/tutorials/tutorial_lambda_nodejs.html):
+You can learn more here at our [Node.js Tutorial](/en/latest/tutorials/tutorial_lambda_nodejs.html):
 
 ## bst proxy http
 
@@ -54,7 +54,7 @@ Example:
 $ bst proxy http 9999
 ```
 
-You can learn more here at our [Java Tutorial](/tutorials/tutorial_local_server_java.html)
+You can learn more here at our [Java Tutorial](/en/latest/tutorials/tutorial_local_server_java.html)
 
 ## bst proxy urlgen
 

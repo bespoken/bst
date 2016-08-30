@@ -5,7 +5,7 @@ This tutorial shows you how to get started developing for Alexa Skills Kit using
 
 * bespoken tools (bst)
   * `$ npm install bespoken-tools -g`
-  * [Installation Instructions](/getting_started.html)
+  * [Installation Instructions](/en/latest/getting_started.html)
 * Amazon Developer Account
   * [Amazon Developer](https://developer.amazon.com/alexa)
 
@@ -40,7 +40,7 @@ From the [Alexa Skills Kit list](https://developer.amazon.com/edw/home.html#/ski
 __Choose "Add a New Skill"__
 
 __Fill out the Information tab__
-* Give your skill a name and invocation phrase, 'bst nodejs sample' and 'greeter' for example 
+* Give your skill a name and invocation phrase, 'bst nodejs sample' and 'greeter' for example
 
 __Fill out the Interaction Model__
 * Copy and paste the Intent Schema from [here](https://raw.githubusercontent.com/amzn/alexa-skills-kit-js/master/samples/helloWorld/speechAssets/IntentSchema.json)
@@ -69,7 +69,7 @@ __Configure SSL__
 
 On the SSL Certificate page, select the middle radio button,"My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
 
-## Test 
+## Test
 Go to the service simulator, and type: "hello" and hit "Ask \<Your Skill Name>".
 
 You should get a valid JSON in reply:
