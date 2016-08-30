@@ -17,7 +17,7 @@ typings/globals/
 typings/modules/
 
 # generated docs
-docs/_build
+docs/_build/*
 
 # Include all stuff under test/resources
 !test/resources/*
