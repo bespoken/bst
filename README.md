@@ -53,6 +53,6 @@ Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html).
 
 ## Questions/Feedback?
 
-Email jpk@xappmedia.com with any questions or comments or open an [issue](https://github.com/bespoken/bst/issues/new). 
+Email jpk@xappmedia.com with any questions or comments, also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
 
 We love to hear feedback.
