@@ -1,4 +1,4 @@
-# Configuring Your Skill For bst proxy
+# Configuring your Skill for bst proxy
 
 In order to leverage the bst proxy functionality, you must configure your skill from the Amazon Develop Console to point to the bst proxy server.
 
