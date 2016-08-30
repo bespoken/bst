@@ -53,6 +53,56 @@ describe("SocketHandlerTest", function() {
             socketHandler.onDataCallback(BufferUtil.fromString("TEST" + Global.MessageDelimiter + "TEST2" + Global.MessageDelimiter));
         });
 
+        it("Sends Broken Up Payloads", function(done) {
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+
+            let count = 0;
+            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
+                count++;
+                if (count === 1) {
+                    assert.equal(message, "Test]}}");
+                } else {
+                    assert.equal(message, "BlobBlob2");
+                    done();
+                }
+            });
+
+            let payload1 = "Test]}}47726";
+            let payload2 = "16365";
+            let payload3 = "Blob";
+            let payload4 = "Blob24772616365";
+
+            socketHandler.onDataCallback(BufferUtil.fromString(payload1));
+            socketHandler.onDataCallback(BufferUtil.fromString(payload2));
+            socketHandler.onDataCallback(BufferUtil.fromString(payload3));
+            socketHandler.onDataCallback(BufferUtil.fromString(payload4));
+        });
+
+        it("Sends More Broken Up Payloads", function(done) {
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+
+            let count = 0;
+            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
+                count++;
+                if (count === 1) {
+                    assert.equal(message, "TestTest2");
+                } else {
+                    assert.equal(message, "BlobBlob2");
+                    done();
+                }
+            });
+
+            let payload1 = "Test";
+            let payload2 = "Test24772616365";
+            let payload3 = "Blob";
+            let payload4 = "Blob24772616365";
+
+            socketHandler.onDataCallback(BufferUtil.fromString(payload1));
+            socketHandler.onDataCallback(BufferUtil.fromString(payload2));
+            socketHandler.onDataCallback(BufferUtil.fromString(payload3));
+            socketHandler.onDataCallback(BufferUtil.fromString(payload4));
+        });
+
         it("Sends Incomplete Payload", function(done) {
             let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 

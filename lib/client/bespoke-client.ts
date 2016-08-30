@@ -57,12 +57,15 @@ export class BespokeClient {
             let self = this;
             LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
 
-            let tcpClient = new TCPClient();
+            let tcpClient = new TCPClient(request.id());
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
                 if (data != null) {
                     self.socketHandler.send(data);
-                } else if (error === NetworkErrorType.CONNECTION_REFUSED) {
-                    LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                } else if (error !== null && error !== undefined) {
+                    if (error === NetworkErrorType.CONNECTION_REFUSED) {
+                        LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                    }
+
                     if (self.onError != null) {
                         self.onError(error, message);
                     }
@@ -120,19 +123,20 @@ export class BespokeClient {
     }
 
     public shutdown(callback?: () => void): void {
-        let self = this;
-
         LoggingHelper.info(Logger, "Shutting down proxy");
-        // We track that we are shutting down because a "close" event is sent
-        //  We don't want to print out any errors in this case as it is expected
+
+        // We track that we are shutting down because a "close" event is sent to the main socket
+        //  We normally print info on close, but not in this case
         this.shuttingDown = true;
+
+        this.keepAlive.stop();
+
         // Do not disconnect until keep alive has stopped
         //  Otherwise it may try to push data through the socket
-        this.keepAlive.stop(function () {
-            self.socketHandler.disconnect();
-            if (callback !== undefined && callback !== null) {
-                callback();
-            }
-        });
+        this.socketHandler.disconnect();
+
+        if (callback !== undefined && callback !== null) {
+            callback();
+        }
     }
 }

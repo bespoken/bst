@@ -22,7 +22,7 @@ export class WebhookManager {
         this.host = "0.0.0.0";
     }
 
-    public start(): void {
+    public start(started?: () => void): void {
         let self = this;
 
         let socketIndex = 0;
@@ -60,6 +60,11 @@ export class WebhookManager {
 
         }).listen(this.port, this.host);
 
+        this.server.on("listening", function () {
+            if (started !== undefined && started !== null) {
+                started();
+            }
+        });
         LoggingHelper.info(Logger, "Listening on " + this.host + ":" + this.port);
     }
 

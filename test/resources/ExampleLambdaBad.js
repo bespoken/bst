@@ -3,13 +3,8 @@ var ExampleLambda = function () {
 };
 
 ExampleLambda.execute = function (event, context) {
-    if (event.doFailure !== undefined && event.doFailure === true) {
-        context.fail("Failure!");
-    } else {
-        var responseData = {"success": true}
-        context.succeed(responseData);
-    }
-
+    // Call a method that does not exist, make sure it does not crash
+    context.doesNotExist.call();
 }
 
 // Create the handler that responds to the Alexa Request.
