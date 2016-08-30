@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Nodejs Lambda &mdash; bst  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bst  documentation" href="../index.html"/>
+        <link rel="prev" title="Local Java Server" href="tutorial_local_server_java.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bst
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../alexa_skills_kit_configuration.html">Configuring Your Skill For bst proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/proxy.html">bst proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/speak.html">bst speak</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorial_local_server_java.html">Local Java Server</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Nodejs Lambda</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-bst-proxy">Start bst proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure-your-skill">Configure your Skill</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test">Test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bst</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Nodejs Lambda</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorials/tutorial_lambda_nodejs.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="nodejs-lambda">
+<span id="nodejs-lambda"></span><h1>Nodejs Lambda<a class="headerlink" href="#nodejs-lambda" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial shows you how to get started developing for Alexa Skills Kit using a Nodejs Lambda.</p>
+<div class="section" id="prerequisites">
+<span id="prerequisites"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>bespoken tools (bst)<ul>
+<li><code class="docutils literal"><span class="pre">$</span> <span class="pre">npm</span> <span class="pre">install</span> <span class="pre">bespoken-tools</span> <span class="pre">-g</span></code></li>
+<li><a class="reference external" href="/getting_started.html">Installation Instructions</a></li>
+</ul>
+</li>
+<li>Amazon Developer Account<ul>
+<li><a class="reference external" href="https://developer.amazon.com/alexa">Amazon Developer</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<span id="getting-started"></span><h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>Clone the Amazon Alexa Skills Kit for JavaScript repo:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/amzn/alexa-skills-kit-js
+</pre></div>
+</div>
+<p>Go to the root level of the sample:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd alexa-skills-kit-js/
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-bst-proxy">
+<span id="start-bst-proxy"></span><h2>Start bst proxy<a class="headerlink" href="#start-bst-proxy" title="Permalink to this headline">¶</a></h2>
+<p>For Nodejs Lambdas, bst proxy command, in addition to setting up the proxy, will run your lambda for you and even reload it on changes.</p>
+<p>This will start the helloWorld lambda:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy lambda samples/helloWorld/src/index.js
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-your-skill">
+<span id="configure-your-skill"></span><h2>Configure your Skill<a class="headerlink" href="#configure-your-skill" title="Permalink to this headline">¶</a></h2>
+<p>From the <a class="reference external" href="https://developer.amazon.com/edw/home.html#/skills/list">Alexa Skills Kit list</a> within the Amazon Developer&#8217;s Console:</p>
+<p><strong>Choose &#8220;Add a New Skill&#8221;</strong></p>
+<p><strong>Fill out the Information tab</strong></p>
+<ul class="simple">
+<li>Give your skill a name and invocation phrase, &#8216;bst nodejs sample&#8217; and &#8216;greeter&#8217; for example</li>
+</ul>
+<p><strong>Fill out the Interaction Model</strong></p>
+<ul class="simple">
+<li>Copy and paste the Intent Schema from <a class="reference external" href="https://raw.githubusercontent.com/amzn/alexa-skills-kit-js/master/samples/helloWorld/speechAssets/IntentSchema.json">here</a></li>
+<li>Copy and paste the Sample Utterances from <a class="reference external" href="https://raw.githubusercontent.com/amzn/alexa-skills-kit-js/master/samples/helloWorld/speechAssets/SampleUtterances.txt">here</a></li>
+</ul>
+<p><strong>Configure the Endpoint</strong></p>
+<p>When you started the proxy, bst printed out a URL that you need to configure your skill:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy lambda samples/helloWorld/src/index.js
+BST: v0.6.5  Node: v4.3.2
+
+Your URL for Alexa Skill configuration:
+https://proxy.bespoken.tools?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
+</pre></div>
+</div>
+<p>Alternatively, you can create this URL via the <code class="docutils literal"><span class="pre">proxy</span> <span class="pre">urlgen</span></code> command.</p>
+<p>Copy and paste this URL as your endpoint:</p>
+<p><img alt="Alexa Skill Configuration" src="../_images/bst-nodejs-lambda-configuration.png" /></p>
+<p>Also make sure you select &#8220;HTTPS&#8221; and account linking to &#8220;NO&#8221;.</p>
+<p><strong>Configure SSL</strong></p>
+<p>On the SSL Certificate page, select the middle radio button,&#8221;My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority&#8221;</p>
+</div>
+<div class="section" id="test">
+<span id="test"></span><h2>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h2>
+<p>Go to the service simulator, and type: &#8220;hello&#8221; and hit &#8220;Ask &lt;Your Skill Name&gt;&#8221;.</p>
+<p>You should get a valid JSON in reply:</p>
+<p><img alt="Test your Skill" src="../_images/bst-nodejs-lambda-test.png" /></p>
+</div>
+<div class="section" id="next-steps">
+<span id="next-steps"></span><h2>Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>You can now start adding functionality to your skill. To learn more about coding Alexa Skills, see the official <a class="reference external" href="https://github.com/amzn/alexa-skills-kit-js">documentation</a></p>
+<p>You can also try it out on an Alexa device like an Echo, as long as it is registered with your account.
+Just say &#8220;Open &lt;Your Invocation Name&gt;&#8221; to use it.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="tutorial_local_server_java.html" class="btn btn-neutral" title="Local Java Server" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bespoken.tools.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

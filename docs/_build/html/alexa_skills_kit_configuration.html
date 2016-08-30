@@ -1,0 +1,234 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuring Your Skill For bst proxy &mdash; bst  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bst  documentation" href="index.html"/>
+        <link rel="next" title="bst proxy" href="commands/proxy.html"/>
+        <link rel="prev" title="Getting Started" href="getting_started.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bst
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Configuring Your Skill For bst proxy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configure-the-endpoint">Configure the Endpoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ssl-certificate">SSL Certificate</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="commands/proxy.html">bst proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands/speak.html">bst speak</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_local_server_java.html">Local Java Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_lambda_nodejs.html">Nodejs Lambda</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">bst</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Configuring Your Skill For bst proxy</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/alexa_skills_kit_configuration.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuring-your-skill-for-bst-proxy">
+<span id="configuring-your-skill-for-bst-proxy"></span><h1>Configuring Your Skill For bst proxy<a class="headerlink" href="#configuring-your-skill-for-bst-proxy" title="Permalink to this headline">¶</a></h1>
+<p>In order to leverage the bst proxy functionality, you must configure your skill from the Amazon Develop Console to point to the bst server.</p>
+<div class="section" id="configure-the-endpoint">
+<span id="configure-the-endpoint"></span><h2>Configure the Endpoint<a class="headerlink" href="#configure-the-endpoint" title="Permalink to this headline">¶</a></h2>
+<p>Your skill must be setup to point to the bst server. For example, if the URL for your skill is normally:</p>
+<div class="highlight-python"><div class="highlight"><pre>https://myskill.example.com/skillA
+</pre></div>
+</div>
+<p>It should instead be configured to point like so:</p>
+<div class="highlight-python"><div class="highlight"><pre>https://proxy.bespoken.tools/skillA?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
+</pre></div>
+</div>
+<p>From your <a class="reference external" href="https://developer.amazon.com/edw/home.html#/skills/list">Skill&#8217;s list</a>, click edit and navigate the Configuration step and update the HTTPS endpoint</p>
+<p align="center">
+  <img src="https://bespoken.tools/img/skill-configuration-http.png" />
+</p><p><strong>Please Note</strong> Account linking should be set to &#8220;No&#8221;</p>
+<p>To help generate your the URL, see <a class="reference external" href="https://github.com/bespoken/bst#-proxy-urlgen">$ bst proxy urlgen</a></p>
+</div>
+<div class="section" id="ssl-certificate">
+<span id="ssl-certificate"></span><h2>SSL Certificate<a class="headerlink" href="#ssl-certificate" title="Permalink to this headline">¶</a></h2>
+<p>Select &#8220;My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority&#8221;</p>
+<p align="center">
+  <img src="https://bespoken.tools/img/skill-ssl-certificate.png" />
+</p></div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="commands/proxy.html" class="btn btn-neutral float-right" title="bst proxy" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="getting_started.html" class="btn btn-neutral" title="Getting Started" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bespoken.tools.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

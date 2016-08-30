@@ -10,7 +10,7 @@ Or it can proxy any http service using **proxy http**.
 
 The two commands are described below, as well as the urlgen helper command.
  
-## $ proxy lambda
+## bst proxy lambda
 **Overview**  
 The proxy lambda command allows you to run a Lambda as a local service your machine.
 
@@ -33,7 +33,7 @@ $ bst proxy lambda index.js
 
 You can learn more here at our [NODE Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_NODE.md):
 
-## $ proxy http
+## bst proxy http
 **Overview**  
 Proxy http allows you to interact with a local service running on your machine (on a port) via an Alexa device.
 
@@ -53,7 +53,7 @@ The <PORT> parameter represents the port that your local Alexa service is listen
 You can learn more here at our [JAVA Tutorial](https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_JAVA.md)
 
 
-## $ proxy urlgen
+## bst proxy urlgen
 
 **Overview**
 

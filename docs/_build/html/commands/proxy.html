@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bst proxy &mdash; bst  documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bst  documentation" href="../index.html"/>
+        <link rel="next" title="bst speak" href="speak.html"/>
+        <link rel="prev" title="Configuring Your Skill For bst proxy" href="../alexa_skills_kit_configuration.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bst
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../alexa_skills_kit_configuration.html">Configuring Your Skill For bst proxy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">bst proxy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bst-proxy-lambda">bst proxy lambda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bst-proxy-http">bst proxy http</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bst-proxy-urlgen">bst proxy urlgen</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="speak.html">bst speak</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial_local_server_java.html">Local Java Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial_lambda_nodejs.html">Nodejs Lambda</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bst</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>bst proxy</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/commands/proxy.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bst-proxy">
+<span id="bst-proxy"></span><h1>bst proxy<a class="headerlink" href="#bst-proxy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<span id="overview"></span><h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The proxy command allows you to interact with a local service running on your machine via an Alexa device.Using it, you can make changes to code running on your machine and immediately make them available via an Echo or the Alexa simulator.</p>
+<p>The proxy tool works either directly with Node/JavaScript lambda code - <strong>proxy lambda</strong>.Or it can proxy any http service using <strong>proxy http</strong>.</p>
+<p>The two commands are described below, as well as the urlgen helper command.</p>
+</div>
+<div class="section" id="bst-proxy-lambda">
+<span id="bst-proxy-lambda"></span><h2>bst proxy lambda<a class="headerlink" href="#bst-proxy-lambda" title="Permalink to this headline">¶</a></h2>
+<p><strong>Overview</strong>The proxy lambda command allows you to run a Lambda as a local service your machine.</p>
+<p><strong>Note</strong></p>
+<ul class="simple">
+<li>The command currently only supports Node/JavaScript Lambdas.</li>
+</ul>
+<p><strong>Usage</strong>To use it, invoke it with the Lambda file to run.The proxy will automatically use the latest code in your working directory.</p>
+<p>Syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy lambda &lt;PATH_TO_LAMBDA&gt;
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy lambda index.js
+</pre></div>
+</div>
+<p>You can learn more here at our <a class="reference external" href="https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_NODE.md">NODE Tutorial</a>:</p>
+</div>
+<div class="section" id="bst-proxy-http">
+<span id="bst-proxy-http"></span><h2>bst proxy http<a class="headerlink" href="#bst-proxy-http" title="Permalink to this headline">¶</a></h2>
+<p><strong>Overview</strong>Proxy http allows you to interact with a local service running on your machine (on a port) via an Alexa device.</p>
+<p><strong>Usage</strong>Syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy http &lt;PORT&gt;
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy http 9999
+</pre></div>
+</div>
+<p>The <PORT> parameter represents the port that your local Alexa service is listening on.  Set this to whatever port your local server is running on. All traffic coming from Alexa will be forwarded to it.</p>
+<p>You can learn more here at our <a class="reference external" href="https://github.com/bespoken/bst/blob/master/docs/TUTORIAL_JAVA.md">JAVA Tutorial</a></p>
+</div>
+<div class="section" id="bst-proxy-urlgen">
+<span id="bst-proxy-urlgen"></span><h2>bst proxy urlgen<a class="headerlink" href="#bst-proxy-urlgen" title="Permalink to this headline">¶</a></h2>
+<p><strong>Overview</strong></p>
+<p>Your skill must be setup to point at our server. For example, if the URL for your skill is normally:</p>
+<div class="highlight-python"><div class="highlight"><pre>https://myskill.example.com/skillA
+</pre></div>
+</div>
+<p>It should instead be configured to point at the bst server, like so:</p>
+<div class="highlight-python"><div class="highlight"><pre>https://proxy.bespoken.tools/skillA?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
+</pre></div>
+</div>
+<p><em>Note the Node ID passed in the query string.  This is a UUID that ties off your local proxy with our server.</em></p>
+<p>The rest of the URL path and query string should be unchanged.</p>
+<p>For more information on configuring your Skill see <a class="reference external" href="https://github.com/bespoken/bst/blob/master/docs/SKILL_CONFIGURATION.md">Skill Configuration</a>.</p>
+<p><strong>Usage</strong></p>
+<p>The proxy urlgen command can help generate the endpoint.</p>
+<p>Syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy urlgen &lt;URL&gt;
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ bst proxy urlgen https://myskill.example.com/skillA
+</pre></div>
+</div>
+<p>The above example command will then provide you with HTTPS Endpoint that is required during the configuration step when you setup your Alexa Skill.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="speak.html" class="btn btn-neutral float-right" title="bst speak" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../alexa_skills_kit_configuration.html" class="btn btn-neutral" title="Configuring Your Skill For bst proxy" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bespoken.tools.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
