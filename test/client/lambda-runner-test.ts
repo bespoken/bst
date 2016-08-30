@@ -98,13 +98,18 @@ describe("LambdaRunner", function() {
             FileUtil.copyFile("ExampleLambda.js", tempFile, function() {
                 let runner = new LambdaRunner(tempFile, 10000);
                 runner.start();
+
+                let firstTime = true;
                 runner.onDirty = function () {
                     client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                         let o = JSON.parse(data.toString());
                         assert.equal(o.success, true);
                         assert.equal(o.reloaded, true);
                         runner.stop();
-                        done();
+                        if (firstTime) {
+                            firstTime = false;
+                            done(); // Make sure done only called once
+                        }
                     });
                 };
 
