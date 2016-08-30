@@ -57,9 +57,7 @@ Deploy new server version (from Docker Templates):
 
 # Documentation
 
-## Building Locally
-
-See http://read-the-docs.readthedocs.io/en/latest/getting_started.html#write-your-docs
+## Building
 
 Make sure you have sphinx, sphinx-autobuild, recommonmark (for markdown), and the RTDs theme 
 
@@ -73,27 +71,15 @@ Then, from root project root directory, build HTML with using the makefile:
 $ make html -C docs/
 ```
 
+## Writing
+
 When writing the docs, it is often helpful to autogen the HTML after every change:
 
 ```
 $ sphinx-autobuild docs/ docs/_build/html
 ```
 
-## Help! Some Docs to RTFD
-
-https://media.readthedocs.org/pdf/markdown-publishing-guide/stable/markdown-publishing-guide.pdf 
-
-Great Example with markdown https://github.com/zulip/zulip/tree/master/docs
-
-If you ever change the directory structure, I recommend you clean the build directory:
+If things are not updating and you think something isn't right, clean the docs:
 ```bash
 $ make clean -C docs/
 ```
-
-## Conventions
-
-### File Names
-
-It is python so use underscores instead of dashes and no camel case.
-
-
