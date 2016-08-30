@@ -30,7 +30,7 @@ Using NPM:
 $ npm install bespoken-tools -g
 ```
 
-For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting-started.html)
+For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started.html)
 
 ## bst proxy Command
 
