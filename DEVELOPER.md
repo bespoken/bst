@@ -55,4 +55,31 @@ Deploy new server version (from Docker Templates):
 `python ecs_manager.py deploy conf/bst-server bst-server.json dev`
 
 
+# Documentation
 
+## Building
+
+Make sure you have sphinx, sphinx-autobuild, recommonmark (for markdown), and the RTDs theme 
+
+```bash
+$ pip install sphinx sphinx-autobuild recommonmark sphinx_rtd_theme
+```
+
+Then, from root project root directory, build HTML with using the makefile:
+
+```bash
+$ make html -C docs/
+```
+
+## Writing
+
+When writing the docs, it is often helpful to autogen the HTML after every change:
+
+```
+$ sphinx-autobuild docs/ docs/_build/html
+```
+
+If things are not updating and you think something isn't right, clean the docs:
+```bash
+$ make clean -C docs/
+```
