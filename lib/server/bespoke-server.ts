@@ -44,7 +44,7 @@ export class BespokeServer {
                     if (node == null) {
                         HTTPHelper.respond(webhookRequest.sourceSocket, 404, "Node is not active: " + webhookRequest.nodeID());
                     } else {
-                        node.queue(webhookRequest);
+                        node.forward(webhookRequest);
                     }
                 }
             }

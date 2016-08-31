@@ -20,8 +20,9 @@ describe("WebhookManager", function() {
             let manager = new WebhookManager(8080);
             manager.onWebhookReceived = function(request: WebhookRequest) {
                 console.log("NodeID: " + request.nodeID());
-                assert.equal("10", request.nodeID());
-                assert.equal("Test", request.body);
+                assert.equal(request.nodeID(), 10);
+                assert.equal((request.id() + "").length, 13);
+                assert.equal(request.body, "Test");
                 manager.stop(function () {
                     done();
                 });

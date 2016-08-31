@@ -3,52 +3,37 @@ import {NodeManager} from "./node-manager";
 import {Global} from "../core/global";
 import {SocketHandler} from "../core/socket-handler";
 import {WebhookRequest} from "../core/webhook-request";
+import {LoggingHelper} from "../core/logging-helper";
+
+const Logger = "NODE";
 
 export class Node {
-    private requests: Array<WebhookRequest> = [];
+    private requests: {[id: number]: WebhookRequest} = {};
 
     constructor(public id: string, public socketHandler: SocketHandler) {}
 
-    public queue(request: WebhookRequest) {
-        console.log("NODE " + this.id + " Forwarding called");
-
-        // If already handling a request, wait for a reply
-        if (this.handlingRequest()) {
-            console.log("NODE " + this.id + " Waiting");
-        } else {
-            this.forward(request);
-        }
-        this.requests.push(request);
-    }
-
-    private forward(request: WebhookRequest): void {
-        console.log("NODE " + this.id + " Forwarding");
-        this.socketHandler.send(request.toTCP());
+    public forward(request: WebhookRequest): void {
+        console.log("NODE " + this.id + " MSG-ID: " + request.id() + " Forwarding");
+        this.requests[request.id()] = request;
+        this.socketHandler.send(request.toTCP(), request.id());
     }
 
     public handlingRequest(): boolean {
-        return (this.requests.length > 0);
+        return (Object.keys(this.requests).length > 0);
     }
 
-    public activeRequest(): WebhookRequest {
-        let request: WebhookRequest = null;
-        if (this.handlingRequest()) {
-            request = this.requests[0];
-        }
-        return request;
-    }
-
-    public onReply(message: string): void {
+    public onReply(message: string, messageID: number): void {
         let self = this;
-        console.log("NODE " + this.id + " ReplyReceived");
-        let request = this.activeRequest();
-        request.sourceSocket.write(message);
+        console.log("NODE " + this.id + " MSG-ID: " + messageID + " ReplyReceived");
 
-        // Remove this request from the queue
-        this.requests = this.requests.slice(1);
-        // Handle the next request, if there are any
-        if (this.requests.length > 0) {
-            this.forward(this.activeRequest());
+        let request = this.requests[messageID];
+        if (request === null) {
+            LoggingHelper.info(Logger, "No matching messageID for reply: " + messageID);
+        } else {
+            request.sourceSocket.write(message, function () {
+                delete self.requests[messageID];
+            });
         }
+
     }
 }

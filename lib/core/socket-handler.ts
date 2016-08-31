@@ -17,7 +17,7 @@ export class SocketHandler {
     public onCloseCallback: () => void = null;
     private connected: boolean = true;
 
-    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string) => void): SocketHandler {
+    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string, messageID?: number) => void): SocketHandler {
         let socket = new net.Socket();
         let handler = new SocketHandler(socket, onMessage);
         handler.connected = false;
@@ -35,7 +35,7 @@ export class SocketHandler {
         return handler;
     }
 
-    public constructor (public socket: Socket, private onMessage: (message: string) => void) {
+    public constructor (public socket: Socket, private onMessage: (message: string, sequenceNumber?: number) => void) {
         let self = this;
 
         // Set this as instance variable to make it easier to test
@@ -78,10 +78,13 @@ export class SocketHandler {
 
         let delimiterIndex = this.buffer.indexOf(Global.MessageDelimiter);
         if (delimiterIndex > -1) {
-            let message = this.buffer.substring(0, delimiterIndex);
-            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(message));
+            let message = this.buffer.substring(0, delimiterIndex - Global.MessageIDLength);
+            // Grab the message ID - it precedes the delimiter
+            let messageIDString = this.buffer.substring(delimiterIndex - Global.MessageIDLength, delimiterIndex);
+            let messageID: number = parseInt(messageIDString);
+            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
 
-            this.onMessage(message);
+            this.onMessage(message, messageID);
             this.buffer = this.buffer.slice(delimiterIndex + Global.MessageDelimiter.length);
 
             // If we have received more than one packet at a time, handle it recursively
@@ -91,11 +94,15 @@ export class SocketHandler {
         }
     }
 
-    public send(message: string) {
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(message));
+    public send(message: string, messageID?: number) {
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message));
 
+        // If no message ID is specified, just grab a timestamp
+        if (messageID === undefined || messageID === null) {
+            messageID = new Date().getTime();
+        }
         // Use TOKEN as message delimiter
-        message = message + Global.MessageDelimiter;
+        message = message + messageID + Global.MessageDelimiter;
         this.socket.write(message, null);
     }
 

@@ -36,8 +36,9 @@ export class BespokeClient {
             function(error: any) {
                 self.connected(error);
             },
-            function(data: string) {
-                self.messageReceived(data);
+
+            function(data: string, messageID?: number) {
+                self.messageReceived(data, messageID);
             }
         );
 
@@ -57,10 +58,10 @@ export class BespokeClient {
             let self = this;
             LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
 
-            let tcpClient = new TCPClient(request.id());
+            let tcpClient = new TCPClient(request.id() + "");
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
                 if (data != null) {
-                    self.socketHandler.send(data);
+                    self.socketHandler.send(data, request.id());
                 } else if (error !== null && error !== undefined) {
                     if (error === NetworkErrorType.CONNECTION_REFUSED) {
                         LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
@@ -87,10 +88,6 @@ export class BespokeClient {
         return new KeepAlive(handler);
     }
 
-    public send(message: string) {
-        this.socketHandler.send(message);
-    }
-
     private connected(error?: any): void {
         if (error !== undefined && error !== null) {
             LoggingHelper.error(Logger, "Unable to connect to: " + this.host + ":" + this.port);
@@ -104,21 +101,21 @@ export class BespokeClient {
             let messageJSON = {"id": this.nodeID};
             let message = JSON.stringify(messageJSON);
 
-            this.send(message);
+            this.socketHandler.send(message);
             if (this.onConnect !== undefined  && this.onConnect !== null) {
                 this.onConnect();
             }
         }
     }
 
-    private messageReceived (message: string) {
+    private messageReceived (message: string, messageID?: number) {
         // First message we get back is an ack
         if (message.indexOf("ACK") !== -1) {
             // console.log("Client: ACK RECEIVED");
         } else if (message.indexOf(Global.KeepAliveMessage) !== -1) {
             this.keepAlive.received();
         } else {
-            this.onWebhookReceived(WebhookRequest.fromString(this.socketHandler.socket, message));
+            this.onWebhookReceived(WebhookRequest.fromString(this.socketHandler.socket, message, messageID));
         }
     }
 

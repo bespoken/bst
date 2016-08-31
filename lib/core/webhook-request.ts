@@ -11,17 +11,18 @@ export class WebhookRequest {
     public body: string;
     public headers: { [id: string]: string };
     public queryParameters: {[id: string]: string} = {};
-    private requestTimestamp: number;
+    private requestID: number;
 
     public constructor(public sourceSocket: Socket) {
         this.rawContents = new Buffer("");
         this.body = "";
-        this.requestTimestamp = new Date().getTime();
+        this.requestID = new Date().getTime();
     }
 
-    public static fromString(sourceSocket: Socket, payload: string): WebhookRequest {
+    public static fromString(sourceSocket: Socket, payload: string, id?: number): WebhookRequest {
         let webhookRequest = new WebhookRequest(sourceSocket);
         webhookRequest.append(BufferUtil.fromString(payload));
+        webhookRequest.requestID = id;
         return webhookRequest;
     }
 
@@ -108,7 +109,7 @@ export class WebhookRequest {
         return this.method + " " + this.uri;
     }
 
-    public id(): string {
-        return this.requestTimestamp + "";
+    public id(): number {
+        return this.requestID;
     }
 }

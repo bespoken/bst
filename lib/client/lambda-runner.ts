@@ -14,9 +14,23 @@ export class LambdaRunner {
     private dirty: boolean = false;
     private lambda: any = null;
     private watcher: FSWatcher = null;
+    private requests: Array<IncomingMessage> = [];
     public onDirty: () => void = null; // Callback for test-ability
 
-    public constructor(public file: string, public port: number) {}
+    /**
+     * The file to run
+     * @param file
+     * @param port
+     * @param debug
+     */
+    public constructor(public file: string, public port: number, public debug?: boolean) {
+        // We need the debug flag for testing this class
+        // It causes us to store off the requests so that we can close sockets and shutdown quickly
+        //  Otherwise we have to wait for timeouts
+        if (this.debug === undefined) {
+            this.debug = false;
+        }
+    }
 
     public start (callback?: () => void): void {
         let self = this;
@@ -36,6 +50,10 @@ export class LambdaRunner {
         this.server = http.createServer();
         this.server.listen(this.port);
         this.server.on("request", function(request: IncomingMessage, response: ServerResponse) {
+            if (self.debug) {
+                self.requests.push(request);
+            }
+
             let requestBody: string = "";
             request.on("data", function(chunk: Buffer) {
                 requestBody += chunk.toString();
@@ -78,6 +96,17 @@ export class LambdaRunner {
 
     public stop (onStop?: () => void): void {
         this.watcher.close();
+
+        if (this.debug) {
+            let request: IncomingMessage = null;
+            for (request of this.requests) {
+                try {
+                    request.socket.end();
+                } catch (e) {
+
+                }
+            }
+        }
         this.server.close(function () {
             if (onStop !== undefined && onStop !== null) {
                 onStop();
