@@ -32,7 +32,7 @@ describe("SkillInvoker", function() {
 
     describe("#say", function() {
         it("Returns payload", function(done) {
-            this.timeout(5000);
+            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("Nearest Location", function (request: any, response: any) {
