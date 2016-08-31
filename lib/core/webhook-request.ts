@@ -2,6 +2,7 @@
 
 import * as querystring from "querystring";
 import {BufferUtil} from "./buffer-util";
+import {Socket} from "net";
 
 export class WebhookRequest {
     public rawContents: Buffer;
@@ -12,14 +13,14 @@ export class WebhookRequest {
     public queryParameters: {[id: string]: string} = {};
     private requestTimestamp: number;
 
-    public constructor() {
+    public constructor(public sourceSocket: Socket) {
         this.rawContents = new Buffer("");
         this.body = "";
         this.requestTimestamp = new Date().getTime();
     }
 
-    public static fromString(payload: string): WebhookRequest {
-        let webhookRequest = new WebhookRequest();
+    public static fromString(sourceSocket: Socket, payload: string): WebhookRequest {
+        let webhookRequest = new WebhookRequest(sourceSocket);
         webhookRequest.append(BufferUtil.fromString(payload));
         return webhookRequest;
     }

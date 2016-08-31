@@ -10,7 +10,7 @@ import {LoggingHelper} from "../core/logging-helper";
 let Logger = "WEBHOOK";
 
 export interface WebhookReceivedCallback {
-    (socket: Socket, webhookRequest: WebhookRequest): void;
+    (webhookRequest: WebhookRequest): void;
 }
 export class WebhookManager {
     private server: Server;
@@ -27,7 +27,7 @@ export class WebhookManager {
 
         let socketIndex = 0;
         this.server = net.createServer(function(socket: Socket) {
-            let webhookRequest = new WebhookRequest();
+            let webhookRequest = new WebhookRequest(socket);
             socketIndex++;
 
             let socketKey = socketIndex;
@@ -45,12 +45,12 @@ export class WebhookManager {
                 //  If we do it on the write callback on the socket, the original caller never gets the response
                 // For now, if we get a second request on the socket, re-initialize the webhookRequest
                 if (webhookRequest.done()) {
-                    webhookRequest = new WebhookRequest();
+                    webhookRequest = new WebhookRequest(socket);
                 }
 
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
-                    self.onWebhookReceived(socket, webhookRequest);
+                    self.onWebhookReceived(webhookRequest);
                 }
             });
 

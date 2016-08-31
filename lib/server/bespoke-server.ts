@@ -30,21 +30,21 @@ export class BespokeServer {
 
         this.webhookManager = new WebhookManager(this.webhookPort);
         this.webhookManager.start(callbackCounter);
-        this.webhookManager.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
+        this.webhookManager.onWebhookReceived = function(webhookRequest: WebhookRequest) {
             // Check if this is a ping
             if (webhookRequest.isPing()) {
-                HTTPHelper.respond(socket, 200, "bst-server-" + Global.version());
+                HTTPHelper.respond(webhookRequest.sourceSocket, 200, "bst-server-" + Global.version());
 
             } else {
                 if (webhookRequest.nodeID() === null) {
-                    HTTPHelper.respond(socket, 400, "No node specified. Must be included with the querystring as node-id.");
+                    HTTPHelper.respond(webhookRequest.sourceSocket, 400, "No node specified. Must be included with the querystring as node-id.");
                 } else {
                     // Lookup the node
                     let node = self.nodeManager.node(webhookRequest.nodeID());
                     if (node == null) {
-                        HTTPHelper.respond(socket, 404, "Node is not active: " + webhookRequest.nodeID());
+                        HTTPHelper.respond(webhookRequest.sourceSocket, 404, "Node is not active: " + webhookRequest.nodeID());
                     } else {
-                        node.forward(socket, webhookRequest);
+                        node.queue(webhookRequest);
                     }
                 }
             }

@@ -5,44 +5,50 @@ import {SocketHandler} from "../core/socket-handler";
 import {WebhookRequest} from "../core/webhook-request";
 
 export class Node {
-    private activeRequest: WebhookRequest = null;
-    private sourceSocket: Socket = null;
-    private onReplied: () => void = null;
+    private requests: Array<WebhookRequest> = [];
 
     constructor(public id: string, public socketHandler: SocketHandler) {}
 
-    public forward(sourceSocket: Socket, request: WebhookRequest) {
+    public queue(request: WebhookRequest) {
         console.log("NODE " + this.id + " Forwarding called");
-        let self = this;
+
         // If already handling a request, wait for a reply
         if (this.handlingRequest()) {
             console.log("NODE " + this.id + " Waiting");
-            this.onReplied = function () {
-                self.onReplied = null;
-                self.forward(sourceSocket, request);
-            };
         } else {
-            console.log("NODE " + this.id + " Forwarding");
-            this.socketHandler.send(request.toTCP());
-            this.activeRequest = request;
-            this.sourceSocket = sourceSocket;
+            this.forward(request);
         }
+        this.requests.push(request);
+    }
+
+    private forward(request: WebhookRequest): void {
+        console.log("NODE " + this.id + " Forwarding");
+        this.socketHandler.send(request.toTCP());
     }
 
     public handlingRequest(): boolean {
-        return (this.activeRequest !== null);
+        return (this.requests.length > 0);
+    }
+
+    public activeRequest(): WebhookRequest {
+        let request: WebhookRequest = null;
+        if (this.handlingRequest()) {
+            request = this.requests[0];
+        }
+        return request;
     }
 
     public onReply(message: string): void {
         let self = this;
         console.log("NODE " + this.id + " ReplyReceived");
-        this.sourceSocket.write(message, function () {
-            // Reset the state of the request handling after passing along the reply
-            self.sourceSocket = null;
-            self.activeRequest = null;
-            if (self.onReplied !== null) {
-                self.onReplied();
-            }
-        });
+        let request = this.activeRequest();
+        request.sourceSocket.write(message);
+
+        // Remove this request from the queue
+        this.requests = this.requests.slice(1);
+        // Handle the next request, if there are any
+        if (this.requests.length > 0) {
+            this.forward(this.activeRequest());
+        }
     }
 }

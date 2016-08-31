@@ -53,7 +53,7 @@ export class BespokeClient {
             }
         };
 
-        this.onWebhookReceived = function(socket: Socket, request: WebhookRequest) {
+        this.onWebhookReceived = function(request: WebhookRequest) {
             let self = this;
             LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
 
@@ -118,7 +118,7 @@ export class BespokeClient {
         } else if (message.indexOf(Global.KeepAliveMessage) !== -1) {
             this.keepAlive.received();
         } else {
-            this.onWebhookReceived(this.socketHandler.socket, WebhookRequest.fromString(message));
+            this.onWebhookReceived(WebhookRequest.fromString(this.socketHandler.socket, message));
         }
     }
 

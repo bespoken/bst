@@ -28,7 +28,7 @@ describe("BespokeServerTest", function() {
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 9011);
             bespokeClient.connect();
 
-            bespokeClient.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
+            bespokeClient.onWebhookReceived = function(webhookRequest: WebhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
 
@@ -64,18 +64,40 @@ describe("BespokeServerTest", function() {
             let lambdaRunner = new LambdaRunner("./test/resources/DelayedLambda.js", 10000);
             lambdaRunner.start();
 
+            let count = 0;
+            let completed = function () {
+                count++;
+                if (count === 3) {
+                    lambdaRunner.stop(function () {
+                        bespokeClient.shutdown(function () {
+                            server.stop(function () {
+                                done();
+                            });
+                        });
+                    });
+                }
+            };
+
             let webhookCaller = new HTTPClient();
             webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
                 console.log("data: " + data.toString());
                 let json = JSON.parse(data.toString());
                 assert(json.success);
-                lambdaRunner.stop(function () {
-                    bespokeClient.shutdown(function () {
-                        server.stop(function () {
-                            done();
-                        });
-                    });
-                });
+                completed();
+            });
+
+            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                console.log("data: " + data.toString());
+                let json = JSON.parse(data.toString());
+                assert(json.success);
+                completed();
+            });
+
+            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                console.log("data: " + data.toString());
+                let json = JSON.parse(data.toString());
+                assert(json.success);
+                completed();
             });
         });
 
@@ -105,15 +127,10 @@ describe("BespokeServerTest", function() {
             this.timeout(2000);
             // Start the server
             let server = new BespokeServer(8000, 9000);
-            const options = {
-                body: {
-                    foo: "bar"
-                },
-                json: true
-            };
+
             server.start(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test", function (body: any, statusCode: number, success: boolean) {
+                webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test", function (body: any, statusCode: number) {
                     assert.equal(body, "Node is not active: JPK");
                     assert.equal(statusCode, 404);
 
@@ -128,15 +145,10 @@ describe("BespokeServerTest", function() {
             this.timeout(2000);
             // Start the server
             let server = new BespokeServer(8000, 9000);
-            const options = {
-                body: {
-                    foo: "bar"
-                },
-                json: true
-            };
+
             server.start(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8000, "/test", "Test", function (body: any, statusCode: number, success: boolean) {
+                webhookCaller.post("localhost", 8000, "/test", "Test", function (body: any, statusCode: number) {
                     assert.equal(body, "No node specified. Must be included with the querystring as node-id.");
                     assert.equal(statusCode, 400);
 
