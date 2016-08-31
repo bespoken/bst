@@ -1,6 +1,3 @@
-Bespoken Tools (bst) - Tools for Alexa Skills Kit Development
-====================
-
 [![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master)](https://travis-ci.org/bespoken/bst) [![Coverage Status](https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master)](https://coveralls.io/github/bespoken/bst?branch=master) [![npm version](https://img.shields.io/npm/v/bespoken-tools.svg)](https://www.npmjs.com/package/bespoken-tools) [![Read the Docs](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](http://docs.bespoken.tools/) [![Stories in Ready](https://badge.waffle.io/bespoken/bst.svg?label=ready&title=Ready)](http://waffle.io/bespoken/bst) [![Join the chat at https://gitter.im/bespoken/bst](https://badges.gitter.im/bespoken/bst.svg)](https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
@@ -30,28 +27,28 @@ Using NPM:
 $ npm install bespoken-tools -g
 ```
 
-For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started.html)
+For additional help, see [Getting Started](/getting_started)
 
 ## bst proxy Command
 
 The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
 
-Read the docs [here](http://docs.bespoken.tools/en/latest/commands/proxy.html).
+Read the docs [here](/commands/proxy).
 
 ## bst speak Command
 
 The speak command generates intent requests for your service as if they were coming from Alexa itself.  
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
-Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html).
+Read the docs [here](/commands/speak).
 
 ## Tutorials
 
-* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java.html)
-* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs.html)
+* [Nodejs Lambda Tutorial](/tutorials/tutorial_local_server_java)
+* [Java Server Tutorial](/tutorials/tutorial_lambda_nodejs)
 
 ## Questions/Feedback?
 
-Email jpk@xappmedia.com with any questions or comments, also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
+Email jpk@xappmedia.com with any questions or comments, also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request.
 
 We love to hear feedback.

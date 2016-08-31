@@ -59,16 +59,16 @@ Deploy new server version (from Docker Templates):
 
 ## Building
 
-Make sure you have sphinx, sphinx-autobuild, recommonmark (for markdown), and the RTDs theme 
+Make sure you have mkdocs installed
 
 ```bash
-$ pip install sphinx sphinx-autobuild recommonmark sphinx_rtd_theme
+$ pip install mkdocs
 ```
 
-Then, from root project root directory, build HTML with using the makefile:
+Then, from root project root directory, build HTML:
 
 ```bash
-$ make html -C docs/
+$ mkdocs build
 ```
 
 ## Writing
@@ -76,10 +76,10 @@ $ make html -C docs/
 When writing the docs, it is often helpful to autogen the HTML after every change:
 
 ```
-$ sphinx-autobuild docs/ docs/_build/html
+$ mkdocs serve --livereload
 ```
 
 If things are not updating and you think something isn't right, clean the docs:
 ```bash
-$ make clean -C docs/
+$ mkdocs build -c
 ```
