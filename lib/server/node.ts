@@ -7,14 +7,23 @@ import {WebhookRequest} from "../core/webhook-request";
 export class Node {
     private activeRequest: WebhookRequest;
     private sourceSocket: Socket;
+    private onReplied: () => void = null;
 
     constructor(public id: string, public socketHandler: SocketHandler) {}
 
     public forward(sourceSocket: Socket, request: WebhookRequest) {
-        console.log("NODE " + this.id + " Forwarding");
-        this.socketHandler.send(request.toTCP());
-        this.activeRequest = request;
-        this.sourceSocket = sourceSocket;
+        let self = this;
+        // If already handling a request, wait for a reply
+        if (this.handlingRequest()) {
+            this.onReplied = function () {
+                self.forward(sourceSocket, request);
+            };
+        } else {
+            console.log("NODE " + this.id + " Forwarding");
+            this.socketHandler.send(request.toTCP());
+            this.activeRequest = request;
+            this.sourceSocket = sourceSocket;
+        }
     }
 
     public handlingRequest(): boolean {
@@ -28,6 +37,9 @@ export class Node {
             // Reset the state of the request handling after passing along the reply
             self.sourceSocket = null;
             self.activeRequest = null;
+            if (self.onReplied !== null) {
+                self.onReplied();
+            }
         });
     }
 }
