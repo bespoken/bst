@@ -12,10 +12,13 @@ export class Node {
     constructor(public id: string, public socketHandler: SocketHandler) {}
 
     public forward(sourceSocket: Socket, request: WebhookRequest) {
+        console.log("NODE " + this.id + " Forwarding called");
         let self = this;
         // If already handling a request, wait for a reply
         if (this.handlingRequest()) {
+            console.log("NODE " + this.id + " Waiting");
             this.onReplied = function () {
+                self.onReplied = null;
                 self.forward(sourceSocket, request);
             };
         } else {
