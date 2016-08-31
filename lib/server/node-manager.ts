@@ -31,7 +31,7 @@ export class NodeManager {
         this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
             let node: Node = null;
-            let socketHandler = new SocketHandler(socket, function(message: string) {
+            let socketHandler = new SocketHandler(socket, function(message: string, messageID?: number) {
                 // We do special handling when we first connect
                 if (initialConnection) {
                     let connectData = JSON.parse(message);
@@ -49,7 +49,7 @@ export class NodeManager {
 
                 } else if (node.handlingRequest()) {
                     // Handle the case where the data received is a reply from the node to data sent to it
-                    node.onReply(message);
+                    node.onReply(message, messageID);
                 }
             });
 
@@ -84,6 +84,7 @@ export class NodeManager {
         // Reply with the same message on a Keep Alive
         node.socketHandler.send(Global.KeepAliveMessage);
     }
+
     /**
      * Calling stop tells the server to stop listening
      * However, connections are not closed until all sockets disconnect, so loop through sockets and force a disconnect
