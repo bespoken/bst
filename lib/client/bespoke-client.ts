@@ -8,6 +8,7 @@ import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
 import {KeepAlive} from "./keep-alive";
+import {StringUtil} from "../core/string-util";
 
 const Logger = "BST-CLIENT";
 
@@ -56,11 +57,21 @@ export class BespokeClient {
 
         this.onWebhookReceived = function(request: WebhookRequest) {
             let self = this;
-            LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
+            LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
+            // Print out the contents of the request body to the console
+            console.log(StringUtil.prettyPrintJSON(request.body));
 
             let tcpClient = new TCPClient(request.id() + "");
             tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
+                LoggingHelper.info(Logger, "ResponseReceived: " + request.toString() + " ID: " + request.id());
+
                 if (data != null) {
+                    // Grab the body of the response payload
+                    let responseBodyDelimiter = data.indexOf("\r\n\r\n");
+                    if (responseBodyDelimiter !== -1) {
+                        console.log(StringUtil.prettyPrintJSON(data.substring(responseBodyDelimiter)));
+                    }
+
                     self.socketHandler.send(data, request.id());
                 } else if (error !== null && error !== undefined) {
                     if (error === NetworkErrorType.CONNECTION_REFUSED) {

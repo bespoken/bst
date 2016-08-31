@@ -14,6 +14,15 @@ export class StringUtil {
         return s;
     }
 
+    public static prettyPrintJSON(jsonString: string): string {
+        try {
+            return JSON.stringify(JSON.parse(jsonString), null, 2);
+        } catch (e) {
+            // Just return the input if there are any errors
+            return jsonString;
+        }
+    }
+
     /**
      * Pads a string on the right - truncates if it is longer than length
      * @param s

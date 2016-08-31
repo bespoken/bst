@@ -2,7 +2,7 @@
 import * as querystring from "querystring";
 
 export class HTTPBuffer {
-    public headers:{ [id: string] : string };
+    public headers: { [id: string]: string } = null;
     public queryParameters: {[id: string]: string};
     public method: string;
     public rawContents: Buffer;
@@ -16,10 +16,10 @@ export class HTTPBuffer {
             this.headers = {};
             let contentsString: string = this.rawContents.toString();
             let endIndex = contentsString.indexOf("\r\n\r\n");
-            if (endIndex != -1) {
+            if (endIndex !== -1) {
                 this.parseHeaders(contentsString.substr(0, endIndex));
 
-                if (endIndex+4 < contentsString.length) {
+                if (endIndex + 4 < contentsString.length) {
                     let bodyPart: string = contentsString.substr((endIndex + 4));
                     this.appendBody(Buffer.from(bodyPart));
                 }
@@ -38,7 +38,7 @@ export class HTTPBuffer {
     public complete (): boolean {
         let complete = false;
         if (this.headers != null) {
-            //Means it is chunked
+            // Means it is chunked
             if (this.headers["Content-Length"] == null) {
 
             } else {
@@ -57,7 +57,7 @@ export class HTTPBuffer {
     }
 
     private parseQueryString() {
-        if (this.uri.indexOf('?') >= 0) {
+        if (this.uri.indexOf("?") >= 0) {
             this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ''));
         }
     }
