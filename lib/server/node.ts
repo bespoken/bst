@@ -5,8 +5,8 @@ import {SocketHandler} from "../core/socket-handler";
 import {WebhookRequest} from "../core/webhook-request";
 
 export class Node {
-    private activeRequest: WebhookRequest;
-    private sourceSocket: Socket;
+    private activeRequest: WebhookRequest = null;
+    private sourceSocket: Socket = null;
     private onReplied: () => void = null;
 
     constructor(public id: string, public socketHandler: SocketHandler) {}
