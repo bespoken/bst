@@ -1,6 +1,3 @@
-Getting Started 
-=========
-
 ## Installation
 
 Make sure you have NPM and node installed:

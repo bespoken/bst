@@ -1,13 +1,13 @@
-# Nodejs Lambda
+
 This tutorial shows you how to get started developing for Alexa Skills Kit using a Nodejs Lambda.  
 
 ## Prerequisites
 
 * bespoken tools (bst)
-  * `$ npm install bespoken-tools -g`
-  * [Installation Instructions](/en/latest/getting_started.html)
+    * `$ npm install bespoken-tools -g`
+    * [Installation Instructions](/getting_started/)
 * Amazon Developer Account
-  * [Amazon Developer](https://developer.amazon.com/alexa)
+    * [Amazon Developer](https://developer.amazon.com/alexa)
 
 ## Getting Started
 
@@ -31,7 +31,6 @@ This will start the helloWorld lambda:
 ```
 $ bst proxy lambda samples/helloWorld/src/index.js
 ```
-
 
 ## Configure your Skill
 
@@ -61,7 +60,7 @@ Alternatively, you can create this URL via the `proxy urlgen` command.
 
 Copy and paste this URL as your endpoint:
 
-![Alexa Skill Configuration](/_static/images/bst-nodejs-lambda-configuration.png "Alexa Skill Configuration")
+![Alexa Skill Configuration](/assets/images/bst-nodejs-lambda-configuration.png "Alexa Skill Configuration")
 
 Also make sure you select "HTTPS" and account linking to "NO".
 
@@ -74,7 +73,7 @@ Go to the service simulator, and type: "hello" and hit "Ask \<Your Skill Name>".
 
 You should get a valid JSON in reply:
 
-![Test your Skill](/_static/images/bst-nodejs-lambda-test.png "Test your Skill")
+![Test your Skill](/assets/images/bst-nodejs-lambda-test.png "Test your Skill")
 
 ## Next Steps
 You can now start adding functionality to your skill. To learn more about coding Alexa Skills, see the official [documentation](https://github.com/amzn/alexa-skills-kit-js)
