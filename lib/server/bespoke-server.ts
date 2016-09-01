@@ -1,7 +1,6 @@
 import {NodeManager} from "./node-manager";
 import {WebhookManager} from "./webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
-import {Socket} from "net";
 import {HTTPHelper} from "../core/http-helper";
 import {Global} from "../core/global";
 

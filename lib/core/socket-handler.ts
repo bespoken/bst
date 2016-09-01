@@ -1,7 +1,6 @@
 import {Global} from "./global";
 import {Socket} from "net";
 import {StringUtil} from "./string-util";
-import {BufferUtil} from "./buffer-util";
 import {LoggingHelper} from "./logging-helper";
 
 import * as net from "net";

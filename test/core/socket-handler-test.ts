@@ -7,13 +7,11 @@ import * as net from "net";
 import {SocketHandler} from "../../lib/core/socket-handler";
 import {Socket} from "net";
 import {Global} from "../../lib/core/global";
-import {Server} from "net";
 import {BufferUtil} from "../../lib/core/buffer-util";
 
 describe("SocketHandlerTest", function() {
-    let server: Server = null;
     beforeEach(function () {
-        this.server = net.createServer(function(socket: Socket) {
+        this.server = net.createServer(function() {
 
         }).listen(10000);
     });
@@ -117,12 +115,12 @@ describe("SocketHandlerTest", function() {
         it("Sends callback on failure to connect", function (done) {
             let client = new net.Socket();
 
-            let socketHandler = SocketHandler.connect("localhost", 10001,
+            SocketHandler.connect("localhost", 10001,
                 function (error: any) {
                     assert(error);
                     done();
                 },
-                function (message: string) {
+                function () {
 
                 }
             );
@@ -139,9 +137,7 @@ describe("SocketHandlerTest", function() {
                     assert(error);
                     done();
                 },
-                function (message: string) {
-
-                }
+                function () {}
             );
 
             socketHandler.onCloseCallback = function() {
@@ -156,7 +152,7 @@ describe("SocketHandlerTest", function() {
         it("No error when no callback registered on close", function (done) {
             let client = new net.Socket();
             client.connect(10000, "localhost", function () {
-                let socketHandler = new SocketHandler(client, function (message: string) {
+                new SocketHandler(client, function (message: string) {
 
                 });
 

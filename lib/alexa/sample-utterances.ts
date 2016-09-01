@@ -1,7 +1,5 @@
 import {FileUtil} from "../core/file-util";
-import {LoggingHelper} from "../core/logging-helper";
 
-const Logger = "SAMPLES";
 export class SampleUtterances {
     public samples: {[id: string]: Array<string>} = {};
     public constructor() {
@@ -54,11 +52,7 @@ export class SampleUtterances {
         let phrase = new Phrase(phraseString);
 
         let matchedIntent: UtteredIntent = null;
-        for (let intent in this.samples) {
-            if (!this.samples.hasOwnProperty(intent)) {
-                continue;
-            }
-
+        for (let intent in Object.keys(this.samples)) {
             let samples = this.samples[intent];
             for (let sample of samples) {
                 if (phrase.matchesUtterance(sample)) {
