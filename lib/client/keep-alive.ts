@@ -1,5 +1,3 @@
-// The socket seems to timeout after 5 minutes of inactivity, so this is a safe period
-import {LoggingHelper} from "../core/logging-helper";
 import {SocketHandler} from "../core/socket-handler";
 import {Global} from "../core/global";
 

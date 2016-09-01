@@ -1,13 +1,10 @@
 /// <reference path="../../typings/index.d.ts" />
 
-import {Tool} from "../core/tool";
-import ICommand = commander.ICommand;
 import {BespokeClient} from "./bespoke-client";
 import {LambdaRunner} from "./lambda-runner";
 import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
-import {LoggingHelper} from "../core/logging-helper";
 
 export enum ProxyType {
     HTTP,

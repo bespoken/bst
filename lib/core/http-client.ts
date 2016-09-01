@@ -1,6 +1,5 @@
 /// <reference path="../../typings/index.d.ts" />
 
-import * as querystring from "querystring";
 import * as http from "http";
 import {BufferUtil} from "./buffer-util";
 

@@ -128,8 +128,6 @@ export class LambdaContext {
     }
 
     private done(success: boolean, body: any) {
-        let self = this;
-
         let statusCode: number = 200;
         let contentType: string = "application/json";
         let bodyString: string = null;

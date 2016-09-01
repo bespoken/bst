@@ -1,5 +1,6 @@
 
 import * as querystring from "querystring";
+import {BufferUtil} from "./buffer-util";
 
 export class HTTPBuffer {
     public headers: { [id: string]: string } = null;
@@ -43,7 +44,7 @@ export class HTTPBuffer {
 
             } else {
                 let length = parseInt(this.headers["Content-Length"]);
-                complete = this.body.length == length;
+                complete = this.body.length === length;
             }
         }
         return complete;
@@ -51,7 +52,7 @@ export class HTTPBuffer {
 
     private appendBody(bodyPart: Buffer) {
         if (this.body == null) {
-            this.body = Buffer.alloc(0);
+            this.body = BufferUtil.fromString("");
         }
         this.body = Buffer.concat([this.body, bodyPart]);
     }
@@ -69,13 +70,54 @@ export class HTTPBuffer {
         this.method = requestLineParts[0];
         this.uri = requestLineParts[1];
 
-        //Handle the headers
-        for (let i=1;i<lines.length;i++) {
+        // Handle the headers
+        for (let i = 1; i < lines.length; i++) {
             let headerLine: string = lines[i];
             let headerParts: Array<string> = headerLine.split(":");
             let key = headerParts[0];
             this.headers[key] = headerParts[1].trim();
             //console.log("Header: " + key + "=" + this.headers[key]);
         }
+    }
+}
+
+export class HTTPChunk {
+    public length: number;
+    public data: Buffer;
+
+    public static parse (body: Buffer): Array<HTTPChunk> {
+        // Find /r/n - the delimiter for the chunk length
+        let index = scan(body, [13, 10]);
+        return null;
+    }
+
+    // Find the specified value within the buffer
+    public static scan(body: Buffer, sequence: Array<number>): number {
+        let index = -1;
+        for (let i = 0; i < body.length; i++) {
+            let val = body[i];
+            console.log(i + ": " + val);
+            if (val === sequence[0]) {
+                let match = true;
+                for (let ii = i + 1; ii < sequence.length; ii++) {
+                    if (ii >= body.length) {
+                        match = false;
+                        break;
+                    }
+
+                    val = body[ii];
+                    if (val !== sequence[ii]) {
+                        match = false;
+                        break;
+                    }
+                }
+
+                if (match) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return index;
     }
 }

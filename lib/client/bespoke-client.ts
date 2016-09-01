@@ -1,5 +1,3 @@
-import * as net from "net";
-import {Socket} from "net";
 import {Global} from "../core/global";
 import {SocketHandler} from "../core/socket-handler";
 import {WebhookReceivedCallback} from "../server/webhook-manager";

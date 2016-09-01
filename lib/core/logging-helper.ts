@@ -1,6 +1,5 @@
 /// <reference path="../../typings/index.d.ts" />
 
-import {Global} from "./global";
 import * as winston from "winston";
 import {StringUtil} from "./string-util";
 import {LoggerInstance} from "winston";
