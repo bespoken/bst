@@ -12,12 +12,12 @@ let Logger = "SOCKET";
  * Manages the low-level socket communications
  */
 export class SocketHandler {
-    public message: string = null;
+    public buffer: string = "";
     public onDataCallback: (data: Buffer) => void;
     public onCloseCallback: () => void = null;
     private connected: boolean = true;
 
-    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string) => void): SocketHandler {
+    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string, messageID?: number) => void): SocketHandler {
         let socket = new net.Socket();
         let handler = new SocketHandler(socket, onMessage);
         handler.connected = false;
@@ -35,9 +35,8 @@ export class SocketHandler {
         return handler;
     }
 
-    public constructor (public socket: Socket, private onMessage: (message: string) => void) {
+    public constructor (public socket: Socket, private onMessage: (message: string, sequenceNumber?: number) => void) {
         let self = this;
-        this.resetBuffer();
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
@@ -73,34 +72,37 @@ export class SocketHandler {
      * @param dataString
      */
     private handleData(dataString: string): void {
-        let delimiterIndex = dataString.indexOf(Global.MessageDelimiter);
-        if (delimiterIndex === -1) {
-            this.message += dataString;
-        } else {
-            this.message += dataString.substr(0, delimiterIndex);
-            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(this.message));
-
-            this.onMessage(this.message);
-            this.resetBuffer();
-
-            // If we have received more than one packet at a time, handle it recursively
-            if (dataString.length > (dataString.indexOf(Global.MessageDelimiter) + Global.MessageDelimiter.length)) {
-                dataString = dataString.substr(dataString.indexOf(Global.MessageDelimiter) + Global.MessageDelimiter.length);
-                this.handleData(dataString);
-            }
+        if (dataString !== null) {
+            this.buffer += dataString;
         }
 
+        let delimiterIndex = this.buffer.indexOf(Global.MessageDelimiter);
+        if (delimiterIndex > -1) {
+            let message = this.buffer.substring(0, delimiterIndex - Global.MessageIDLength);
+            // Grab the message ID - it precedes the delimiter
+            let messageIDString = this.buffer.substring(delimiterIndex - Global.MessageIDLength, delimiterIndex);
+            let messageID: number = parseInt(messageIDString);
+            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
+
+            this.onMessage(message, messageID);
+            this.buffer = this.buffer.slice(delimiterIndex + Global.MessageDelimiter.length);
+
+            // If we have received more than one packet at a time, handle it recursively
+            if (this.buffer.indexOf(Global.MessageDelimiter) !== -1) {
+                this.handleData(null);
+            }
+        }
     }
 
-    private resetBuffer(): void {
-        this.message = "";
-    }
+    public send(message: string, messageID?: number) {
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message));
 
-    public send(message: string) {
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " " + StringUtil.prettyPrint(message));
-
+        // If no message ID is specified, just grab a timestamp
+        if (messageID === undefined || messageID === null) {
+            messageID = new Date().getTime();
+        }
         // Use TOKEN as message delimiter
-        message = message + Global.MessageDelimiter;
+        message = message + messageID + Global.MessageDelimiter;
         this.socket.write(message, null);
     }
 
