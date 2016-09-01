@@ -147,9 +147,7 @@ export class LambdaContext {
         });
 
         if (body) {
-            this.response.end(new Buffer(bodyString), function  () {
-                console.log("Done Written");
-            });
+            this.response.end(new Buffer(bodyString));
         } else {
             this.response.end();
         }
