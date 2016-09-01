@@ -56,15 +56,53 @@ describe("BespokeServerTest", function() {
 
         it("Connects Multiple Lambdas", function(done) {
             this.timeout(2000);
-            // Start the server
-            let server = new BespokeServer(8010, 9010);
-            server.start();
 
+            // Start all the stuff
+            let server = new BespokeServer(8010, 9010);
             let lambdaRunner = new LambdaRunner("./test/resources/DelayedLambda.js", 10000);
-            lambdaRunner.start();
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
+
+            server.start(function () {
+                lambdaRunner.start(function () {
+                    bespokeClient.connect(function () {
+                        onStarted();
+                    });
+                });
+            });
+
+            // The meat of the test - after everything has started
+            let onStarted = function () {
+                let webhookCaller = new HTTPClient();
+                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                    console.log("data: " + data.toString());
+                    let json = JSON.parse(data.toString());
+                    assert(json.success);
+                    onCompleted();
+                });
+
+                // Stagger the requests slightly
+                setTimeout(function () {
+                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                        console.log("data: " + data.toString());
+                        let json = JSON.parse(data.toString());
+                        assert(json.success);
+                        onCompleted();
+                    });
+                }, 10);
+
+
+                setTimeout(function () {
+                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                        console.log("data: " + data.toString());
+                        let json = JSON.parse(data.toString());
+                        assert(json.success);
+                        onCompleted();
+                    });
+                }, 20);
+            }
 
             let count = 0;
-            let completed = function () {
+            let onCompleted = function () {
                 count++;
                 if (count === 3) {
                     lambdaRunner.stop(function () {
@@ -76,38 +114,6 @@ describe("BespokeServerTest", function() {
                     });
                 }
             };
-
-            // Connect a client
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
-            bespokeClient.connect(function () {
-                let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                    console.log("data: " + data.toString());
-                    let json = JSON.parse(data.toString());
-                    assert(json.success);
-                    completed();
-                });
-
-                // Stagger the requests slightly
-                setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        console.log("data: " + data.toString());
-                        let json = JSON.parse(data.toString());
-                        assert(json.success);
-                        completed();
-                    });
-                }, 5);
-
-
-                setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        console.log("data: " + data.toString());
-                        let json = JSON.parse(data.toString());
-                        assert(json.success);
-                        completed();
-                    });
-                }, 10);
-            });
         });
 
         it("Connects NoOp Lambda", function(done) {
