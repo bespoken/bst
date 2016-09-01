@@ -1,17 +1,16 @@
-# Local Java Server
 This tutorial shows you how to get started developing for Alexa with Java and Maven.  
 
 ## Prerequisites
 
 * bespoken tools (bst)
-  * `$ npm install bespoken-tools -g`
-  * [Installation Instructions](/getting_started.html)
+    * `$ npm install bespoken-tools -g`
+    * [Installation Instructions](/getting_started)
 * maven
-  * OSX with homebrew: `$ brew install maven`
-  * [Installation Instructions](https://maven.apache.org/install.html)
+    * OSX with homebrew: `$ brew install maven`
+    * [Installation Instructions](https://maven.apache.org/install.html)
 * Amazon Developer Account
-  * [Amazon Developer](https://developer.amazon.com/alexa)
-  
+    * [Amazon Developer](https://developer.amazon.com/alexa)
+
 ## Getting Started
 
 Clone the bst project:
@@ -53,7 +52,7 @@ From the [Alexa Skills Kit list](https://developer.amazon.com/edw/home.html#/ski
 __Choose "Add a New Skill"__
 
 __Fill out the Information tab__
-* Give your skill a name and invocation phrase, 'bst java sample' and 'greeter' for example 
+* Give your skill a name and invocation phrase, 'bst java sample' and 'greeter' for example
 
 __Fill out the Interaction Model__
 * Copy and paste the Intent Schema from [here](https://raw.githubusercontent.com/bespoken/bst/master/samples/java/src/main/java/helloworld/speechAssets/IntentSchema.json)
@@ -82,7 +81,7 @@ https://proxy.bespoken.tools/hello?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
 
 Copy and paste this URL as your endpoint:
 
-![Alexa Skill Configuration](/_static/images/bst-java-server-tutorial-configuration.png "Alexa Skill Configuration")
+![Alexa Skill Configuration](/assets/images/bst-java-server-tutorial-configuration.png "Alexa Skill Configuration")
 
 Also make sure you select "HTTPS" and account linking to "NO".
 
@@ -90,12 +89,12 @@ __Configure SSL__
 
 On the SSL Certificate page, select the middle radio button,"My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
 
-## Test 
+## Test
 Go to the service simulator, and type: "hello" and hit "Ask \<Your Skill Name>".
 
 You should get a valid JSON in reply:
 
-![Test your Skill](/_static/images/bst-java-server-tutorial-test.png "Test your Skill")
+![Test your Skill](/assets/images/bst-java-server-tutorial-test.png "Test your Skill")
 
 ## Next Steps
 You can now start adding functionality to your skill. To learn more about coding Alexa Skills, see the official [documentation](https://github.com/amzn/alexa-skills-kit-java)

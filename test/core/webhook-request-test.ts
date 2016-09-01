@@ -8,7 +8,7 @@ import * as fs from "fs";
 describe("WebhookRequest", function() {
     describe("SimplePost", function() {
         it("All Data At Once", function(done) {
-            let request = new WebhookRequest();
+            let request = new WebhookRequest(null);
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
             let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
@@ -24,7 +24,7 @@ describe("WebhookRequest", function() {
 
     describe("TwoPartPost", function() {
         it("Data Split In Two", function(done) {
-            let request = new WebhookRequest();
+            let request = new WebhookRequest(null);
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
             let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
@@ -53,7 +53,7 @@ describe("WebhookRequest", function() {
             let bufferString: string = buffer.toString();
             bufferString = bufferString.replace("node-id", "dummy");
 
-            let request = new WebhookRequest();
+            let request = new WebhookRequest(null);
             request.append(BufferUtil.fromString(bufferString));
             assert.equal(request.nodeID(), null);
             done();
@@ -62,7 +62,7 @@ describe("WebhookRequest", function() {
         it("Returns value when specified", function(done) {
             let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
 
-            let request = new WebhookRequest();
+            let request = new WebhookRequest(null);
             request.append(buffer);
             assert.equal(request.nodeID(), "JPK");
             done();

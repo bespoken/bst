@@ -1,5 +1,3 @@
-bst proxy
-=========
 
 ## Overview
 The proxy command allows you to interact with a local service running on your machine via an Alexa device.  Using it, you can make changes to code running on your machine and immediately make them available via an Echo or the Alexa simulator.
@@ -7,7 +5,7 @@ The proxy command allows you to interact with a local service running on your ma
 The proxy tool works either directly with Node/JavaScript lambda code - **proxy lambda**.  Or it can proxy any http service using **proxy http**.  
 
 The two commands are described below, as well as the urlgen helper command.
- 
+
 ## bst proxy lambda
 
 **Overview**  
@@ -32,7 +30,7 @@ Example:
 $ bst proxy lambda index.js
 ```
 
-You can learn more here at our [Node.js Tutorial](/tutorials/tutorial_lambda_nodejs.html):
+You can learn more here at our [Node.js Tutorial](/tutorials/tutorial_lambda_nodejs):
 
 ## bst proxy http
 
@@ -54,7 +52,7 @@ Example:
 $ bst proxy http 9999
 ```
 
-You can learn more here at our [Java Tutorial](/tutorials/tutorial_local_server_java.html)
+You can learn more here at our [Java Tutorial](/tutorials/tutorial_local_server_java)
 
 ## bst proxy urlgen
 
@@ -74,7 +72,7 @@ _Note the Node ID passed in the query string.  This is a UUID that ties off your
 
 The rest of the URL path and query string should be unchanged.
 
-For more information on configuring your Skill see [Configuring your Skill for bst proxy](/alexa_skills_kit_configuration.html).
+For more information on configuring your Skill see [Configuring your Skill for bst proxy](/alexa_skills_kit_configuration).
 
 **Usage**
 

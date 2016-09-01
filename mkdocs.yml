@@ -1,0 +1,15 @@
+site_name: bespoken.tools
+repo_url: https://github.com/bespoken/bst
+site_dir: 'docs/site'
+strict: true
+pages:
+- Home: index.md
+- Getting Started: getting_started.md
+- Alexa Skill Configuration: alexa_skills_kit_configuration.md
+- Commands:
+    - bst proxy: commands/proxy.md
+    - bst speak: commands/speak.md
+- Tutorials:
+    - Nodejs Lambda: tutorials/tutorial_lambda_nodejs.md
+    - Local Java Server: tutorials/tutorial_local_server_java.md
+theme: readthedocs

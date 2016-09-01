@@ -28,14 +28,14 @@ describe("BespokeServerTest", function() {
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 9011);
             bespokeClient.connect();
 
-            bespokeClient.onWebhookReceived = function(socket: Socket, webhookRequest: WebhookRequest) {
+            bespokeClient.onWebhookReceived = function(webhookRequest: WebhookRequest) {
                 console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
 
                 // Dummy response from a non-existent HTTP service
                 let response = "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\n";
                 response += JSON.stringify({"data": "test"});
-                bespokeClient.send(response);
+                (<any> bespokeClient).socketHandler.send(response, webhookRequest.id());
             };
 
             let webhookCaller = new HTTPClient();
@@ -64,19 +64,85 @@ describe("BespokeServerTest", function() {
             let lambdaRunner = new LambdaRunner("./test/resources/DelayedLambda.js", 10000);
             lambdaRunner.start();
 
+            let count = 0;
+            let completed = function () {
+                count++;
+                if (count === 3) {
+                    lambdaRunner.stop(function () {
+                        bespokeClient.shutdown(function () {
+                            server.stop(function () {
+                                done();
+                            });
+                        });
+                    });
+                }
+            };
+
             let webhookCaller = new HTTPClient();
             webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
                 console.log("data: " + data.toString());
                 let json = JSON.parse(data.toString());
                 assert(json.success);
-                lambdaRunner.stop(function () {
+                completed();
+            });
+
+            // Stagger the requests slightly
+            setTimeout(function () {
+                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                    console.log("data: " + data.toString());
+                    let json = JSON.parse(data.toString());
+                    assert(json.success);
+                    completed();
+                });
+            }, 5);
+
+
+            setTimeout(function () {
+                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                    console.log("data: " + data.toString());
+                    let json = JSON.parse(data.toString());
+                    assert(json.success);
+                    completed();
+                });
+            }, 10);
+        });
+
+        it("Connects NoOp Lambda", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8010, 9010);
+            server.start();
+
+            // Connect a client
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
+            bespokeClient.connect();
+
+            let badLambda = new LambdaRunner("./test/resources/NoOpLambda.js", 10000, true);
+            badLambda.start();
+
+            let count = 0;
+            setTimeout(function () {
+                assert.equal(count, 1);
+                badLambda.stop(function () {
                     bespokeClient.shutdown(function () {
                         server.stop(function () {
                             done();
                         });
                     });
                 });
+            }, 100);
+
+            let webhookCaller = new HTTPClient();
+            webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": true}", function (data: Buffer, status: number, success: boolean) {
+                count++;
+                assert.equal(success, false);
             });
+
+            setTimeout(function () {
+                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": false}", function (data: Buffer) {
+                    count++;
+                });
+            }, 10);
         });
 
         it("Handles Error Connecting To Target Server", function(done) {
@@ -105,15 +171,10 @@ describe("BespokeServerTest", function() {
             this.timeout(2000);
             // Start the server
             let server = new BespokeServer(8000, 9000);
-            const options = {
-                body: {
-                    foo: "bar"
-                },
-                json: true
-            };
+
             server.start(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test", function (body: any, statusCode: number, success: boolean) {
+                webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test", function (body: any, statusCode: number) {
                     assert.equal(body, "Node is not active: JPK");
                     assert.equal(statusCode, 404);
 
@@ -128,15 +189,10 @@ describe("BespokeServerTest", function() {
             this.timeout(2000);
             // Start the server
             let server = new BespokeServer(8000, 9000);
-            const options = {
-                body: {
-                    foo: "bar"
-                },
-                json: true
-            };
+
             server.start(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8000, "/test", "Test", function (body: any, statusCode: number, success: boolean) {
+                webhookCaller.post("localhost", 8000, "/test", "Test", function (body: any, statusCode: number) {
                     assert.equal(body, "No node specified. Must be included with the querystring as node-id.");
                     assert.equal(statusCode, 400);
 

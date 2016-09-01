@@ -1,5 +1,3 @@
-bst speak
-=========
 
 ## Overview
 
@@ -33,11 +31,11 @@ By default, the system will:
 
 If no service is currently running via bst proxy, and HTTP endpoint can be specified with the `--url` option:
 ```
-$ bst speak Hello World --url https://my.skill.com/skill/path 
+$ bst speak Hello World --url https://my.skill.com/skill/path
 ```
 
 ## Speech Asset Format and Location
-If your speech assets  (Intent Model and Sample Utterances) are not stored under ./speechAssets, you can use an option to specify another location. 
+If your speech assets  (Intent Model and Sample Utterances) are not stored under ./speechAssets, you can use an option to specify another location.
 
 By default, we look for:
 
@@ -46,12 +44,12 @@ By default, we look for:
 
 Example:
 ```
-$ bst speak https://my.skill.com/skill/path Hello World -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt 
+$ bst speak https://my.skill.com/skill/path Hello World -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt
 ```
 
 The format of these files is the same as they are entered in the Alexa Skill configuration.  
- 
-The Intent Schema is a JSON file. Samples utterances is a space-delimited text file. 
+
+The Intent Schema is a JSON file. Samples utterances is a space-delimited text file.
 
 An example of these files can be found [here](https://github.com/amzn/alexa-skills-kit-js/tree/master/samples/helloWorld/speechAssets).
 
