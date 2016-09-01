@@ -99,7 +99,7 @@ describe("BespokeServerTest", function() {
                         onCompleted();
                     });
                 }, 20);
-            }
+            };
 
             let count = 0;
             let onCompleted = function () {
