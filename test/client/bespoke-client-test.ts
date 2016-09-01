@@ -70,7 +70,7 @@ describe("BespokeClient", function() {
     });
 
     describe("KeepAlive failed", function() {
-        it("Gets lots of keep ", function(done) {
+        it("Fails", function(done) {
             let nodeManager = new NodeManager(9000);
             let count = 0;
             (<any> NodeManager).onKeepAliveReceived = function (node: Node) {

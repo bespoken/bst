@@ -146,6 +146,7 @@ describe("SocketHandlerTest", function() {
 
             socketHandler.onCloseCallback = function() {
                 console.log("Closed!");
+                socketHandler.send("Can't write to a closed socket!!!");
                 done();
             };
 
