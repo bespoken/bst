@@ -142,7 +142,6 @@ describe("SocketHandlerTest", function() {
 
             socketHandler.onCloseCallback = function() {
                 console.log("Closed!");
-                socketHandler.send("Can't write to a closed socket!!!");
                 done();
             };
 
@@ -157,6 +156,21 @@ describe("SocketHandlerTest", function() {
                 });
 
                 client.end();
+
+                setTimeout(function () {
+                    done();
+                }, 200);
+            });
+        });
+        it("No error on send after disconnect", function (done) {
+            let client = new net.Socket();
+            client.connect(10000, "localhost", function () {
+                let handler = new SocketHandler(client, function (message: string) {
+
+                });
+
+                handler.disconnect();
+                handler.send("No error on this");
 
                 setTimeout(function () {
                     done();

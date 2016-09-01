@@ -25,10 +25,8 @@ export class SampleUtterances {
 
     public static fromJSON(sampleUtterancesJSON: any): SampleUtterances {
         let sampleUtterances = new SampleUtterances();
-        for (let intent in sampleUtterancesJSON) {
-            if (sampleUtterancesJSON.hasOwnProperty(intent)) {
-                sampleUtterances.samples[intent] = sampleUtterancesJSON[intent];
-            }
+        for (let intent of Object.keys(sampleUtterancesJSON)) {
+            sampleUtterances.samples[intent] = sampleUtterancesJSON[intent];
         }
         return sampleUtterances;
     }
@@ -52,7 +50,7 @@ export class SampleUtterances {
         let phrase = new Phrase(phraseString);
 
         let matchedIntent: UtteredIntent = null;
-        for (let intent in Object.keys(this.samples)) {
+        for (let intent of Object.keys(this.samples)) {
             let samples = this.samples[intent];
             for (let sample of samples) {
                 if (phrase.matchesUtterance(sample)) {
