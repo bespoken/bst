@@ -3,7 +3,6 @@
 // Startup script for running BST
 import {BespokeServer} from "../lib/server/bespoke-server";
 import * as program from "commander";
-import {WebhookRequest} from "../lib/core/webhook-request";
 import {Global} from "../lib/core/global";
 
 program.version(Global.version());

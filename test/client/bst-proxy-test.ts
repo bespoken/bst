@@ -2,7 +2,6 @@
 
 import * as assert from "assert";
 import {Global} from "../../lib/core/global";
-import {HTTPClient} from "../../lib/core/http-client";
 import {BespokeServer} from "../../lib/server/bespoke-server";
 import {BSTProxy} from "../../lib/client/bst-proxy";
 

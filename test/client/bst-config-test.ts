@@ -72,7 +72,7 @@ describe("BSTProcess", function() {
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             // We stub is running because that is tricky to test
-            let mockProcess = sandbox.stub(BSTProcess, "isRunning", function (pid: string) {
+            sandbox.stub(BSTProcess, "isRunning", function (pid: string) {
                 assert.equal(pid, 9999);
                 return true;
             });
@@ -87,7 +87,7 @@ describe("BSTProcess", function() {
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             // We stub is running because that is tricky to test
-            let mockProcess = sandbox.stub(BSTProcess, "isRunning", function (pid: string) {
+            sandbox.stub(BSTProcess, "isRunning", function (pid: string) {
                 assert.equal(pid, 9999);
                 return false;
             });

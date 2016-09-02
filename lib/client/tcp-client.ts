@@ -7,7 +7,7 @@ import {LoggingHelper} from "../core/logging-helper";
 let Logger = "TCP-CLIENT";
 
 export interface TCPClientCallback {
-    (data: string, errorType: NetworkErrorType, errorMessage: string): void;
+    (data: Buffer, errorType: NetworkErrorType, errorMessage: string): void;
 }
 
 export class TCPClient {
@@ -36,7 +36,7 @@ export class TCPClient {
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
         client.on("data", function(data: Buffer) {
-            callback(data.toString(), null, null);
+            callback(data, null, null);
         });
 
         // Add a 'close' event handler for the client socket

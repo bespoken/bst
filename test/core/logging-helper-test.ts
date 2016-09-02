@@ -4,7 +4,6 @@ import * as assert from "assert";
 import * as sinon from "sinon";
 import * as winston from "winston";
 
-import {Global} from "../../lib/core/global";
 import {LoggingHelper} from "../../lib/core/logging-helper";
 import SinonSandbox = Sinon.SinonSandbox;
 
@@ -34,7 +33,7 @@ describe("LoggingHelper", function() {
 
                 if (log.indexOf("Verbosity2") !== -1) {
                     LoggingHelper.setVerbose(false);
-                    winston.debug("Verbosity3");
+                    winston.log("verbose", "Verbosity3");
                     winston.info("Verbosity4");
                 }
 
@@ -50,7 +49,7 @@ describe("LoggingHelper", function() {
 
             winston.debug("Verbosity1", function () {
                 LoggingHelper.setVerbose(true);
-                winston.debug("Verbosity2");
+                winston.log("verbose", "Verbosity2");
             });
         });
     });

@@ -3,11 +3,7 @@
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as sinon from "sinon";
-import * as program from "commander";
-import {URLMangler} from "../../lib/client/url-mangler";
-import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
-import {exec} from "child_process";
 import SinonSandbox = Sinon.SinonSandbox;
 
 describe("bst", function() {
@@ -119,7 +115,6 @@ describe("bst", function() {
             process.argv = command("node bst.js test");
             setVersion("v4.0.0");
 
-            let errorCalls = 0;
             let mockProcess = sandbox.mock(process);
             mockProcess.expects("exit").once().withExactArgs(1);
             mockery.registerMock("../lib/core/logging-helper", {

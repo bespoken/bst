@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {LoggingHelper} from "../lib/core/logging-helper";
-import {BSTProxy} from "../lib/client/bst-proxy";
-import {BSTSpeak} from "../lib/client/bst-speak";
 
 Global.initializeCLI();
 

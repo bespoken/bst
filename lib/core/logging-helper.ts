@@ -6,14 +6,14 @@ import {LoggerInstance} from "winston";
 
 export class LoggingHelper {
     private static cli: boolean = false;
-    private static verbose: boolean = false;
+    private static verboseEnabled: boolean = false;
     private static logger: LoggerInstance = null;
 
     public static setVerbose(enableVerbose: boolean) {
-        LoggingHelper.verbose = enableVerbose;
+        LoggingHelper.verboseEnabled = enableVerbose;
 
-        if (LoggingHelper.verbose) {
-            (<any> LoggingHelper.logger.transports).console.level = "debug";
+        if (LoggingHelper.verboseEnabled) {
+            (<any> LoggingHelper.logger.transports).console.level = "verbose";
         } else {
             (<any> LoggingHelper.logger.transports).console.level = "info";
         }
@@ -21,6 +21,10 @@ export class LoggingHelper {
 
     public static debug (logger: string, message: string): void {
         LoggingHelper.log("debug", logger, message);
+    }
+
+    public static verbose (logger: string, message: string): void {
+        LoggingHelper.log("verbose", logger, message);
     }
 
     public static info (logger: string, message: string): void {
@@ -74,7 +78,11 @@ export class LoggingHelper {
     }
 
     private static cliFormatter(options: any): string {
-       return StringUtil.rpad(options.level.toUpperCase(), " ", 5) + " "
+        let level = options.level.toUpperCase();
+        if (level === "VERBOSE") {
+            level = "VERB";
+        }
+        return StringUtil.rpad(level, " ", 5) + " "
             + new Date().toISOString() + " "
             + (undefined !== options.message ? options.message : "")
             + (options.meta && Object.keys(options.meta).length ? "\n\t"

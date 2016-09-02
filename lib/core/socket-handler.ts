@@ -94,7 +94,7 @@ export class SocketHandler {
     }
 
     public send(message: string, messageID?: number) {
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message));
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message) + "END");
 
         // If no message ID is specified, just grab a timestamp
         if (messageID === undefined || messageID === null) {

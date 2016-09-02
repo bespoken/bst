@@ -2,13 +2,9 @@
 
 import * as assert from "assert";
 import * as mockery from "mockery";
-import * as program from "commander";
 import * as sinon from "sinon";
-import {URLMangler} from "../../lib/client/url-mangler";
-import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
-import {LoggingHelper} from "../../lib/core/logging-helper";
 
 describe("bst-proxy", function() {
     let sandbox: SinonSandbox = null;
@@ -78,7 +74,7 @@ describe("bst-proxy", function() {
             process.argv = command("node bst-proxy.js --verbose --bstHost localhost --bstPort 9000 http 9000");
 
             let verboseCalled = false;
-            let mock = sandbox.stub(console, "log", function (log: string) {
+            sandbox.stub(console, "log", function (log: string) {
                 if (log.indexOf("Enabling verbose logging") !== -1) {
                     verboseCalled = true;
                 }
@@ -151,7 +147,6 @@ describe("bst-proxy", function() {
                 return url;
             };
 
-            let capture: string = "";
             let count = 0;
             // Confirm the help prints out
             sandbox.stub(console, "log", function (data: Buffer) {

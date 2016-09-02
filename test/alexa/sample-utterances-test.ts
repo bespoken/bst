@@ -1,7 +1,6 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
-import {IntentSchema} from "../../lib/alexa/intent-schema";
 import {SampleUtterances} from "../../lib/alexa/sample-utterances";
 import {Phrase} from "../../lib/alexa/sample-utterances";
 

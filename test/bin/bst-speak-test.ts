@@ -2,10 +2,7 @@
 
 import * as assert from "assert";
 import * as mockery from "mockery";
-import * as program from "commander";
 import * as sinon from "sinon";
-import {URLMangler} from "../../lib/client/url-mangler";
-import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
@@ -58,7 +55,6 @@ describe("bst-speak", function() {
                 }
             });
 
-            let completed = false;
             sandbox.stub(console, "log", function(data: Buffer) {
                 if (data.indexOf("Response:") !== -1) {
                     done();
