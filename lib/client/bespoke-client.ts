@@ -1,6 +1,5 @@
 import {Global} from "../core/global";
 import {SocketHandler} from "../core/socket-handler";
-import {WebhookReceivedCallback} from "../server/webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
@@ -17,7 +16,6 @@ const Logger = "BST-CLIENT";
  */
 export class BespokeClient {
     public onConnect: (error?: any) => void = null;
-    public onWebhookReceived: WebhookReceivedCallback;
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
     private keepAlive: KeepAlive;
@@ -29,8 +27,12 @@ export class BespokeClient {
                 private port: number,
                 private targetPort: number) {}
 
-    public connect(): void {
+    public connect(onConnect?: (error?: any) => void): void {
         let self = this;
+
+        if (onConnect !== undefined && onConnect !== null) {
+            this.onConnect = onConnect;
+        }
 
         this.socketHandler = SocketHandler.connect(this.host, this.port,
             function(error: any) {
@@ -54,44 +56,6 @@ export class BespokeClient {
             }
         };
 
-        this.onWebhookReceived = function(request: WebhookRequest) {
-            let self = this;
-            // Print out the contents of the request body to the console
-            LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-            LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
-
-            let tcpClient = new TCPClient(request.id() + "");
-            let httpBuffer = new HTTPBuffer();
-            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: Buffer, error: NetworkErrorType, message: string) {
-
-                if (data != null) {
-                    // Grab the body of the response payload
-                    httpBuffer.append(data);
-
-                    // Don't send the data until we have it all
-                    if (httpBuffer.complete()) {
-                        LoggingHelper.info(Logger, "ResponseReceived ID: " + request.id());
-                        let payload: string = null;
-                        if (httpBuffer.isJSON()) {
-                            payload = StringUtil.prettyPrintJSON(httpBuffer.body().toString());
-                        } else {
-                            payload = httpBuffer.body().toString();
-                        }
-                        LoggingHelper.verbose(Logger, "Payload:\n" + payload);
-                        self.socketHandler.send(httpBuffer.raw().toString(), request.id());
-                    }
-                } else if (error !== null && error !== undefined) {
-                    if (error === NetworkErrorType.CONNECTION_REFUSED) {
-                        LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
-                    }
-
-                    if (self.onError != null) {
-                        self.onError(error, message);
-                    }
-                }
-            });
-        };
-
         this.keepAlive = this.newKeepAlive(this.socketHandler);
         this.keepAlive.start(function () {
             LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
@@ -104,6 +68,44 @@ export class BespokeClient {
     // Factory method for testability
     protected newKeepAlive(handler: SocketHandler): KeepAlive {
         return new KeepAlive(handler);
+    }
+
+    private onWebhookReceived(request: WebhookRequest): void {
+        let self = this;
+        // Print out the contents of the request body to the console
+        LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
+        LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
+
+        let tcpClient = new TCPClient(request.id() + "");
+        let httpBuffer = new HTTPBuffer();
+        tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: Buffer, error: NetworkErrorType, message: string) {
+
+            if (data != null) {
+                // Grab the body of the response payload
+                httpBuffer.append(data);
+
+                // Don't send the data until we have it all
+                if (httpBuffer.complete()) {
+                    LoggingHelper.info(Logger, "ResponseReceived ID: " + request.id());
+                    let payload: string = null;
+                    if (httpBuffer.isJSON()) {
+                        payload = StringUtil.prettyPrintJSON(httpBuffer.body().toString());
+                    } else {
+                        payload = httpBuffer.body().toString();
+                    }
+                    LoggingHelper.verbose(Logger, "Payload:\n" + payload);
+                    self.socketHandler.send(httpBuffer.raw().toString(), request.id());
+                }
+            } else if (error !== null && error !== undefined) {
+                if (error === NetworkErrorType.CONNECTION_REFUSED) {
+                    LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                }
+
+                if (self.onError != null) {
+                    self.onError(error, message);
+                }
+            }
+        });
     }
 
     private connected(error?: any): void {

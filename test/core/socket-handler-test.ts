@@ -11,7 +11,7 @@ import {BufferUtil} from "../../lib/core/buffer-util";
 
 describe("SocketHandlerTest", function() {
     beforeEach(function () {
-        this.server = net.createServer(function(socket: Socket) {
+        this.server = net.createServer(function() {
 
         }).listen(10000);
     });
@@ -120,7 +120,7 @@ describe("SocketHandlerTest", function() {
                     assert(error);
                     done();
                 },
-                function (message: string) {
+                function () {
 
                 }
             );
@@ -137,9 +137,7 @@ describe("SocketHandlerTest", function() {
                     assert(error);
                     done();
                 },
-                function (message: string) {
-
-                }
+                function () {}
             );
 
             socketHandler.onCloseCallback = function() {
@@ -158,6 +156,21 @@ describe("SocketHandlerTest", function() {
                 });
 
                 client.end();
+
+                setTimeout(function () {
+                    done();
+                }, 200);
+            });
+        });
+        it("No error on send after disconnect", function (done) {
+            let client = new net.Socket();
+            client.connect(10000, "localhost", function () {
+                let handler = new SocketHandler(client, function (message: string) {
+
+                });
+
+                handler.disconnect();
+                handler.send("No error on this");
 
                 setTimeout(function () {
                     done();

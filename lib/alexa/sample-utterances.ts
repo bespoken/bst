@@ -1,7 +1,5 @@
 import {FileUtil} from "../core/file-util";
-import {LoggingHelper} from "../core/logging-helper";
 
-const Logger = "SAMPLES";
 export class SampleUtterances {
     public samples: {[id: string]: Array<string>} = {};
     public constructor() {
@@ -20,7 +18,6 @@ export class SampleUtterances {
                 }
             } else {
                 let error = "File not found: " + file;
-                LoggingHelper.error(Logger, error);
                 callback(null, error);
             }
         });
@@ -28,10 +25,8 @@ export class SampleUtterances {
 
     public static fromJSON(sampleUtterancesJSON: any): SampleUtterances {
         let sampleUtterances = new SampleUtterances();
-        for (let intent in sampleUtterancesJSON) {
-            if (sampleUtterancesJSON.hasOwnProperty(intent)) {
-                sampleUtterances.samples[intent] = sampleUtterancesJSON[intent];
-            }
+        for (let intent of Object.keys(sampleUtterancesJSON)) {
+            sampleUtterances.samples[intent] = sampleUtterancesJSON[intent];
         }
         return sampleUtterances;
     }
@@ -55,11 +50,7 @@ export class SampleUtterances {
         let phrase = new Phrase(phraseString);
 
         let matchedIntent: UtteredIntent = null;
-        for (let intent in this.samples) {
-            if (!this.samples.hasOwnProperty(intent)) {
-                continue;
-            }
-
+        for (let intent of Object.keys(this.samples)) {
             let samples = this.samples[intent];
             for (let sample of samples) {
                 if (phrase.matchesUtterance(sample)) {
@@ -83,7 +74,8 @@ export class SampleUtterances {
         let lines = fileData.split("\n");
         for (let line of lines) {
             if (line.trim().length === 0) {
-                throw Error("Invalid sample utterance - contains blank line");
+                // We skip blank lines - which is what Alexa does
+                continue;
             }
 
             let index = line.indexOf(" ");

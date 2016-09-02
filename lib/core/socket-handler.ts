@@ -94,7 +94,13 @@ export class SocketHandler {
     }
 
     public send(message: string, messageID?: number) {
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message) + "END");
+        // If the socket was already closed, do not write anything
+        if (this.socket === null) {
+            LoggingHelper.warn(Logger, "Writing message to closed socket: " + messageID);
+            return;
+        }
+
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message));
 
         // If no message ID is specified, just grab a timestamp
         if (messageID === undefined || messageID === null) {

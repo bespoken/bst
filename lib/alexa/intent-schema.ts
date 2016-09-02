@@ -16,12 +16,10 @@ export class IntentSchema {
                     let schema = new IntentSchema(json);
                     callback(schema);
                 } catch (e) {
-                    LoggingHelper.error(Logger, e.message);
                     callback(null, "Bad JSON: " + e.message);
                 }
             } else {
                 let error = "File not found: " + file;
-                LoggingHelper.error(Logger, error);
                 callback(null, error);
             }
         });
