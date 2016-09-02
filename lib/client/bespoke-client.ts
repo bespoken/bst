@@ -17,7 +17,6 @@ const Logger = "BST-CLIENT";
  */
 export class BespokeClient {
     public onConnect: (error?: any) => void = null;
-    public onWebhookReceived: WebhookReceivedCallback;
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
     private keepAlive: KeepAlive;
@@ -29,8 +28,12 @@ export class BespokeClient {
                 private port: number,
                 private targetPort: number) {}
 
-    public connect(): void {
+    public connect(onConnect?: (error?: any) => void): void {
         let self = this;
+
+        if (onConnect !== undefined && onConnect !== null) {
+            this.onConnect = onConnect;
+        }
 
         this.socketHandler = SocketHandler.connect(this.host, this.port,
             function(error: any) {
@@ -54,26 +57,6 @@ export class BespokeClient {
             }
         };
 
-        this.onWebhookReceived = function(request: WebhookRequest) {
-            let self = this;
-            LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
-
-            let tcpClient = new TCPClient(request.id() + "");
-            tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
-                if (data != null) {
-                    self.socketHandler.send(data, request.id());
-                } else if (error !== null && error !== undefined) {
-                    if (error === NetworkErrorType.CONNECTION_REFUSED) {
-                        LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
-                    }
-
-                    if (self.onError != null) {
-                        self.onError(error, message);
-                    }
-                }
-            });
-        };
-
         this.keepAlive = this.newKeepAlive(this.socketHandler);
         this.keepAlive.start(function () {
             LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
@@ -86,6 +69,26 @@ export class BespokeClient {
     // Factory method for testability
     protected newKeepAlive(handler: SocketHandler): KeepAlive {
         return new KeepAlive(handler);
+    }
+
+    private onWebhookReceived(request: WebhookRequest): void {
+        let self = this;
+        LoggingHelper.info(Logger, "OnWebhook: " + request.toString());
+
+        let tcpClient = new TCPClient(request.id() + "");
+        tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: string, error: NetworkErrorType, message: string) {
+            if (data != null) {
+                self.socketHandler.send(data, request.id());
+            } else if (error !== null && error !== undefined) {
+                if (error === NetworkErrorType.CONNECTION_REFUSED) {
+                    LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                }
+
+                if (self.onError != null) {
+                    self.onError(error, message);
+                }
+            }
+        });
     }
 
     private connected(error?: any): void {

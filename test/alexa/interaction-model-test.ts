@@ -18,6 +18,16 @@ describe("InteractionModel", function() {
             );
         });
 
+        it("Correctly parses another interaction model", function(done) {
+            InteractionModel.fromFiles("test/resources/speechAssets/SimpleIntentSchema.json",
+                "test/resources/speechAssets/SimpleSampleUtterances.txt",
+                function(model: InteractionModel, error?: string) {
+                    assert(model);
+                    done();
+                }
+            );
+        });
+
         it("Cannot find a file", function(done) {
             InteractionModel.fromFiles("test/alexa/resources/IntentSchema2.json",
                 "test/alexa/resources/SampleUtterances.txt",
