@@ -2,9 +2,6 @@
 
 import * as assert from "assert";
 
-import {BespokeClient} from "../../lib/client/bespoke-client";
-import {Node} from "../../lib/server/node";
-import {NodeManager} from "../../lib/server/node-manager";
 import {Global} from "../../lib/core/global";
 import {SocketHandler} from "../../lib/core/socket-handler";
 import * as net from "net";

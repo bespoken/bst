@@ -101,15 +101,18 @@ describe("LambdaRunner", function() {
 
                 let firstTime = true;
                 runner.onDirty = function () {
+                    // Make sure we only react to first callback
+                    if (firstTime) {
+                        firstTime = false;
+                    } else {
+                        return;
+                    }
                     client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                         let o = JSON.parse(data.toString());
                         assert.equal(o.success, true);
                         assert.equal(o.reloaded, true);
                         runner.stop();
-                        if (firstTime) {
-                            firstTime = false;
-                            done(); // Make sure done only called once
-                        }
+                        done();
                     });
                 };
 

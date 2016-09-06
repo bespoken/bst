@@ -3,14 +3,9 @@
 import * as assert from "assert";
 
 import {BespokeClient} from "../../lib/client/bespoke-client";
-import {Node} from "../../lib/server/node";
-import {NodeManager} from "../../lib/server/node-manager";
-import {WebhookManager} from "../../lib/server/webhook-manager";
 import {WebhookRequest} from "../../lib/core/webhook-request";
 import {HTTPClient} from "../../lib/core/http-client";
 import {BespokeServer} from "../../lib/server/bespoke-server";
-import {Socket} from "net";
-import {NetworkErrorType} from "../../lib/core/global";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
 import * as request from "request";
 import {IncomingMessage} from "http";

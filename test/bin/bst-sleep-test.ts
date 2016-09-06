@@ -1,6 +1,5 @@
 /// <reference path="../../typings/index.d.ts" />
 
-import * as assert from "assert";
 import * as sinon from "sinon";
 import SinonSandbox = Sinon.SinonSandbox;
 import {NodeUtil} from "../../lib/core/node-util";

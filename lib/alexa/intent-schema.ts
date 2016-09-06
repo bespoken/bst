@@ -1,6 +1,4 @@
 import {FileUtil} from "../core/file-util";
-import {LoggingHelper} from "../core/logging-helper";
-const Logger = "INTENTS";
 
 export class IntentSchema {
     public constructor(public schemaJSON: any) {

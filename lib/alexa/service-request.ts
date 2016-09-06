@@ -1,4 +1,3 @@
-import {IntentSchema} from "./intent-schema";
 import {InteractionModel} from "./interaction-model";
 let uuid = require("node-uuid");
 

@@ -78,8 +78,7 @@ export class LambdaRunner {
             path = [process.cwd(), this.file].join("/");
         }
 
-        LoggingHelper.info(Logger, "Invoked Lambda: " + this.file);
-        let bodyJSON: any = JSON.parse(body);
+        LoggingHelper.info(Logger, "Invoking Lambda: " + this.file);
         if (this.lambda === null || this.dirty) {
             this.lambda = NodeUtil.load(path);
             this.dirty = false;
@@ -88,6 +87,7 @@ export class LambdaRunner {
         // let lambda = System.import("./" + file);
         let context: LambdaContext = new LambdaContext(response);
         try {
+            let bodyJSON: any = JSON.parse(body);
             this.lambda.handler(bodyJSON, context);
         } catch (e) {
             context.fail("Exception: " + e.message);
@@ -128,8 +128,6 @@ export class LambdaContext {
     }
 
     private done(success: boolean, body: any) {
-        let self = this;
-
         let statusCode: number = 200;
         let contentType: string = "application/json";
         let bodyString: string = null;

@@ -1,7 +1,3 @@
-import {resetCache} from "mockery";
-import {LoggingHelper} from "./logging-helper";
-
-const Logger = "NODEUTIL";
 /**
  * Helper functions for core Node stuff
  */
@@ -31,7 +27,6 @@ export class NodeUtil {
                 && file.startsWith(directory)
                 && file.indexOf("node_modules") === -1) {
                 delete require.cache[require.resolve(file)];
-                let localPart = file.substr(directory.length);
             }
         }
     }

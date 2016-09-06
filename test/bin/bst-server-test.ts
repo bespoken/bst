@@ -2,9 +2,6 @@
 
 import * as assert from "assert";
 import * as mockery from "mockery";
-import * as program from "commander";
-import {URLMangler} from "../../lib/client/url-mangler";
-import {Global} from "../../lib/core/global";
 import {NodeUtil} from "../../lib/core/node-util";
 
 describe("bst-server", function() {

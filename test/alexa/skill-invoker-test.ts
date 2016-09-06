@@ -2,7 +2,6 @@
 
 import * as assert from "assert";
 import {IntentSchema} from "../../lib/alexa/intent-schema";
-import {ServiceRequest} from "../../lib/alexa/service-request";
 import {InteractionModel} from "../../lib/alexa/interaction-model";
 import {SampleUtterances} from "../../lib/alexa/sample-utterances";
 import {SkillInvoker} from "../../lib/alexa/skill-invoker";

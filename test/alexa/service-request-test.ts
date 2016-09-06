@@ -52,7 +52,7 @@ describe("ServiceRequest", function() {
             let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
 
             try {
-                let request: any = requester.intentRequest("Test2").toJSON();
+                requester.intentRequest("Test2").toJSON();
             } catch (e) {
                 assert(e.message, "Interaction model has no intentName named: Test2");
                 done();
