@@ -34,7 +34,16 @@ export class NodeManager {
             let socketHandler = new SocketHandler(socket, function(message: string, messageID?: number) {
                 // We do special handling when we first connect
                 if (initialConnection) {
-                    let connectData = JSON.parse(message);
+                    let connectData: any = null;
+                    try {
+                        connectData = JSON.parse(message);
+                    } catch (e) {
+                        // We just drop it the payload is not correct
+                        LoggingHelper.error(Logger, "Error on parsing initial message: " + message);
+                        socketHandler.disconnect();
+                        return;
+                    }
+
                     node = new Node(connectData.id, socketHandler);
                     self.nodes[node.id] = node;
 
