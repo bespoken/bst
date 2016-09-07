@@ -2,7 +2,13 @@
 
 
 ## Overview
-The **bst** (aka Bespoken Tools aka the BEAST) makes it easy to develop for Alexa/Echo.
+The **bst** (aka Bespoken Tools) makes it easy to develop for Alexa/Echo.  
+
+We call it working in BEAST mode - rampage through code/test iterations as Alexa requests are sent **directly** to your laptop.
+Do not slow-down for:
+* Time-consuming server deployments
+* Over-complicated and error-prone packaging scripts
+* Even seemingly-innocuous-but-still-pesky service restarts.
 
 The current version provides three commands - **proxy http**, **proxy lambda** and **speak**.
 

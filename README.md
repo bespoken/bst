@@ -5,7 +5,7 @@ Bespoken Tools (bst) - Tools for Alexa Skills Kit Development
 
 
 ## Overview
-The **bst** (aka Bespoken Tools aka the BEAST) makes it easy to develop for Alexa/Echo.  
+The **bst** (aka Bespoken Tools) makes it easy to develop for Alexa/Echo.  
 
 We call it working in BEAST mode - rampage through code/test iterations as Alexa requests are sent **directly** to your laptop.
 Do not slow-down for:
