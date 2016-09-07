@@ -77,13 +77,27 @@ export class SocketHandler {
 
         let delimiterIndex = this.buffer.indexOf(Global.MessageDelimiter);
         if (delimiterIndex > -1) {
-            let message = this.buffer.substring(0, delimiterIndex - Global.MessageIDLength);
+            let messageIDIndex = delimiterIndex - Global.MessageIDLength;
+            let badMessage = false;
+            if (messageIDIndex < 0) {
+                badMessage = true;
+            }
+
+            let message = this.buffer.substring(0, messageIDIndex);
             // Grab the message ID - it precedes the delimiter
             let messageIDString = this.buffer.substring(delimiterIndex - Global.MessageIDLength, delimiterIndex);
             let messageID: number = parseInt(messageIDString);
-            LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
+            if (isNaN(messageID) || (messageID + "").length < 13) {
+                badMessage = true;
+            }
 
-            this.onMessage(message, messageID);
+            if (badMessage) {
+                LoggingHelper.error(Logger, "Bad message received: " + dataString);
+            } else {
+                LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
+                this.onMessage(message, messageID);
+            }
+
             this.buffer = this.buffer.slice(delimiterIndex + Global.MessageDelimiter.length);
 
             // If we have received more than one packet at a time, handle it recursively
