@@ -11,6 +11,7 @@ export interface TCPClientCallback {
 }
 
 export class TCPClient {
+    public onCloseCallback: () => void;
     public constructor (public id: string) {}
 
     public transmit(host: string, port: number, data: string, callback: TCPClientCallback) {
@@ -42,6 +43,9 @@ export class TCPClient {
         // Add a 'close' event handler for the client socket
         client.on("close", function(had_error: boolean) {
             LoggingHelper.debug(Logger, "Connection closed ID: " + self.id + " HadError: " + had_error);
+            if (self.onCloseCallback !== undefined && self.onCloseCallback !== null) {
+                self.onCloseCallback();
+            }
         });
     }
 

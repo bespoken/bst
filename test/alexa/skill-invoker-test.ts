@@ -43,7 +43,7 @@ describe("SkillInvoker", function() {
         });
 
         it("Handle With Slot", function(done) {
-            this.timeout(5000);
+            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("Take Me To Walmart {A}", function (request: any, response: any) {
@@ -65,6 +65,7 @@ describe("SkillInvoker", function() {
         });
 
         it("Handles error on bad Intent", function(done) {
+            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("No Matching", function (request: any, response: any, error: string) {
@@ -75,7 +76,7 @@ describe("SkillInvoker", function() {
         });
 
         it("Handles default on bad Phrase", function(done) {
-            this.timeout(5000);
+            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             let invoker = new SkillInvoker(skillURL, model, "MyApp");
             invoker.say("NotMatching", function (request: any, response: any) {

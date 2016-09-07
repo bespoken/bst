@@ -34,6 +34,34 @@ describe("SocketHandlerTest", function() {
             socketHandler.onDataCallback(BufferUtil.fromString("TEST" + new Date().getTime() + Global.MessageDelimiter));
         });
 
+        it("Sends No Message ID Payload", function(done) {
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+
+            // Second message is received buy not the first
+            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
+                assert.equal(message, "TESTB");
+                done();
+            });
+
+            socketHandler.onDataCallback(BufferUtil.fromString("TESTA123123" + Global.MessageDelimiter));
+            socketHandler.onDataCallback(BufferUtil.fromString("TESTB1234567890123" + Global.MessageDelimiter));
+        });
+
+        it("Sends Bad Message ID Payload", function(done) {
+            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+
+            // Second message is received buy not the first
+            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
+                assert.equal(message, "TESTB");
+                done();
+            });
+
+            socketHandler.onDataCallback(BufferUtil.fromString("TESTA123A567890123" + Global.MessageDelimiter));
+            socketHandler.onDataCallback(BufferUtil.fromString("TESTAABCDEFGHIJKLM" + Global.MessageDelimiter));
+            socketHandler.onDataCallback(BufferUtil.fromString("TESTB1234567890123" + Global.MessageDelimiter));
+        });
+
+
         it("Sends Multiple Payloads At Once", function(done) {
             let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
