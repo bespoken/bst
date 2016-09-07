@@ -55,6 +55,6 @@ Read the docs [here](/commands/speak).
 
 ## Questions/Feedback?
 
-Email jpk@xappmedia.com with any questions or comments, also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request.
+Talk to us on [Gitter](https://gitter.im/bespoken/bst), also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
 
 We love to hear feedback.
