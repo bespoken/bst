@@ -58,6 +58,6 @@ Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak).
 
 ## Questions/Feedback?
 
-Take to us on [Gitter](https://gitter.im/bespoken/bst), also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
+Talk to us on [Gitter](https://gitter.im/bespoken/bst), also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
 
 We love to hear feedback.
