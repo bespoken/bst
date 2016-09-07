@@ -32,6 +32,15 @@ $ bst proxy lambda index.js
 
 You can learn more here at our [Node.js Tutorial](/tutorials/tutorial_lambda_nodejs):
 
+**Options**
+
+The `--verbose` flag will print out the requests and responses from all calls made to your skill.
+
+To use it, just start up the proxy with:
+```bash
+$ bst proxy lambda index.js --verbose
+```
+
 ## bst proxy http
 
 **Overview**  
@@ -53,6 +62,15 @@ $ bst proxy http 9999
 ```
 
 You can learn more here at our [Java Tutorial](/tutorials/tutorial_local_server_java)
+
+**Options**
+
+The `--verbose` flag will print out the requests and responses from all calls made to your skill.
+
+To use it, just start up the proxy with:
+```bash
+$ bst proxy http 9999 --verbose
+```
 
 ## bst proxy urlgen
 
