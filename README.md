@@ -30,28 +30,28 @@ Using NPM:
 $ npm install bespoken-tools -g
 ```
 
-For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started.html)
+For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started)
 
 ## bst proxy Command
 
 The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
 
-Read the docs [here](http://docs.bespoken.tools/en/latest/commands/proxy.html).
+Read the docs [here](http://docs.bespoken.tools/en/latest/commands/proxy).
 
 ## bst speak Command
 
 The speak command generates intent requests for your service as if they were coming from Alexa itself.  
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
-Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak.html).
+Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak).
 
 ## Tutorials
 
-* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java.html)
-* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs.html)
+* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
+* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
 
 ## Questions/Feedback?
 
-Email jpk@xappmedia.com with any questions or comments, also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
+Take to us on [Gitter](https://gitter.im/bespoken/bst), also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
 
 We love to hear feedback.
