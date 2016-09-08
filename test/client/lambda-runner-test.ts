@@ -1,6 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
+import * as fs from "fs";
 import {Global} from "../../lib/core/global";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
 import {HTTPClient} from "../../lib/core/http-client";
@@ -111,8 +112,9 @@ describe("LambdaRunner", function() {
                         let o = JSON.parse(data.toString());
                         assert.equal(o.success, true);
                         assert.equal(o.reloaded, true);
-                        runner.stop();
-                        done();
+                        runner.stop(function () {
+                            done();
+                        });
                     });
                 };
 
@@ -128,6 +130,31 @@ describe("LambdaRunner", function() {
                     });
                 });
             });
+        });
+
+        it("Handles Reload Exclusions Correctly", function(done) {
+            let targetFile = "ExampleLambda.js";
+            let runner = new LambdaRunner("ExampleLambda.js", 10000);
+            runner.start();
+
+            runner.onDirty = function (filename: string) {
+                if (filename === "ExampleLambdaCopy.js") {
+                    // We some times get the change from the previous test - we can ignore it
+                } else {
+                    assert(false, "Should not be called");
+                }
+            };
+
+            FileUtil.copyFile(targetFile, "ExampleLambda.js___");
+            FileUtil.copyFile(targetFile, ".dummy");
+
+            setTimeout(function () {
+                fs.unlinkSync("ExampleLambda.js___");
+                fs.unlinkSync(".dummy");
+                runner.stop(function () {
+                    done();
+                });
+            }, 100);
         });
 
         it("Handles No Reload after stop", function(done) {
