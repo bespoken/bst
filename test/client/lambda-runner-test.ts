@@ -137,6 +137,8 @@ describe("LambdaRunner", function() {
             let runner = new LambdaRunner("ExampleLambda.js", 10000);
             runner.start();
 
+            fs.mkdirSync("node_modules");
+
             runner.onDirty = function (filename: string) {
                 if (filename === "ExampleLambdaCopy.js") {
                     // We some times get the change from the previous test - we can ignore it
@@ -153,6 +155,7 @@ describe("LambdaRunner", function() {
                 fs.unlinkSync("ExampleLambda.js___");
                 fs.unlinkSync(".dummy");
                 fs.unlinkSync("node_modules/CopiedLambda.js");
+                fs.rmdirSync("node_modules");
                 runner.stop(function () {
                     done();
                 });
@@ -204,7 +207,6 @@ describe("LambdaRunner", function() {
         it("Handles Ping", function(done) {
             let tempFile = "ExampleLambdaCopy.js";
             let runner = new LambdaRunner(tempFile, 10000);
-
 
             runner.start(function () {
                 new HTTPClient().get("localhost", 10000, "", function (data: Buffer, statusCode: number) {
