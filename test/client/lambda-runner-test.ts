@@ -133,9 +133,11 @@ describe("LambdaRunner", function() {
         });
 
         it("Handles Reload Exclusions Correctly", function(done) {
-            let targetFile = "ExampleLambda.js";
+            let sourceFile = "ExampleLambda.js";
             let runner = new LambdaRunner("ExampleLambda.js", 10000);
             runner.start();
+
+            fs.mkdirSync("node_modules");
 
             runner.onDirty = function (filename: string) {
                 if (filename === "ExampleLambdaCopy.js") {
@@ -145,12 +147,15 @@ describe("LambdaRunner", function() {
                 }
             };
 
-            FileUtil.copyFile(targetFile, "ExampleLambda.js___");
-            FileUtil.copyFile(targetFile, ".dummy");
+            FileUtil.copyFile(sourceFile, "ExampleLambda.js___");
+            FileUtil.copyFile(sourceFile, ".dummy");
+            FileUtil.copyFile(sourceFile, "node_modules/CopiedLambda.js");
 
             setTimeout(function () {
                 fs.unlinkSync("ExampleLambda.js___");
                 fs.unlinkSync(".dummy");
+                fs.unlinkSync("node_modules/CopiedLambda.js");
+                fs.rmdirSync("node_modules");
                 runner.stop(function () {
                     done();
                 });
@@ -196,6 +201,21 @@ describe("LambdaRunner", function() {
                 assert.equal(2000, o.math);
                 runner.stop();
                 done();
+            });
+        });
+
+        it("Handles Ping", function(done) {
+            let tempFile = "ExampleLambdaCopy.js";
+            let runner = new LambdaRunner(tempFile, 10000);
+
+            runner.start(function () {
+                new HTTPClient().get("localhost", 10000, "", function (data: Buffer, statusCode: number) {
+                    assert.equal(statusCode, 200);
+                    assert.equal(data.length, 5);
+                    runner.stop(function () {
+                        done();
+                    });
+                });
             });
         });
     });

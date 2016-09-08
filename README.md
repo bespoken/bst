@@ -53,8 +53,8 @@ Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak).
 
 ## Tutorials
 
-* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
-* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
+* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
+* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
 
 ## Questions/Feedback?
 
