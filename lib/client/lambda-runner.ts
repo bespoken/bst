@@ -15,7 +15,7 @@ export class LambdaRunner {
     private lambda: any = null;
     private watcher: FSWatcher = null;
     private requests: Array<IncomingMessage> = [];
-    public onDirty: () => void = null; // Callback for test-ability
+    public onDirty: (filename: string) => void = null; // Callback for test-ability
 
     /**
      * The file to run
@@ -38,11 +38,20 @@ export class LambdaRunner {
         // Add a watch to the current directory
         let watchOptions = {"persistent": false, "recursive": true};
         this.watcher = fs.watch(process.cwd(), watchOptions, function(event: string, filename: string) {
-            if (filename.indexOf("node_modules") === -1) {
+            let exclude = false;
+            if (filename.indexOf("node_modules") !== -1) {
+                exclude = true;
+            } else if (filename.endsWith("___")) {
+                exclude = true;
+            } else if (filename.startsWith(".")) {
+                exclude = true;
+            }
+
+            if (!exclude) {
                 LoggingHelper.info(Logger, "FS.Watch Event: " + event + ". File: " + filename + ". Reloading.");
                 self.dirty = true;
                 if (self.onDirty !== undefined && self.onDirty !== null) {
-                    self.onDirty();
+                    self.onDirty(filename);
                 }
             }
         });

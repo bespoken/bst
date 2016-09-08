@@ -8,7 +8,7 @@ We call it working in BEAST mode - rampage through code/test iterations as Alexa
 Do not slow-down for:
 * Time-consuming server deployments
 * Over-complicated and error-prone packaging scripts
-* Seemingly-innocuous-but-still-pesky service restarts.
+* Seemingly-innocuous-but-still-pesky service restarts
 
 The current version provides three commands - **proxy http**, **proxy lambda** and **speak**.
 

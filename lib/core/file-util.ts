@@ -3,7 +3,7 @@ import * as fs from "fs";
 export class FileUtil {
     // StackOverflow code - always the best :-)
     // http://stackoverflow.com/questions/11293857/fastest-way-to-copy-file-in-node-js
-    public static copyFile(source: string, target: string, callback: (error?: string) => void) {
+    public static copyFile(source: string, target: string, callback?: (error?: string) => void) {
         let cbCalled = false;
 
         let readStream = fs.createReadStream(source);
@@ -23,7 +23,9 @@ export class FileUtil {
 
         function done(error?: string) {
             if (!cbCalled) {
-                callback(error);
+                if (callback !== undefined && callback !== null) {
+                    callback(error);
+                }
                 cbCalled = true;
             }
         }
