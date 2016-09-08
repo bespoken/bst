@@ -50,8 +50,8 @@ Read the docs [here](/commands/speak).
 
 ## Tutorials
 
-* [Nodejs Lambda Tutorial](/tutorials/tutorial_local_server_java)
-* [Java Server Tutorial](/tutorials/tutorial_lambda_nodejs)
+* [Nodejs Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
+* [Java Server Tutorial](/tutorials/tutorial_local_server_java)
 
 ## Questions/Feedback?
 
