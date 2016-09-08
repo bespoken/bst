@@ -60,7 +60,12 @@ export class LambdaRunner {
             });
 
             request.on("end", function () {
-                self.invoke(requestBody, response);
+                // Handle a ping
+                if (request.method === "GET") {
+                    return response.end("ALIVE");
+                } else {
+                    self.invoke(requestBody, response);
+                }
             });
         });
 

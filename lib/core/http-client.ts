@@ -46,4 +46,37 @@ export class HTTPClient {
         post_req.write(data);
         post_req.end();
     }
+
+    public get(host: string, port: number, path: string, callback?: (data: Buffer, statusCode: number) => void) {
+        // An object of options to indicate where to post to
+        let options = {
+            host: host,
+            port: port,
+            path: path,
+            method: "GET"
+        };
+
+        // Set up the request
+        let responseData: Buffer = null;
+        let request = http.request(options, function(response) {
+            response.setEncoding("utf8");
+            response.on("data", function (chunk: Buffer) {
+                if (responseData === null) {
+                    responseData = chunk;
+                } else {
+                    responseData = Buffer.concat([responseData, chunk]);
+                }
+            });
+
+            response.on("end", function () {
+                if (callback !== undefined && callback !== null) {
+                    callback(responseData, response.statusCode);
+                }
+            });
+        });
+
+        // get the data
+
+        request.end();
+    }
 }

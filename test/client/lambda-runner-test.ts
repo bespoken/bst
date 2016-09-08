@@ -171,6 +171,22 @@ describe("LambdaRunner", function() {
                 done();
             });
         });
+
+        it("Handles Ping", function(done) {
+            let tempFile = "ExampleLambdaCopy.js";
+            let runner = new LambdaRunner(tempFile, 10000);
+
+
+            runner.start(function () {
+                new HTTPClient().get("localhost", 10000, "", function (data: Buffer, statusCode: number) {
+                    assert.equal(statusCode, 200);
+                    assert.equal(data.length, 5);
+                    runner.stop(function () {
+                        done();
+                    });
+                });
+            });
+        });
     });
 
     describe("#stop()", function() {
