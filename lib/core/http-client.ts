@@ -19,15 +19,11 @@ export class HTTPClient {
         };
 
         // Set up the request
-        let responseData: Buffer = null;
+        let responseData: Buffer = new Buffer("");
         let post_req = http.request(post_options, function(response) {
-            response.setEncoding("utf8");
+            // response.setEncoding("utf8");
             response.on("data", function (chunk: Buffer) {
-                if (responseData === null) {
-                    responseData = chunk;
-                } else {
-                    responseData = Buffer.concat([responseData, chunk]);
-                }
+                responseData = Buffer.concat([responseData, chunk]);
             });
 
             response.on("end", function () {
@@ -57,15 +53,10 @@ export class HTTPClient {
         };
 
         // Set up the request
-        let responseData: Buffer = null;
+        let responseData: Buffer = new Buffer("");
         let request = http.request(options, function(response) {
-            response.setEncoding("utf8");
             response.on("data", function (chunk: Buffer) {
-                if (responseData === null) {
-                    responseData = chunk;
-                } else {
-                    responseData = Buffer.concat([responseData, chunk]);
-                }
+                responseData = Buffer.concat([responseData, chunk]);
             });
 
             response.on("end", function () {

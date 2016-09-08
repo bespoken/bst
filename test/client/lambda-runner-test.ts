@@ -133,7 +133,7 @@ describe("LambdaRunner", function() {
         });
 
         it("Handles Reload Exclusions Correctly", function(done) {
-            let targetFile = "ExampleLambda.js";
+            let sourceFile = "ExampleLambda.js";
             let runner = new LambdaRunner("ExampleLambda.js", 10000);
             runner.start();
 
@@ -145,12 +145,14 @@ describe("LambdaRunner", function() {
                 }
             };
 
-            FileUtil.copyFile(targetFile, "ExampleLambda.js___");
-            FileUtil.copyFile(targetFile, ".dummy");
+            FileUtil.copyFile(sourceFile, "ExampleLambda.js___");
+            FileUtil.copyFile(sourceFile, ".dummy");
+            FileUtil.copyFile(sourceFile, "node_modules/CopiedLambda.js");
 
             setTimeout(function () {
                 fs.unlinkSync("ExampleLambda.js___");
                 fs.unlinkSync(".dummy");
+                fs.unlinkSync("node_modules/CopiedLambda.js");
                 runner.stop(function () {
                     done();
                 });

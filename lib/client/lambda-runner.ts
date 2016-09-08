@@ -69,7 +69,7 @@ export class LambdaRunner {
             });
 
             request.on("end", function () {
-                // Handle a ping
+                // Handle a ping - so this can work with health checks
                 if (request.method === "GET") {
                     return response.end("ALIVE");
                 } else {
