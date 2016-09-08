@@ -24,3 +24,4 @@ docs/site/
 # Include all stuff under test/resources
 !test/resources/*
 !test/resources/exampleProject/*
+!test/resources/node_modules/
