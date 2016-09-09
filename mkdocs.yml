@@ -1,6 +1,6 @@
 site_name: bespoken.tools
 repo_url: https://github.com/bespoken/bst
-site_dir: 'docs/site'
+site_dir: 'site'
 strict: true
 pages:
 - Home: index.md
