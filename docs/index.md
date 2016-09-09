@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master)](https://travis-ci.org/bespoken/bst) [![Coverage Status](https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master)](https://coveralls.io/github/bespoken/bst?branch=master) [![npm version](https://img.shields.io/npm/v/bespoken-tools.svg)](https://www.npmjs.com/package/bespoken-tools) [![Read the Docs](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](http://docs.bespoken.tools/) [![Stories in Ready](https://badge.waffle.io/bespoken/bst.svg?label=ready&title=Ready)](http://waffle.io/bespoken/bst) [![Join the chat at https://gitter.im/bespoken/bst](https://badges.gitter.im/bespoken/bst.svg)](https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+[![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master){: class="badge" }](https://travis-ci.org/bespoken/bst) [![Coverage Status](https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master){: class="badge" }](https://coveralls.io/github/bespoken/bst?branch=master) [![npm version](https://img.shields.io/npm/v/bespoken-tools.svg){: class="badge" }](https://www.npmjs.com/package/bespoken-tools) [![Read the Docs](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat){: class="badge" }](http://docs.bespoken.tools/) [![Stories in Ready](https://badge.waffle.io/bespoken/bst.svg?label=ready&title=Ready){: class="badge" }](http://waffle.io/bespoken/bst) [![Join the chat at https://gitter.im/bespoken/bst](https://badges.gitter.im/bespoken/bst.svg){: class="badge" }](https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Overview
 The **bst** (aka Bespoken Tools) makes it easy to develop for Alexa/Echo.  
@@ -55,6 +54,6 @@ Read the docs [here](/commands/speak).
 
 ## Questions/Feedback?
 
-Talk to us on [Gitter](https://gitter.im/bespoken/bst), also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request. 
+Talk to us on [Gitter](https://gitter.im/bespoken/bst), also feel free to open an [issue](https://github.com/bespoken/bst/issues/new) for a bug or feature request.
 
 We love to hear feedback.

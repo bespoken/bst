@@ -1,6 +1,6 @@
 site_name: bespoken.tools
 repo_url: https://github.com/bespoken/bst
-site_dir: 'docs/site'
+site_dir: 'site'
 strict: true
 pages:
 - Home: index.md
@@ -13,3 +13,6 @@ pages:
     - Nodejs Lambda: tutorials/tutorial_lambda_nodejs.md
     - Local Java Server: tutorials/tutorial_local_server_java.md
 theme: readthedocs
+markdown_extensions:
+- attr_list
+extra_css: [assets/css/style.css]
