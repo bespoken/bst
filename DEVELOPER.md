@@ -83,3 +83,23 @@ If things are not updating and you think something isn't right, clean the docs:
 ```bash
 $ mkdocs build -c
 ```
+
+## Overriding Styles
+
+If you want to override the style on an element, use the [attr_list](https://pythonhosted.org/Markdown/extensions/attr_list.html) markdown feature.  With attr_list you can add classes to elements and then create the class in `/docs/assets/css/style.css`.
+
+For example, in the `docs/index.md` file, the class `.badge` is added to the image badges:
+
+```
+[![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master){: class="badge" }](https://travis-ci.org/bespoken/bst)
+```
+
+and the style is declared as:
+
+```
+img.badge {
+    width: auto;
+}
+```
+
+which prevents full width badge images on mobile.
