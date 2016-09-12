@@ -52,9 +52,11 @@ From the [Alexa Skills Kit list](https://developer.amazon.com/edw/home.html#/ski
 __Choose "Add a New Skill"__
 
 __Fill out the Information tab__
+
 * Give your skill a name and invocation phrase, 'bst java sample' and 'greeter' for example
 
 __Fill out the Interaction Model__
+
 * Copy and paste the Intent Schema from [here](https://raw.githubusercontent.com/bespoken/bst/master/samples/java/src/main/java/helloworld/speechAssets/IntentSchema.json)
 * Copy and paste the Sample Utterances from [here](https://raw.githubusercontent.com/bespoken/bst/master/samples/java/src/main/java/helloworld/speechAssets/SampleUtterances.txt)
 
