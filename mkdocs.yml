@@ -12,6 +12,7 @@ pages:
 - Tutorials:
     - Nodejs Lambda: tutorials/tutorial_lambda_nodejs.md
     - Local Java Server: tutorials/tutorial_local_server_java.md
+    - Python & Flask-Ask: tutorials/tutorial_flask_ask_python.md
 theme: readthedocs
 markdown_extensions:
 - attr_list
