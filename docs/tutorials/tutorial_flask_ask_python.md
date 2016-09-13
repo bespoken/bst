@@ -130,4 +130,4 @@ $ bst speak -i speech_assets/IntentSchema.json -s speech_assets/SampleUtterances
 - [bst speak](/commands/speak/)
 - [Flask-Ask Documentation](https://alexatutorial.com/flask-ask/)
 - [Flask-Ask on Github](https://github.com/johnwheeler/flask-ask)
-- [Flask-Ask: A New Python Framework for Rapid Alexa SKills Kit Development](https://developer.amazon.com/public/community/post/Tx14R0IYYGH3SKT/Flask-Ask-A-New-Python-Framework-for-Rapid-Alexa-Skills-Kit-Development)
+- [Flask-Ask: A New Python Framework for Rapid Alexa Skills Kit Development](https://developer.amazon.com/public/community/post/Tx14R0IYYGH3SKT/Flask-Ask-A-New-Python-Framework-for-Rapid-Alexa-Skills-Kit-Development)
