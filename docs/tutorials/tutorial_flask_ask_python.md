@@ -14,7 +14,7 @@ This tutorial shows you how to get started developing with bst for Alexa Skills 
 
 We will use the tidepooler sample John [provides](https://github.com/johnwheeler/flask-ask/tree/master/samples/tidepooler) in the Flask-Ask repo..
 
-Clones the repo:
+Clone the repo:
 ```
 $ git clone https://github.com/johnwheeler/flask-ask.git
 ```
