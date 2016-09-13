@@ -1,5 +1,5 @@
 import {InteractionModel} from "../alexa/interaction-model";
-import {Alexa, AlexaResponseCallback} from "../alexa/alexa";
+import {Alexa, AlexaResponseCallback, AlexaEvent} from "../alexa/alexa";
 
 const DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
 const DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";
@@ -35,6 +35,10 @@ export class BSTSpeak {
                 ready();
             }
         });
+    }
+
+    public onSkillResponse(callback: (skillRequestJSON: any, skillResponseJSON: any) => void) {
+        this._alexa.onSkillResponse(callback);
     }
 
     public speak(phrase: string, callback: AlexaResponseCallback) {

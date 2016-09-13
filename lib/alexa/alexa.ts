@@ -6,19 +6,28 @@ import request = require("request");
 import http = require("http");
 import {InteractionModel} from "./interaction-model";
 import {AlexaContext} from "./alexa-context";
+import {EventEmitter} from "events";
 const Logger = "ALEXA";
 
 export interface AlexaResponseCallback {
     (request: any, response: any, error?: string): void;
 }
 
+export enum AlexaEvent {
+    SessionEnded,
+    SkillError,
+    SkillResponse
+}
+
 export class Alexa {
     private _audioPlayer: AudioPlayer = null;
     private _context: AlexaContext = null;
     private _session: AlexaSession = null;
+    private _emitter: EventEmitter = null;
 
     public constructor() {
         this._audioPlayer = new AudioPlayer(this);
+        this._emitter = new EventEmitter();
     }
 
     /**
@@ -48,6 +57,10 @@ export class Alexa {
 
     public context(): AlexaContext {
         return this._context;
+    }
+
+    public onSkillResponse(callback: (skillRequestJSON: any, skillResponseJSON: any) => void) {
+        this._emitter.on(AlexaEvent[AlexaEvent.SkillResponse], callback);
     }
 
     /**
@@ -91,9 +104,11 @@ export class Alexa {
             } else {
                 // Check if there are any audio directives when it comes back
                 if (body.response !== undefined && body.response.directives !== undefined) {
-                    self._audioPlayer.directivesReceived(body.response.directives);
+                    self._audioPlayer.directivesReceived(request, body.response.directives);
                 }
                 callback(requestJSON, body);
+
+                self._emitter.emit(AlexaEvent[AlexaEvent.SkillResponse], requestJSON, body);
 
                 // After a successful call, set the session to used (no longer new)
                 if (self.activeSession()) {

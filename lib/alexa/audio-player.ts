@@ -1,11 +1,12 @@
 import {Alexa} from "./alexa";
-import {EventEmitter} from "events";
 import {ServiceRequest} from "./service-request";
 
 export enum AudioPlayerState {
-    PLAYING,
-    PAUSED,
-    STOPPED
+    PlaybackError,
+    PlaybackFinished,
+    PlaybackNearlyFinished,
+    PlaybackStarted,
+    PlaybackStopped
 }
 
 /**
@@ -20,14 +21,12 @@ export class AudioPlayer {
     public static PlayBehaviorEnqueue = "ENQUEUE";
     public static PlayBehaviorReplaceEnqueued = "REPLACE_ENQUEUED";
 
-    private _emitter: EventEmitter = null;
     private _playing: AudioItem = null;
     private _queue: Array<AudioItem> = [];
     private _state: AudioPlayerState = null;
 
     public constructor (public alexa: Alexa) {
-        this._emitter = new EventEmitter();
-        this._state = AudioPlayerState.STOPPED;
+        this._state = AudioPlayerState.PlaybackStopped;
     }
 
     public queue(): Array<AudioItem> {
@@ -41,59 +40,62 @@ export class AudioPlayer {
         });
     }
 
-    private playbackStarted(): void {
-        this._state = AudioPlayerState.PLAYING;
+    private playbackStarted(offset: number): void {
+        this._state = AudioPlayerState.PlaybackStarted;
+        let audioPlayerRequest = new ServiceRequest(this.alexa.context()).playbackStarted(this._playing.token, offset).toJSON();
 
-        this.alexa.callSkill(new ServiceRequest(this.alexa.context()).playbackStarted().toJSON(), function (request: any, response: any, error?: string) {
+        this.alexa.callSkill(audioPlayerRequest, function (request: any, response: any, error?: string) {
             console.log("Response Received: " + response);
         });
     }
 
-    public directivesReceived(directives: Array<any>): void {
+    public directivesReceived(request: any, directives: Array<any>): void {
         for (let directive of directives) {
-            this.handleDirective(directive);
+            this.handleDirective(request, directive);
         }
     }
 
-    private handleDirective(directive: any) {
-        let self = this;
+    private handleDirective(request: any, directive: any) {
         // Handle AudioPlayer.Play
         if (directive.type === AudioPlayer.DirectivePlay) {
             let audioItem = new AudioItem(directive.audioItem);
 
-            let playbackBehavior: string = directive.playbackBehavior;
-            let newTrack = false;
+            let playBehavior: string = directive.playBehavior;
 
-            if (playbackBehavior === AudioPlayer.PlayBehaviorEnqueue) {
-                this._queue.push(audioItem);
-            } else if (playbackBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
+            if (playBehavior === AudioPlayer.PlayBehaviorEnqueue) {
+                this.playOrEnqueue(audioItem);
+
+            } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
                 this._queue = [];
-                this._playing = audioItem;
-                newTrack = true;
-            } else if (playbackBehavior === AudioPlayer.PlayBehaviorReplaceEnqueued) {
+                this._playing = null;
+                this.playOrEnqueue(audioItem);
+
+            } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceEnqueued) {
                 this._queue = [];
-                this._queue.push(audioItem);
-
-                if (this._playing === null) {
-                    this._playing = audioItem;
-                    newTrack = true;
-                }
-            }
-
-            if (this._state === AudioPlayerState.STOPPED || this._state === AudioPlayerState.PAUSED) {
-                // When we start playing, immediately call PlaybackStarted
-                this.playbackStarted();
-                newTrack = true;
-            }
-
-            // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
-            if (newTrack) {
-                let offset = 50;
-                setTimeout(function () {
-                    self.playbackNearlyFinished(offset);
-                }, offset);
+                this.playOrEnqueue(audioItem);
             }
         }
+    }
+
+    private playOrEnqueue(audioItem: AudioItem) {
+        let self = this;
+        if (this._playing !== null) {
+            this._queue.push(audioItem);
+        } else {
+            this._playing = audioItem;
+            this.playbackStarted(0);
+
+            // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
+            let offset = 50;
+            setTimeout(function () {
+                self.playbackNearlyFinished(offset);
+            }, offset);
+
+        }
+    }
+
+    private playing(): boolean {
+        return (this._state === AudioPlayerState.PlaybackStarted || this._state === AudioPlayerState.PlaybackNearlyFinished);
     }
 }
 

@@ -23,7 +23,7 @@ export class LambdaRunner {
      * @param port
      * @param debug
      */
-    public constructor(public file: string, public port: number, public debug?: boolean) {
+    public constructor(public file: string, public port: number, public verbose?: boolean, public debug?: boolean) {
         // We need the debug flag for testing this class
         // It causes us to store off the requests so that we can close sockets and shutdown quickly
         //  Otherwise we have to wait for timeouts
@@ -99,9 +99,13 @@ export class LambdaRunner {
         }
 
         // let lambda = System.import("./" + file);
-        let context: LambdaContext = new LambdaContext(response);
+        let context: LambdaContext = new LambdaContext(response, this.verbose);
         try {
             let bodyJSON: any = JSON.parse(body);
+            if (this.verbose) {
+                console.log("Request:");
+                console.log(JSON.stringify(bodyJSON, null, 2));
+            }
             this.lambda.handler(bodyJSON, context);
         } catch (e) {
             context.fail("Exception: " + e.message);
@@ -131,7 +135,7 @@ export class LambdaRunner {
 
 export class LambdaContext {
 
-    public constructor(public response: ServerResponse) {}
+    public constructor(public response: ServerResponse, public verbose: boolean) {}
 
     public fail(body: any) {
         this.done(false, body);
@@ -148,6 +152,10 @@ export class LambdaContext {
 
         if (success) {
             bodyString = JSON.stringify(body);
+            if (this.verbose) {
+                console.log("Response:");
+                console.log(JSON.stringify(body, null, 2));
+            }
         } else {
             statusCode = 500;
             contentType = "text/plain";

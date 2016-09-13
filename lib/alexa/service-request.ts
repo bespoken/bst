@@ -6,7 +6,7 @@ export class RequestType {
     public static IntentRequest = "IntentRequest";
     public static LaunchRequest = "LaunchRequest";
     public static SessionEndedRequest = "SessionEndedRequest";
-    public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackStarted";
+    public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished";
     public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
 }
 
@@ -43,8 +43,10 @@ export class ServiceRequest {
         return this;
     }
 
-    public playbackStarted(): ServiceRequest {
+    public playbackStarted(token: string, offsetInMilliseconds: number): ServiceRequest {
         this.requestJSON = this.baseRequest(RequestType.AudioPlayerPlaybackStarted);
+        this.requestJSON.request.token = token;
+        this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
         return this;
     }
 
