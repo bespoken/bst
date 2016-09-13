@@ -51,6 +51,7 @@ Read the docs [here](/commands/speak).
 
 * [Nodejs Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
 * [Java Server Tutorial](/tutorials/tutorial_local_server_java)
+* [Python & Flask-Ask](/tutorials/tutorial_flask_ask_python)
 
 ## Questions/Feedback?
 
