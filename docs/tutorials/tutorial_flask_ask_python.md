@@ -84,7 +84,7 @@ Also make sure you select "HTTPS" for the endpoint type and account linking is s
 
 __Configure SSL__  
 
-On the SSL Certificate page, select the middle radio button,"My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
+On the SSL Certificate page, select the middle radio button "My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
 
 ## Test
 

@@ -89,7 +89,7 @@ Also make sure you select "HTTPS" and account linking to "NO".
 
 __Configure SSL__  
 
-On the SSL Certificate page, select the middle radio button,"My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
+On the SSL Certificate page, select the middle radio button "My development endpoint is a subdomain of a domain that has a wildcard certificate from a certificate authority"
 
 ## Test
 Go to the service simulator, and type: "hello" and hit "Ask \<Your Skill Name>".
