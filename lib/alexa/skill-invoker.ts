@@ -4,13 +4,18 @@ import * as request from "request";
 import * as http from "http";
 import {LoggingHelper} from "../core/logging-helper";
 import {UtteredIntent} from "./sample-utterances";
+import {AlexaSession} from "./alexa-session";
 
 const Logger = "INVOKER";
 
+export interface InvokeCallback {
+    (request: any, response: any, error?: string): void;
+}
+
 export class SkillInvoker {
     public serviceRequest: ServiceRequest;
-    public constructor(public skillURL: string, public interactionModel: InteractionModel, public applicationID?: string) {
-        this.serviceRequest = new ServiceRequest(interactionModel, applicationID);
+    public constructor(public skillURL: string, public session: AlexaSession) {
+        this.serviceRequest = new ServiceRequest(session);
     }
 
     /**
@@ -19,13 +24,13 @@ export class SkillInvoker {
      * @param utterance
      * @param callback
      */
-    public say(utterance: string, callback: (request: any, response: any, error?: string) => void): any {
-        let intent: UtteredIntent = this.interactionModel.sampleUtterances.intentForUtterance(utterance);
+    public say(utterance: string, callback: InvokeCallback): any {
+        let intent: UtteredIntent = this.session.interactionModel.sampleUtterances.intentForUtterance(utterance);
 
         // If we don't match anything, we use the default utterance - simple algorithm for this
         if (intent === null) {
-            let defaultUtterance = this.interactionModel.sampleUtterances.defaultUtterance();
-            intent = this.interactionModel.sampleUtterances.intentForUtterance(defaultUtterance);
+            let defaultUtterance = this.session.interactionModel.sampleUtterances.defaultUtterance();
+            intent = this.session.interactionModel.sampleUtterances.intentForUtterance(defaultUtterance);
             LoggingHelper.warn(Logger, "No intentName matches utterance: " + utterance + ". Using fallback utterance: " + intent.utterance);
         }
 
@@ -36,14 +41,22 @@ export class SkillInvoker {
             }
             let requestJSON = this.serviceRequest.toJSON();
 
-            let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
-                if (error) {
-                    callback(null, null, error.message);
-                } else {
-                    callback(requestJSON, body);
-                }
-            };
+            this.invoke(requestJSON, callback);
+        } catch (e) {
+            callback(null, null, e.message);
+        }
+    }
 
+    public invoke(requestJSON: any, callback: InvokeCallback) {
+        let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
+            if (error) {
+                callback(null, null, error.message);
+            } else {
+                callback(requestJSON, body);
+            }
+        };
+
+        try {
             request.post({
                 url: this.skillURL,
                 method: "POST",

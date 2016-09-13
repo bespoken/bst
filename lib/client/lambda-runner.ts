@@ -78,7 +78,7 @@ export class LambdaRunner {
             });
         });
 
-        this.server.on("listening", function () {
+        this.server.on("listening", function (error: any) {
             LoggingHelper.info(Logger, "LambdaRunner started on port: " + self.server.address().port.toString());
             if (callback !== undefined && callback !== null) {
                 callback();
