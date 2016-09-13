@@ -1,4 +1,5 @@
 import {AlexaSession} from "./alexa-session";
+import {AlexaContext} from "./alexa-context";
 const uuid = require("node-uuid");
 
 export class RequestType {
@@ -21,7 +22,7 @@ export enum SessionEndedReason {
 export class ServiceRequest {
     private requestJSON: any = null;
 
-    public constructor (private session: AlexaSession) {}
+    public constructor (private context: AlexaContext, private session?: AlexaSession) {}
 
     /**
      * Generates an intentName request with the specified IntentName
@@ -80,36 +81,55 @@ export class ServiceRequest {
     }
 
     private baseRequest(requestType: string): any {
-        let applicationID = this.session.applicationID();
-        let newSession = this.session.isNew();
+        let applicationID = this.context.applicationID();
         let requestID = ServiceRequest.requestID();
-        let sessionID = this.session.id();
         let timestamp = ServiceRequest.timestamp();
-        let userID = this.session.userID();
+        let userID = this.context.userID();
 
         // First create the header part of the request
-        let request = {
-            "request": {
-                "type": requestType,
-                "locale": "en-US",
-                "requestID": requestID,
-                "timestamp": timestamp
+        let request: any = {
+            request: {
+                type: requestType,
+                locale: "en-US",
+                requestID: requestID,
+                timestamp: timestamp
             },
-            "session": {
-                "sessionId": sessionID,
-                "application": {
-                    "applicationId": applicationID
-                },
-                "attributes": {},
-                "user": {
-                    "userId": userID
-                },
-                "new": newSession
+            context: {
+                System: {
+                    application: {
+                        applicationId: applicationID
+                    },
+                    device: {
+                        supportedInterfaces: {
+                            AudioPlayer: {}
+                        }
+                    },
+                    user: {
+                        userId: userID
+                    },
+                }
             },
-            "version": "1.0"
+            version: "1.0"
         };
 
-        this.session.used();
+        // If we have a session, set the info
+        if (this.session !== undefined && this.session !== null) {
+            let newSession = this.session.isNew();
+            let sessionID = this.session.id();
+
+            request.session = {
+                sessionId: sessionID,
+                application: {
+                    applicationId: applicationID
+                },
+                attributes: {},
+                user: {
+                    userId: userID
+                },
+                "new": newSession
+            };
+        }
+
         return request;
     }
 

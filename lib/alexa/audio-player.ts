@@ -1,6 +1,5 @@
-import {AlexaSession} from "./alexa-session";
+import {Alexa} from "./alexa";
 import {EventEmitter} from "events";
-import {SkillInvoker} from "./skill-invoker";
 import {ServiceRequest} from "./service-request";
 
 export enum AudioPlayerState {
@@ -26,7 +25,7 @@ export class AudioPlayer {
     private _queue: Array<AudioItem> = [];
     private _state: AudioPlayerState = null;
 
-    public constructor (public session: AlexaSession, public invoker: SkillInvoker) {
+    public constructor (public alexa: Alexa) {
         this._emitter = new EventEmitter();
         this._state = AudioPlayerState.STOPPED;
     }
@@ -36,8 +35,8 @@ export class AudioPlayer {
     }
 
     private playbackNearlyFinished(offset: number): void {
-        let audioPlayerRequest = new ServiceRequest(this.session).playbackNearlyFinished(this._playing.token, offset).toJSON();
-        this.invoker.invoke(audioPlayerRequest, function (request: any, response: any, error?: string) {
+        let audioPlayerRequest = new ServiceRequest(this.alexa.context()).playbackNearlyFinished(this._playing.token, offset).toJSON();
+        this.alexa.callSkill(audioPlayerRequest, function (request: any, response: any, error?: string) {
             console.log("Response Received: " + response);
         });
     }
@@ -45,7 +44,7 @@ export class AudioPlayer {
     private playbackStarted(): void {
         this._state = AudioPlayerState.PLAYING;
 
-        this.invoker.invoke(new ServiceRequest(this.session).playbackStarted().toJSON(), function (request: any, response: any, error?: string) {
+        this.alexa.callSkill(new ServiceRequest(this.alexa.context()).playbackStarted().toJSON(), function (request: any, response: any, error?: string) {
             console.log("Response Received: " + response);
         });
     }
