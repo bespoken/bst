@@ -88,7 +88,7 @@ On the SSL Certificate page, select the middle radio button "My development endp
 
 ## Test
 
-You now have the python server running bst proxy running and your skill configured, it is time to test.  In the Service Simulator on the Test tab, try typing in a couple of the following:
+Now that you have the python server running, bst proxy running and your skill configured, it is time to test.  In the Service Simulator on the Test tab, try typing in some of the following phrases:
 
 ```
 get high tide
@@ -100,7 +100,7 @@ when is the next highest water for virginia beach
 what cities are supported
 ```
 
-We can also use the bst speak command to test locally instead of using the Service Simulator.  In order to do this, you need to tell Flask-Ask to not make sure the requests are coming from Amazon's Alexa Voice Service (which is true by default).
+We can also use the bst speak command to test locally instead of using the Service Simulator.  In order to do this, you need to tell Flask-Ask to not verify the request signatures (which it does by default).
 
 After [line 55](https://github.com/johnwheeler/flask-ask/blob/master/samples/tidepooler/tidepooler.py#L55) of tidepooler.py, insert the following line:
 
