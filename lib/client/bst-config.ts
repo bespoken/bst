@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import {ProxyType} from "./bst-proxy";
 import {LoggingHelper} from "../core/logging-helper";
+import {LambdaConfig} from "./lambda-config";
+
 let uuid = require("node-uuid");
 
 const Logger = "CONFIG";
@@ -26,6 +28,10 @@ export class BSTConfig {
         let bstConfig = new BSTConfig();
         bstConfig.loadFromJSON(config);
         return bstConfig;
+    }
+
+    public save() {
+        BSTConfig.saveConfig(this.configuration);
     }
 
     public nodeID(): string {
@@ -58,20 +64,25 @@ export class BSTConfig {
 
            // Create the config file if it does not yet exist
             let configJSON = BSTConfig.createConfig();
-            let configBuffer = new Buffer(JSON.stringify(configJSON, null, 4) + "\n");
-            fs.writeFileSync(BSTConfig.configPath(), configBuffer);
+
+           BSTConfig.saveConfig(configJSON);
         }
+    }
+
+    private static saveConfig(config: any) {
+        let configBuffer = new Buffer(JSON.stringify(config, null, 4) + "\n");
+        fs.writeFileSync(BSTConfig.configPath(), configBuffer);
     }
 
     private static createConfig(): any {
         let nodeID = uuid.v4();
+        let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
 
         return {
-            "nodeID": nodeID
-        };
+            "nodeID": nodeID,
+            "lambdaDeploy": lambdaConfig
+        }
     }
-
-
 }
 
 export class BSTProcess {

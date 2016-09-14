@@ -7,6 +7,8 @@
     "node-4": "registry:dt/node-4#4.0.0+20160720000508",
     "request": "registry:dt/request#0.0.0+20160726020908",
     "sinon": "registry:dt/sinon#1.16.0+20160517064723",
+    "async": "registry:dt/async#2.0.1+20160804113311",
+    "wrench": "registry:dt/wrench#0.0.0+20160316155526",
     "winston": "registry:dt/winston#0.0.0+20160417152829"
   }
 }

@@ -7,3 +7,5 @@
 /// <reference path="globals/request/index.d.ts" />
 /// <reference path="globals/sinon/index.d.ts" />
 /// <reference path="globals/winston/index.d.ts" />
+/// <reference path="globals/async/index.d.ts" />
+/// <reference path="globals/wrench/index.d.ts" />
