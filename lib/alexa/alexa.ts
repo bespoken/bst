@@ -23,16 +23,12 @@ export enum AlexaEvent {
 export class Alexa {
     private _audioPlayer: AudioPlayer = null;
     // Until we have a better approach, we sequence the calls
-    //  The LambdaRunner for some reason seems to respond in reverse order
-    private _callQueue: Array<AlexaCall> = [];
+    private _actionQueue: ActionQueue = new ActionQueue();
     private _context: AlexaContext = null;
     private _session: AlexaSession = null;
     private _emitter: EventEmitter = null;
-    private _shutdown: boolean = false;
-    private _shutdownHook: () => void = null;
 
     public constructor() {
-        this._audioPlayer = new AudioPlayer(this);
         this._emitter = new EventEmitter();
     }
 
@@ -120,7 +116,7 @@ export class Alexa {
             let requestJSON = serviceRequest.toJSON();
 
             // When the user utters an intent, we suspend for it
-            if (this._audioPlayer.playing()) {
+            if (this._audioPlayer.isPlaying()) {
                 this._audioPlayer.suspend();
             }
             this.callSkill(requestJSON, function (requestJSON: any, responseJSON: any, error?: string) {
@@ -135,28 +131,21 @@ export class Alexa {
     }
 
     public callSkill(requestJSON: any, callback?: AlexaResponseCallback): void {
-        let readyToCall = this._callQueue.length === 0;
-        this._callQueue.push(new AlexaCall(requestJSON, callback));
-
-        if (readyToCall) {
-            this.callSkillImpl(this._callQueue[0]);
-        }
+        let self = this;
+        this.sequence(function (done) {
+            self.callSkillImpl(requestJSON, callback, done);
+        });
     }
 
-    private callSkillImpl(call: AlexaCall) {
-        let self = this;
-        let requestJSON = this._callQueue[0].requestJSON;
-        let callback = this._callQueue[0].callback;
+    public sequence(action: AlexaAction) {
+        this._actionQueue.enqueue(action);
+    }
 
+    private callSkillImpl(requestJSON: any, callback: AlexaResponseCallback, done: Function) {
+        let self = this;
         LoggingHelper.info(Logger, "CALLING: " + requestJSON.request.type);
 
         let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
-            // If we are shutting down, stop when we hit this
-            if (self._shutdown) {
-                self._shutdownHook();
-                return;
-            }
-
             // After a call, set the session to used (no longer new)
             if (self.activeSession()) {
                 self.session().used();
@@ -169,12 +158,6 @@ export class Alexa {
                 }
             }
 
-            // Send the next queued request, if there is one
-            self._callQueue = self._callQueue.slice(1);
-            if (self._callQueue.length > 0) {
-                self.callSkillImpl(self._callQueue[0]);
-            }
-
             if (error) {
                 if (callback !== undefined && callback !== null) {
                     callback(null, null, error.message);
@@ -182,7 +165,7 @@ export class Alexa {
             } else {
                 // Check if there are any audio directives when it comes back
                 if (body.response !== undefined && body.response.directives !== undefined) {
-                    self._audioPlayer.directivesReceived(request, body.response.directives);
+                    self._audioPlayer.directivesReceived(requestJSON, body.response.directives);
                 }
 
                 if (callback !== undefined && callback !== null) {
@@ -191,6 +174,8 @@ export class Alexa {
 
                 self._emitter.emit(AlexaEvent[AlexaEvent.SkillResponse], requestJSON, body);
             }
+
+            done();
         };
 
         try {
@@ -210,7 +195,7 @@ export class Alexa {
     /**
      * This is its own method for mocking
      * @param options
-     * @param callback
+     * @param responseHandler
      */
     protected post(options: any, responseHandler: RequestCallback) {
         request.post(options, responseHandler);
@@ -221,15 +206,56 @@ export class Alexa {
     }
 
     public shutdown(onShutdown: () => void) {
-        this._shutdown = true;
-        this._shutdownHook = onShutdown;
         // Wait until the current call finishes if the queue > 0 - otherwise, call complete now
-        if (this._callQueue.length === 0) {
-            this._shutdownHook();
-        }
+        this._actionQueue.stop(function () {
+            onShutdown();
+        });
     }
 }
 
-export class AlexaCall {
-    public constructor(public requestJSON: any, public callback: AlexaResponseCallback) {}
+export interface AlexaAction {
+    (done: Function): void;
+}
+
+export class ActionQueue {
+    private _queue: Array<AlexaAction> = [];
+    private _stop: boolean = false;
+    private _stopCallback: Function;
+
+    public enqueue(action: AlexaAction): void {
+        this._queue.push(action);
+        if (this._queue.length === 1) {
+            this.next();
+        }
+    }
+
+    public processing(): boolean {
+        return (this._queue.length > 0);
+    }
+
+    public next() {
+        let self = this;
+        if (this._queue.length === 0) {
+            return;
+        }
+
+        let action = this._queue[0];
+        action(function () {
+            self._queue = self._queue.slice(1);
+            if (self._stop) {
+                self._stopCallback();
+            } else {
+                self.next();
+            }
+        });
+    }
+
+    public stop(onStop: Function) {
+        this._stop = true;
+        if (this.processing()) {
+            this._stopCallback = onStop;
+        } else {
+            onStop();
+        }
+    }
 }

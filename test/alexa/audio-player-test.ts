@@ -18,7 +18,8 @@ describe("AudioPlayer", function() {
                 offsetInMilliseconds: 0
             }});
             let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished"], [null, null]);
-            let audioPlayer = (<any> alexa)._audioPlayer;
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_audioPlayer"] = audioPlayer;
             audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.fastForward();
             alexa.verify(function () {
@@ -39,7 +40,8 @@ describe("AudioPlayer", function() {
             let alexa = new MockAlexa(
                 ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished", "AudioPlayer.PlaybackStarted",  "AudioPlayer.PlaybackNearlyFinished"],
                 [null, directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), null, null, null]);
-            let audioPlayer = (<any> alexa)._audioPlayer;
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_audioPlayer"] = audioPlayer;
             audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.fastForward();
             alexa.verify(function () {
@@ -59,12 +61,40 @@ describe("AudioPlayer", function() {
             let alexa = new MockAlexa(
                 ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackStopped", "AudioPlayer.PlaybackStarted",  "AudioPlayer.PlaybackNearlyFinished"],
                 [null, directiveResponse("AudioPlayer.Play", "REPLACE_ALL", "1"), null, null, null]);
-            let audioPlayer = (<any> alexa)._audioPlayer;
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_audioPlayer"] = audioPlayer;
             audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
                 assert.equal(alexa.call(3).request.token, "1");
+                done();
+            });
+        });
+
+        it("Enqueues a track, replaces queue", function(done) {
+            let item = new AudioItem({stream: {
+                url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "0",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+            let alexa = new MockAlexa(
+                ["AudioPlayer.PlaybackStarted",
+                    "AudioPlayer.PlaybackNearlyFinished",
+                    "AudioPlayer.PlaybackFinished",
+                    "AudioPlayer.PlaybackStarted",
+                    "AudioPlayer.PlaybackNearlyFinished"],
+                [directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), directiveResponse("AudioPlayer.Play", "REPLACE_ENQUEUED", "2"), null, null, null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_audioPlayer"] = audioPlayer;
+            audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.fastForward();
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
+                assert.equal(alexa.call(0).request.token, "0");
+                assert.equal(alexa.call(3).request.token, "2");
                 done();
             });
         });
@@ -95,7 +125,6 @@ function directiveResponse (dircectiveType: string, playBehavior: string, token:
 
 class MockAlexa extends Alexa {
     private actualCalls: Array<any> = [];
-    private done: () => void = null;
 
     public constructor(private expects?: Array<string>, private responses?: Array<any>) {
         super();
@@ -119,37 +148,34 @@ class MockAlexa extends Alexa {
             response = this.responses[index];
         }
 
-        let self = this;
         setTimeout(function () {
             responseHandler(null, null, response);
-            if ((<any> self)._callQueue.length === 0) {
-                self.done();
-            };
         }, 5);
     }
 
     public verify(done: () => void) {
-        this.done = function () {
-            if (this.expects !== undefined && this.expects !== null) {
-                for (let i = 0; i < this.expects.length; i++) {
-                    let expectation = this.expects[i];
-                    if (this.actualCalls.length < (i + 1)) {
+        let self = this;
+        setTimeout(function () {
+            if (self.expects !== undefined && self.expects !== null) {
+                for (let i = 0; i < self.expects.length; i++) {
+                    let expectation = self.expects[i];
+                    if (self.actualCalls.length < (i + 1)) {
                         throw Error("No actual call for expectation: " + expectation);
                     }
 
-                    let actualCall = this.actualCalls[i];
+                    let actualCall = self.actualCalls[i];
                     if (expectation !== actualCall.request.type) {
                         assert(false, "Actual call: " + actualCall.request.type + " does not match expected: " + expectation);
                     }
                 }
             }
 
-            if (this.actualCalls.length > this.expects.length) {
-                assert(false, "Actual calls: " + this.actualCalls.length + " Expected: " + this.expects.length);
+            if (self.actualCalls.length > self.expects.length) {
+                assert(false, "Actual calls: " + self.actualCalls.length + " Expected: " + self.expects.length);
             }
 
             done();
-        };
+        }, 100);
     }
 }
 
