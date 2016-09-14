@@ -8,6 +8,7 @@ export class RequestType {
     public static SessionEndedRequest = "SessionEndedRequest";
     public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished";
     public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
+    public static AudioPlayerPlaybackStopped = "AudioPlayer.PlaybackStopped";
 }
 
 export enum SessionEndedReason {
@@ -30,8 +31,12 @@ export class ServiceRequest {
      * @returns {ServiceRequest}
      */
     public intentRequest(intentName: string): ServiceRequest {
-        if (!this.session.interactionModel.hasIntent(intentName)) {
-            throw new Error("Interaction model has no intentName named: " + intentName);
+        if (!intentName.startsWith("AMAZON")) {
+            if (this.session === undefined || this.session === null) {
+                throw new Error("No session - cannot pass custom intent when not in session");
+            } else if (!this.session.interactionModel.hasIntent(intentName)) {
+                throw new Error("Interaction model has no intentName named: " + intentName);
+            }
         }
 
         this.requestJSON = this.baseRequest(RequestType.IntentRequest);
@@ -52,6 +57,13 @@ export class ServiceRequest {
 
     public playbackNearlyFinished(token: string, offsetInMilliseconds: number): ServiceRequest {
         this.requestJSON = this.baseRequest(RequestType.AudioPlayerPlaybackNearlyFinished);
+        this.requestJSON.request.token = token;
+        this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
+        return this;
+    }
+
+    public playbackStopped(token: string, offsetInMilliseconds: number): ServiceRequest {
+        this.requestJSON = this.baseRequest(RequestType.AudioPlayerPlaybackStopped);
         this.requestJSON.request.token = token;
         this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
         return this;
@@ -118,13 +130,14 @@ export class ServiceRequest {
         if (this.session !== undefined && this.session !== null) {
             let newSession = this.session.isNew();
             let sessionID = this.session.id();
+            let attributes = this.session.attributes();
 
             request.session = {
                 sessionId: sessionID,
                 application: {
                     applicationId: applicationID
                 },
-                attributes: {},
+                attributes: attributes,
                 user: {
                     userId: userID
                 },

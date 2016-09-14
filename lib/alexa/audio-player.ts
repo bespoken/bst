@@ -22,31 +22,72 @@ export class AudioPlayer {
     public static PlayBehaviorReplaceEnqueued = "REPLACE_ENQUEUED";
 
     private _playing: AudioItem = null;
+    private _playingStartTime: number = 0;
+    private _playingStopTime: number = 0;
     private _queue: Array<AudioItem> = [];
     private _state: AudioPlayerState = null;
+    private _suspended: boolean = false;
 
     public constructor (public alexa: Alexa) {
         this._state = AudioPlayerState.PlaybackStopped;
     }
 
-    public queue(): Array<AudioItem> {
-        return this._queue;
+    public play(audioItem: AudioItem, playBehavior: string) {
+        if (playBehavior === AudioPlayer.PlayBehaviorEnqueue) {
+            this.enqueue(audioItem);
+
+        } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
+            this._playing = null;
+            this.clearQueue();
+            this.enqueue(audioItem);
+
+        } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceEnqueued) {
+            this.clearQueue();
+            this.enqueue(audioItem);
+        }
+    }
+
+    public stop() {
+        this._playingStopTime = new Date().getTime();
+        let offset = this._playingStopTime - this._playingStartTime;
+        this.playbackStopped(offset);
+    }
+
+    public suspend() {
+        this._suspended = true;
+        this.stop();
+    }
+
+    public suspended(): boolean {
+        return this._suspended;
+    }
+
+    public resume() {
+        this._suspended = false;
+        let offset = this._playingStopTime - this._playingStartTime;
+        this._playingStopTime = 0;
+        this.playbackStarted(offset);
     }
 
     private playbackNearlyFinished(offset: number): void {
         let audioPlayerRequest = new ServiceRequest(this.alexa.context()).playbackNearlyFinished(this._playing.token, offset).toJSON();
-        this.alexa.callSkill(audioPlayerRequest, function (request: any, response: any, error?: string) {
-            console.log("Response Received: " + response);
-        });
+        this.alexa.callSkill(audioPlayerRequest);
     }
 
     private playbackStarted(offset: number): void {
         this._state = AudioPlayerState.PlaybackStarted;
+        this._playingStartTime = new Date().getTime();
         let audioPlayerRequest = new ServiceRequest(this.alexa.context()).playbackStarted(this._playing.token, offset).toJSON();
 
-        this.alexa.callSkill(audioPlayerRequest, function (request: any, response: any, error?: string) {
-            console.log("Response Received: " + response);
-        });
+        this.alexa.callSkill(audioPlayerRequest);
+    }
+
+    private playbackStopped(offset: number): void {
+        this._state = AudioPlayerState.PlaybackStopped;
+
+        let audioPlayerRequest = new ServiceRequest(this.alexa.context()).playbackStopped(this._playing.token, offset).toJSON();
+
+        this.alexa.callSkill(audioPlayerRequest);
     }
 
     public directivesReceived(request: any, directives: Array<any>): void {
@@ -59,26 +100,26 @@ export class AudioPlayer {
         // Handle AudioPlayer.Play
         if (directive.type === AudioPlayer.DirectivePlay) {
             let audioItem = new AudioItem(directive.audioItem);
-
             let playBehavior: string = directive.playBehavior;
+            this.play(audioItem, playBehavior);
 
-            if (playBehavior === AudioPlayer.PlayBehaviorEnqueue) {
-                this.playOrEnqueue(audioItem);
-
-            } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
-                this._queue = [];
-                this._playing = null;
-                this.playOrEnqueue(audioItem);
-
-            } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceEnqueued) {
-                this._queue = [];
-                this.playOrEnqueue(audioItem);
+        } else if (directive.type === AudioPlayer.DirectiveStop) {
+            this._suspended = false;
+            if (this.playing()) {
+                this.stop();
             }
         }
     }
 
-    private playOrEnqueue(audioItem: AudioItem) {
-        let self = this;
+    public queue(): Array<AudioItem> {
+        return this._queue;
+    }
+
+    public clearQueue(): void {
+        this._queue = [];
+    }
+
+    private enqueue(audioItem: AudioItem) {
         if (this._playing !== null) {
             this._queue.push(audioItem);
         } else {
@@ -86,15 +127,11 @@ export class AudioPlayer {
             this.playbackStarted(0);
 
             // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
-            let offset = 50;
-            setTimeout(function () {
-                self.playbackNearlyFinished(offset);
-            }, offset);
-
+            this.playbackNearlyFinished(new Date().getTime() - this._playingStartTime);
         }
     }
 
-    private playing(): boolean {
+    public playing(): boolean {
         return (this._state === AudioPlayerState.PlaybackStarted || this._state === AudioPlayerState.PlaybackNearlyFinished);
     }
 }

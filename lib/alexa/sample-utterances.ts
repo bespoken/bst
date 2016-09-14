@@ -167,4 +167,12 @@ export class UtteredIntent {
     public slotValue(index: number) {
         return new Phrase(this.utterance).slots[index];
     }
+
+    public toJSON(): any {
+        let json: any = {};
+        for (let i = 0; i < this.slotCount(); i++) {
+            json[this.slotName(i)] = this.slotValue(i);
+        }
+        return json;
+    }
 }

@@ -12,9 +12,15 @@ export class AlexaSession {
         this._attributes = {};
     }
 
-
     public attributes(): {[id: string]: any} {
         return this._attributes;
+    }
+
+    public updateAttributes(sessionAttributes: any) {
+        if (sessionAttributes !== undefined && sessionAttributes !== null) {
+            this._attributes = sessionAttributes;
+        }
+
     }
 
     public id(): string {
