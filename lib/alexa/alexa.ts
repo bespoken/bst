@@ -90,7 +90,7 @@ export class Alexa {
      * @param slots
      * @param callback
      */
-    public intended(intentName: string, slots: any, callback: AlexaResponseCallback): void {
+    public intended(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
         // We validate the intents that don't start with Amazon
         //  Otherwise we just pass it through
         if (!intentName.startsWith("AMAZON")) {
@@ -104,7 +104,7 @@ export class Alexa {
         this.callSkillWithIntent(intentName, slots, callback);
     }
 
-    private callSkillWithIntent(intentName: string, slots: any, callback: AlexaResponseCallback): void {
+    private callSkillWithIntent(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
         let self = this;
         try {
             let serviceRequest = new ServiceRequest(this._context, this._session).intentRequest(intentName);
@@ -120,13 +120,17 @@ export class Alexa {
                 this._audioPlayer.suspend();
             }
             this.callSkill(requestJSON, function (requestJSON: any, responseJSON: any, error?: string) {
-                callback(requestJSON, responseJSON, error);
+                if (callback !== undefined && callback !== null) {
+                    callback(requestJSON, responseJSON, error);
+                }
                 if (self._audioPlayer.suspended()) {
                     self._audioPlayer.resume();
                 }
             });
         } catch (e) {
-            callback(null, null, e.message);
+            if (callback !== undefined && callback !== null) {
+                callback(null, null, e.message);
+            }
         }
     }
 
