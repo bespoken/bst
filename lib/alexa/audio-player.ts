@@ -22,7 +22,7 @@ export class AudioPlayer {
     public static PlayBehaviorReplaceEnqueued = "REPLACE_ENQUEUED";
 
     private _playingStartTime: number = 0;
-    private _playingStopTime: number = 0;
+    private _playingOffset: number = 0;
     private _queue: Array<AudioItem> = [];
     private _state: AudioPlayerState = null;
     private _suspended: boolean = false;
@@ -32,25 +32,37 @@ export class AudioPlayer {
         console.log("CREATED");
     }
 
-    public play(audioItem: AudioItem, playBehavior: string) {
+    public enqueue(audioItem: AudioItem, playBehavior: string) {
         if (playBehavior === AudioPlayer.PlayBehaviorEnqueue) {
-            this.enqueue(audioItem);
+            this.queueAdd(audioItem);
 
         } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
             this.stop();
-            this.clearQueue();
-            this.enqueue(audioItem);
+            this.queueClear();
+            this.queueAdd(audioItem);
 
         } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceEnqueued) {
-            this.replaceQueue();
-            this.enqueue(audioItem);
+            this.queueReplace();
+            this.queueAdd(audioItem);
         }
     }
 
+    public playNext() {
+        if (this._queue.length === 0) {
+            return;
+        }
+
+        this._playingStartTime = new Date().getTime();
+        this._playingOffset = 0;
+        this.playbackStarted();
+
+        // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
+        this.playbackNearlyFinished();
+    }
+
     public stop() {
-        this._playingStopTime = new Date().getTime();
-        let offset = this._playingStopTime - this._playingStartTime;
-        this.playbackStopped(offset);
+        this._playingOffset = this._playingOffset + (new Date().getTime() - this._playingStartTime);
+        this.playbackStopped();
     }
 
     public suspend() {
@@ -70,47 +82,50 @@ export class AudioPlayer {
         let self = this;
         // We make up an offset - we do not know how long the audio file is
         this.alexa.sequence(function (done) {
-            self.playbackFinished(1000);
-            self.dequeue();
-            self.next();
+            self.playbackFinished(self._playingOffset + 1000);
+            self.queueSlice();
+            self.playNext();
             done();
         });
     }
 
     public resume() {
         this._suspended = false;
-        let offset = this._playingStopTime - this._playingStartTime;
-        this._playingStopTime = 0;
-        this.playbackStarted(offset);
+        this._playingStartTime = new Date().getTime();
+
+        this.playbackStarted();
+
+        // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
+        this.playbackNearlyFinished();
     }
 
-    private playbackNearlyFinished(offset: number): void {
+    private playbackNearlyFinished(): void {
+        let offset = new Date().getTime() - this._playingStartTime;
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, this.playing().token, offset);
         this.alexa.callSkill(serviceRequest.toJSON());
     }
 
     private playbackFinished(offset: number): void {
+        this._state = AudioPlayerState.PlaybackFinished;
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished, this.playing().token, offset);
         this.alexa.callSkill(serviceRequest.toJSON());
     }
 
-    private playbackStarted(offset: number): void {
+    private playbackStarted(): void {
         this._state = AudioPlayerState.PlaybackStarted;
-        this._playingStartTime = new Date().getTime();
 
         let serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, offset);
+        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, this._playingOffset);
         this.alexa.callSkill(serviceRequest.toJSON());
     }
 
-    private playbackStopped(offset: number): void {
-        let stoppedItem = this.playing();
+    private playbackStopped(): void {
         this._state = AudioPlayerState.PlaybackStopped;
 
         let serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped, stoppedItem.token, offset);
+        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped, this.playing().token, this._playingOffset);
         this.alexa.callSkill(serviceRequest.toJSON());
     }
 
@@ -125,36 +140,38 @@ export class AudioPlayer {
         if (directive.type === AudioPlayer.DirectivePlay) {
             let audioItem = new AudioItem(directive.audioItem);
             let playBehavior: string = directive.playBehavior;
-            this.play(audioItem, playBehavior);
+            this.enqueue(audioItem, playBehavior);
 
         } else if (directive.type === AudioPlayer.DirectiveStop) {
-            this._suspended = false;
-            if (this.playing()) {
+            if (this.suspended()) {
+                this._suspended = false;
+            } else if (this.playing()) {
                 this.stop();
             }
         }
     }
 
-    private clearQueue(): void {
-        this._queue = [];
-    }
-
-    private replaceQueue(): void {
-        this._queue = [this._queue[0]];
-    }
 
     public isPlaying(): boolean {
         return (this._state === AudioPlayerState.PlaybackStarted || this._state === AudioPlayerState.PlaybackNearlyFinished);
     }
 
-    private enqueue(audioItem: AudioItem): void {
+    private queueAdd(audioItem: AudioItem): void {
         this._queue.push(audioItem);
         if (this._queue.length === 1) {
-            this.next();
+            this.playNext();
         }
     }
 
-    private dequeue(): void {
+    private queueClear(): void {
+        this._queue = [];
+    }
+
+    private queueReplace(): void {
+        this._queue = [this._queue[0]];
+    }
+
+    private queueSlice(): void {
         this._queue = this._queue.slice(1);
     }
 
@@ -163,17 +180,6 @@ export class AudioPlayer {
             return null;
         }
         return this._queue[0];
-    }
-
-    private next() {
-        if (this._queue.length === 0) {
-            return;
-        }
-
-        this.playbackStarted(0);
-
-        // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
-        this.playbackNearlyFinished(new Date().getTime() - this._playingStartTime);
     }
 }
 

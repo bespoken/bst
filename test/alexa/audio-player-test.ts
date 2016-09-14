@@ -20,7 +20,7 @@ describe("AudioPlayer", function() {
             let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished"], [null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_audioPlayer"] = audioPlayer;
-            audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.fastForward();
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
@@ -42,7 +42,7 @@ describe("AudioPlayer", function() {
                 [null, directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_audioPlayer"] = audioPlayer;
-            audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.fastForward();
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
@@ -63,7 +63,7 @@ describe("AudioPlayer", function() {
                 [null, directiveResponse("AudioPlayer.Play", "REPLACE_ALL", "1"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_audioPlayer"] = audioPlayer;
-            audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
@@ -88,7 +88,7 @@ describe("AudioPlayer", function() {
                 [directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), directiveResponse("AudioPlayer.Play", "REPLACE_ENQUEUED", "2"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_audioPlayer"] = audioPlayer;
-            audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.fastForward();
 
             alexa.verify(function () {
@@ -112,11 +112,12 @@ describe("AudioPlayer", function() {
                     "AudioPlayer.PlaybackNearlyFinished",
                     "AudioPlayer.PlaybackStopped",
                     "IntentRequest",
-                    "AudioPlayer.PlaybackStarted"],
+                    "AudioPlayer.PlaybackStarted",
+                    "AudioPlayer.PlaybackNearlyFinished"],
                 [null, null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_audioPlayer"] = audioPlayer;
-            audioPlayer.play(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             setTimeout(function () {
                 alexa.intended("AMAZON.LoopOffIntent", null);
             }, 5);
@@ -127,6 +128,30 @@ describe("AudioPlayer", function() {
                 let stopOffset = alexa.call(2).request.offsetInMilliseconds;
                 assert.equal(alexa.call(4).request.token, "0");
                 assert.equal(alexa.call(4).request.offsetInMilliseconds, stopOffset);
+                done();
+            });
+        });
+
+        it("Suspends and does not resume", function(done) {
+            let item = new AudioItem({stream: {
+                url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "0",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+            let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted",
+                    "AudioPlayer.PlaybackNearlyFinished",
+                    "AudioPlayer.PlaybackStopped",
+                    "IntentRequest"],
+                [null, null, null, directiveResponse("AudioPlayer.Stop", null, "0")]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+            alexa.intended("AMAZON.PauseIntent", null);
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
+                assert.equal(alexa.call(0).request.token, "0");
                 done();
             });
         });
