@@ -6,6 +6,7 @@ export class RequestType {
     public static IntentRequest = "IntentRequest";
     public static LaunchRequest = "LaunchRequest";
     public static SessionEndedRequest = "SessionEndedRequest";
+    public static AudioPlayerPlaybackFinished = "AudioPlayer.PlaybackFinished";
     public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished";
     public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
     public static AudioPlayerPlaybackStopped = "AudioPlayer.PlaybackStopped";
@@ -48,25 +49,10 @@ export class ServiceRequest {
         return this;
     }
 
-    public playbackStarted(token: string, offsetInMilliseconds: number): ServiceRequest {
-        this.requestJSON = this.baseRequest(RequestType.AudioPlayerPlaybackStarted);
+    public audioPlayerRequest(requestType: string, token: string, offsetInMilliseconds: number) {
+        this.requestJSON = this.baseRequest(requestType);
         this.requestJSON.request.token = token;
         this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
-        return this;
-    }
-
-    public playbackNearlyFinished(token: string, offsetInMilliseconds: number): ServiceRequest {
-        this.requestJSON = this.baseRequest(RequestType.AudioPlayerPlaybackNearlyFinished);
-        this.requestJSON.request.token = token;
-        this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
-        return this;
-    }
-
-    public playbackStopped(token: string, offsetInMilliseconds: number): ServiceRequest {
-        this.requestJSON = this.baseRequest(RequestType.AudioPlayerPlaybackStopped);
-        this.requestJSON.request.token = token;
-        this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
-        return this;
     }
 
     public launchRequest(): ServiceRequest {

@@ -135,7 +135,6 @@ export class Alexa {
     }
 
     public callSkill(requestJSON: any, callback?: AlexaResponseCallback): void {
-        console.log("!!!CALLING: " + requestJSON.request.type);
         let readyToCall = this._callQueue.length === 0;
         this._callQueue.push(new AlexaCall(requestJSON, callback));
 
@@ -148,6 +147,8 @@ export class Alexa {
         let self = this;
         let requestJSON = this._callQueue[0].requestJSON;
         let callback = this._callQueue[0].callback;
+
+        LoggingHelper.info(Logger, "CALLING: " + requestJSON.request.type);
 
         let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
             // If we are shutting down, stop when we hit this
@@ -179,8 +180,6 @@ export class Alexa {
                     callback(null, null, error.message);
                 }
             } else {
-                console.log("!!!EMIT1: " + requestJSON.request.type);
-
                 // Check if there are any audio directives when it comes back
                 if (body.response !== undefined && body.response.directives !== undefined) {
                     self._audioPlayer.directivesReceived(request, body.response.directives);
@@ -189,7 +188,7 @@ export class Alexa {
                 if (callback !== undefined && callback !== null) {
                     callback(requestJSON, body);
                 }
-                console.log("!!!EMIT2: " + requestJSON.request.type);
+
                 self._emitter.emit(AlexaEvent[AlexaEvent.SkillResponse], requestJSON, body);
             }
         };
