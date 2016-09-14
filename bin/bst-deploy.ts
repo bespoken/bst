@@ -28,7 +28,7 @@ program
         let isDir = fs.lstatSync(lambdaFolder).isDirectory();
 
         if (!isDir) {
-            throw lambdaFolder+ " is not a directory!";
+            throw lambdaFolder + " is not a directory!";
         }
 
         LambdaConfig.initialize();
@@ -41,7 +41,7 @@ program
 
         if (!LambdaConfig.AWS_FUNCTION_NAME) {
             LambdaConfig.AWS_FUNCTION_NAME = path.resolve(lambdaFolder).split(path.sep).pop();
-            console.log("We named your lambda "+LambdaConfig.AWS_FUNCTION_NAME+" (your project folder). You are welcome!");
+            console.log("We named your lambda " + LambdaConfig.AWS_FUNCTION_NAME + " (your project folder). You are welcome!");
 
             Global.config().configuration.lambdaDeploy.functionName = LambdaConfig.AWS_FUNCTION_NAME;
             Global.config().save();
@@ -62,7 +62,7 @@ program
                         console.log("Re-using existing BST lambda role.");
                         return arn;
                     } else {
-                        console.log("We created a AWS role for your lambda and called it "+defaultLambdaRoleName+". You are welcome!");
+                        console.log("We created a AWS role for your lambda and called it " + defaultLambdaRoleName + ". You are welcome!");
                         console.log("Note that this lambda execution role is very basic. You may have to customize it on the AWS console!");
                         return roleHelper.createRole(defaultLambdaRoleName);
                     }

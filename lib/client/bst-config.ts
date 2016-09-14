@@ -81,7 +81,7 @@ export class BSTConfig {
         return {
             "nodeID": nodeID,
             "lambdaDeploy": lambdaConfig
-        }
+        };
     }
 }
 

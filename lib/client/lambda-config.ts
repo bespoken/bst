@@ -1,29 +1,27 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import {Global} from "../core/global";
-import {LoggingHelper} from "../core/logging-helper";
 
 let PropertiesReader = require("properties-reader");
 
-let Logger = "LambdaConfig";
-let home:string = process.env[(process.platform === "win32") ? "USERPROFILE" : "HOME"];
+let home: string = process.env[(process.platform === "win32") ? "USERPROFILE" : "HOME"];
 
 export class LambdaConfig {
-    public static EXCLUDE_GLOBS:string;
+    public static EXCLUDE_GLOBS: string;
 
-    public static AWS_ACCESS_KEY_ID:string;
-    public static AWS_SECRET_ACCESS_KEY:string;
-    public static AWS_REGION:string;
-    public static AWS_FUNCTION_NAME:string;
-    public static AWS_HANDLER:string;
-    public static AWS_ROLE:string;
-    public static AWS_MEMORY_SIZE:number;
-    public static AWS_TIMEOUT:number;
-    public static AWS_DESCRIPTION:string;
-    public static AWS_RUNTIME:string;
+    public static AWS_ACCESS_KEY_ID: string;
+    public static AWS_SECRET_ACCESS_KEY: string;
+    public static AWS_REGION: string;
+    public static AWS_FUNCTION_NAME: string;
+    public static AWS_HANDLER: string;
+    public static AWS_ROLE: string;
+    public static AWS_MEMORY_SIZE: number;
+    public static AWS_TIMEOUT: number;
+    public static AWS_DESCRIPTION: string;
+    public static AWS_RUNTIME: string;
     public static AWS_PUBLISH: boolean;
-    public static AWS_VPC_SUBNETS:string;
-    public static AWS_VPC_SECURITY_GROUPS:string;
+    public static AWS_VPC_SUBNETS: string;
+    public static AWS_VPC_SECURITY_GROUPS: string;
 
     // Future use
     public static PACKAGE_DIRECTORY: string;
@@ -46,11 +44,11 @@ export class LambdaConfig {
 
                 "excludeGlobs": "event.json"
             }
-        }
+        };
     }
 
-    public static initialize():void {
-        let awsConfig:any = null;
+    public static initialize(): void {
+        let awsConfig: any = null;
 
         // If bst lambdaDeploy is missing we need to upgrade
 
@@ -95,7 +93,7 @@ export class LambdaConfig {
 
     }
 
-    public static validate():void {
+    public static validate(): void {
         if (!LambdaConfig.AWS_ROLE) {
             throw "Lambda execution role is not defined!";
         }

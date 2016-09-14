@@ -6,7 +6,7 @@ const aws = require("aws-sdk");
  * Create AWS roles for the lambdas
  */
 export class LambdaRole {
-    private iam:any = null;
+    private iam: any = null;
 
     public constructor() {
         let aws_security = {
@@ -26,11 +26,11 @@ export class LambdaRole {
      * @param roleName
      * @returns {Promise<T>}
      */
-    public createRole(roleName:string):Promise<string> {
+    public createRole(roleName: string): Promise<string> {
         return new Promise((resolve, reject) => {
             let roleRrn: string = null;
 
-            let assumeRolePolicy:any = {
+            let assumeRolePolicy: any = {
                 Version: "2012-10-17",
                 Statement: [
                     {
@@ -44,7 +44,7 @@ export class LambdaRole {
                 ]
             };
 
-            let createParams:any = {
+            let createParams: any = {
                 AssumeRolePolicyDocument: JSON.stringify(assumeRolePolicy, null, 2),
                 RoleName: roleName
             };
@@ -62,7 +62,7 @@ export class LambdaRole {
                 .then((data: any) => {
                     resolve(roleRrn);
                 })
-                .catch((err:Error) => {
+                .catch((err: Error) => {
                     reject(err);
                 });
         });
@@ -80,7 +80,7 @@ export class LambdaRole {
 
             getRolePromise
                 .then((data: any) => {
-                    console.log("AWS role " + roleName + " already existed. ARN: "+data.Role.Arn);
+                    console.log("AWS role " + roleName + " already existed. ARN: " + data.Role.Arn);
                     resolve(data.Role.Arn);
                 })
                 .catch((err: any) => {
@@ -155,9 +155,9 @@ export class LambdaRole {
 
             putRolePromise
                 .then((data: any) => {
-                    resolve(data)
+                    resolve(data);
                 })
-                .catch((err:Error) => {
+                .catch((err: Error) => {
                     reject(err);
                 });
         });

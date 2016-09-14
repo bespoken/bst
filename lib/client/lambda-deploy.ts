@@ -47,7 +47,7 @@ export class LambdaDeploy {
                         console.log();
                         console.log("\t" + result.FunctionArn);
                         console.log();
-                    })
+                    });
                 }
             });
 
@@ -85,9 +85,9 @@ export class LambdaDeploy {
      * Log the params without the buffer
      * @param params
      */
-    private logParams(params:any) {
+    private logParams(params: any) {
         let buff = params.Code.ZipFile;
-        params.Code.ZipFile = "<"+buff.length+" bytes>";
+        params.Code.ZipFile = "<" + buff.length + " bytes>";
         LoggingHelper.verbose(logger, JSON.stringify(params, null, 2));
         params.Code.ZipFile = buff;
     }
@@ -163,7 +163,7 @@ export class LambdaDeploy {
     private uploadNew(lambda: any, params: any, callback: (err: Error, result: string) => any) {
         return lambda.createFunction(params, function(err: Error, functionData: any) {
             if (!err) {
-                LoggingHelper.verbose(logger, "Lambda function was created: "+params.FunctionName);
+                LoggingHelper.verbose(logger, "Lambda function was created: " + params.FunctionName);
             }
 
             // Lets wait a second before we use the function
@@ -174,7 +174,7 @@ export class LambdaDeploy {
                     "Action": "lambda:InvokeFunction",
                     "Principal": "alexa-appkit.amazon.com",
                     "StatementId": new Date().getTime() + ""
-                }, function (err:Error, data:string) {
+                }, function (err: Error, data: string) {
                     if (!err) {
                         LoggingHelper.verbose(logger, "Alexa trigger was added to the function");
                     }
