@@ -1,5 +1,5 @@
 import {InteractionModel} from "../alexa/interaction-model";
-import {Alexa, AlexaResponseCallback, AlexaEvent} from "../alexa/alexa";
+import {Alexa, AlexaResponseCallback} from "../alexa/alexa";
 
 const DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
 const DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";

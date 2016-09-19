@@ -49,10 +49,11 @@ export class ServiceRequest {
         return this;
     }
 
-    public audioPlayerRequest(requestType: string, token: string, offsetInMilliseconds: number) {
+    public audioPlayerRequest(requestType: string, token: string, offsetInMilliseconds: number): ServiceRequest {
         this.requestJSON = this.baseRequest(requestType);
         this.requestJSON.request.token = token;
         this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
+        return this;
     }
 
     public launchRequest(): ServiceRequest {

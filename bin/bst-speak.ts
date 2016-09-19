@@ -59,7 +59,7 @@ program
                 return;
             }
 
-            speaker.speak(utterance, function(request: any, response: any) {
+            speaker.spoken(utterance, function(request: any, response: any) {
                 let jsonPretty = JSON.stringify(response, null, 4);
                 console.log("Spoke: " + utterance);
                 console.log("");

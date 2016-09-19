@@ -1,8 +1,4 @@
-/**
- * This holds all the "public" classes from bespoken-tools
- */
-var BSTSpeak = require('./lib/client/bst-speak').BSTSpeak;
-var LambdaRunner = require('./lib/client/lambda-runner').LambdaRunner;
-
-exports.BSTSpeak = BSTSpeak;
-exports.LambdaRunner = LambdaRunner;
+"use strict";
+var bst_speak_ts_1 = require("./lib/client/bst-speak.ts");
+exports.BSTSpeak = bst_speak_ts_1.BSTSpeak;
+//# sourceMappingURL=index.js.map

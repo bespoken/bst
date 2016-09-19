@@ -7,6 +7,7 @@ import {InteractionModel} from "../../lib/alexa/interaction-model";
 import {SessionEndedReason} from "../../lib/alexa/service-request";
 import {AlexaContext} from "../../lib/alexa/alexa-context";
 import {AlexaSession} from "../../lib/alexa/alexa-session";
+import {RequestType} from "../../lib/alexa/service-request";
 
 
 describe("ServiceRequest", function() {
@@ -115,7 +116,7 @@ describe("ServiceRequest", function() {
         it("Correctly parses intents", function(done) {
             let requester: ServiceRequest = new ServiceRequest(context);
 
-            let request: any = requester.playbackStarted().toJSON();
+            let request: any = requester.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, "0", 20).toJSON();
             assert.equal(request.session, undefined);
             assert.equal(request.version, "1.0");
             assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
@@ -130,7 +131,7 @@ describe("ServiceRequest", function() {
         it("Correctly parses intents", function(done) {
             let requester: ServiceRequest = new ServiceRequest(context);
 
-            let request: any = requester.playbackNearlyFinished("1", 50).toJSON();
+            let request: any = requester.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, "1", 50).toJSON();
             assert.equal(request.session, undefined);
             assert.equal(request.version, "1.0");
             assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");

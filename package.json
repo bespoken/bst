@@ -23,6 +23,7 @@
     "mockery": "^1.7.0",
     "remap-istanbul": "^0.6.4",
     "tslint": "^3.13.0",
+    "typedoc": "^0.4.5",
     "typemoq": "^0.3.2",
     "typings": "1.3.1"
   },
@@ -34,11 +35,13 @@
     "url": "git://github.com/bespoken/bst.git"
   },
   "scripts": {
+    "library": "tsc --declaration index.ts --target ES6",
     "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
     "postversion": "git push && git push --tags",
     "pretest": "typings install && tsc && npm run lint",
     "coverage": "typings install && tsc && istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
-    "test": "mocha test/**/*-test.js"
+    "test": "mocha test/**/*-test.js",
+    "typedoc": "typedoc --readme docs/README_API.md --out docs/api --includes *.ts --mode file"
   }
 }
