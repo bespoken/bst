@@ -48,7 +48,7 @@ describe("bst-speak", function() {
                         ready();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {
+                    this.spoken = function (utterance: string, callback: any) {
                         assert.equal(utterance, "Hello");
                         callback({"request": "test"}, {"response": "test"});
                     };
@@ -74,7 +74,7 @@ describe("bst-speak", function() {
                         done();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {};
+                    this.spoken = function (utterance: string, callback: any) {};
                 }
             });
 
@@ -89,7 +89,7 @@ describe("bst-speak", function() {
                         ready();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {
+                    this.spoken = function (utterance: string, callback: any) {
                         assert.equal(utterance, "Hello");
                         callback({"request": "test"}, {"response": "test"});
                     };
@@ -115,7 +115,7 @@ describe("bst-speak", function() {
                         ready();
                     };
 
-                    this.speak = function (utterance: string) {
+                    this.spoken = function (utterance: string) {
                         assert.equal(utterance, "Hello There Ladies And Gentlemen");
                         done();
                         return this;
@@ -133,7 +133,7 @@ describe("bst-speak", function() {
                         ready("There was an error");
                     };
 
-                    this.speak = function (utterance: string) {
+                    this.spoken = function (utterance: string) {
                         assert.equal(utterance, "Hello There Ladies And Gentlemen");
                         return this;
                     };

@@ -9,6 +9,21 @@ import {RequestCallback} from "request";
 
 describe("AudioPlayer", function() {
 
+    describe("#launch", function() {
+        it("It launches", function (done) {
+            let alexa = new MockAlexa(["LaunchRequest"], [null, null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            alexa.launched();
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.type, "LaunchRequest");
+                assert.equal(alexa.call(0).context.AudioPlayer.playerActivity, "STOPPED");
+                done();
+            });
+        });
+    });
+
     describe("#play", function() {
         it("Enqueues a track, no existing track", function(done) {
             let item = new AudioItem({stream: {
@@ -247,7 +262,7 @@ class MockAlexa extends Alexa {
             }
 
             done();
-        }, 100);
+        }, 500);
     }
 }
 

@@ -87,6 +87,12 @@ export class Alexa {
         this.callSkillWithIntent(intent.intentName, intent.toJSON(), callback);
     }
 
+    public launched(callback?: AlexaResponseCallback) {
+        let serviceRequest = new ServiceRequest(this._context, this._session);
+        serviceRequest.launchRequest();
+        this.callSkill(serviceRequest, callback);
+    }
+
     /**
      * Passes in an intent with slots as a simple JSON map: {slot1: "value", slot2: "value2", etc.}
      * @param intentName
@@ -161,7 +167,7 @@ export class Alexa {
             if (self.activeSession()) {
                 self.session().used();
                 if (!error) {
-                    if (body.response.shouldEndSession) {
+                    if (body.response !== undefined && body.response.shouldEndSession) {
                         self.endSession();
                     } else {
                         self.session().updateAttributes(body.sessionAttributes);

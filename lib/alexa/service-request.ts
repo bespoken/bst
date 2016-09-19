@@ -138,7 +138,7 @@ export class ServiceRequest {
             || requestType === RequestType.LaunchRequest
             || requestType === RequestType.SessionEndedRequest) {
             if (this.context.audioPlayerEnabled()) {
-                let offset = this.context.audioPlayer().offsetInMilliseconds()
+                let offset = this.context.audioPlayer().offsetInMilliseconds();
                 let token = this.context.audioPlayer().token();
 
                 let state = this.context.audioPlayer().state();
@@ -154,7 +154,7 @@ export class ServiceRequest {
                     offsetInMilliseconds: offset,
                     token: token,
                     playerActivity: activity
-                }
+                };
             }
         }
 

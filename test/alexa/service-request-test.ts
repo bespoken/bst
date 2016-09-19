@@ -32,7 +32,7 @@ describe("ServiceRequest", function() {
     };
 
     let model: InteractionModel = new InteractionModel(new IntentSchema(intentSchemaJSON), null);
-    let context = new AlexaContext("https://skill.com/skillPath", "MyApp");
+    let context = new AlexaContext("https://skill.com/skillPath", null, "MyApp");
     let session = new AlexaSession(model);
 
     describe("#intentRequest()", function() {
@@ -134,7 +134,7 @@ describe("ServiceRequest", function() {
             let request: any = requester.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, "1", 50).toJSON();
             assert.equal(request.session, undefined);
             assert.equal(request.version, "1.0");
-            assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
+            assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
             assert.equal(request.request.timestamp.length, 20);
             assert.equal(request.request.offsetInMilliseconds, 50);
             assert.equal(request.request.token, "1");
