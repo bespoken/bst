@@ -11,6 +11,10 @@ import SinonSandbox = Sinon.SinonSandbox;
 
 describe("BSTConfig", function() {
     describe("#bootstrap()", function() {
+        (<any> BSTConfig).configDirectory = function () {
+            return "test/resources/.bst";
+        };
+
         beforeEach(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
                 done();
@@ -35,6 +39,19 @@ describe("BSTConfig", function() {
             // Make sure it does not get created again
             let config2 = BSTConfig.load();
             assert(config2.nodeID(), nodeID);
+            done();
+        });
+
+        it("Updates existing config", function (done) {
+            // Make sure we have a new one
+            let config = BSTConfig.load();
+            let nodeID = config.nodeID();
+            config.updateApplicationID("12345678");
+
+            // Make sure it does not get created again
+            let config2 = BSTConfig.load();
+            assert(config2.nodeID(), nodeID);
+            assert(config2.applicationID(), "12345678");
             done();
         });
 

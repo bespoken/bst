@@ -6,8 +6,11 @@ export class AlexaSession {
     private _new: boolean;
     private _id: string;
 
-    public constructor (public interactionModel: InteractionModel) {
+    public constructor (public interactionModel: InteractionModel, sessionID?: string) {
         this._id = "SessionID." + uuid.v4();
+        if (sessionID !== undefined && sessionID !== null) {
+            this._id = sessionID;
+        }
         this._new = true;
         this._attributes = {};
     }

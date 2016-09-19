@@ -1,5 +1,6 @@
 import {InteractionModel} from "../alexa/interaction-model";
 import {Alexa, AlexaResponseCallback} from "../alexa/alexa";
+import {Global} from "../core/global";
 
 const DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
 const DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";
@@ -23,6 +24,9 @@ export class BSTSpeak {
         }
 
         this._alexa = new Alexa();
+        if (this.applicationID !== undefined && this.applicationID !== null) {
+            Global.config().updateApplicationID(this.applicationID);
+        }
     }
 
     public initialize(ready: (error?: string) => void) {

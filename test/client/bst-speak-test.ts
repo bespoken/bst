@@ -3,6 +3,7 @@
 import * as assert from "assert";
 import {BSTSpeak} from "../../lib/client/bst-speak";
 import {LambdaRunner} from "../../lib/client/lambda-runner";
+import {Global} from "../../lib/core/global";
 
 describe("BSTSpeak", function() {
     describe("#initialize()", function() {
@@ -22,6 +23,17 @@ describe("BSTSpeak", function() {
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.initialize(function (error: string) {
                 assert(error === undefined);
+                done();
+            });
+        });
+
+        it("Initializes with application ID", function (done) {
+            let speak = new BSTSpeak("http://localhost:9000",
+                "test/resources/speechAssets/IntentSchema.json",
+                "test/resources/speechAssets/SampleUtterances.txt",
+                "1234567890J");
+            speak.initialize(function (error: string) {
+                assert(Global.config().applicationID(), "1234567890J");
                 done();
             });
         });
