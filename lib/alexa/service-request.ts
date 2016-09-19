@@ -1,5 +1,6 @@
 import {AlexaSession} from "./alexa-session";
 import {AlexaContext} from "./alexa-context";
+import {AudioPlayerState} from "./audio-player";
 const uuid = require("node-uuid");
 
 export class RequestType {
@@ -130,6 +131,31 @@ export class ServiceRequest {
                 },
                 "new": newSession
             };
+        }
+
+        // For intent, launch and session ended requests, send the audio player state if there is one
+        if (requestType === RequestType.IntentRequest
+            || requestType === RequestType.LaunchRequest
+            || requestType === RequestType.SessionEndedRequest) {
+            if (this.context.audioPlayerEnabled()) {
+                let offset = this.context.audioPlayer().offsetInMilliseconds()
+                let token = this.context.audioPlayer().token();
+
+                let state = this.context.audioPlayer().state();
+                let activity: string = null;
+
+                if (state === AudioPlayerState.PlaybackFinished) {
+                    activity = "FINISHED";
+                } else if (state === AudioPlayerState.PlaybackStopped) {
+                    activity = "STOPPED";
+                }
+
+                request.context.AudioPlayer = {
+                    offsetInMilliseconds: offset,
+                    token: token,
+                    playerActivity: activity
+                }
+            }
         }
 
         return request;

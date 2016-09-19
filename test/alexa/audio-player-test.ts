@@ -17,15 +17,21 @@ describe("AudioPlayer", function() {
                 expectedPreviousToken: null,
                 offsetInMilliseconds: 0
             }});
-            let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished"], [null, null]);
+            let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted",
+                "AudioPlayer.PlaybackNearlyFinished",
+                "AudioPlayer.PlaybackFinished",
+                "IntentRequest"], [null, null]);
             let audioPlayer = new AudioPlayer(alexa);
-            alexa["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
-            audioPlayer.fastForward();
+            audioPlayer.finish();
+            alexa.intended("AMAZON.LoopOffIntent", null);
+
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
                 assert(alexa.call(1).request.offsetInMilliseconds > 0);
+                assert.equal(alexa.call(3).context.AudioPlayer.playerActivity, "FINISHED");
                 done();
             });
         });
@@ -41,7 +47,7 @@ describe("AudioPlayer", function() {
                 ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished", "AudioPlayer.PlaybackStarted",  "AudioPlayer.PlaybackNearlyFinished"],
                 [null, directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
-            alexa["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.fastForward();
             alexa.verify(function () {
@@ -62,7 +68,7 @@ describe("AudioPlayer", function() {
                 ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackStopped", "AudioPlayer.PlaybackStarted",  "AudioPlayer.PlaybackNearlyFinished"],
                 [null, directiveResponse("AudioPlayer.Play", "REPLACE_ALL", "1"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
-            alexa["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
@@ -87,9 +93,15 @@ describe("AudioPlayer", function() {
                     "AudioPlayer.PlaybackNearlyFinished"],
                 [directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), directiveResponse("AudioPlayer.Play", "REPLACE_ENQUEUED", "2"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
-            alexa["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
-            audioPlayer.fastForward();
+            let firstResponse = true;
+            alexa.onSkillResponse(function(skillRequestJSON, skillResponseJSON) {
+                if (firstResponse && skillRequestJSON.request.type === "AudioPlayer.PlaybackNearlyFinished") {
+                    audioPlayer.fastForward();
+                    firstResponse = false;
+                }
+            });
 
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
@@ -116,7 +128,7 @@ describe("AudioPlayer", function() {
                     "AudioPlayer.PlaybackNearlyFinished"],
                 [null, null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
-            alexa["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             setTimeout(function () {
                 alexa.intended("AMAZON.LoopOffIntent", null);
@@ -126,6 +138,9 @@ describe("AudioPlayer", function() {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
                 let stopOffset = alexa.call(2).request.offsetInMilliseconds;
+                assert.equal(alexa.call(3).context.AudioPlayer.token, "0");
+                assert.equal(alexa.call(3).context.AudioPlayer.offsetInMilliseconds, stopOffset);
+                assert.equal(alexa.call(3).context.AudioPlayer.playerActivity, "STOPPED");
                 assert.equal(alexa.call(4).request.token, "0");
                 assert.equal(alexa.call(4).request.offsetInMilliseconds, stopOffset);
                 done();
@@ -145,7 +160,7 @@ describe("AudioPlayer", function() {
                     "IntentRequest"],
                 [null, null, null, directiveResponse("AudioPlayer.Stop", null, "0")]);
             let audioPlayer = new AudioPlayer(alexa);
-            alexa["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             alexa.intended("AMAZON.PauseIntent", null);
 
@@ -185,7 +200,7 @@ class MockAlexa extends Alexa {
 
     public constructor(private expects?: Array<string>, private responses?: Array<any>) {
         super();
-        this["_context"] = new AlexaContext("http://dummy.com");
+        this["_context"] = new AlexaContext("http://dummy.com", null);
     }
 
     public call(index: number) {

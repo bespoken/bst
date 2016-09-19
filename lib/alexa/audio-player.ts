@@ -47,6 +47,22 @@ export class AudioPlayer {
         }
     }
 
+    public offsetInMilliseconds(): number {
+        return this._playingOffset;
+    }
+
+    public state() {
+        return this._state;
+    }
+
+    public token(): string {
+        let token: string = null;
+        if (this.playing() !== null) {
+            token = this.playing().token;
+        }
+        return token;
+    }
+
     public playNext() {
         if (this._queue.length === 0) {
             return;
@@ -79,14 +95,18 @@ export class AudioPlayer {
      * Simulates audio being completed - not the same as AMAZON.NextIntent
      */
     public fastForward(): void {
-        let self = this;
-        // We make up an offset - we do not know how long the audio file is
-        this.alexa.sequence(function (done) {
-            self.playbackFinished(self._playingOffset + 1000);
-            self.queueSlice();
-            self.playNext();
-            done();
-        });
+        // let self = this;
+        // // We make up an offset - we do not know how long the audio file is
+        // this.alexa.sequence(function (done) {
+            this.finish();
+            this.playNext();
+        //     done();
+        // });
+    }
+
+    public finish(): void {
+        this.playbackFinished(this._playingOffset + 1000);
+        this.queueSlice();
     }
 
     public resume() {
@@ -103,14 +123,14 @@ export class AudioPlayer {
         let offset = new Date().getTime() - this._playingStartTime;
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, this.playing().token, offset);
-        this.alexa.callSkill(serviceRequest.toJSON());
+        this.alexa.callSkill(serviceRequest);
     }
 
     private playbackFinished(offset: number): void {
         this._state = AudioPlayerState.PlaybackFinished;
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished, this.playing().token, offset);
-        this.alexa.callSkill(serviceRequest.toJSON());
+        this.alexa.callSkill(serviceRequest);
     }
 
     private playbackStarted(): void {
@@ -118,7 +138,7 @@ export class AudioPlayer {
 
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest.toJSON());
+        this.alexa.callSkill(serviceRequest);
     }
 
     private playbackStopped(): void {
@@ -126,7 +146,7 @@ export class AudioPlayer {
 
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest.toJSON());
+        this.alexa.callSkill(serviceRequest);
     }
 
     public directivesReceived(request: any, directives: Array<any>): void {

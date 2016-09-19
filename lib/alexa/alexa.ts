@@ -21,7 +21,6 @@ export enum AlexaEvent {
 }
 
 export class Alexa {
-    private _audioPlayer: AudioPlayer = null;
     // Until we have a better approach, we sequence the calls
     private _actionQueue: ActionQueue = new ActionQueue();
     private _context: AlexaContext = null;
@@ -36,12 +35,16 @@ export class Alexa {
      * Must be called before sending any session-based requests
      */
     public startSession(skillURL: string, model: InteractionModel, audioEnabled: boolean, applicationID?: string): Alexa {
-        // The context is like a session but can live beyond it (if it supports audio)
-        this._context = new AlexaContext(skillURL, applicationID);
-        this._session = new AlexaSession(model);
+        // Create an AudioPlayer if the audio is enabled
+        let audioPlayer: AudioPlayer = null;
         if (audioEnabled) {
-            this._audioPlayer = new AudioPlayer(this);
+            audioPlayer = new AudioPlayer(this);
         }
+        // The context is like a session but can live beyond it (if it supports audio)
+        this._context = new AlexaContext(skillURL, audioPlayer, applicationID);
+
+        this._session = new AlexaSession(model);
+
         return this;
     }
 
@@ -107,24 +110,27 @@ export class Alexa {
     private callSkillWithIntent(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
         let self = this;
         try {
+            // When the user utters an intent, we suspend for it
+            // We do this first to make sure everything is in the right state for what comes next
+            if (this._context.audioPlayerEnabled() && this._context.audioPlayer().isPlaying()) {
+                this._context.audioPlayer().suspend();
+            }
+
+            // Now we generate the service request
+            //  The request is built based on the state from the previous step, so important that it is suspended first
             let serviceRequest = new ServiceRequest(this._context, this._session).intentRequest(intentName);
             if (slots !== undefined && slots !== null) {
                 for (let slotName of Object.keys(slots)) {
                     serviceRequest.withSlot(slotName, slots[slotName]);
                 }
             }
-            let requestJSON = serviceRequest.toJSON();
 
-            // When the user utters an intent, we suspend for it
-            if (this._audioPlayer.isPlaying()) {
-                this._audioPlayer.suspend();
-            }
-            this.callSkill(requestJSON, function (requestJSON: any, responseJSON: any, error?: string) {
+            this.callSkill(serviceRequest, function (requestJSON: any, responseJSON: any, error?: string) {
                 if (callback !== undefined && callback !== null) {
                     callback(requestJSON, responseJSON, error);
                 }
-                if (self._audioPlayer.suspended()) {
-                    self._audioPlayer.resume();
+                if (self._context.audioPlayerEnabled() && self._context.audioPlayer().suspended()) {
+                    self._context.audioPlayer().resume();
                 }
             });
         } catch (e) {
@@ -134,10 +140,10 @@ export class Alexa {
         }
     }
 
-    public callSkill(requestJSON: any, callback?: AlexaResponseCallback): void {
+    public callSkill(serviceRequest: ServiceRequest, callback?: AlexaResponseCallback): void {
         let self = this;
         this.sequence(function (done) {
-            self.callSkillImpl(requestJSON, callback, done);
+            self.callSkillImpl(serviceRequest, callback, done);
         });
     }
 
@@ -145,8 +151,9 @@ export class Alexa {
         this._actionQueue.enqueue(action);
     }
 
-    private callSkillImpl(requestJSON: any, callback: AlexaResponseCallback, done: Function) {
+    private callSkillImpl(serviceRequest: ServiceRequest, callback: AlexaResponseCallback, done: Function) {
         let self = this;
+        let requestJSON = serviceRequest.toJSON();
         LoggingHelper.info(Logger, "CALLING: " + requestJSON.request.type);
 
         let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
@@ -169,7 +176,7 @@ export class Alexa {
             } else {
                 // Check if there are any audio directives when it comes back
                 if (body.response !== undefined && body.response.directives !== undefined) {
-                    self._audioPlayer.directivesReceived(requestJSON, body.response.directives);
+                    self._context.audioPlayer().directivesReceived(requestJSON, body.response.directives);
                 }
 
                 if (callback !== undefined && callback !== null) {

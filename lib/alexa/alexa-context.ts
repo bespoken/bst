@@ -1,11 +1,14 @@
+import {AudioPlayer} from "./audio-player";
 const uuid = require("node-uuid");
 
 export class AlexaContext {
     private _applicationID: string;
     private _userID: string;
+    private _audioPlayer: AudioPlayer;
 
-    public constructor(public skillURL: string, applicationID?: string) {
+    public constructor(public skillURL: string, audioPlayer: AudioPlayer, applicationID?: string) {
         this._applicationID = applicationID;
+        this._audioPlayer = audioPlayer;
     }
 
     public applicationID(): string {
@@ -19,5 +22,13 @@ export class AlexaContext {
 
     public userID(): string {
         return this._userID;
+    }
+
+    public audioPlayer(): AudioPlayer {
+        return this._audioPlayer;
+    }
+
+    public audioPlayerEnabled(): boolean {
+        return this._audioPlayer !== null;
     }
 }
