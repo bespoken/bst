@@ -5,6 +5,7 @@ import {IntentSchema} from "../../lib/alexa/intent-schema";
 import {InteractionModel} from "../../lib/alexa/interaction-model";
 import {SampleUtterances} from "../../lib/alexa/sample-utterances";
 import {Alexa} from "../../lib/alexa/alexa";
+import {RequestCallback} from "request";
 
 
 describe("Alexa", function() {
@@ -29,9 +30,12 @@ describe("Alexa", function() {
         new IntentSchema(intentSchemaJSON),
         SampleUtterances.fromJSON(sampleUtterancesJSON));
 
-    let alexa = new Alexa();
+    let alexa: Alexa = null;
+    beforeEach(function () {
+        alexa = new Alexa();
+    });
 
-    describe("#spoken", function() {
+    describe("#spoken()", function() {
         it("Returns payload", function(done) {
             this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
@@ -80,6 +84,102 @@ describe("Alexa", function() {
             alexa.startSession(skillURL, model, false).spoken("NotMatching", function (request: any, response: any) {
                 // Treats this as the first intentName, Nearest Location
                 assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+                done();
+            });
+        });
+
+        it("Handles end session", function(done) {
+            let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
+                responseHandler(null, null, {
+                    response: {
+                        shouldEndSession: true
+                    }
+                });
+            };
+            alexa.startSession(skillURL, model, false)
+            alexa.spoken("Nearest Location");
+            try {
+                alexa.spoken("Nearest Location");
+            } catch (e) {
+                assert.equal(e.message, "Session must be started before calling spoken");
+                done();
+            }
+        });
+
+        it("Handles session attributes", function(done) {
+            let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+
+            let count = 0;
+            (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
+                count++;
+                responseHandler(null, null, {
+                    response: {
+                        shouldEndSession: false
+                    },
+                    sessionAttributes: {
+                        attribute1: "Test"
+                    }
+                });
+
+                // On the second call, the session attributes should be in the request that came through on the previous response
+                if (count === 2) {
+                    assert.equal(options.json.session.attributes.attribute1, "Test");
+                }
+            };
+            alexa.startSession(skillURL, model, false)
+            alexa.spoken("Nearest Location");
+            alexa.spoken("Nearest Location", function () {
+                done();
+            });
+
+        });
+    });
+
+    describe("#intended()", function () {
+        it("Handles error on bad URL", function(done) {
+            let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            alexa.startSession(skillURL, model, false).intended("NearestLocation", null, function (request: any, response: any, error: string) {
+                assert(error);
+                assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
+                done();
+            });
+        });
+    });
+
+    describe("#shutdown()", function () {
+        it("Shuts down async correctly", function(done) {
+            let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
+                setTimeout(function () {
+                    responseHandler(null, null, {
+                        response: {
+                            shouldEndSession: true
+                        }
+                    });
+                }, 1);
+            };
+            alexa.startSession(skillURL, model, false);
+            alexa.spoken("NotMatching");
+            alexa.intended("NearestLocation", null);
+            alexa.shutdown(function () {
+                done();
+            });
+        });
+
+        it("Shuts down immediately", function(done) {
+            let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
+                responseHandler(null, null, {
+                    response: {
+                        shouldEndSession: true
+                    }
+                });
+            };
+            alexa.startSession(skillURL, model, false);
+            alexa.spoken("NotMatching");
+            alexa.intended("NearestLocation", null);
+            alexa.shutdown(function () {
                 done();
             });
         });

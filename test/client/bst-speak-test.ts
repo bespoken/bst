@@ -87,4 +87,40 @@ describe("BSTSpeak", function() {
             });
         });
     });
+
+    describe("#intended()", function() {
+        it("Intended successfully", function (done) {
+            process.chdir("test/resources");
+            let speak = new BSTSpeak("http://localhost:10000");
+            speak.initialize(function () {
+                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
+                lambdaRunner.start();
+                speak.intended("HelloIntent", null, function(request: any, response: any) {
+                    assert.equal(response.output, "Well, Hello To You");
+
+                    lambdaRunner.stop(function() {
+                        process.chdir("../..");
+                        done();
+                    });
+                });
+            });
+        });
+
+        it("Intended with bad intent", function (done) {
+            process.chdir("test/resources");
+            let speak = new BSTSpeak("http://localhost:10000");
+            speak.initialize(function () {
+                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
+                lambdaRunner.start();
+                speak.intended("Hello", null, function (request, response, error) {
+                    assert(!response);
+                    assert(error);
+                    lambdaRunner.stop(function() {
+                        process.chdir("../..");
+                        done();
+                    });
+                });
+            });
+        });
+    });
 });

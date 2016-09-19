@@ -100,12 +100,10 @@ export class NodeManager {
      * @param callback
      */
     public stop (callback: () => void): void {
-        for (let key in this.nodes) {
-            if (this.nodes.hasOwnProperty(key)) {
-                let node: Node = this.node(key);
-                node.socketHandler.disconnect();
-                LoggingHelper.info(Logger, "NODE CLOSING: " + node.id);
-            }
+        for (let key of Object.keys(this.nodes)) {
+            let node: Node = this.node(key);
+            node.socketHandler.disconnect();
+            LoggingHelper.info(Logger, "NODE CLOSING: " + node.id);
         }
 
         this.server.close(function (error: any) {

@@ -70,7 +70,7 @@ export class Alexa {
      * @param utterance
      * @param callback
      */
-    public spoken(utterance: string, callback: AlexaResponseCallback): void {
+    public spoken(utterance: string, callback?: AlexaResponseCallback): void {
         if (!this.activeSession()) {
             throw Error("Session must be started before calling spoken");
         }
@@ -100,16 +100,6 @@ export class Alexa {
      * @param callback
      */
     public intended(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
-        // We validate the intents that don't start with Amazon
-        //  Otherwise we just pass it through
-        if (!intentName.startsWith("AMAZON")) {
-            if (!this.activeSession()) {
-                throw Error("No active session - cannot send custom intent");
-            } else if (!this._session.interactionModel.hasIntent(intentName)) {
-                throw Error("Intent does not exist: " + intentName);
-            }
-        }
-
         this.callSkillWithIntent(intentName, slots, callback);
     }
 
@@ -195,18 +185,11 @@ export class Alexa {
             done();
         };
 
-        try {
-            this.post({
-                url: this._context.skillURL,
-                method: "POST",
-                json: requestJSON,
-            }, responseHandler);
-        } catch (e) {
-            LoggingHelper.error(Logger, e.message);
-            if (callback !== undefined && callback !== null) {
-                callback(null, null, e.message);
-            }
-        }
+        this.post({
+            url: this._context.skillURL,
+            method: "POST",
+            json: requestJSON,
+        }, responseHandler);
     }
 
     /**

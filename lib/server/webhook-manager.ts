@@ -38,17 +38,15 @@ export class WebhookManager {
                     LoggingHelper.info(Logger, "Webhook Payload " + BufferUtil.prettyPrint(data));
                 }
 
-                // The calling socket just seems to stay open some times
-                //  Would like to force it closed but don't know when to do it
-                //  If we do it on the write callback on the socket, the original caller never gets the response
-                // For now, if we get a second request on the socket, re-initialize the webhookRequest
-                if (webhookRequest.done()) {
-                    webhookRequest = new WebhookRequest(socket);
-                }
-
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
                     self.onWebhookReceived(webhookRequest);
+
+                    // The calling socket just seems to stay open some times
+                    //  Would like to force it closed but don't know when to do it
+                    //  If we do it on the write callback on the socket, the original caller never gets the response
+                    // For now, re-initialize the webhookRequest in case a second payload comes through
+                    webhookRequest = new WebhookRequest(socket);
                 }
             });
 

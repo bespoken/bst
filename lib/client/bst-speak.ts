@@ -45,15 +45,19 @@ export class BSTSpeak {
         this._alexa.onSkillResponse(callback);
     }
 
-    public spoken(phrase: string, callback: AlexaResponseCallback) {
+    public spoken(phrase: string, callback?: AlexaResponseCallback) {
         this._alexa.spoken(phrase, function (request: any, response: any, error?: string) {
-            callback(request, response, error);
+            if (callback !== undefined && callback !== null) {
+                callback(request, response, error);
+            }
         });
     }
 
-    public intended(intentName: string, slots: any, callback: AlexaResponseCallback) {
+    public intended(intentName: string, slots: any, callback?: AlexaResponseCallback) {
         this._alexa.intended(intentName, slots, function (request: any, response: any, error?: string) {
-            callback(request, response, error);
+            if (callback !== undefined && callback !== null) {
+                callback(request, response, error);
+            }
         });
     }
 
