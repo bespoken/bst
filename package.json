@@ -40,7 +40,6 @@
     "postversion": "git push && git push --tags",
     "pretest": "typings install && tsc && npm run lint",
     "coverage": "typings install && tsc && istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
-    "istanbul": "istanbul help cover",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
     "test": "mocha test/**/*-test.js",
     "typedoc": "typedoc --readme docs/README_API.md --out docs/api --includes *.ts --mode file"

@@ -30,6 +30,7 @@ describe("bst-speak", function() {
     beforeEach(function () {
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
         mockery.registerMock("../lib/core/global", globalModule);
         sandbox = sinon.sandbox.create();
     });
@@ -60,6 +61,32 @@ describe("bst-speak", function() {
                     done();
                 }
             });
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
+        it("Speaks With Application ID", function(done) {
+            process.argv = command("node bst-speak.js Hello --appId 1234567890");
+            mockery.registerMock("../lib/client/bst-speak", {
+                BSTSpeak: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    assert.equal(applicationID, "1234567890");
+                    this.initialize = function () {};
+                    done();
+                }
+            });
+
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
+        it("Speaks With Application ID", function(done) {
+            process.argv = command("node bst-speak.js Hello -a 1234567890");
+            mockery.registerMock("../lib/client/bst-speak", {
+                BSTSpeak: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    assert.equal(applicationID, "1234567890");
+                    this.initialize = function () {};
+                    done();
+                }
+            });
+
             NodeUtil.load("../../bin/bst-speak.js");
         });
 

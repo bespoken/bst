@@ -12,6 +12,7 @@ program
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
+    .option("-a, --appId <application-id>", "The application ID for the skill")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
@@ -33,6 +34,7 @@ program
         let url = options.url;
         let intentSchemaPath = options.intents;
         let samplesPath = options.samples;
+        let applicationID = options.appId;
 
         if (options.url === undefined) {
             let proxyProcess = Global.running();
@@ -49,7 +51,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        let speaker = new BSTSpeak(url, intentSchemaPath, samplesPath, null);
+        let speaker = new BSTSpeak(url, intentSchemaPath, samplesPath, applicationID);
         speaker.initialize(function (error: string) {
             if (error !== undefined) {
                 console.error("Error loading Interaction Model!");
