@@ -9,21 +9,21 @@ import {FSWatcher} from "fs";
 
 let Logger = "BST-LAMBDA";
 
-export class LambdaRunner {
+export class LambdaServer {
     private server: Server = null;
     private dirty: boolean = false;
     private lambda: any = null;
     private watcher: FSWatcher = null;
     private requests: Array<IncomingMessage> = [];
-    public onDirty: (filename: string) => void = null; // Callback for test-ability
+    private onDirty: (filename: string) => void = null; // Callback for test-ability
 
     /**
-     * The file to run
-     * @param file
-     * @param port
-     * @param verbose
+     * Creates a server that exposes a Lambda as an HTTP service
+     * @param file The file the defines the Lambda
+     * @param port The port the service should listen on
+     * @param verbose Prints out verbose information about requests and responses
      */
-    public constructor(public file: string, public port: number, public verbose?: boolean) {}
+    public constructor(private file: string, private port: number, private verbose?: boolean) {}
 
     public start (callback?: () => void): void {
         let self = this;
@@ -70,14 +70,37 @@ export class LambdaRunner {
         });
 
         this.server.on("listening", function () {
-            LoggingHelper.info(Logger, "LambdaRunner started on port: " + self.server.address().port.toString());
+            LoggingHelper.info(Logger, "LambdaServer started on port: " + self.server.address().port.toString());
             if (callback !== undefined && callback !== null) {
                 callback();
             }
         });
     }
 
-    public invoke (body: string, response: ServerResponse): void {
+    /**
+     * Stops the lambda service
+     * @param onStop Callback when all sockets related to the LambdaServer have been cleaned up
+     */
+    public stop (onStop?: () => void): void {
+        this.watcher.close();
+
+        let request: IncomingMessage = null;
+        for (request of this.requests) {
+            try {
+                request.socket.end();
+            } catch (e) {
+
+            }
+        }
+
+        this.server.close(function () {
+            if (onStop !== undefined && onStop !== null) {
+                onStop();
+            }
+        });
+    }
+
+    private invoke (body: string, response: ServerResponse): void {
         let path: string = this.file;
         if (!path.startsWith("/")) {
             path = [process.cwd(), this.file].join("/");
@@ -102,28 +125,9 @@ export class LambdaRunner {
             context.fail("Exception: " + e.message);
         }
     }
-
-    public stop (onStop?: () => void): void {
-        this.watcher.close();
-
-        let request: IncomingMessage = null;
-        for (request of this.requests) {
-            try {
-                request.socket.end();
-            } catch (e) {
-
-            }
-        }
-
-        this.server.close(function () {
-            if (onStop !== undefined && onStop !== null) {
-                onStop();
-            }
-        });
-    }
 }
 
-export class LambdaContext {
+class LambdaContext {
 
     public constructor(public response: ServerResponse, public verbose: boolean) {}
 

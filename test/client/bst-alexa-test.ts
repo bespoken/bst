@@ -2,7 +2,7 @@
 
 import * as assert from "assert";
 import {BSTAlexa} from "../../lib/client/bst-alexa";
-import {LambdaRunner} from "../../lib/client/lambda-runner";
+import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 
 describe("BSTAlexa", function() {
@@ -55,7 +55,7 @@ describe("BSTAlexa", function() {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:10000");
             speak.initialize(function () {
-                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
+                let lambdaRunner = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaRunner.start();
                 speak.spoken("Hello", function(request: any, response: any) {
                     assert.equal(response.output, "Well, Hello To You");
@@ -72,14 +72,14 @@ describe("BSTAlexa", function() {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:10000");
             speak.initialize(function () {
-                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
-                lambdaRunner.start();
+                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
+                lambdaServer.start();
                 speak.spoken("Dumb", function(request: any, response: any) {
                     assert(response.output === undefined);
                     assert(response.success);
                     assert.equal(response.intent, "Test");
 
-                    lambdaRunner.stop(function() {
+                    lambdaServer.stop(function() {
                         process.chdir("../..");
                         done();
                     });
@@ -93,12 +93,12 @@ describe("BSTAlexa", function() {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:10000");
             speak.initialize(function () {
-                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
-                lambdaRunner.start();
+                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
+                lambdaServer.start();
                 speak.intended("HelloIntent", null, function(request: any, response: any) {
                     assert.equal(response.output, "Well, Hello To You");
 
-                    lambdaRunner.stop(function() {
+                    lambdaServer.stop(function() {
                         process.chdir("../..");
                         done();
                     });
@@ -110,12 +110,12 @@ describe("BSTAlexa", function() {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:10000");
             speak.initialize(function () {
-                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
-                lambdaRunner.start();
+                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
+                lambdaServer.start();
                 speak.intended("Hello", null, function (request, response, error) {
                     assert(!response);
                     assert(error);
-                    lambdaRunner.stop(function() {
+                    lambdaServer.stop(function() {
                         process.chdir("../..");
                         done();
                     });
@@ -129,14 +129,14 @@ describe("BSTAlexa", function() {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:10000");
             speak.initialize(function () {
-                let lambdaRunner = new LambdaRunner("exampleProject/ExampleLambda.js", 10000);
-                lambdaRunner.start();
+                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
+                lambdaServer.start();
                 speak.intended("HelloIntent", null);
                 speak.onSkillResponse(function (request, response) {
                     assert.equal(response.output, "Well, Hello To You");
 
                     speak.shutdown(function () {
-                        lambdaRunner.stop(function() {
+                        lambdaServer.stop(function() {
                             process.chdir("../..");
                             done();
                         });

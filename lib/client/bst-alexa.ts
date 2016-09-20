@@ -14,14 +14,14 @@ export class BSTAlexa {
     /**
      * Creates a new Alexa emulator
      * @param skillURL The URL the skill is listening that this emulator should interact with
-     * @param [intentSchemaFile] The path to the intent schema file - defaults to speechAssets/IntentSchema.json
-     * @param [sampleUtterancesFile] The path to the samples utterances file - defaults speechAssets/SampleUtterances.txt
-     * @param [applicationID] The application ID
+     * @param intentSchemaFile The path to the intent schema file - defaults to {@link BSTAlexa.DefaultIntentSchemaLocation}.
+     * @param sampleUtterancesFile The path to the samples utterances file - defaults to {@link BSTAlexa.DefaultSampleUtterancesLocation}.
+     * @param applicationID The application ID. Just makes one up if none is defined.
      */
-    public constructor(public skillURL: string,
-                       public intentSchemaFile?: string,
-                       public sampleUtterancesFile?: string,
-                       public applicationID?: string) {
+    public constructor(private skillURL: string,
+                       private intentSchemaFile?: string,
+                       private sampleUtterancesFile?: string,
+                       private applicationID?: string) {
         if (this.intentSchemaFile === undefined || this.intentSchemaFile === null) {
             this.intentSchemaFile = BSTAlexa.DefaultIntentSchemaLocation;
         }
@@ -74,7 +74,7 @@ export class BSTAlexa {
     }
 
     /**
-     * Emulates the specified intent coming from the Alexa device
+     * Emulates the specified intent coming from the Alexa device.
      * @param intentName
      * @param slots
      * @param callback
@@ -88,8 +88,8 @@ export class BSTAlexa {
     }
 
     /**
-     * Turns off the Alexa emulator - not required
-     * It will die quietly on its own
+     * Turns off the Alexa emulator.
+     * Useful for running inside of tests to ensure all cleanup has completed before next test starts.
      * @param onShutdown
      */
     public shutdown(onShutdown: () => void) {
