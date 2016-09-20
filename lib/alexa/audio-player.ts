@@ -36,7 +36,9 @@ export class AudioPlayer {
             this.queueAdd(audioItem);
 
         } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
-            this.stop();
+            if (this.isPlaying()) {
+                this.stop();
+            }
             this.queueClear();
             this.queueAdd(audioItem);
 
