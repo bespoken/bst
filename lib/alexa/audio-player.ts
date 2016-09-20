@@ -29,7 +29,6 @@ export class AudioPlayer {
 
     public constructor (public alexa: Alexa) {
         this._state = AudioPlayerState.PlaybackStopped;
-        console.log("CREATED");
     }
 
     public enqueue(audioItem: AudioItem, playBehavior: string) {

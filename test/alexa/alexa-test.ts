@@ -97,7 +97,7 @@ describe("Alexa", function() {
                     }
                 });
             };
-            alexa.startSession(skillURL, model, false)
+            alexa.startSession(skillURL, model, false);
             alexa.spoken("Nearest Location");
             try {
                 alexa.spoken("Nearest Location");
@@ -127,7 +127,7 @@ describe("Alexa", function() {
                     assert.equal(options.json.session.attributes.attribute1, "Test");
                 }
             };
-            alexa.startSession(skillURL, model, false)
+            alexa.startSession(skillURL, model, false);
             alexa.spoken("Nearest Location");
             alexa.spoken("Nearest Location", function () {
                 done();

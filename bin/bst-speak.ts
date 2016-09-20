@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTSpeak} from "../lib/client/bst-speak";
+import {BSTAlexa} from "../lib/client/bst-alexa";
 
 Global.initializeCLI();
 
@@ -51,7 +51,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        let speaker = new BSTSpeak(url, intentSchemaPath, samplesPath, applicationID);
+        let speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
         speaker.initialize(function (error: string) {
             if (error !== undefined) {
                 console.error("Error loading Interaction Model!");

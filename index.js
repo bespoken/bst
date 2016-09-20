@@ -1,4 +1,4 @@
 "use strict";
-var bst_speak_ts_1 = require("./lib/client/bst-speak.ts");
-exports.BSTSpeak = bst_speak_ts_1.BSTSpeak;
+var bst_alexa_ts_1 = require("./lib/client/bst-alexa.ts");
+exports.BSTAlexa = bst_alexa_ts_1.BSTAlexa;
 //# sourceMappingURL=index.js.map
