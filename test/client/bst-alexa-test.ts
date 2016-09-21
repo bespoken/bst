@@ -57,7 +57,7 @@ describe("BSTAlexa", function() {
             speak.initialize(function () {
                 let lambdaRunner = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaRunner.start();
-                speak.spoken("Hello", function(request: any, response: any) {
+                speak.spoken("Hello", function(error: any, response: any) {
                     assert.equal(response.output, "Well, Hello To You");
 
                     lambdaRunner.stop(function() {
@@ -74,7 +74,7 @@ describe("BSTAlexa", function() {
             speak.initialize(function () {
                 let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaServer.start();
-                speak.spoken("Dumb", function(request: any, response: any) {
+                speak.spoken("Dumb", function(error: any, response: any) {
                     assert(response.output === undefined);
                     assert(response.success);
                     assert.equal(response.intent, "Test");
@@ -95,7 +95,7 @@ describe("BSTAlexa", function() {
             speak.initialize(function () {
                 let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaServer.start();
-                speak.intended("HelloIntent", null, function(request: any, response: any) {
+                speak.intended("HelloIntent", null, function(error: any, response: any) {
                     assert.equal(response.output, "Well, Hello To You");
 
                     lambdaServer.stop(function() {
@@ -112,7 +112,7 @@ describe("BSTAlexa", function() {
             speak.initialize(function () {
                 let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaServer.start();
-                speak.intended("Hello", null, function (request, response, error) {
+                speak.intended("Hello", null, function (error, response, request) {
                     assert(!response);
                     assert(error);
                     lambdaServer.stop(function() {
@@ -132,7 +132,7 @@ describe("BSTAlexa", function() {
                 let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaServer.start();
                 speak.intended("HelloIntent", null);
-                speak.onSkillResponse(function (request, response) {
+                speak.on("response", function (response: any) {
                     assert.equal(response.output, "Well, Hello To You");
 
                     speak.shutdown(function () {

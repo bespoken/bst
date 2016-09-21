@@ -40,7 +40,7 @@ describe("Alexa", function() {
             this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
 
-            alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (request: any, response: any) {
+            alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (error: any, response: any, request: any) {
                 assert(request);
                 assert(response.response.outputSpeech.ssml !== null);
                 assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
@@ -51,7 +51,7 @@ describe("Alexa", function() {
         it("Handle With Slot", function(done) {
             this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).spoken("Take Me To Walmart {A}", function (request: any, response: any) {
+            alexa.startSession(skillURL, model, false).spoken("Take Me To Walmart {A}", function (error: any, response: any) {
                 assert(response.response.outputSpeech.ssml !== null);
                 assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3\" /></speak>");
                 done();
@@ -61,9 +61,9 @@ describe("Alexa", function() {
         it("Handles error on bad URL", function(done) {
             this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (request: any, response: any, error: string) {
+            alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (error: any){
                 assert(error);
-                assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
+                assert.equal(error.message, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
                 done();
             });
         });
@@ -71,9 +71,9 @@ describe("Alexa", function() {
         it("Handles error on bad Intent", function(done) {
             this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).spoken("No Matching", function (request: any, response: any, error: string) {
+            alexa.startSession(skillURL, model, false).spoken("No Matching", function (error: any) {
                 assert(error);
-                assert.equal(error, "Interaction model has no intentName named: NoMatchingIntent");
+                assert.equal(error.message, "Interaction model has no intentName named: NoMatchingIntent");
                 done();
             });
         });
@@ -81,7 +81,7 @@ describe("Alexa", function() {
         it("Handles default on bad Phrase", function(done) {
             this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).spoken("NotMatching", function (request: any, response: any) {
+            alexa.startSession(skillURL, model, false).spoken("NotMatching", function (error: any, response: any) {
                 // Treats this as the first intentName, Nearest Location
                 assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
                 done();
@@ -139,9 +139,9 @@ describe("Alexa", function() {
     describe("#intended()", function () {
         it("Handles error on bad URL", function(done) {
             let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).intended("NearestLocation", null, function (request: any, response: any, error: string) {
+            alexa.startSession(skillURL, model, false).intended("NearestLocation", null, function (error: any) {
                 assert(error);
-                assert.equal(error, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
+                assert.equal(error.message, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
                 done();
             });
         });

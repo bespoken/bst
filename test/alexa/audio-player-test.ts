@@ -1,7 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
-import {Alexa} from "../../lib/alexa/alexa";
+import {Alexa, AlexaEvent} from "../../lib/alexa/alexa";
 import {AudioPlayer, AudioItem} from "../../lib/alexa/audio-player";
 import {AlexaContext} from "../../lib/alexa/alexa-context";
 import {RequestCallback} from "request";
@@ -12,8 +12,7 @@ describe("AudioPlayer", function() {
     describe("#launch", function() {
         it("It launches", function (done) {
             let alexa = new MockAlexa(["LaunchRequest"], [null, null]);
-            let audioPlayer = new AudioPlayer(alexa);
-            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            alexa["_context"]["_audioPlayer"] = new AudioPlayer(alexa);
             alexa.launched();
 
             alexa.verify(function () {
@@ -131,7 +130,7 @@ describe("AudioPlayer", function() {
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             let firstResponse = true;
-            alexa.onSkillResponse(function(skillRequestJSON, skillResponseJSON) {
+            alexa.on(AlexaEvent.SkillResponse, function(skillResponseJSON: any, skillRequestJSON: any) {
                 if (firstResponse && skillRequestJSON.request.type === "AudioPlayer.PlaybackNearlyFinished") {
                     audioPlayer.fastForward();
                     firstResponse = false;

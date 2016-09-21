@@ -11,7 +11,7 @@ import {RequestCallback} from "request";
 const Logger = "ALEXA";
 
 export interface AlexaResponseCallback {
-    (request: any, response: any, error?: string): void;
+    (error: any, response: any, request: any): void;
 }
 
 export enum AlexaEvent {
@@ -121,9 +121,9 @@ export class Alexa {
                 }
             }
 
-            this.callSkill(serviceRequest, function (requestJSON: any, responseJSON: any, error?: string) {
+            this.callSkill(serviceRequest, function (error: string, responseJSON: any, requestJSON: any) {
                 if (callback !== undefined && callback !== null) {
-                    callback(requestJSON, responseJSON, error);
+                    callback(error, responseJSON, requestJSON);
                 }
                 if (self._context.audioPlayerEnabled() && self._context.audioPlayer().suspended()) {
                     self._context.audioPlayer().resume();
@@ -131,7 +131,7 @@ export class Alexa {
             });
         } catch (e) {
             if (callback !== undefined && callback !== null) {
-                callback(null, null, e.message);
+                callback(e, null, null);
             }
         }
     }
@@ -167,7 +167,7 @@ export class Alexa {
 
             if (error) {
                 if (callback !== undefined && callback !== null) {
-                    callback(null, null, error.message);
+                    callback(error, null, null);
                 }
             } else {
                 // Check if there are any audio directives when it comes back
@@ -176,10 +176,10 @@ export class Alexa {
                 }
 
                 if (callback !== undefined && callback !== null) {
-                    callback(requestJSON, body);
+                    callback(null, body, requestJSON);
                 }
 
-                self._emitter.emit(AlexaEvent[AlexaEvent.SkillResponse], requestJSON, body);
+                self._emitter.emit(AlexaEvent[AlexaEvent.SkillResponse], body, requestJSON);
             }
 
             done();
@@ -201,8 +201,8 @@ export class Alexa {
         request.post(options, responseHandler);
     }
 
-    public onSkillResponse(callback: (skillRequestJSON: any, skillResponseJSON: any) => void) {
-        this._emitter.on(AlexaEvent[AlexaEvent.SkillResponse], callback);
+    public on(event: AlexaEvent, callback: Function) {
+        this._emitter.on(AlexaEvent[event], callback);
     }
 
     public shutdown(onShutdown: () => void) {

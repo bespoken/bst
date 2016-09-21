@@ -1,7 +1,11 @@
 import {InteractionModel} from "../alexa/interaction-model";
-import {Alexa, AlexaResponseCallback} from "../alexa/alexa";
+import {Alexa, AlexaResponseCallback, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
 
+export class BSTAlexaEvents {
+    public static Error = "error";
+    public static Response = "response";
+}
 
 /**
  * Programmatic interface for interacting with the Bespoken Tools Alexa emulator
@@ -40,7 +44,7 @@ export class BSTAlexa {
      * Initialize the emulator
      * @param ready Passes back an error if there are any issues with initialization
      */
-    public initialize(ready: (error?: string) => void) {
+    public initialize(ready: (error?: string) => void): void {
         let self = this;
         InteractionModel.fromFiles(this.intentSchemaFile, this.sampleUtterancesFile, function(model: InteractionModel, error: string) {
             if (error !== undefined && error !== null) {
@@ -54,10 +58,19 @@ export class BSTAlexa {
 
     /**
      * Registers a callback for Skill responses
+     * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
+     *  A second parameter with the body of the request as JSON is also passed
+     * For event type {@link BSTAlexaEvents.Error}, the payload is the error.
      * @param callback
      */
-    public onSkillResponse(callback: (skillRequestJSON: any, skillResponseJSON: any) => void) {
-        this._alexa.onSkillResponse(callback);
+    public on(eventType: string, callback: Function): void {
+        if (eventType === BSTAlexaEvents.Error) {
+            this._alexa.on(AlexaEvent.SkillError, callback);
+        } else if (eventType === BSTAlexaEvents.Response) {
+            this._alexa.on(AlexaEvent.SkillResponse, callback);
+        } else {
+            throw Error("No event type: " + eventType + " is defined");
+        }
     }
 
     /**
@@ -65,7 +78,7 @@ export class BSTAlexa {
      * @param phrase
      * @param callback
      */
-    public spoken(phrase: string, callback?: AlexaResponseCallback) {
+    public spoken(phrase: string, callback?: AlexaResponseCallback): void {
         this._alexa.spoken(phrase, function (request: any, response: any, error?: string) {
             if (callback !== undefined && callback !== null) {
                 callback(request, response, error);
@@ -79,12 +92,29 @@ export class BSTAlexa {
      * @param slots
      * @param callback
      */
-    public intended(intentName: string, slots: any, callback?: AlexaResponseCallback) {
+    public intended(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
         this._alexa.intended(intentName, slots, function (request: any, response: any, error?: string) {
             if (callback !== undefined && callback !== null) {
                 callback(request, response, error);
             }
         });
+    }
+
+    /**
+     * Emulates the current track playing to completion.
+     * The Alexa Emulator will automatically play the next queued track
+     *  as well as signal to your skill the current track has completed
+     *  @returns Returns false if not audio item is currently playing
+     */
+    public audioItemFinished(): boolean {
+        let playing = false;
+        if (this._alexa.context().audioPlayerEnabled()) {
+            if (this._alexa.context().audioPlayer().isPlaying()) {
+                playing = true;
+                this._alexa.context().audioPlayer().fastForward();
+            }
+        }
+        return playing;
     }
 
     /**

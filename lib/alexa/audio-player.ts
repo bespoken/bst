@@ -96,13 +96,8 @@ export class AudioPlayer {
      * Simulates audio being completed - not the same as AMAZON.NextIntent
      */
     public fastForward(): void {
-        // let self = this;
-        // // We make up an offset - we do not know how long the audio file is
-        // this.alexa.sequence(function (done) {
-            this.finish();
-            this.playNext();
-        //     done();
-        // });
+        this.finish();
+        this.playNext();
     }
 
     public finish(): void {
