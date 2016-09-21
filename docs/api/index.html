@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>bespoken-tools</title>
+	<title>Bespoken Tools</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">bespoken-tools</a>
+					<a href="index.html" class="title">Bespoken Tools</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -53,7 +53,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> bespoken-tools</h1>
+			<h1> Bespoken Tools</h1>
 		</div>
 	</div>
 </header>
@@ -63,16 +63,91 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="bespoken-tools-reference-api">Bespoken Tools Reference API</h1>
 				<h1 id="overview">Overview</h1>
-				<p>We currently only expose two classes:</p>
+				<p>We currently only expose two primary classes:</p>
 				<ul>
-					<li><a href="/api/classes/bstalexa.html">BSTAlexa</a></li>
-					<li><a href="/api/classes/lambdaserver.html">LambdaServer</a></li>
+					<li><a href="classes/bstalexa.html">BSTAlexa</a></li>
+					<li><a href="classes/lambdaserver.html">LambdaServer</a></li>
 				</ul>
 				<p>We make them available to facilitate testing of Skills using our emulator.</p>
-				<p>BSTAlexa is our Alexa simulator. <a href="/api/classes/bstalexa.html">Learn more here</a>.  </p>
-				<p>The <a href="/api/classes/lambdaserver.html">LambdaServer</a> makes it easy to run your Lambdas locally for unit and functional tests.</p>
+				<p><a href="classes/bstalexa.html">BSTAlexa</a> is our Alexa simulator. It allows one to write unit tests and functional tests that mimic the functionality of the Alexa service.</p>
+				<p>The <a href="classes/lambdaserver.html">LambdaServer</a> makes it easy to run your Lambdas locally for unit and functional tests.</p>
 				<p>We will be adding more classes as we go forward.</p>
-				<h1 id="example-lambda-unit-test">Example Lambda Unit Test</h1>
+				<h1 id="example-unit-test">Example Unit Test</h1>
+				<p>Below is a simple example Mocha test. </p>
+				<p>This can be used to test any Alexa skill, not just one written in JavaScript:</p>
+				<pre><code>it(<span class="hljs-string">'Plays and Goes To Next'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(done)</span> </span>{
+
+    alexa.spoken(<span class="hljs-string">'Play Music'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(error, response)</span> </span>{
+        <span class="hljs-comment">// Confirms the correct directive is returned when the Intent is spoken</span>
+        assert.equal(response.response.directives[<span class="hljs-number">0</span>].type, <span class="hljs-string">'AudioPlayer.Play'</span>);
+
+        <span class="hljs-comment">// Ensures the track with correct token is returned</span>
+        assert.equal(response.response.directives[<span class="hljs-number">0</span>].audioItem.stream.token, <span class="hljs-string">'1'</span>);
+
+        alexa.intended(<span class="hljs-string">'AMAZON.NextIntent'</span>, <span class="hljs-literal">null</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(error, response)</span> </span>{
+            <span class="hljs-comment">// Ensures the track with next token is returned    </span>
+            assert.equal(response.response.directives[<span class="hljs-number">0</span>].audioItem.stream.token, <span class="hljs-string">'2'</span>);
+            done();
+        });
+    });
+});
+</code></pre><p>We initialize the <a href="classes/bstalexa.html">BSTAlexa</a> in the beforeEach block, like so:</p>
+				<pre><code><span class="hljs-keyword">let</span> alexa = <span class="hljs-literal">null</span>;
+beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">done</span>) </span>{
+    alexa = <span class="hljs-keyword">new</span> bst.BSTAlexa(<span class="hljs-string">'http://localhost:10000'</span>,
+                             <span class="hljs-string">'./speechAssets/IntentSchema.json'</span>,
+                             <span class="hljs-string">'./speechAssets/Utterances.txt'</span>);
+    alexa.initialize(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        done();
+    });
+});
+</code></pre><p>And we cleanup:</p>
+				<pre><code>afterEach(<span class="hljs-name">function</span> (<span class="hljs-name">done</span>) {
+    alexa.shutdown(<span class="hljs-name">function</span> () {
+        done()<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre><h1 id="using-the-lambdaserver">Using the LambdaServer</h1>
+				<p>We can the utilize the <a href="class/lambdaserver.html">LambdaServer</a> to automatically start and stop a NodeJS/Lambda-based skill
+				within our test.</p>
+				<p>To do this, simply start the <a href="class/lambdaserver.html">LambdaServer</a> on an open port and point it at your Lambda file:</p>
+				<pre><code>let <span class="hljs-keyword">server</span> = <span class="hljs-keyword">new</span> bst.LambdaServer(<span class="hljs-string">'./lib/index.js'</span>, <span class="hljs-number">10000</span>, <span class="hljs-keyword">true</span>);
+<span class="hljs-keyword">server</span>.start();
+</code></pre><p>The last parameter, true, enables verbose debugging. This prints out all the requests and responses from the skill to the console.</p>
+				<p>This will typically reside within our beforeEach block, similar to the the <a href="classes/bstalexa.html">BSTAlexa</a> initialization:</p>
+				<pre><code>beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(done)</span> </span>{
+    server = <span class="hljs-keyword">new</span> bst.LambdaServer(<span class="hljs-string">'./lib/index.js'</span>, <span class="hljs-number">10000</span>, <span class="hljs-literal">true</span>);
+    alexa = <span class="hljs-keyword">new</span> bst.BSTAlexa(<span class="hljs-string">'http://localhost:10000'</span>,
+                             <span class="hljs-string">'./speechAssets/IntentSchema.json'</span>,
+                             <span class="hljs-string">'./speechAssets/Utterances.txt'</span>);
+    server.start(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+        alexa.initialize(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            done();
+        });
+    });
+});
+</code></pre><p>And we shut it down at the end like so:</p>
+				<pre><code>afterEach(<span class="hljs-name">function</span>(<span class="hljs-name">done</span>) {
+    alexa.shutdown(<span class="hljs-name">function</span> () {
+        server.stop(<span class="hljs-name">function</span> () {
+            done()<span class="hljs-comment">;</span>
+        })<span class="hljs-comment">;</span>
+    })<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
+</code></pre><p><strong>It is very important to shutdown the server - otherwise it will go on listening on the port specified!</strong></p>
+				<h1 id="testing-events">Testing Events</h1>
+				<p>Listeners can be set on all the events listed <a href="classes/bstalexaevents.html">here</a>.</p>
+				<p>For example, to see that a track has begun playing,
+				add a listener on the <a href="classes/bstalexaevents.html#audioplayerplaybackstarted">AudioPlayer.PlaybackStarted</a> event.</p>
+				<p>This works well in concert with the <a href="classes/bstalexa.html#audioitemfinished">audioItemFinished</a> call.<br>This call acts as if the current track had finished playing on the device.
+				The next audio item queued from your skill should then be started.</p>
+				<p>Sample code:</p>
+				<pre><code><span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.on</span>(<span class="hljs-string">'AudioPlayer.PlaybackStarted'</span>, function(audioItem) {
+    assert<span class="hljs-selector-class">.equal</span>(audioItem.stream.token, <span class="hljs-string">'2'</span>);
+});
+
+<span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.audioItemFinished</span>();
+</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -85,9 +160,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class">
-						<a href="classes/audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
-					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/bstalexa.html" class="tsd-kind-icon">BSTAlexa</a>
 					</li>

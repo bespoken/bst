@@ -27,7 +27,10 @@ export class BSTAlexaEvents {
 }
 
 /**
- * Programmatic interface for interacting with the Bespoken Tools Alexa emulator
+ * Programmatic interface for interacting with the Bespoken Tools Alexa emulator.
+ *
+ * Tutorial on usage can be found [here](../index.html).
+ *
  */
 export class BSTAlexa {
     public static DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";

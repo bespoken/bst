@@ -51,6 +51,12 @@ It works in a manner very similar to the Alexa simulator available via the Alexa
 
 Read the docs [here](http://docs.bespoken.tools/en/latest/commands/speak).
 
+## Bespoken Tools API
+The emulator the underlies the speak command can be used for unit and functional testing,
+as well as other purposes.
+
+The API reference can be found [here](http://docs.bespoken.tools/en/latest/api). 
+
 ## Tutorials
 
 * [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)

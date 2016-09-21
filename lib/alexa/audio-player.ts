@@ -140,7 +140,7 @@ export class AudioPlayer {
     private playbackStarted(): void {
         this._state = AudioPlayerState.PlaybackStarted;
         // So far, this is the only event we emit. We will add others - probably
-        this._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStarted], this.playing());
+        this._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStarted], this.playing().json);
 
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, this._playingOffset);

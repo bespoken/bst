@@ -4,7 +4,6 @@ import * as assert from "assert";
 import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
-import {AudioItem} from "../../lib/alexa/audio-item";
 
 describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;
@@ -146,8 +145,8 @@ describe("BSTAlexa", function() {
             it("Audio Item Started Event received", function (done) {
                 alexa.intended("PlayIntent", null, function () {
                     alexa.audioItemFinished();
-                    alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: AudioItem) {
-                        assert.equal(audioItem.token, "2");
+                    alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
+                        assert.equal(audioItem.stream.token, "2");
                         done();
                     });
                 });

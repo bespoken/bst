@@ -45,7 +45,6 @@ describe("AudioPlayer", function() {
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
-                assert(alexa.call(1).request.offsetInMilliseconds > 0);
                 assert.equal(alexa.call(3).context.AudioPlayer.playerActivity, "FINISHED");
                 done();
             });

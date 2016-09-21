@@ -95,6 +95,7 @@ describe("Alexa", function() {
         });
 
         it("Handles default on bad Phrase", function(done) {
+            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             alexa.startSession(skillURL, model, false).spoken("NotMatching", function (error: any, response: any, request: any) {
                 assert.equal(request.request.intent.name, "NearestLocation");
