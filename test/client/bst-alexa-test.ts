@@ -4,9 +4,13 @@ import * as assert from "assert";
 import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
+import {AudioItem} from "../../lib/alexa/audio-item";
 
 describe("BSTAlexa", function() {
-    describe("#initialize()", function() {
+    let alexa: BSTAlexa = null;
+    let lambdaServer: LambdaServer = null;
+
+    describe("#initialize()", function () {
         it("Initializes with defaults", function (done) {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:9000");
@@ -50,125 +54,120 @@ describe("BSTAlexa", function() {
         });
     });
 
-    describe("#speak()", function() {
-        it("Speak phrase", function (done) {
+    describe("Speaks and Intends", function () {
+        beforeEach(function (done) {
             process.chdir("test/resources");
-            let speak = new BSTAlexa("http://localhost:10000");
-            speak.initialize(function () {
-                let lambdaRunner = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
-                lambdaRunner.start();
-                speak.spoken("Hello", function(error: any, response: any) {
-                    assert.equal(response.output, "Well, Hello To You");
+            alexa = new BSTAlexa("http://localhost:10000");
+            alexa.initialize(function () {
+                lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
+                lambdaServer.start();
+                done();
+            });
+        });
 
-                    lambdaRunner.stop(function() {
-                        process.chdir("../..");
-                        done();
-                    });
+        afterEach(function (done) {
+            lambdaServer.stop(function () {
+                alexa.shutdown(function () {
+                    process.chdir("../..");
+                    done();
+                });
+            });
+        });
+
+        describe("#speak()", function () {
+            it("Speak phrase", function (done) {
+                alexa.spoken("Hello", function (error: any, response: any) {
+                    assert.equal(response.output, "Well, Hello To You");
+                    done();
                 });
             });
         });
 
         it("Speak non-grammar phrase", function (done) {
-            process.chdir("test/resources");
-            let speak = new BSTAlexa("http://localhost:10000");
-            speak.initialize(function () {
-                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
-                lambdaServer.start();
-                speak.spoken("Dumb", function(error: any, response: any) {
-                    assert(response.output === undefined);
-                    assert(response.success);
-                    assert.equal(response.intent, "Test");
-
-                    lambdaServer.stop(function() {
-                        process.chdir("../..");
-                        done();
-                    });
-                });
+            alexa.spoken("Dumb", function (error: any, response: any) {
+                assert(response.output === undefined);
+                assert(response.success);
+                assert.equal(response.intent, "Test");
+                done();
             });
         });
-    });
 
-    describe("#intended()", function() {
-        it("Intended successfully", function (done) {
-            process.chdir("test/resources");
-            let speak = new BSTAlexa("http://localhost:10000");
-            speak.initialize(function () {
-                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
-                lambdaServer.start();
-                speak.intended("HelloIntent", null, function(error: any, response: any) {
+        describe("#intended()", function () {
+            it("Intended successfully", function (done) {
+                alexa.intended("HelloIntent", null, function (error: any, response: any) {
                     assert.equal(response.output, "Well, Hello To You");
-
-                    lambdaServer.stop(function() {
-                        process.chdir("../..");
-                        done();
-                    });
+                    done();
                 });
-            });
-        });
 
-        it("Intended with bad intent", function (done) {
-            process.chdir("test/resources");
-            let speak = new BSTAlexa("http://localhost:10000");
-            speak.initialize(function () {
-                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
-                lambdaServer.start();
-                speak.intended("Hello", null, function (error, response, request) {
+            });
+
+            it("Intended with bad intent", function (done) {
+                alexa.intended("Hello", null, function (error, response, request) {
                     assert(!response);
                     assert(error);
-                    lambdaServer.stop(function() {
-                        process.chdir("../..");
+                    done();
+                });
+            });
+        });
+
+        describe("#on()", function() {
+            it("On skill response received", function (done) {
+                alexa.intended("HelloIntent", null);
+                alexa.on("response", function (response: any) {
+                    assert.equal(response.output, "Well, Hello To You");
+                    done();
+                });
+            });
+        });
+    });
+
+
+    describe("AudioPlayer Tests", function () {
+        beforeEach(function (done) {
+            process.chdir("test/resources");
+            alexa = new BSTAlexa("http://localhost:10000");
+            alexa.initialize(function () {
+                lambdaServer = new LambdaServer("AudioPlayerLambda.js", 10000);
+                lambdaServer.start();
+                done();
+            });
+        });
+
+        afterEach(function (done) {
+            lambdaServer.stop(function () {
+                alexa.shutdown(function () {
+                    process.chdir("../..");
+                    done();
+                });
+            });
+        });
+
+        describe("#on()", function() {
+            it("Audio Item Started Event received", function (done) {
+                alexa.intended("PlayIntent", null, function () {
+                    alexa.audioItemFinished();
+                    alexa.on("audio-item-started", function (audioItem: AudioItem) {
+                        assert.equal(audioItem.token, "2");
                         done();
                     });
                 });
             });
         });
-    });
 
-    describe("#onSkillResponse()", function() {
-        it("On skill response received", function (done) {
-            process.chdir("test/resources");
-            let speak = new BSTAlexa("http://localhost:10000");
-            speak.initialize(function () {
-                let lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
-                lambdaServer.start();
-                speak.intended("HelloIntent", null);
-                speak.on("response", function (response: any) {
-                    assert.equal(response.output, "Well, Hello To You");
-
-                    speak.shutdown(function () {
-                        lambdaServer.stop(function() {
-                            process.chdir("../..");
-                            done();
-                        });
-                    });
-                });
-            });
-        });
-    });
-
-    describe("#audioItemFinished()", function() {
-        it("Audio Item Finished", function (done) {
-            process.chdir("test/resources");
-            let speak = new BSTAlexa("http://localhost:10000");
-            speak.initialize(function () {
-                let lambdaServer = new LambdaServer("AudioPlayerLambda.js", 10000);
-                lambdaServer.start();
-                let count = 0;
-                speak.on("response", function (response: any, request: any) {
+        describe("#audioItemFinished()", function() {
+            it("Audio Item Finished", function (done) {
+               let count = 0;
+                alexa.on("response", function (response: any, request: any) {
                     console.log("RequestType: " + request.request.type);
                     count++;
                     if (count === 4) {
                         assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
-                        speak.shutdown(function () {
-                            lambdaServer.stop(function() {
-                                process.chdir("../..");
-                                done();
-                            });
-                        });
+                        done();
                     }
                 });
-                speak.intended("PlayIntent", null, function () {
-                    speak.audioItemFinished();
+
+                alexa.intended("PlayIntent", null, function () {
+                    alexa.audioItemFinished();
                 });
             });
         });

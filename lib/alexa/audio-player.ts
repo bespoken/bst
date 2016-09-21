@@ -1,5 +1,7 @@
 import {Alexa} from "./alexa";
 import {ServiceRequest, RequestType} from "./service-request";
+import {EventEmitter} from "events";
+import {AudioItem} from "./audio-item";
 
 export enum AudioPlayerState {
     PlaybackError,
@@ -21,6 +23,7 @@ export class AudioPlayer {
     public static PlayBehaviorEnqueue = "ENQUEUE";
     public static PlayBehaviorReplaceEnqueued = "REPLACE_ENQUEUED";
 
+    private _emitter: EventEmitter = null;
     private _playingStartTime: number = 0;
     private _playingOffset: number = 0;
     private _queue: Array<AudioItem> = [];
@@ -29,6 +32,7 @@ export class AudioPlayer {
 
     public constructor (public alexa: Alexa) {
         this._state = AudioPlayerState.PlaybackStopped;
+        this._emitter = new EventEmitter();
     }
 
     public enqueue(audioItem: AudioItem, playBehavior: string) {
@@ -105,6 +109,10 @@ export class AudioPlayer {
         this.queueSlice();
     }
 
+    public on(audioPlayerState: AudioPlayerState, listener: Function) {
+        this._emitter.on(AudioPlayerState[audioPlayerState], listener);
+    }
+
     public resume() {
         this._suspended = false;
         this._playingStartTime = new Date().getTime();
@@ -131,6 +139,8 @@ export class AudioPlayer {
 
     private playbackStarted(): void {
         this._state = AudioPlayerState.PlaybackStarted;
+        // So far, this is the only event we emit. We will add others - probably
+        this._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStarted], this.playing());
 
         let serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, this._playingOffset);
@@ -147,11 +157,11 @@ export class AudioPlayer {
 
     public directivesReceived(request: any, directives: Array<any>): void {
         for (let directive of directives) {
-            this.handleDirective(request, directive);
+            this.handleDirective(directive);
         }
     }
 
-    private handleDirective(request: any, directive: any) {
+    private handleDirective(directive: any) {
         // Handle AudioPlayer.Play
         if (directive.type === AudioPlayer.DirectivePlay) {
             let audioItem = new AudioItem(directive.audioItem);
@@ -196,22 +206,5 @@ export class AudioPlayer {
             return null;
         }
         return this._queue[0];
-    }
-}
-
-/**
- *
- */
-export class AudioItem {
-    public url: string = null;
-    public token: string = null;
-    public expectedPreviousToken: string = null;
-    public offsetInMilliseconds: number;
-
-    public constructor (public json: any) {
-        this.url = json.stream.url;
-        this.token = json.stream.token;
-        this.expectedPreviousToken = json.stream.expectedPreviousToken;
-        this.offsetInMilliseconds = json.stream.offsetInMilliseconds;
     }
 }

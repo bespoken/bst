@@ -1,8 +1,10 @@
 import {InteractionModel} from "../alexa/interaction-model";
 import {Alexa, AlexaResponseCallback, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
+import {AudioPlayerState} from "../alexa/audio-player";
 
 export class BSTAlexaEvents {
+    public static AudioItemStarted = "audio-item-started";
     public static Error = "error";
     public static Response = "response";
 }
@@ -64,7 +66,11 @@ export class BSTAlexa {
      * @param callback
      */
     public on(eventType: string, callback: Function): void {
-        if (eventType === BSTAlexaEvents.Error) {
+        if (eventType === BSTAlexaEvents.AudioItemStarted) {
+            if (this._alexa.context().audioPlayerEnabled()) {
+                this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStarted, callback);
+            }
+        } else if (eventType === BSTAlexaEvents.Error) {
             this._alexa.on(AlexaEvent.SkillError, callback);
         } else if (eventType === BSTAlexaEvents.Response) {
             this._alexa.on(AlexaEvent.SkillResponse, callback);
