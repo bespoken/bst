@@ -155,7 +155,7 @@ export class AudioPlayer {
         this.alexa.callSkill(serviceRequest);
     }
 
-    public directivesReceived(request: any, directives: Array<any>): void {
+    public directivesReceived(directives: Array<any>): void {
         for (let directive of directives) {
             this.handleDirective(directive);
         }

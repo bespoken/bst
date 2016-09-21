@@ -80,6 +80,7 @@ export class BSTAlexa {
      * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
      *  A second parameter with the body of the request as JSON is also passed
      * For event type {@link BSTAlexaEvents.Error}, the payload is the error.
+     * @param eventType {@link BSTAlexaEvents}
      * @param callback
      */
     public on(eventType: string, callback: Function): void {

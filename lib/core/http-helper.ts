@@ -3,6 +3,7 @@ export class HTTPHelper {
     /**
      * Wraps a payload as an HTTP response
      * Includes the content-length header and assumes 200 status code
+     * @param statusCode The status code of the response
      * @param body
      */
     public static format(statusCode: number, body: string): string {

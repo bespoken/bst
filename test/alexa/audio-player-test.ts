@@ -2,9 +2,10 @@
 
 import * as assert from "assert";
 import {Alexa, AlexaEvent} from "../../lib/alexa/alexa";
-import {AudioPlayer, AudioItem} from "../../lib/alexa/audio-player";
+import {AudioPlayer} from "../../lib/alexa/audio-player";
 import {AlexaContext} from "../../lib/alexa/alexa-context";
 import {RequestCallback} from "request";
+import {AudioItem} from "../../lib/alexa/audio-item";
 
 
 describe("AudioPlayer", function() {
@@ -207,13 +208,13 @@ describe("AudioPlayer", function() {
     });
 });
 
-function directiveResponse (dircectiveType: string, playBehavior: string, token: string) {
+function directiveResponse (directiveType: string, playBehavior: string, token: string) {
     return {
         response: {
             shouldEndSession: true,
             directives: [
                 {
-                    type: dircectiveType,
+                    type: directiveType,
                     playBehavior: playBehavior,
                     audioItem: {
                         stream: {

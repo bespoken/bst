@@ -102,7 +102,7 @@ describe("BSTAlexa", function() {
             });
 
             it("Intended with bad intent", function (done) {
-                alexa.intended("Hello", null, function (error, response, request) {
+                alexa.intended("Hello", null, function (error, response) {
                     assert(!response);
                     assert(error);
                     done();

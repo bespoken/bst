@@ -172,7 +172,7 @@ export class Alexa {
             } else {
                 // Check if there are any audio directives when it comes back
                 if (body.response !== undefined && body.response.directives !== undefined) {
-                    self._context.audioPlayer().directivesReceived(requestJSON, body.response.directives);
+                    self._context.audioPlayer().directivesReceived(body.response.directives);
                 }
 
                 if (callback !== undefined && callback !== null) {

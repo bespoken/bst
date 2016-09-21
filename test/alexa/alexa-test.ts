@@ -37,23 +37,39 @@ describe("Alexa", function() {
 
     describe("#spoken()", function() {
         it("Returns payload", function(done) {
-            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+
+            (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
+                responseHandler(null, null, {
+                    response: {
+                        shouldEndSession: true,
+                        outputSpeech: {
+                            ssml: "<speak><audio src=\"https://audio.com/audio.mp3\" /></speak>"
+                        }
+                    }
+                });
+            };
 
             alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (error: any, response: any, request: any) {
                 assert(request);
                 assert(response.response.outputSpeech.ssml !== null);
-                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://audio.com/audio.mp3\" /></speak>");
                 done();
             });
         });
 
         it("Handle With Slot", function(done) {
-            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
+            (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
+                responseHandler(null, null, {
+                    response: {
+                        shouldEndSession: true,
+                    }
+                });
+            };
+
             alexa.startSession(skillURL, model, false).spoken("Take Me To Walmart {A}", function (error: any, response: any) {
-                assert(response.response.outputSpeech.ssml !== null);
-                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3\" /></speak>");
+                assert(response.response.shouldEndSession);
                 done();
             });
         });
@@ -79,11 +95,9 @@ describe("Alexa", function() {
         });
 
         it("Handles default on bad Phrase", function(done) {
-            this.timeout(10000);
             let skillURL = "https://alexa.xappmedia.com/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).spoken("NotMatching", function (error: any, response: any) {
-                // Treats this as the first intentName, Nearest Location
-                assert.equal(response.response.outputSpeech.ssml, "<speak><audio src=\"https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-NEARESTLOCATION-TRAILING.mp3\" /></speak>");
+            alexa.startSession(skillURL, model, false).spoken("NotMatching", function (error: any, response: any, request: any) {
+                assert.equal(request.request.intent.name, "NearestLocation");
                 done();
             });
         });
