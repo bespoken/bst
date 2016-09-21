@@ -4,8 +4,25 @@ import {Global} from "../core/global";
 import {AudioPlayerState} from "../alexa/audio-player";
 
 export class BSTAlexaEvents {
-    public static AudioItemStarted = "audio-item-started";
+    /**
+     * Fired when an {@link AudioItem} begins playing.
+     *
+     * Payload is an {@link AudioItem}.
+     */
+    public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
+
+    /**
+     * Fired when an error occurs.
+     *
+     * Payload is the error.
+     */
     public static Error = "error";
+
+    /**
+     * Fired when a response is received from the Alexa Skill.
+     *
+     * Parameters are the raw response JSON and the request JSON that triggered it.
+     */
     public static Response = "response";
 }
 
@@ -66,7 +83,7 @@ export class BSTAlexa {
      * @param callback
      */
     public on(eventType: string, callback: Function): void {
-        if (eventType === BSTAlexaEvents.AudioItemStarted) {
+        if (eventType === BSTAlexaEvents.AudioPlayerPlaybackStarted) {
             if (this._alexa.context().audioPlayerEnabled()) {
                 this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStarted, callback);
             }

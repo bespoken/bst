@@ -1,6 +1,7 @@
 /**
- * Information about an AudioItem
- * Directly ties off to the JSON payload from Alexa
+ * Information about an AudioItem.
+ *
+ * Directly ties off to the JSON payload from Alexa.
  */
 export class AudioItem {
     public url: string = null;

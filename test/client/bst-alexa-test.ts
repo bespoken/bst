@@ -146,7 +146,7 @@ describe("BSTAlexa", function() {
             it("Audio Item Started Event received", function (done) {
                 alexa.intended("PlayIntent", null, function () {
                     alexa.audioItemFinished();
-                    alexa.on("audio-item-started", function (audioItem: AudioItem) {
+                    alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: AudioItem) {
                         assert.equal(audioItem.token, "2");
                         done();
                     });
