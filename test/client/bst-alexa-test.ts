@@ -145,4 +145,32 @@ describe("BSTAlexa", function() {
             });
         });
     });
+
+    describe("#audioItemFinished()", function() {
+        it("Audio Item Finished", function (done) {
+            process.chdir("test/resources");
+            let speak = new BSTAlexa("http://localhost:10000");
+            speak.initialize(function () {
+                let lambdaServer = new LambdaServer("AudioPlayerLambda.js", 10000);
+                lambdaServer.start();
+                let count = 0;
+                speak.on("response", function (response: any, request: any) {
+                    console.log("RequestType: " + request.request.type);
+                    count++;
+                    if (count === 4) {
+                        assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
+                        speak.shutdown(function () {
+                            lambdaServer.stop(function() {
+                                process.chdir("../..");
+                                done();
+                            });
+                        });
+                    }
+                });
+                speak.intended("PlayIntent", null, function () {
+                    speak.audioItemFinished();
+                });
+            });
+        });
+    });
 });

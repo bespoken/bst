@@ -99,11 +99,11 @@ export class Alexa {
      * @param slots
      * @param callback
      */
-    public intended(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
+    public intended(intentName: string, slots?: any, callback?: AlexaResponseCallback): void {
         this.callSkillWithIntent(intentName, slots, callback);
     }
 
-    private callSkillWithIntent(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
+    private callSkillWithIntent(intentName: string, slots?: any, callback?: AlexaResponseCallback): void {
         let self = this;
         try {
             // When the user utters an intent, we suspend for it

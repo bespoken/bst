@@ -92,7 +92,7 @@ export class BSTAlexa {
      * @param slots
      * @param callback
      */
-    public intended(intentName: string, slots: any, callback?: AlexaResponseCallback): void {
+    public intended(intentName: string, slots?: any, callback?: AlexaResponseCallback): void {
         this._alexa.intended(intentName, slots, function (request: any, response: any, error?: string) {
             if (callback !== undefined && callback !== null) {
                 callback(request, response, error);
