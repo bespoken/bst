@@ -17,6 +17,11 @@ export class Global {
     }
 
     public static config(): BSTConfig {
+        // If nothing has been configured yet, configure it
+        if (Global.configuration === null) {
+            Global.initialize(false);
+            Global.configuration = BSTConfig.load();
+        }
         return Global.configuration;
     }
 

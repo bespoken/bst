@@ -9,28 +9,21 @@ import {FSWatcher} from "fs";
 
 let Logger = "BST-LAMBDA";
 
-export class LambdaRunner {
+export class LambdaServer {
     private server: Server = null;
     private dirty: boolean = false;
     private lambda: any = null;
     private watcher: FSWatcher = null;
     private requests: Array<IncomingMessage> = [];
-    public onDirty: (filename: string) => void = null; // Callback for test-ability
+    private onDirty: (filename: string) => void = null; // Callback for test-ability
 
     /**
-     * The file to run
-     * @param file
-     * @param port
-     * @param debug
+     * Creates a server that exposes a Lambda as an HTTP service
+     * @param file The file the defines the Lambda
+     * @param port The port the service should listen on
+     * @param verbose Prints out verbose information about requests and responses
      */
-    public constructor(public file: string, public port: number, public debug?: boolean) {
-        // We need the debug flag for testing this class
-        // It causes us to store off the requests so that we can close sockets and shutdown quickly
-        //  Otherwise we have to wait for timeouts
-        if (this.debug === undefined) {
-            this.debug = false;
-        }
-    }
+    public constructor(private file: string, private port: number, private verbose?: boolean) {}
 
     public start (callback?: () => void): void {
         let self = this;
@@ -59,9 +52,7 @@ export class LambdaRunner {
         this.server = http.createServer();
         this.server.listen(this.port);
         this.server.on("request", function(request: IncomingMessage, response: ServerResponse) {
-            if (self.debug) {
-                self.requests.push(request);
-            }
+            self.requests.push(request);
 
             let requestBody: string = "";
             request.on("data", function(chunk: Buffer) {
@@ -79,14 +70,37 @@ export class LambdaRunner {
         });
 
         this.server.on("listening", function () {
-            LoggingHelper.info(Logger, "LambdaRunner started on port: " + self.server.address().port.toString());
+            LoggingHelper.info(Logger, "LambdaServer started on port: " + self.server.address().port.toString());
             if (callback !== undefined && callback !== null) {
                 callback();
             }
         });
     }
 
-    public invoke (body: string, response: ServerResponse): void {
+    /**
+     * Stops the lambda service
+     * @param onStop Callback when all sockets related to the LambdaServer have been cleaned up
+     */
+    public stop (onStop?: () => void): void {
+        this.watcher.close();
+
+        let request: IncomingMessage = null;
+        for (request of this.requests) {
+            try {
+                request.socket.end();
+            } catch (e) {
+
+            }
+        }
+
+        this.server.close(function () {
+            if (onStop !== undefined && onStop !== null) {
+                onStop();
+            }
+        });
+    }
+
+    private invoke (body: string, response: ServerResponse): void {
         let path: string = this.file;
         if (!path.startsWith("/")) {
             path = [process.cwd(), this.file].join("/");
@@ -99,39 +113,23 @@ export class LambdaRunner {
         }
 
         // let lambda = System.import("./" + file);
-        let context: LambdaContext = new LambdaContext(response);
+        let context: LambdaContext = new LambdaContext(response, this.verbose);
         try {
             let bodyJSON: any = JSON.parse(body);
+            if (this.verbose) {
+                console.log("Request:");
+                console.log(JSON.stringify(bodyJSON, null, 2));
+            }
             this.lambda.handler(bodyJSON, context);
         } catch (e) {
             context.fail("Exception: " + e.message);
         }
     }
-
-    public stop (onStop?: () => void): void {
-        this.watcher.close();
-
-        if (this.debug) {
-            let request: IncomingMessage = null;
-            for (request of this.requests) {
-                try {
-                    request.socket.end();
-                } catch (e) {
-
-                }
-            }
-        }
-        this.server.close(function () {
-            if (onStop !== undefined && onStop !== null) {
-                onStop();
-            }
-        });
-    }
 }
 
-export class LambdaContext {
+class LambdaContext {
 
-    public constructor(public response: ServerResponse) {}
+    public constructor(public response: ServerResponse, public verbose: boolean) {}
 
     public fail(body: any) {
         this.done(false, body);
@@ -148,6 +146,10 @@ export class LambdaContext {
 
         if (success) {
             bodyString = JSON.stringify(body);
+            if (this.verbose) {
+                console.log("Response:");
+                console.log(JSON.stringify(body, null, 2));
+            }
         } else {
             statusCode = 500;
             contentType = "text/plain";

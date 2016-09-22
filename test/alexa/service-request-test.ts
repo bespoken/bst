@@ -5,6 +5,9 @@ import {IntentSchema} from "../../lib/alexa/intent-schema";
 import {ServiceRequest} from "../../lib/alexa/service-request";
 import {InteractionModel} from "../../lib/alexa/interaction-model";
 import {SessionEndedReason} from "../../lib/alexa/service-request";
+import {AlexaContext} from "../../lib/alexa/alexa-context";
+import {AlexaSession} from "../../lib/alexa/alexa-session";
+import {RequestType} from "../../lib/alexa/service-request";
 
 
 describe("ServiceRequest", function() {
@@ -29,10 +32,12 @@ describe("ServiceRequest", function() {
     };
 
     let model: InteractionModel = new InteractionModel(new IntentSchema(intentSchemaJSON), null);
+    let context = new AlexaContext("https://skill.com/skillPath", null, "MyApp");
+    let session = new AlexaSession(model);
 
     describe("#intentRequest()", function() {
         it("Correctly parses intents", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+            let requester: ServiceRequest = new ServiceRequest(context, session);
 
             let request: any = requester.intentRequest("Test").toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -41,15 +46,15 @@ describe("ServiceRequest", function() {
             assert.equal(request.request.type, "IntentRequest");
             assert.equal(request.request.intent.name, "Test");
             assert.equal(request.request.timestamp.length, 20);
+            assert(request.context.System.application.applicationId);
+            assert(request.context.System.device.supportedInterfaces.AudioPlayer);
 
-            let request2: any = requester.intentRequest("Test").toJSON();
-            assert.equal(request2.session.new, false);
-            assert.equal(request2.session.sessionId, request.session.sessionId);
+
             done();
         });
 
         it("Handles error", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+            let requester: ServiceRequest = new ServiceRequest(context, session);
 
             try {
                 requester.intentRequest("Test2").toJSON();
@@ -61,7 +66,7 @@ describe("ServiceRequest", function() {
         });
 
         it("With Slot", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+            let requester: ServiceRequest = new ServiceRequest(context, session);
 
             let request: any = requester.intentRequest("WithSlot").withSlot("SlotName", "Value").toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -78,7 +83,7 @@ describe("ServiceRequest", function() {
 
     describe("#launchRequest()", function() {
         it("Correctly parses intents", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+            let requester: ServiceRequest = new ServiceRequest(context, session);
 
             let request: any = requester.launchRequest().toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -93,7 +98,7 @@ describe("ServiceRequest", function() {
 
     describe("#sessionEndedRequest()", function() {
         it("Correctly parses intents", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(model, "MyApp");
+            let requester: ServiceRequest = new ServiceRequest(context, session);
 
             let request: any = requester.sessionEndedRequest(SessionEndedReason.ERROR).toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -102,6 +107,39 @@ describe("ServiceRequest", function() {
             assert.equal(request.request.type, "SessionEndedRequest");
             assert.equal(request.request.reason, "ERROR");
             assert.equal(request.request.timestamp.length, 20);
+
+            done();
+        });
+    });
+
+    describe("#playbackStarted()", function() {
+        it("Correctly parses intents", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(context);
+
+            let request: any = requester.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, "0", 20).toJSON();
+            assert.equal(request.session, undefined);
+            assert.equal(request.version, "1.0");
+            assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
+            assert.equal(request.request.timestamp.length, 20);
+            assert(request.context.System.application.applicationId);
+
+            done();
+        });
+    });
+
+    describe("#playbackNearlyFinished()", function() {
+        it("Correctly parses intents", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(context);
+
+            let request: any = requester.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, "1", 50).toJSON();
+            assert.equal(request.session, undefined);
+            assert.equal(request.version, "1.0");
+            assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
+            assert.equal(request.request.timestamp.length, 20);
+            assert.equal(request.request.offsetInMilliseconds, 50);
+            assert.equal(request.request.token, "1");
+
+            assert(request.context.System.application.applicationId);
 
             done();
         });

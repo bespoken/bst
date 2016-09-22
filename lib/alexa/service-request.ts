@@ -1,10 +1,16 @@
-import {InteractionModel} from "./interaction-model";
-let uuid = require("node-uuid");
+import {AlexaSession} from "./alexa-session";
+import {AlexaContext} from "./alexa-context";
+import {AudioPlayerState} from "./audio-player";
+const uuid = require("node-uuid");
 
-export enum RequestType {
-    IntentRequest,
-    LaunchRequest,
-    SessionEndedRequest
+export class RequestType {
+    public static IntentRequest = "IntentRequest";
+    public static LaunchRequest = "LaunchRequest";
+    public static SessionEndedRequest = "SessionEndedRequest";
+    public static AudioPlayerPlaybackFinished = "AudioPlayer.PlaybackFinished";
+    public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished";
+    public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
+    public static AudioPlayerPlaybackStopped = "AudioPlayer.PlaybackStopped";
 }
 
 export enum SessionEndedReason {
@@ -17,25 +23,48 @@ export enum SessionEndedReason {
  * Creates a the JSON for a Service Request programmatically
  */
 export class ServiceRequest {
-    public newSession: boolean = true;
-    public sessionID: string = null;
-    public userID: string = null;
     private requestJSON: any = null;
 
-    public constructor (private interactionModel: InteractionModel, private applicationID?: string) {
-        this.resetSession();
-    }
+    public constructor (private context: AlexaContext, private session?: AlexaSession) {}
 
     /**
      * Generates an intentName request with the specified IntentName
      * @param intentName
      * @returns {ServiceRequest}
      */
-    public intentRequest(intentName: string): any {
-        if (!this.interactionModel.hasIntent(intentName)) {
-            throw new Error("Interaction model has no intentName named: " + intentName);
+    public intentRequest(intentName: string): ServiceRequest {
+        if (!intentName.startsWith("AMAZON")) {
+            if (this.session === undefined || this.session === null) {
+                throw new Error("No session - cannot pass custom intent when not in session");
+            } else if (!this.session.interactionModel.hasIntent(intentName)) {
+                throw new Error("Interaction model has no intentName named: " + intentName);
+            }
         }
-        this.requestJSON = this.generateRequest(RequestType.IntentRequest, intentName);
+
+        this.requestJSON = this.baseRequest(RequestType.IntentRequest);
+        this.requestJSON.request.intent = {
+            name: intentName,
+            slots: {}
+        };
+
+        return this;
+    }
+
+    public audioPlayerRequest(requestType: string, token: string, offsetInMilliseconds: number): ServiceRequest {
+        this.requestJSON = this.baseRequest(requestType);
+        this.requestJSON.request.token = token;
+        this.requestJSON.request.offsetInMilliseconds = offsetInMilliseconds;
+        return this;
+    }
+
+    public launchRequest(): ServiceRequest {
+        this.requestJSON = this.baseRequest(RequestType.LaunchRequest);
+        return this;
+    }
+
+    public sessionEndedRequest(reason: SessionEndedReason): ServiceRequest {
+        this.requestJSON = this.baseRequest(RequestType.SessionEndedRequest);
+        this.requestJSON.request.reason = SessionEndedReason[reason];
         return this;
     }
 
@@ -53,88 +82,83 @@ export class ServiceRequest {
         return this;
     }
 
-    public launchRequest(): any {
-        this.requestJSON = this.generateRequest(RequestType.LaunchRequest, null);
-        return this;
-    }
-
-    public sessionEndedRequest(reason: SessionEndedReason): any {
-        this.requestJSON = this.generateRequest(RequestType.SessionEndedRequest, null, reason);
-        return this;
-    }
-
-    private generateRequest(requestType: RequestType, intentName?: string, reason?: SessionEndedReason): any {
-        let applicationID = this.getApplicationID();
-        // For user ID, take the prefix and tack on a UUID - this is not what Amazon does but should be okay
-        if (this.userID === null) {
-            this.userID = "amzn1.ask.account." + uuid.v4();
-        }
+    private baseRequest(requestType: string): any {
+        let applicationID = this.context.applicationID();
+        let requestID = ServiceRequest.requestID();
+        let timestamp = ServiceRequest.timestamp();
+        let userID = this.context.userID();
 
         // First create the header part of the request
         let request: any = {
-            "session": {
-                "sessionId": this.sessionID,
-                "application": {
-                    "applicationId": applicationID
-                },
-                "attributes": {},
-                "user": {
-                    "userId": this.userID
-                },
-                "new": this.newSession
+            request: {
+                type: requestType,
+                locale: "en-US",
+                requestID: requestID,
+                timestamp: timestamp
             },
-            "version": "1.0"
+            context: {
+                System: {
+                    application: {
+                        applicationId: applicationID
+                    },
+                    device: {
+                        supportedInterfaces: {
+                            AudioPlayer: {}
+                        }
+                    },
+                    user: {
+                        userId: userID
+                    },
+                }
+            },
+            version: "1.0"
         };
 
-        // Add on the appropriate request type
-        if (requestType === RequestType.IntentRequest) {
-            request.request = ServiceRequest.generateIntentRequest(intentName);
-        } else if (requestType === RequestType.LaunchRequest) {
-            request.request = ServiceRequest.generateLaunchRequest();
-        } else if (requestType === RequestType.SessionEndedRequest) {
-            request.request = ServiceRequest.generateSessionEndedRequest(reason);
+        // If we have a session, set the info
+        if (this.session !== undefined && this.session !== null) {
+            let newSession = this.session.isNew();
+            let sessionID = this.session.id();
+            let attributes = this.session.attributes();
+
+            request.session = {
+                sessionId: sessionID,
+                application: {
+                    applicationId: applicationID
+                },
+                attributes: attributes,
+                user: {
+                    userId: userID
+                },
+                "new": newSession
+            };
         }
 
-        this.newSession = false;
-        return request;
-    }
+        // For intent, launch and session ended requests, send the audio player state if there is one
+        if (requestType === RequestType.IntentRequest
+            || requestType === RequestType.LaunchRequest
+            || requestType === RequestType.SessionEndedRequest) {
+            if (this.context.audioPlayerEnabled()) {
+                let offset = this.context.audioPlayer().offsetInMilliseconds();
+                let token = this.context.audioPlayer().token();
 
-    private static generateIntentRequest(intentName: string): any {
-        let requestID = ServiceRequest.requestID();
-        let timestamp = ServiceRequest.timestamp();
-        return {
-            "type": "IntentRequest",
-            "requestId": requestID,
-            "locale": "en-US",
-            "timestamp": timestamp,
-            "intent": {
-                "name": intentName,
-                "slots": {}
+                let state = this.context.audioPlayer().state();
+                let activity: string = null;
+
+                if (state === AudioPlayerState.PlaybackFinished) {
+                    activity = "FINISHED";
+                } else if (state === AudioPlayerState.PlaybackStopped) {
+                    activity = "STOPPED";
+                }
+
+                request.context.AudioPlayer = {
+                    offsetInMilliseconds: offset,
+                    token: token,
+                    playerActivity: activity
+                };
             }
-        };
-    }
+        }
 
-    private static generateLaunchRequest(): any {
-        let requestID = ServiceRequest.requestID();
-        let timestamp = ServiceRequest.timestamp();
-        return {
-            "type": "LaunchRequest",
-            "requestId": requestID,
-            "timestamp": timestamp
-        };
-    }
-
-    private static generateSessionEndedRequest(reason: SessionEndedReason): any {
-        let requestID = ServiceRequest.requestID();
-        let timestamp = ServiceRequest.timestamp();
-        let reasonString = SessionEndedReason[reason];
-
-        return {
-            "type": "SessionEndedRequest",
-            "requestId": requestID,
-            "timestamp": timestamp,
-            "reason": reasonString
-        };
+        return request;
     }
 
     /**
@@ -151,18 +175,5 @@ export class ServiceRequest {
 
     public toJSON() {
         return this.requestJSON;
-    }
-
-    public resetSession() {
-        this.sessionID = "SessionID." + uuid.v4();
-        this.newSession = true;
-    }
-
-    private getApplicationID(): string {
-        // Generate an application ID if it is not set
-        if (this.applicationID === undefined || this.applicationID === null) {
-            this.applicationID = "amzn1.echo-sdk-ams.app." + uuid.v4();
-        }
-        return this.applicationID;
     }
 }

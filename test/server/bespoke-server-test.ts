@@ -6,7 +6,7 @@ import {BespokeClient} from "../../lib/client/bespoke-client";
 import {WebhookRequest} from "../../lib/core/webhook-request";
 import {HTTPClient} from "../../lib/core/http-client";
 import {BespokeServer} from "../../lib/server/bespoke-server";
-import {LambdaRunner} from "../../lib/client/lambda-runner";
+import {LambdaServer} from "../../lib/client/lambda-server";
 import * as request from "request";
 import {IncomingMessage} from "http";
 import {Global} from "../../lib/core/global";
@@ -54,11 +54,11 @@ describe("BespokeServerTest", function() {
 
             // Start all the stuff
             let server = new BespokeServer(8010, 9010);
-            let lambdaRunner = new LambdaRunner("./test/resources/DelayedLambda.js", 10000);
+            let lambdaServer = new LambdaServer("./test/resources/DelayedLambda.js", 10000);
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
 
             server.start(function () {
-                lambdaRunner.start(function () {
+                lambdaServer.start(function () {
                     bespokeClient.connect(function () {
                         onStarted();
                     });
@@ -100,7 +100,7 @@ describe("BespokeServerTest", function() {
             let onCompleted = function () {
                 count++;
                 if (count === 3) {
-                    lambdaRunner.stop(function () {
+                    lambdaServer.stop(function () {
                         bespokeClient.shutdown(function () {
                             server.stop(function () {
                                 done();
@@ -117,7 +117,7 @@ describe("BespokeServerTest", function() {
             let server = new BespokeServer(8010, 9010);
             server.start();
 
-            let badLambda = new LambdaRunner("./test/resources/NoOpLambda.js", 10000, true);
+            let badLambda = new LambdaServer("./test/resources/NoOpLambda.js", 10000, true);
             badLambda.start();
 
             let count = 0;
@@ -143,7 +143,7 @@ describe("BespokeServerTest", function() {
                 });
 
                 setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": false}", function (data: Buffer) {
+                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": false}", function () {
                         count++;
                     });
                 }, 10);

@@ -1,7 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import {BespokeClient} from "./bespoke-client";
-import {LambdaRunner} from "./lambda-runner";
+import {LambdaServer} from "./lambda-server";
 import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
@@ -18,7 +18,7 @@ const DefaultLambdaPort = 10000;
  */
 export class BSTProxy {
     private bespokenClient: BespokeClient = null;
-    private lambdaRunner: LambdaRunner = null;
+    private lambdaServer: LambdaServer = null;
 
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
@@ -90,8 +90,8 @@ export class BSTProxy {
         this.bespokenClient.connect();
 
         if (this.proxyType === ProxyType.LAMBDA) {
-            this.lambdaRunner = new LambdaRunner(this.lambdaFile, this.httpPort);
-            this.lambdaRunner.start();
+            this.lambdaServer = new LambdaServer(this.lambdaFile, this.httpPort);
+            this.lambdaServer.start();
         }
     }
 
@@ -100,8 +100,8 @@ export class BSTProxy {
             this.bespokenClient.shutdown();
         }
 
-        if (this.lambdaRunner !== null) {
-            this.lambdaRunner.stop(onStopped);
+        if (this.lambdaServer !== null) {
+            this.lambdaServer.stop(onStopped);
         } else {
             if (onStopped !== undefined && onStopped !== null) {
                 onStopped();

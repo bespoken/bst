@@ -30,6 +30,7 @@ describe("bst-speak", function() {
     beforeEach(function () {
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
         mockery.registerMock("../lib/core/global", globalModule);
         sandbox = sinon.sandbox.create();
     });
@@ -42,13 +43,13 @@ describe("bst-speak", function() {
     describe("speak command", function() {
         it("Speaks One Word", function(done) {
             process.argv = command("node bst-speak.js Hello");
-            mockery.registerMock("../lib/client/bst-speak", {
-                BSTSpeak: function () {
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function () {
                     this.initialize = function(ready: Function) {
                         ready();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {
+                    this.spoken = function (utterance: string, callback: any) {
                         assert.equal(utterance, "Hello");
                         callback({"request": "test"}, {"response": "test"});
                     };
@@ -63,10 +64,36 @@ describe("bst-speak", function() {
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
+        it("Speaks With Application ID", function(done) {
+            process.argv = command("node bst-speak.js Hello --appId 1234567890");
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    assert.equal(applicationID, "1234567890");
+                    this.initialize = function () {};
+                    done();
+                }
+            });
+
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
+        it("Speaks With Application ID", function(done) {
+            process.argv = command("node bst-speak.js Hello -a 1234567890");
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    assert.equal(applicationID, "1234567890");
+                    this.initialize = function () {};
+                    done();
+                }
+            });
+
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
         it("Speaks With Custom URL", function(done) {
             process.argv = command("node bst-speak.js Hello --url https://proxy.bespoken.tools");
-            mockery.registerMock("../lib/client/bst-speak", {
-                BSTSpeak: function (url: string) {
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (url: string) {
                     this.url = url;
                     this.initialize = function(ready: Function) {
                         assert.equal(this.url, "https://proxy.bespoken.tools");
@@ -74,7 +101,7 @@ describe("bst-speak", function() {
                         done();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {};
+                    this.spoken = function (utterance: string, callback: any) {};
                 }
             });
 
@@ -83,13 +110,13 @@ describe("bst-speak", function() {
 
         it("Speaks One Word With Verbose", function(done) {
             process.argv = command("node bst-speak.js Hello");
-            mockery.registerMock("../lib/client/bst-speak", {
-                BSTSpeak: function () {
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function () {
                     this.initialize = function(ready: Function) {
                         ready();
                     };
 
-                    this.speak = function (utterance: string, callback: any) {
+                    this.spoken = function (utterance: string, callback: any) {
                         assert.equal(utterance, "Hello");
                         callback({"request": "test"}, {"response": "test"});
                     };
@@ -109,13 +136,13 @@ describe("bst-speak", function() {
 
         it("Speaks Multiple Word", function(done) {
             process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
-            mockery.registerMock("../lib/client/bst-speak", {
-                BSTSpeak: function () {
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function () {
                     this.initialize = function(ready: Function) {
                         ready();
                     };
 
-                    this.speak = function (utterance: string) {
+                    this.spoken = function (utterance: string) {
                         assert.equal(utterance, "Hello There Ladies And Gentlemen");
                         done();
                         return this;
@@ -127,13 +154,13 @@ describe("bst-speak", function() {
 
         it("Has no interaction model", function(done) {
             process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
-            mockery.registerMock("../lib/client/bst-speak", {
-                BSTSpeak: function () {
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function () {
                     this.initialize = function(ready: Function) {
                         ready("There was an error");
                     };
 
-                    this.speak = function (utterance: string) {
+                    this.spoken = function (utterance: string) {
                         assert.equal(utterance, "Hello There Ladies And Gentlemen");
                         return this;
                     };

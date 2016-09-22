@@ -54,7 +54,7 @@ describe("BSTProxy", function() {
                 let proxy = BSTProxy.lambda("../resources/ExampleLambda.js");
                 proxy.lambdaPort(2000);
                 proxy.start(function () {
-                    assert.equal((<any> proxy).lambdaRunner.server.address().port, 2000);
+                    assert.equal((<any> proxy).lambdaServer.server.address().port, 2000);
 
                     let count = 0;
                     let bothDone = function () {
