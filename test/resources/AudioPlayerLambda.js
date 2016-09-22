@@ -2,14 +2,14 @@ var AudioPlayerLambda = function () {
 
 };
 
-let count = 0;
+var count = 0;
 AudioPlayerLambda.execute = function (event, context) {
     count++;
-    let token = count + "";
+    var token = count + "";
     if (event.noop !== undefined && event.noop === true) {
         // Do nothing
     } else {
-        let responseData = {
+        var responseData = {
             version: "1.0",
             response: {
                 shouldEndSession: true,
