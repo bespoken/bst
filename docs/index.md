@@ -4,7 +4,8 @@
 The **bst** (aka Bespoken Tools) makes it easy to develop for Alexa/Echo.  
 
 We call it working in BEAST mode - rampage through code/test iterations as Alexa requests are sent **directly** to your laptop.
-Do not slow-down for:
+Do not slow-down for:  
+
 * Time-consuming server deployments
 * Over-complicated and error-prone packaging scripts
 * Seemingly-innocuous-but-still-pesky service restarts
@@ -51,6 +52,7 @@ Read the docs [here](/commands/speak).
 
 * [Nodejs Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
 * [Java Server Tutorial](/tutorials/tutorial_local_server_java)
+* [Python & Flask-Ask](/tutorials/tutorial_flask_ask_python)
 
 ## Questions/Feedback?
 
