@@ -135,10 +135,12 @@ The events that can be listened for are listed [here](../api/classes/bstalexaeve
 
 ## Parting Words
 We are looking to continuously enhance the emulator. Right now, it supports:
+
 * Standard Custom Skill behavior
 * AudioPlayer behavior
 
 It does **not** yet support:
+
 * Error conditions ([Alexa requests based on improper Skill responses](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-audioplayer-interface-reference#systemexceptionencountered-request))
 * [The PlaybackController interface](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-playbackcontroller-interface-reference)
 
