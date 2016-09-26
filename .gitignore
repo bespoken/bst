@@ -4,7 +4,6 @@ node_modules/
 **/*.iml
 target/
 coverage/
-index.ts
 index.js.map
 
 # Do not track the generated javascript and map files from typescript
