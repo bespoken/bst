@@ -7,6 +7,9 @@ allowing one to:
 
 *And please note - though this example is written in Javascript, the emulator can be used to test non-Javascript-based skills!*
 
+Additionally, though this example focuses on the AudioPlayer interface, 
+the BSTAlexa emulator can be used for testing regular Alexa skills as well.
+
 ## Prerequisites
 
 **A Node.js, Lambda-based Alexa skill**  
@@ -58,7 +61,8 @@ beforeEach(function (done) {
 });
 ```
 
-This block initializes the [LambdaServer](../api/classes/lambdaserver.html) and the [BSTAlexa emulator](../api/classes/bstalexa.html).
+This block initializes the [LambdaServer](http://docs.bespoken.tools/en/latest/api/classes/lambdaserver.html) 
+and the [BSTAlexa emulator](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html).
 
 The first parameter to the LambdaServer tells it the location of the Lambda file to be run.  
 It automatically wraps the Lambda in a service, and exposes it on the port supplied in the second argument.  
@@ -120,12 +124,12 @@ it('Plays The First Podcast To Completion And Goes To Next', function (done) {
 });
 ```
 
-This test uses the [BSTAlexa#audioItemFinished() call](../api/classes/bstalexa.html#audioitemfinished) 
+This test uses the [BSTAlexa#audioItemFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#audioitemfinished) 
 to emulate the audio playing to completion on the device.  
 
 The Alexa service will send an 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to trigger the playback the next track in the queue.  
 
-We also use [BSTAlexa#on() listener](../api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
+We also use [BSTAlexa#on() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
 
 The events that can be listened for are listed [here](../api/classes/bstalexaevents.html). These events are intended to directly correspond to what happens with the internal state of the real Alexa service.
 
