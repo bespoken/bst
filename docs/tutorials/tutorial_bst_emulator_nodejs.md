@@ -59,9 +59,18 @@ beforeEach(function (done) {
         });
     });
 });
+
+
+afterEach(function(done) {
+    alexa.stop(function () {
+        server.stop(function () {
+            done();
+        });
+    });
+});
 ```
 
-This block initializes the [LambdaServer](http://docs.bespoken.tools/en/latest/api/classes/lambdaserver.html) 
+The beforeEach block initializes the [LambdaServer](http://docs.bespoken.tools/en/latest/api/classes/lambdaserver.html) 
 and the [BSTAlexa emulator](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html).
 
 The first parameter to the LambdaServer tells it the location of the Lambda file to be run.  
@@ -69,10 +78,12 @@ It automatically wraps the Lambda in a service, and exposes it on the port suppl
 The last parameter indicates it should be in verbose mode - this causes requests and responses from the skill to be printed to the console.
 
 The BST Alexa start then takes the URL of the Lambda server as its first parameter (it begins listening).  
-*Note that if you are not using Lambdas but a "Plain Old HTTP Service" you can skip the server start call and just point it at the server here*
+*Note that if you are not using Lambdas but a "Plain Old HTTP Service" you can skip the server start call and just point it at a server here.*
 
 Additionally, it takes the location of the Intent Schema and Utterances in the second and third parameters.  
 These are not required and will default to 'speechAssets/IntentSchema.json' and 'speechAssets/SampleUtterances.txt' respectively.
+
+The afterEach block ensures the LambdaServer and BSTAlexa emulator are shutdown correctly.
 
 ## First Simple Test
 
