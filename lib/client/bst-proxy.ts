@@ -84,14 +84,25 @@ export class BSTProxy {
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
 
         this.bespokenClient = new BespokeClient(Global.config().nodeID(), this.bespokenHost, this.bespokenPort, this.httpPort);
-        if (onStarted !== undefined) {
-            this.bespokenClient.onConnect = onStarted;
-        }
+
+        // Make sure all callbacks have been hit before returning
+        //  We will have to wait for two callbacks if this using the Lambda proxy
+        //  Otherwise, it is just one
+        let callbackCountDown = 1;
+        const callback = function () {
+            callbackCountDown--;
+            if (callbackCountDown === 0 && onStarted !== undefined) {
+                onStarted();
+            }
+        };
+
+        this.bespokenClient.onConnect = callback;
         this.bespokenClient.connect();
 
         if (this.proxyType === ProxyType.LAMBDA) {
+            callbackCountDown++;
             this.lambdaServer = new LambdaServer(this.lambdaFile, this.httpPort);
-            this.lambdaServer.start();
+            this.lambdaServer.start(callback);
         }
     }
 
