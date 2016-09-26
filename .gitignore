@@ -13,6 +13,7 @@ lib/**/*.js
 lib/**/*.map
 test/**/*.js
 test/**/*.map
+test/resources/.bst/config
 
 **/.DS_Store
 
