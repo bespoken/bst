@@ -19,7 +19,7 @@ the BSTAlexa emulator can be used for testing regular Alexa skills as well.
 * A Node.js, Lambda-based Alexa skill 
     * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/skill-sample-nodejs-audio-player)
     * Derived from excellent streaming skill example provided by Amazon.
-    * The tests used in this tutorial are [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/js/test/skillTest.js).
+    * The test used in this tutorial is [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/js/test/skillTest.js).
 * Bespoken Tools added to your project's package.json
     * `$ npm install bespoken-tools --save-dev`
     * For this example, we make it a "dev" dependency as we will be using it only for testing.
@@ -32,7 +32,7 @@ We are using Mocha for tests. We breakdown our tests into three parts:
 * tests - Performs the actual tests by issuing intents and emulating AudioPlayer behavior
 * afterEach - Tears down the local Lambda server and shuts down the emulator
 
-These our standard testing considerations, *though we emphasize the importance of stopping the Lambda server.*
+These are standard testing considerations, *though we emphasize the importance of stopping the Lambda server.*
 If this is not done, it will continue listening on the assigned port, potentially causing conflicts and errors.
 
 ## Adding the bst module
@@ -74,15 +74,15 @@ afterEach(function(done) {
 The beforeEach block initializes the [LambdaServer](http://docs.bespoken.tools/en/latest/api/classes/lambdaserver.html) 
 and the [BSTAlexa emulator](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html).
 
-The first parameter to the LambdaServer tells it the location of the Lambda file to be run.  
-It automatically wraps the Lambda in a service, and exposes it on the port supplied in the second argument.  
+The first parameter to the LambdaServer tells it the location of the Lambda file to be run.
+It automatically wraps the Lambda in a service, and exposes it on the port supplied in the second argument.
+
 The last parameter indicates it should be in verbose mode - this causes requests and responses from the skill to be printed to the console.
 
-The BST Alexa start then takes the URL of the Lambda server as its first parameter (it begins listening).  
+The [BSTAlexa start call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#start) takes the URL of the Lambda server as its first parameter (it begins listening).  
 *Note that if you are not using Lambdas but a "Plain Old HTTP Service" you can skip the server start call and just point it at a server here.*
 
-Additionally, it takes the location of the Intent Schema and Utterances in the second and third parameters.
-
+Additionally, it takes the location of the Intent Schema and Utterances in the second and third parameters. 
 These are not required and will default to './speechAssets/IntentSchema.json' and './speechAssets/SampleUtterances.txt' respectively.
 
 The afterEach block ensures the LambdaServer and BSTAlexa emulator are shutdown correctly.
@@ -118,7 +118,7 @@ This test runs through some simple behavior:
 * It issues a second intent, the builtin Amazon.NextIntent
 * It confirms the response from the Skill is correct based on the NextIntent
 
-The goal is to test until we feel confident in the behavior of our skill, and that it is handling correctly the interaction with Alexa Service.
+The goal is to test until we feel confident in the behavior of our skill, and that it is correctly handling the interaction with the Alexa Service.
 
 It is a straightforward exercise to add more property checks on the payload to further confirm behavior.
 
@@ -143,7 +143,7 @@ to emulate the audio playing to completion on the device.
 
 The Alexa service will send an 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to trigger the playback the next track in the queue.  
 
-We also use [BSTAlexa#on() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
+We also use the [BSTAlexa#on() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
 
 The events that can be listened for are listed [here](../api/classes/bstalexaevents.html). These events are intended to directly correspond to what happens with the internal state of the real Alexa service.
 
@@ -160,4 +160,4 @@ It does **not** yet support:
 
 Please keep a lookout for support for both coming soon!
 
-Additionally, [chat with us on Gitter](https://gitter.im/bespoken/bst) with any comments or questions
+Additionally, [chat with us on Gitter](https://gitter.im/bespoken/bst) with any comments or questions.
