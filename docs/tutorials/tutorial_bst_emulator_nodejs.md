@@ -9,13 +9,15 @@ allowing one to:
 
 ## Prerequisites
 
-* A Node.js, Lambda-based Alexa skill
+**A Node.js, Lambda-based Alexa skill**  
 If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/skill-sample-nodejs-audio-player),
 derived from excellent streaming skill example provided by Amazon.
 
-To get started with it, [follow the README](https://github.com/bespoken/skill-sample-nodejs-audio-player/README.md).
+To get started with it, [follow the README](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/README.md).
 
-* Bespoken Tools added to your project's package.json
+The tests used in this tutorial are [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/test/index-test.js).
+
+**Bespoken Tools added to your project's package.json**
 ```
 $ npm install bespoken-tools --save-dev
 ```
@@ -120,10 +122,12 @@ it('Plays The First Podcast To Completion And Goes To Next', function (done) {
 
 This test uses the [BSTAlexa#audioItemFinished() call](../api/classes/bstalexa.html#audioitemfinished) 
 to emulate the audio playing to completion on the device.  
+
 The Alexa service will send an 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to trigger the playback the next track in the queue.  
-We also use [BSTAlexa#on() listener](../api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator.  
-The available events are listed [here](../api/classes/bstalexaevents.html).  
-These events are intended to directly correspond to what happens with the internal state of the real Alexa service.
+
+We also use [BSTAlexa#on() listener](../api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
+
+The events that can be listened for are listed [here](../api/classes/bstalexaevents.html). These events are intended to directly correspond to what happens with the internal state of the real Alexa service.
 
 ## Parting Words
 We are looking to continuously enhance the emulator. Right now, it supports:
