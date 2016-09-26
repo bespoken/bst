@@ -52,7 +52,7 @@ program
         }
 
         let speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
-        speaker.initialize(function (error: string) {
+        speaker.start(function (error: string) {
             if (error !== undefined) {
                 console.error("Error loading Interaction Model!");
                 console.error("Cause: " + error);

@@ -177,7 +177,7 @@ describe("Alexa", function() {
             alexa.startSession(skillURL, model, false);
             alexa.spoken("NotMatching");
             alexa.intended("NearestLocation", null);
-            alexa.shutdown(function () {
+            alexa.stop(function () {
                 done();
             });
         });
@@ -194,7 +194,7 @@ describe("Alexa", function() {
             alexa.startSession(skillURL, model, false);
             alexa.spoken("NotMatching");
             alexa.intended("NearestLocation", null);
-            alexa.shutdown(function () {
+            alexa.stop(function () {
                 done();
             });
         });

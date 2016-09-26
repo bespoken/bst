@@ -9,11 +9,11 @@ describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
 
-    describe("#initialize()", function () {
-        it("Initializes with defaults", function (done) {
+    describe("#start()", function () {
+        it("Start with defaults", function (done) {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:9000");
-            speak.initialize(function (error: string) {
+            speak.start(function (error: string) {
                 assert(error === undefined);
                 process.chdir("../..");
                 done();
@@ -24,7 +24,7 @@ describe("BSTAlexa", function() {
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
-            speak.initialize(function (error: string) {
+            speak.start(function (error: string) {
                 assert(error === undefined);
                 done();
             });
@@ -35,7 +35,7 @@ describe("BSTAlexa", function() {
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt",
                 "1234567890J");
-            speak.initialize(function () {
+            speak.start(function () {
                 assert(Global.config().applicationID(), "1234567890J");
                 done();
             });
@@ -45,7 +45,7 @@ describe("BSTAlexa", function() {
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/Intent.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
-            speak.initialize(function (error: string) {
+            speak.start(function (error: string) {
                 assert(error);
                 assert.equal(error, "File not found: test/resources/speechAssets/Intent.json");
                 done();
@@ -57,7 +57,7 @@ describe("BSTAlexa", function() {
         beforeEach(function (done) {
             process.chdir("test/resources");
             alexa = new BSTAlexa("http://localhost:10000");
-            alexa.initialize(function () {
+            alexa.start(function () {
                 lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
                 lambdaServer.start();
                 done();
@@ -66,7 +66,7 @@ describe("BSTAlexa", function() {
 
         afterEach(function (done) {
             lambdaServer.stop(function () {
-                alexa.shutdown(function () {
+                alexa.stop(function () {
                     process.chdir("../..");
                     done();
                 });
@@ -125,7 +125,7 @@ describe("BSTAlexa", function() {
         beforeEach(function (done) {
             process.chdir("test/resources");
             alexa = new BSTAlexa("http://localhost:10000");
-            alexa.initialize(function () {
+            alexa.start(function () {
                 lambdaServer = new LambdaServer("AudioPlayerLambda.js", 10000);
                 lambdaServer.start();
                 done();
@@ -134,7 +134,7 @@ describe("BSTAlexa", function() {
 
         afterEach(function (done) {
             lambdaServer.stop(function () {
-                alexa.shutdown(function () {
+                alexa.stop(function () {
                     process.chdir("../..");
                     done();
                 });

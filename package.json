@@ -37,6 +37,7 @@
   "scripts": {
     "library": "tsc --declaration index.ts --target ES6",
     "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
+    "prepublish": "npm run typedoc",
     "postversion": "git push && git push --tags",
     "pretest": "typings install && tsc && npm run lint",
     "coverage": "typings install && tsc && istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",

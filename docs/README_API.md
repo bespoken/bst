@@ -83,7 +83,7 @@ beforeEach(function (done) {
                              './speechAssets/IntentSchema.json',
                              './speechAssets/Utterances.txt');
     server.start(function() {
-        alexa.initialize(function () {
+        alexa.start(function () {
             done();
         });
     });
@@ -94,7 +94,7 @@ And we shut it down at the end like so:
 
 ```
 afterEach(function(done) {
-    alexa.shutdown(function () {
+    alexa.stop(function () {
         server.stop(function () {
             done();
         });
