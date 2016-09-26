@@ -45,7 +45,7 @@ describe("bst-speak", function() {
             process.argv = command("node bst-speak.js Hello");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
-                    this.initialize = function(ready: Function) {
+                    this.start = function(ready: Function) {
                         ready();
                     };
 
@@ -69,7 +69,7 @@ describe("bst-speak", function() {
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
-                    this.initialize = function () {};
+                    this.start = function () {};
                     done();
                 }
             });
@@ -82,7 +82,7 @@ describe("bst-speak", function() {
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
-                    this.initialize = function () {};
+                    this.start = function () {};
                     done();
                 }
             });
@@ -95,7 +95,7 @@ describe("bst-speak", function() {
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (url: string) {
                     this.url = url;
-                    this.initialize = function(ready: Function) {
+                    this.start = function(ready: Function) {
                         assert.equal(this.url, "https://proxy.bespoken.tools");
                         ready();
                         done();
@@ -112,7 +112,7 @@ describe("bst-speak", function() {
             process.argv = command("node bst-speak.js Hello");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
-                    this.initialize = function(ready: Function) {
+                    this.start = function(ready: Function) {
                         ready();
                     };
 
@@ -138,7 +138,7 @@ describe("bst-speak", function() {
             process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
-                    this.initialize = function(ready: Function) {
+                    this.start = function(ready: Function) {
                         ready();
                     };
 
@@ -156,7 +156,7 @@ describe("bst-speak", function() {
             process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
-                    this.initialize = function(ready: Function) {
+                    this.start = function(ready: Function) {
                         ready("There was an error");
                     };
 

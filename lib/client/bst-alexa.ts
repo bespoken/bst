@@ -29,7 +29,7 @@ export class BSTAlexaEvents {
 /**
  * Programmatic interface for interacting with the Bespoken Tools Alexa emulator.
  *
- * Tutorial on usage can be found [here](../index.html).
+ * Overview on usage can be found [here](../index.html). NodeJS tutorial [here](../../tutorials/tutorial_bst_emulator_nodejs)
  *
  */
 export class BSTAlexa {
@@ -63,10 +63,10 @@ export class BSTAlexa {
     }
 
     /**
-     * Initialize the emulator
+     * Start the emulator
      * @param ready Passes back an error if there are any issues with initialization
      */
-    public initialize(ready: (error?: string) => void): void {
+    public start(ready: (error?: string) => void): void {
         let self = this;
         InteractionModel.fromFiles(this.intentSchemaFile, this.sampleUtterancesFile, function(model: InteractionModel, error: string) {
             if (error !== undefined && error !== null) {
@@ -149,7 +149,7 @@ export class BSTAlexa {
      * Useful for running inside of tests to ensure all cleanup has completed before next test starts.
      * @param onShutdown
      */
-    public shutdown(onShutdown: () => void) {
-        this._alexa.shutdown(onShutdown);
+    public stop(onStop: () => void) {
+        this._alexa.stop(onStop);
     }
 }
