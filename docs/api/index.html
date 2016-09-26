@@ -121,14 +121,14 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
                              <span class="hljs-string">'./speechAssets/IntentSchema.json'</span>,
                              <span class="hljs-string">'./speechAssets/Utterances.txt'</span>);
     server.start(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
-        alexa.initialize(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        alexa.start(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
             done();
         });
     });
 });
 </code></pre><p>And we shut it down at the end like so:</p>
 				<pre><code>afterEach(<span class="hljs-name">function</span>(<span class="hljs-name">done</span>) {
-    alexa.shutdown(<span class="hljs-name">function</span> () {
+    alexa.stop(<span class="hljs-name">function</span> () {
         server.stop(<span class="hljs-name">function</span> () {
             done()<span class="hljs-comment">;</span>
         })<span class="hljs-comment">;</span>
@@ -139,8 +139,7 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
 				<p>Listeners can be set on all the events listed <a href="classes/bstalexaevents.html">here</a>.</p>
 				<p>For example, to see that a track has begun playing,
 				add a listener on the <a href="classes/bstalexaevents.html#audioplayerplaybackstarted">AudioPlayer.PlaybackStarted</a> event.</p>
-				<p>This works well in concert with the <a href="classes/bstalexa.html#audioitemfinished">audioItemFinished</a> call.<br>This call acts as if the current track had finished playing on the device.
-				The next audio item queued from your skill should then be started.</p>
+				<p>This works well in concert with the <a href="classes/bstalexa.html#audioitemfinished">audioItemFinished</a> call.<br>This call acts as if the current track had finished playing on the device.<br>The next audio item queued from your skill should then be started.</p>
 				<p>Sample code:</p>
 				<pre><code><span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.on</span>(<span class="hljs-string">'AudioPlayer.PlaybackStarted'</span>, function(audioItem) {
     assert<span class="hljs-selector-class">.equal</span>(audioItem.stream.token, <span class="hljs-string">'2'</span>);

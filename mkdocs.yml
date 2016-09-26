@@ -9,7 +9,7 @@ pages:
 - Commands:
     - bst proxy: commands/proxy.md
     - bst speak: commands/speak.md
-- API Reference: api/index.html
+- API Reference: api_nav.md
 - Tutorials:
     - Nodejs Lambda: tutorials/tutorial_lambda_nodejs.md
     - Local Java Server: tutorials/tutorial_local_server_java.md
