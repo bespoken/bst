@@ -109,6 +109,7 @@ it('Plays First Podcast and Then Goes To Next', function (done) {
 ```
 
 This test runs through some simple behavior:
+
 * It emulates 'Play The Podcast' being spoken
 * It confirms the Skill returns the correct directive based on this utterance (AudioPlayer.Play)
 * It confirms the correct token is return by the skill
