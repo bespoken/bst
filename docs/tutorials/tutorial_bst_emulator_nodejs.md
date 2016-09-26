@@ -2,6 +2,7 @@ This tutorial shows you how to get started using our BST Alexa emulator with Nod
 
 The purpose of the emulator is to allow unit- and functional-testing of Alexa Skills, 
 allowing one to:
+
 * Emulate the complex behavior of the Alexa service, without an Alexa device or any manual interaction
 * Ensure ongoing skill quality by embedding tests in Continuous Integration/Deployment processes
 
@@ -80,8 +81,9 @@ The last parameter indicates it should be in verbose mode - this causes requests
 The BST Alexa start then takes the URL of the Lambda server as its first parameter (it begins listening).  
 *Note that if you are not using Lambdas but a "Plain Old HTTP Service" you can skip the server start call and just point it at a server here.*
 
-Additionally, it takes the location of the Intent Schema and Utterances in the second and third parameters.  
-These are not required and will default to 'speechAssets/IntentSchema.json' and 'speechAssets/SampleUtterances.txt' respectively.
+Additionally, it takes the location of the Intent Schema and Utterances in the second and third parameters.
+
+These are not required and will default to './speechAssets/IntentSchema.json' and './speechAssets/SampleUtterances.txt' respectively.
 
 The afterEach block ensures the LambdaServer and BSTAlexa emulator are shutdown correctly.
 
