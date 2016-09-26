@@ -13,20 +13,15 @@ the BSTAlexa emulator can be used for testing regular Alexa skills as well.
 
 ## Prerequisites
 
-**A Node.js, Lambda-based Alexa skill**  
-If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/skill-sample-nodejs-audio-player),
-derived from excellent streaming skill example provided by Amazon.
-
-To get started with it, [follow the README](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/README.md).
-
-The tests used in this tutorial are [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/test/index-test.js).
-
-**Bespoken Tools added to your project's package.json**
-```
-$ npm install bespoken-tools --save-dev
-```
-
-For this example, we make it a "dev" dependency as we will be using it only for testing.
+* Mocha Test Framework
+* * https://mochajs.org/#getting-started
+* A Node.js, Lambda-based Alexa skill 
+* * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/skill-sample-nodejs-audio-player)
+* * Derived from excellent streaming skill example provided by Amazon.
+* * The tests used in this tutorial are [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/test/index-test.js).
+* Bespoken Tools added to your project's package.json
+* * `$ npm install bespoken-tools --save-dev`
+* * For this example, we make it a "dev" dependency as we will be using it only for testing.
 
 ## Test Structure
 
