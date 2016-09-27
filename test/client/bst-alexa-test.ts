@@ -4,12 +4,22 @@ import * as assert from "assert";
 import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
+import * as sinon from "sinon";
 
 describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
 
     describe("#start()", function () {
+        let sandbox: any = null;
+        beforeEach(function () {
+            sandbox = sinon.sandbox.create();
+        });
+
+        afterEach(function () {
+            sandbox.restore();
+        });
+
         it("Start with defaults", function (done) {
             process.chdir("test/resources");
             let speak = new BSTAlexa("http://localhost:9000");
@@ -42,12 +52,21 @@ describe("BSTAlexa", function() {
         });
 
         it("Initializes with error", function (done) {
+            let errorReceived = false;
+            sandbox.stub(console, "error", function(data: Buffer) {
+                if (data !== undefined) console.log(data);
+                if (!errorReceived && data.toString().startsWith("Error loading")) {
+                    errorReceived = true;
+                }
+            });
+
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/Intent.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function (error: string) {
                 assert(error);
                 assert.equal(error, "File not found: test/resources/speechAssets/Intent.json");
+                assert(errorReceived);
                 done();
             });
         });
