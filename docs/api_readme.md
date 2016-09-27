@@ -7,7 +7,7 @@ We currently only expose two primary classes:
 
 We make them available to facilitate testing of Skills using our emulator.
 
-[BSTAlexa](classes/bstalexa.html) is our Alexa simulator. It allows one to write unit tests and functional tests that mimic the functionality of the Alexa service.
+[BSTAlexa](classes/bstalexa.html) is our Alexa emulator. It allows one to write unit tests and functional tests that mimic the functionality of the Alexa service.
 
 The [LambdaServer](classes/lambdaserver.html) makes it easy to run your Lambdas locally for unit and functional tests.
 
@@ -62,10 +62,10 @@ afterEach(function (done) {
 ```
 
 # Using the LambdaServer
-We can the utilize the [LambdaServer](class/lambdaserver.html) to automatically start and stop a NodeJS/Lambda-based skill
+We can the utilize the [LambdaServer](classes/lambdaserver.html) to automatically start and stop a NodeJS/Lambda-based skill
 within our test.
 
-To do this, simply start the [LambdaServer](class/lambdaserver.html) on an open port and point it at your Lambda file:
+To do this, simply start the [LambdaServer](classes/lambdaserver.html) on an open port and point it at your Lambda file:
 
 ```
 let server = new bst.LambdaServer('./lib/index.js', 10000, true);
