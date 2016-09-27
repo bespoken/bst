@@ -22,7 +22,7 @@ describe("Global", function() {
         });
 
         it("Checks Running", function(done) {
-            assert(Global.running() === null);
+            assert(Global.running() !== undefined);
             done();
         });
     });
