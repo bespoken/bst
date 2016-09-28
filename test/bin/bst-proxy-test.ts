@@ -129,6 +129,37 @@ describe("bst-proxy", function() {
         });
     });
 
+    describe("stop command", function() {
+        it("Stops running proxy", function(done) {
+            process.argv = command("node bst-proxy.js lambda lambda.js");
+            mockProxy.start = function () {
+                done();
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
+        it("Calls Lambda proxy with options", function(done) {
+            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 lambda lambda.js");
+            let optionsSet = false;
+            mockProxy.start = function () {
+                if (!optionsSet) {
+                    assert.fail("Options not set");
+                }
+                done();
+            };
+
+            mockProxy.bespokenServer = function (host: string, port: number) {
+                assert.equal(host, "localhost2");
+                assert.equal(port, "9001");
+                optionsSet = true;
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+    });
+
+
     describe("urlgen", function() {
         it("Calls urlgen", function(done) {
             process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");

@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as sinon from "sinon";
 import {BSTConfig} from "../../lib/client/bst-config";
 import {exec} from "child_process";
-import {ProxyType} from "../../lib/client/bst-proxy";
+import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 
@@ -112,6 +112,32 @@ describe("BSTProcess", function() {
             let p = BSTProcess.running();
             assert(p === null);
             done();
+        });
+
+    });
+
+    describe("#kill()", function() {
+        let sandbox: SinonSandbox = null;
+        beforeEach(function (done) {
+            exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
+                done();
+            });
+
+            sandbox = sinon.sandbox.create();
+        });
+
+        afterEach(function () {
+            sandbox.restore();
+        });
+
+        it("Test new process written", function (done) {
+            BSTConfig.load();
+            let proxy = new BSTProxy(ProxyType.LAMBDA).lambdaPort(10000);
+            proxy.start(function () {
+                let process = BSTProcess.running();
+                assert(process.kill());
+                done();
+            });
         });
 
     });

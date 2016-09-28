@@ -52,6 +52,24 @@ program
     });
 
 program
+    .command("stop")
+    .description("Stops any existing proxy that is running")
+    .action(function (port: number, options: any) {
+        // If there is no running process, just print a message
+        if (Global.running() === null) {
+            console.log("There is no proxy running that we know of.");
+            console.log();
+        } else {
+            if (Global.running().kill()) {
+                console.log("Proxy process stopped.");
+            } else {
+                console.log("Proxy process stopped.");
+            }
+        }
+
+    });
+
+program
     .command("urlgen <alexa-url>")
     .description("Generates the URL to be used in the Alexa Skill configuration")
     .action(function (url: string) {
