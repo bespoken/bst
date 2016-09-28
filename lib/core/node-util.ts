@@ -9,11 +9,14 @@ export class NodeUtil {
     }
 
     public static run(file: string): any {
+        NodeUtil.requireClean(file);
+    }
+
+    public static requireClean(file: string) {
         // Invalidates local files every time - basically forces a reload
         delete require.cache[require.resolve(file)];
         return require(file);
     }
-
     /**
      * Invalidates the require cache for files that are in the working directory
      * Excludes files in the node_modules
@@ -21,10 +24,9 @@ export class NodeUtil {
      */
     public static resetCache () {
         let directory: string = process.cwd();
-        for (let file in require.cache) {
+        for (let file of Object.keys(require.cache)) {
 
-            if (require.cache.hasOwnProperty(file)
-                && file.startsWith(directory)
+            if (file.startsWith(directory)
                 && file.indexOf("node_modules") === -1) {
                 delete require.cache[require.resolve(file)];
             }

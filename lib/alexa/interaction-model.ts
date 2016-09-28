@@ -19,11 +19,11 @@ export class InteractionModel {
         // Collect responses from the two callbacks
         let done = function (schema: IntentSchema, utterances: SampleUtterances, error: string) {
             callbackCount++;
-            if (schema !== null) {
+            if (schema !== undefined && schema !== null) {
                 intentSchema = schema;
             }
 
-            if (utterances !== null) {
+            if (utterances !== undefined && utterances !== null) {
                 sampleUtterances = utterances;
             }
 
@@ -42,10 +42,20 @@ export class InteractionModel {
         };
 
         IntentSchema.fromFile(intentSchemaFile, function(schema: IntentSchema, error: string) {
+            if (error !== undefined && error !== null) {
+                console.error("Error loading Intent Schema!");
+                console.error("Cause: " + error);
+                console.error();
+            }
             done(schema, null, error);
         });
 
         SampleUtterances.fromFile(sampleUtterancesFile, function(utterances: SampleUtterances, error: string) {
+            if (error !== undefined && error !== null) {
+                console.error("Error loading Sample Utterances!");
+                console.error("Cause: " + error);
+                console.error();
+            }
             done(null, utterances, error);
         });
 
