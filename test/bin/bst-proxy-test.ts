@@ -5,6 +5,7 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
+import {BSTProcess} from "../../lib/client/bst-config";
 
 describe("bst-proxy", function() {
     let sandbox: SinonSandbox = null;
@@ -33,6 +34,7 @@ describe("bst-proxy", function() {
 
     afterEach(function () {
         sandbox.restore();
+        mockery.deregisterAll();
         mockery.disable();
     });
 
@@ -131,29 +133,72 @@ describe("bst-proxy", function() {
 
     describe("stop command", function() {
         it("Stops running proxy", function(done) {
-            process.argv = command("node bst-proxy.js lambda lambda.js");
-            mockProxy.start = function () {
-                done();
-            };
+            process.argv = command("node bst-proxy.js stop");
+            sandbox.stub(console, "log", function (data: Buffer) {
+                if (data !== undefined) {
+                    if (data.toString().startsWith("Proxy process stopped.")) {
+                        done();
+                    }
+                }
+            });
+            mockery.registerMock("../lib/core/global", {
+                Global: {
+                    initializeCLI: function () {},
+                    running: function () {
+                        return {
+                            kill: function () {
+                                return true;
+                            }
+                        };
+                    }
+                }
+            });
 
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
-        it("Calls Lambda proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 lambda lambda.js");
-            let optionsSet = false;
-            mockProxy.start = function () {
-                if (!optionsSet) {
-                    assert.fail("Options not set");
+        it("Fails to stop running proxy", function(done) {
+            process.argv = command("node bst-proxy.js stop");
+            sandbox.stub(console, "error", function (data: Buffer) {
+                if (data !== undefined) {
+                    if (data.toString().startsWith("Proxy process failed to stop.")) {
+                        done();
+                    }
                 }
-                done();
-            };
+            });
+            mockery.registerMock("../lib/core/global", {
+                Global: {
+                    initializeCLI: function () {},
+                    running: function () {
+                        return {
+                            kill: function () {
+                                return false;
+                            }
+                        };
+                    }
+                }
+            });
 
-            mockProxy.bespokenServer = function (host: string, port: number) {
-                assert.equal(host, "localhost2");
-                assert.equal(port, "9001");
-                optionsSet = true;
-            };
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
+        it("Stops without anything running", function(done) {
+            process.argv = command("node bst-proxy.js stop");
+            sandbox.stub(console, "log", function (data: Buffer) {
+                if (data !== undefined) {
+                    if (data.toString().startsWith("We do not see any proxy running")) {
+                        done();
+                    }
+                }
+            });
+            mockery.registerMock("../lib/core/global", {
+                Global: {
+                    initializeCLI: function () {},
+                    running: function (): BSTProcess {
+                        return null;
+                    }
+                }
+            });
 
             NodeUtil.load("../../bin/bst-proxy.js");
         });

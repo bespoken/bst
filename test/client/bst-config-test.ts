@@ -114,6 +114,21 @@ describe("BSTProcess", function() {
             done();
         });
 
+        it("Tests REAL process is running", function (done) {
+            let running = (<any> BSTProcess).isRunning(process.pid);
+            assert(running);
+            done();
+        });
+
+        it("Tests REAL process is not running", function (done) {
+            // 100000 should be safe
+            //  By convention, not greater than 32768
+            //  http://unix.stackexchange.com/questions/16883/what-is-the-maximum-value-of-the-pid-of-a-process
+            let running = (<any> BSTProcess).isRunning(100000);
+            assert(!running);
+            done();
+        });
+
     });
 
     describe("#kill()", function() {
@@ -131,12 +146,29 @@ describe("BSTProcess", function() {
         });
 
         it("Test new process written", function (done) {
-            BSTConfig.load();
+            let runningPid: number = null;
             let proxy = new BSTProxy(ProxyType.LAMBDA).lambdaPort(10000);
+
+            sandbox.stub(process, "kill", function(pid: number, code: any) {
+                // Have to make sure to do the right thing when code is 0
+                //  Otherwise, the initial check on whether the process is running does not work correctly
+                //  FYI, calling kill with code 0 is what checks if a process is running
+                if (code === 0) {
+                    return true;
+                }
+                assert.equal(pid, runningPid);
+                assert.equal(code, "SIGKILL");
+                proxy.stop(function () {
+                    done();
+                });
+            });
+
+
             proxy.start(function () {
-                let process = BSTProcess.running();
-                assert(process.kill());
-                done();
+                BSTConfig.load();
+                let lambdaProcess = BSTProcess.running();
+                runningPid = lambdaProcess.pid;
+                lambdaProcess.kill();
             });
         });
 

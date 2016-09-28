@@ -57,13 +57,15 @@ program
     .action(function (port: number, options: any) {
         // If there is no running process, just print a message
         if (Global.running() === null) {
-            console.log("There is no proxy running that we know of.");
+            console.log("We do not see any proxy running");
             console.log();
         } else {
             if (Global.running().kill()) {
                 console.log("Proxy process stopped.");
+                console.log();
             } else {
-                console.log("Proxy process stopped.");
+                console.error("Proxy process failed to stop.");
+                console.error();
             }
         }
 
