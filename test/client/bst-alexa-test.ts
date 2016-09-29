@@ -99,14 +99,28 @@ describe("BSTAlexa", function() {
                     done();
                 });
             });
-        });
 
-        it("Speak non-grammar phrase", function (done) {
-            alexa.spoken("Dumb", function (error: any, response: any) {
-                assert(response.output === undefined);
-                assert(response.success);
-                assert.equal(response.intent, "Test");
-                done();
+            it("Speak non-grammar phrase", function (done) {
+                alexa.spoken("Dumb", function (error: any, response: any) {
+                    assert(response.output === undefined);
+                    assert(response.success);
+                    assert.equal(response.intent, "Test");
+                    done();
+                });
+            });
+
+            it("Speak with error", function (done) {
+                lambdaServer.stop(function () {
+                    lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 9000);
+                    lambdaServer.start();
+
+                    alexa.spoken("Have I Erred", function (error: any, response: any) {
+                        assert(error);
+                        assert.equal(error.message, "connect ECONNREFUSED 127.0.0.1:10000");
+                        assert(!response);
+                        done();
+                    });
+                });
             });
         });
 

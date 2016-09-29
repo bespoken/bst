@@ -1,5 +1,5 @@
 import {InteractionModel} from "../alexa/interaction-model";
-import {Alexa, AlexaResponseCallback, AlexaEvent} from "../alexa/alexa";
+import {Alexa, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
 import {AudioPlayerState} from "../alexa/audio-player";
 
@@ -105,10 +105,10 @@ export class BSTAlexa {
      * @param phrase
      * @param callback
      */
-    public spoken(phrase: string, callback?: AlexaResponseCallback): void {
-        this._alexa.spoken(phrase, function (request: any, response: any, error?: string) {
+    public spoken(phrase: string, callback?: (error: any, response: any, request: any) => void): void {
+        this._alexa.spoken(phrase, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
-                callback(request, response, error);
+                callback(error, response, request);
             }
         });
     }
@@ -119,10 +119,10 @@ export class BSTAlexa {
      * @param slots
      * @param callback
      */
-    public intended(intentName: string, slots?: any, callback?: AlexaResponseCallback): void {
-        this._alexa.intended(intentName, slots, function (request: any, response: any, error?: string) {
+    public intended(intentName: string, slots?: any, callback?: (error: any, response: any, request: any) => void): void {
+        this._alexa.intended(intentName, slots, function (error: string, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
-                callback(request, response, error);
+                callback(error, response, request);
             }
         });
     }
@@ -147,7 +147,7 @@ export class BSTAlexa {
     /**
      * Turns off the Alexa emulator.
      * Useful for running inside of tests to ensure all cleanup has completed before next test starts.
-     * @param onShutdown
+     * @param onStop
      */
     public stop(onStop: () => void) {
         this._alexa.stop(onStop);

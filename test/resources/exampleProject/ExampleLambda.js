@@ -11,6 +11,8 @@ ExampleLambda.execute = function (event, context) {
         if (event.request.intent.name === "HelloIntent") {
             var responseData = {"success": true, "output": "Well, Hello To You"}
             context.succeed(responseData);
+        } else if (event.request.intent.name === "ErrorIntent") {
+            throw new Error("Error");
         } else {
             var responseData = {"success": true, "intent": event.request.intent.name }
             context.succeed(responseData);
