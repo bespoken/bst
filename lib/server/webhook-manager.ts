@@ -35,7 +35,6 @@ export class WebhookManager {
                 let dataString = data.toString();
                 if (dataString.length > 4 && dataString.substr(0, 3) !== "GET") {
                     LoggingHelper.info(Logger, "Webhook From " + socket.remoteAddress + ":" + socket.remotePort);
-                    LoggingHelper.info(Logger, "Webhook Payload " + BufferUtil.prettyPrint(data));
                 }
 
                 webhookRequest.append(data);

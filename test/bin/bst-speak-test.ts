@@ -37,6 +37,7 @@ describe("bst-speak", function() {
 
     afterEach(function () {
         sandbox.restore();
+        mockery.deregisterAll();
         mockery.disable();
     });
 
@@ -154,18 +155,6 @@ describe("bst-speak", function() {
 
         it("Has no interaction model", function(done) {
             process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function () {
-                    this.start = function(ready: Function) {
-                        ready("There was an error");
-                    };
-
-                    this.spoken = function (utterance: string) {
-                        assert.equal(utterance, "Hello There Ladies And Gentlemen");
-                        return this;
-                    };
-                }
-            });
 
             sandbox.stub(process, "exit", function(exitCode: number) {
                 assert.equal(exitCode, 0);
@@ -175,7 +164,7 @@ describe("bst-speak", function() {
 
             let messageReceived = false;
             sandbox.stub(console, "error", function(message: string) {
-                if (message.indexOf("Cause: ") !== -1) {
+                if (message !== undefined && message.indexOf("Cause: ") !== -1) {
                     messageReceived = true;
                 }
             });

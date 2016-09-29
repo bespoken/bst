@@ -9,20 +9,25 @@ export class Global {
     public static MessageIDLength = 13;
     public static KeepAliveMessage = "KEEPALIVE";
     public static BespokeServerHost = "proxy.bespoken.tools";
-    private static configuration: BSTConfig = null;
+    private static _configuration: BSTConfig = null;
+    private static _cli: boolean = false;
 
     public static initializeCLI(): void {
         Global.initialize(true);
-        Global.configuration = BSTConfig.load();
+        Global._configuration = BSTConfig.load();
+    }
+
+    public static cli(): boolean {
+        return Global._cli;
     }
 
     public static config(): BSTConfig {
         // If nothing has been configured yet, configure it
-        if (Global.configuration === null) {
+        if (Global._configuration === null) {
             Global.initialize(false);
-            Global.configuration = BSTConfig.load();
+            Global._configuration = BSTConfig.load();
         }
-        return Global.configuration;
+        return Global._configuration;
     }
 
     public static running(): BSTProcess {
@@ -30,8 +35,8 @@ export class Global {
     }
 
     public static initialize(cli?: boolean): void {
-        if (cli === undefined) {
-            cli = false;
+        if (cli !== undefined && cli !== null) {
+            Global._cli = cli;
         }
         LoggingHelper.initialize(cli);
     }
