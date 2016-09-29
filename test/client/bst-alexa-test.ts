@@ -124,6 +124,24 @@ describe("BSTAlexa", function() {
             });
         });
 
+        describe("#launched()", function() {
+            it("Launched", function (done) {
+                alexa.launched(function (error: any, response: any) {
+                    assert(response.launched);
+                    done();
+                });
+            });
+        });
+
+        describe("#ended()", function() {
+            it("Ended", function (done) {
+                alexa.sessionEnded("ERROR", function (error: any, response: any) {
+                    assert(response.ended);
+                    done();
+                });
+            });
+        });
+
         describe("#intended()", function () {
             it("Intended successfully", function (done) {
                 alexa.intended("HelloIntent", null, function (error: any, response: any) {

@@ -2,6 +2,7 @@ import {InteractionModel} from "../alexa/interaction-model";
 import {Alexa, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
 import {AudioPlayerState} from "../alexa/audio-player";
+import {SessionEndedReason} from "../alexa/service-request";
 
 export class BSTAlexaEvents {
     /**
@@ -125,6 +126,25 @@ export class BSTAlexa {
                 callback(error, response, request);
             }
         });
+    }
+
+    /**
+     * Emulates the specified skill being launched
+     * @param callback
+     */
+    public launched(callback?: (error: any, response: any, request: any) => void): void {
+        this._alexa.launched(callback);
+    }
+
+    /**
+     * Ends the session - requires a reason
+     * @param sessionEndedReason Can be ERROR, EXCEEDED_MAX_REPROMPTS or USER_INITIATED
+     * @param callback
+     */
+    public sessionEnded(sessionEndedReason: string, callback?: (error: any, response: any, request: any) => void): void {
+        // Convert to enum value
+        const sessionEndedEnum = (<any> SessionEndedReason)[sessionEndedReason];
+        this._alexa.ended(sessionEndedEnum, callback);
     }
 
     /**

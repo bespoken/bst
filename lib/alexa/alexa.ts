@@ -1,6 +1,6 @@
 import {AudioPlayer} from "./audio-player";
 import {LoggingHelper} from "../core/logging-helper";
-import {ServiceRequest} from "./service-request";
+import {ServiceRequest, SessionEndedReason} from "./service-request";
 import {AlexaSession} from "./alexa-session";
 import request = require("request");
 import http = require("http");
@@ -91,6 +91,16 @@ export class Alexa {
         let serviceRequest = new ServiceRequest(this._context, this._session);
         serviceRequest.launchRequest();
         this.callSkill(serviceRequest, callback);
+    }
+
+    public ended(sessionEndedReason: SessionEndedReason, callback?: AlexaResponseCallback) {
+        let serviceRequest = new ServiceRequest(this._context, this._session);
+        // Convert to enum value and send request
+        serviceRequest.sessionEndedRequest(sessionEndedReason);
+        this.callSkill(serviceRequest, callback);
+
+        // We do not wait for a reply - the session ends right away
+        this.endSession();
     }
 
     /**

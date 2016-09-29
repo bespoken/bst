@@ -17,6 +17,10 @@ ExampleLambda.execute = function (event, context) {
             var responseData = {"success": true, "intent": event.request.intent.name }
             context.succeed(responseData);
         }
+    } else if (event.request !== undefined && event.request.type === 'LaunchRequest') {
+        context.succeed({"launched": true});
+    } else if (event.request !== undefined && event.request.type === 'SessionEndedRequest') {
+        context.succeed({"ended": true});
     } else {
         var value = em.loop(1000, 0);
         var responseData = {"success": true, "math": value}
