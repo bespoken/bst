@@ -64,7 +64,6 @@ export class HTTPBuffer {
                     let length = this._rawBody.length;
                     if (this.hasHeader("Content-Length")) {
                         length = parseInt(this.header("Content-Length"));
-
                     }
 
                     this._complete = this._rawBody.length === length;
