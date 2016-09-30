@@ -1,5 +1,5 @@
 import {Alexa} from "./alexa";
-import {ServiceRequest, RequestType} from "./service-request";
+import {ServiceRequest, RequestType, SessionEndedReason} from "./service-request";
 import {EventEmitter} from "events";
 import {AudioItem} from "./audio-item";
 
@@ -75,10 +75,20 @@ export class AudioPlayer {
 
         this._playingStartTime = new Date().getTime();
         this._playingOffset = 0;
-        this.playbackStarted();
 
-        // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
-        this.playbackNearlyFinished();
+        let audioItem = this.playing();
+        // If the URL for AudioItem is http, we throw an error
+        if (audioItem.url.startsWith("http:")) {
+            this.alexa.sessionEnded(SessionEndedReason.ERROR, {
+                type: "INVALID_RESPONSE",
+                message: "The URL specified in the Play directive must be HTTPS"
+            });
+        } else {
+            this.playbackStarted();
+
+            // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
+            this.playbackNearlyFinished();
+        }
     }
 
     public stop() {

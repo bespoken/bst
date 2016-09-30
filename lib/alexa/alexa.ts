@@ -93,10 +93,10 @@ export class Alexa {
         this.callSkill(serviceRequest, callback);
     }
 
-    public ended(sessionEndedReason: SessionEndedReason, callback?: AlexaResponseCallback) {
+    public sessionEnded(sessionEndedReason: SessionEndedReason, errorData: any, callback?: AlexaResponseCallback) {
         let serviceRequest = new ServiceRequest(this._context, this._session);
         // Convert to enum value and send request
-        serviceRequest.sessionEndedRequest(sessionEndedReason);
+        serviceRequest.sessionEndedRequest(sessionEndedReason, errorData);
         this.callSkill(serviceRequest, callback);
 
         // We do not wait for a reply - the session ends right away

@@ -50,6 +50,26 @@ describe("AudioPlayer", function() {
             });
         });
 
+        it("Enqueues a bad track, no existing track", function(done) {
+            let item = new AudioItem({stream: {
+                url: "http://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "0",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+            let alexa = new MockAlexa(["SessionEndedRequest"], [null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.reason, "ERROR");
+                assert.equal(alexa.call(0).request.error.type, "INVALID_RESPONSE");
+                assert.equal(alexa.call(0).request.error.message, "The URL specified in the Play directive must be HTTPS");
+                done();
+            });
+        });
+
         it("Enqueues a track, existing track is playing", function(done) {
             let item = new AudioItem({stream: {
                 url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",

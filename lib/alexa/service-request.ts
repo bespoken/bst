@@ -43,10 +43,10 @@ export class ServiceRequest {
 
         this.requestJSON = this.baseRequest(RequestType.IntentRequest);
         this.requestJSON.request.intent = {
-            name: intentName,
-            slots: {}
+            name: intentName
         };
 
+        
         return this;
     }
 
@@ -62,9 +62,12 @@ export class ServiceRequest {
         return this;
     }
 
-    public sessionEndedRequest(reason: SessionEndedReason): ServiceRequest {
+    public sessionEndedRequest(reason: SessionEndedReason, errorData?: any): ServiceRequest {
         this.requestJSON = this.baseRequest(RequestType.SessionEndedRequest);
         this.requestJSON.request.reason = SessionEndedReason[reason];
+        if (errorData !== undefined && errorData !== null) {
+            this.requestJSON.request.error = errorData;
+        }
         return this;
     }
 

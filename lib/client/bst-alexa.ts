@@ -144,7 +144,7 @@ export class BSTAlexa {
     public sessionEnded(sessionEndedReason: string, callback?: (error: any, response: any, request: any) => void): void {
         // Convert to enum value
         const sessionEndedEnum = (<any> SessionEndedReason)[sessionEndedReason];
-        this._alexa.ended(sessionEndedEnum, callback);
+        this._alexa.sessionEnded(sessionEndedEnum, null, callback);
     }
 
     /**
