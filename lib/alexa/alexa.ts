@@ -94,6 +94,10 @@ export class Alexa {
     }
 
     public sessionEnded(sessionEndedReason: SessionEndedReason, errorData: any, callback?: AlexaResponseCallback) {
+        if (sessionEndedReason === SessionEndedReason.ERROR) {
+            LoggingHelper.error(Logger, "SessionEndedRequest:\n" + JSON.stringify(errorData, null, 2));
+        }
+
         let serviceRequest = new ServiceRequest(this._context, this._session);
         // Convert to enum value and send request
         serviceRequest.sessionEndedRequest(sessionEndedReason, errorData);
