@@ -2,7 +2,6 @@ import {WebhookRequest} from "../core/webhook-request";
 import * as net from "net";
 import {Server} from "net";
 import {Socket} from "net";
-import {BufferUtil} from "../core/buffer-util";
 import {LoggingHelper} from "../core/logging-helper";
 
 let Logger = "WEBHOOK";

@@ -6,7 +6,7 @@ import {HTTPChunk, HTTPBuffer} from "../../lib/core/http-buffer";
 describe("HTTPBuffer", function() {
     describe("HTTPResponse tests", function() {
         it("Basic chunked payload", function (done) {
-            let data = BufferUtil.fromString("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\na\r\n1234567890\r\n0\r\n\r\n");
+            let data = BufferUtil.fromString("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\na\r\n1234567890\r\n0\r\n\r\n");
             let httpBuffer = new HTTPBuffer();
             httpBuffer.append(data);
             assert(httpBuffer.complete());
@@ -17,7 +17,7 @@ describe("HTTPBuffer", function() {
         });
 
         it("Basic chunked payload as json", function (done) {
-            let data = BufferUtil.fromString("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\ne\r\n{\"test\": true}\r\n0\r\n\r\n");
+            let data = BufferUtil.fromString("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nTransfer-Encoding: chunked\r\n\r\ne\r\n{\"test\": true}\r\n0\r\n\r\n");
             let httpBuffer = new HTTPBuffer();
             httpBuffer.append(data);
             assert(httpBuffer.complete());
@@ -28,7 +28,7 @@ describe("HTTPBuffer", function() {
 
         it("Basic chunked payload split up", function (done) {
             let data1 = BufferUtil.fromString("HTTP/1.1 200 OK\r\nContent-Type: ");
-            let data2 = BufferUtil.fromString("application/json\r\n\r\na\r\n1234567890\r\n0\r\n\r\n");
+            let data2 = BufferUtil.fromString("application/json\r\nTransfer-Encoding: chunked\r\n\r\na\r\n1234567890\r\n0\r\n\r\n");
             let httpBuffer = new HTTPBuffer();
             httpBuffer.append(data1);
             // Everything should be undefined
@@ -38,6 +38,7 @@ describe("HTTPBuffer", function() {
 
             // Now we add the second portion and it should be complete
             httpBuffer.append(data2);
+            assert.equal(httpBuffer.body(), "1234567890");
 
             done();
         });
@@ -94,6 +95,40 @@ describe("HTTPBuffer", function() {
             assert.equal(httpBuffer.uri(), "/test?this=1");
             done();
         });
+
+        it("Basic request payload, no content-length", function (done) {
+            let data = BufferUtil.fromString("POST /test?this=1 HTTP/1.1\r\nContent-Type: application/json; charset=utf-8\r\n\r\n1234567890");
+            let httpBuffer = new HTTPBuffer();
+            httpBuffer.append(data);
+            assert(httpBuffer.complete());
+            assert(httpBuffer.hasHeader("Content-Type"));
+            assert.equal(httpBuffer.body(), "1234567890");
+            assert.equal(httpBuffer.statusCode(), undefined);
+            assert.equal(httpBuffer.method(), "POST");
+            assert.equal(httpBuffer.uri(), "/test?this=1");
+            done();
+        });
+
+        it("Basic request payload, headers and body split", function (done) {
+            // I would not expect this test to be necessary, but this happened
+            //  A payload came in two parts, exactly split between header and body
+            //  In this case, the header is defined, but no body yet, and that ends up in an undefined error!
+            let headers = BufferUtil.fromString("POST /test?this=1 HTTP/1.1\r\nContent-Type: application/json; charset=utf-8\r\n\r\n");
+            let body = BufferUtil.fromString("1234567890");
+            let httpBuffer = new HTTPBuffer();
+            httpBuffer.append(headers);
+            httpBuffer.complete();
+            httpBuffer.append(body);
+            assert(httpBuffer.complete());
+            assert(httpBuffer.hasHeader("Content-Type"));
+            assert.equal(httpBuffer.body(), "1234567890");
+            assert.equal(httpBuffer.statusCode(), undefined);
+            assert.equal(httpBuffer.method(), "POST");
+            assert.equal(httpBuffer.uri(), "/test?this=1");
+            done();
+        });
+
+
     });
 });
 
