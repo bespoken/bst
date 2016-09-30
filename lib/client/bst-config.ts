@@ -141,6 +141,16 @@ export class BSTProcess {
         return process;
     }
 
+    public kill(): boolean {
+        try {
+            process.kill(this.pid, "SIGKILL");
+            return true;
+        } catch (e) {
+            console.error("Error killing process[" + this.pid + "] Message: " + e.message);
+            return false;
+        }
+    }
+
     private loadJSON(json: any) {
         this.port = json.port;
         this.proxyType = json.proxyType;
