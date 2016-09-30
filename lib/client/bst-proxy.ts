@@ -75,8 +75,9 @@ export class BSTProxy {
      * Specifies the port the Lambda runner should listen on. Only for lambda proxies.
      * @param port
      */
-    public lambdaPort(port: number) {
+    public lambdaPort(port: number): BSTProxy {
         this.httpPort = port;
+        return this;
     }
 
     public start(onStarted?: (error?: any) => void): void {
