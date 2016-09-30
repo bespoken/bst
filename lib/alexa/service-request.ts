@@ -33,7 +33,8 @@ export class ServiceRequest {
      * @returns {ServiceRequest}
      */
     public intentRequest(intentName: string): ServiceRequest {
-        if (!intentName.startsWith("AMAZON")) {
+        let isBuiltin = intentName.startsWith("AMAZON");
+        if (!isBuiltin) {
             if (this.session === undefined || this.session === null) {
                 throw new Error("No session - cannot pass custom intent when not in session");
             } else if (!this.session.interactionModel.hasIntent(intentName)) {
@@ -46,7 +47,21 @@ export class ServiceRequest {
             name: intentName
         };
 
-        
+        // Always specify slots, even if utterance does not come with them specified
+        //  In that case, they just have a blank value
+
+        if (!isBuiltin) {
+            let intent = this.session.interactionModel.intentSchema.intent(intentName);
+            if (intent.slots !== null && intent.slots.length > 0) {
+                this.requestJSON.request.intent.slots = {};
+                for (let slot of intent.slots) {
+                    this.requestJSON.request.intent.slots[slot.name] = {
+                        name: slot.name
+                    };
+                }
+            }
+        }
+
         return this;
     }
 

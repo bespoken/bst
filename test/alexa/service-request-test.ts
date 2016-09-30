@@ -79,6 +79,18 @@ describe("ServiceRequest", function() {
             done();
 
         });
+
+        it("With Slot, Values Unspecified", function(done) {
+            let requester: ServiceRequest = new ServiceRequest(context, session);
+
+            let request: any = requester.intentRequest("WithSlot").toJSON();
+            // Make sure there is a spot for the slot but not value
+            assert.equal(request.request.intent.slots["SlotName"].name, "SlotName");
+            assert(request.request.intent.slots["SlotName"].value === undefined);
+            assert.equal(request.request.timestamp.length, 20);
+            done();
+
+        });
     });
 
     describe("#launchRequest()", function() {
