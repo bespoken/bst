@@ -50,17 +50,24 @@ export class HTTPBuffer {
         if (!this._complete) {
             // If we have the headers, then check the body
             if (this._headers !== undefined) {
-                // Means it is chunked
-                if (this.hasHeader("Content-Length")) {
-                    let length = parseInt(this.header("Content-Length"));
-                    this._complete = this._rawBody.length === length;
-                } else {
+                let chunked = this.hasHeader("Transfer-Encoding") && this.header("Transfer-Encoding").toLowerCase() === "chunked";
+                if (chunked) {
                     let chunks = this.parseChunks();
                     // Only store the chunks if they are finalized
                     if (chunks !== null && chunks.length > 0 && chunks[chunks.length - 1].lastChunk()) {
                         this._chunks = chunks;
                         this._complete = true;
                     }
+                } else if (this._rawBody !== undefined) {
+                    // If no Content-Length is specified, we default to just the length of this portion
+                    //  We do this because we are kind and forgiving
+                    let length = this._rawBody.length;
+                    if (this.hasHeader("Content-Length")) {
+                        length = parseInt(this.header("Content-Length"));
+
+                    }
+
+                    this._complete = this._rawBody.length === length;
                 }
             }
 
