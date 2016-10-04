@@ -115,11 +115,11 @@ export class BSTAlexa {
 
     /**
      * Emulates the specified intent coming from the Alexa device.
-     * @param intentName
-     * @param slots
+     * @param intentName The name of the intent - must exactly match the IntentSchema
+     * @param slots A key-value dictionary of slots in the form { "slotName": "slotValue" }
      * @param callback
      */
-    public intended(intentName: string, slots?: any, callback?: AlexaResponseCallback): void {
+    public intended(intentName: string, slots?: {[id: string]: string}, callback?: AlexaResponseCallback): void {
         this._alexa.intended(intentName, slots, function (request: any, response: any, error?: string) {
             if (callback !== undefined && callback !== null) {
                 callback(request, response, error);

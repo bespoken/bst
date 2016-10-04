@@ -58,7 +58,7 @@ describe("bst-speak", function() {
             });
 
             sandbox.stub(console, "log", function(data: Buffer) {
-                if (data.indexOf("Response:") !== -1) {
+                if (data !== undefined && data.indexOf("Response:") !== -1) {
                     done();
                 }
             });
@@ -119,7 +119,7 @@ describe("bst-speak", function() {
 
                     this.spoken = function (utterance: string, callback: any) {
                         assert.equal(utterance, "Hello");
-                        callback({"request": "test"}, {"response": "test"});
+                        callback(null, {"response": "test"}, {"request": "test"});
                     };
                 }
             });
@@ -127,7 +127,7 @@ describe("bst-speak", function() {
             let count = 0;
             sandbox.stub(console, "log", function(data: Buffer) {
                 count++;
-                if (count === 4) {
+                if (count === 4 && data !== undefined) {
                     assert(data.toString().indexOf("request") !== -1);
                     done();
                 }
@@ -180,7 +180,7 @@ describe("bst-speak", function() {
             let count = 0;
             sandbox.stub(console, "log", function(data: Buffer) {
                 count++;
-                if (count === 5) {
+                if (count === 4) {
                     assert(data.toString().indexOf("proxy is running") !== -1);
                     done();
                 }
