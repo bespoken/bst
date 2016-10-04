@@ -1,7 +1,8 @@
 
 ## Overview
 
-The speak command generates intent requests for your service as if they were coming from Alexa itself.  
+The speak command generates intent requests for your service as if they were coming from Alexa itself.
+
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
 To start using it, you will need a local file that contains your Intent Schema and Sample Utterances.  
