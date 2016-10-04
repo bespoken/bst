@@ -43,14 +43,16 @@ Read the docs [here](/commands/proxy).
 
 ## bst speak Command
 
-The speak command generates intent requests for your service as if they were coming from Alexa itself.  
+The speak command generates intent requests for your service as if they were coming from Alexa itself.
+
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
 Read the docs [here](/commands/speak).
 
 ## bst intend Command
 
-The intend command generates intent requests for your service as if they were coming from Alexa itself.  
+The intend command generates intent requests for your service as if they were coming from Alexa itself.
+ 
 It works by taking an intent and wrapping it in the correct JSON payload.  
 
 Read the docs [here](/commands/intend).
