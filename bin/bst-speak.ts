@@ -39,11 +39,12 @@ program
         if (options.url === undefined) {
             let proxyProcess = Global.running();
             if (proxyProcess === null) {
-                console.log("No URL specified and no proxy is currently running");
-                console.log("");
+                console.error("No URL specified and no proxy is currently running");
+                console.log();
                 console.log("URL (--url) must be specified if no proxy is currently running");
-                console.log("");
+                console.log();
                 console.log("If a proxy is running, utterances will automatically be sent to it");
+                console.log();
                 process.exit(0);
                 return;
             }
@@ -58,7 +59,7 @@ program
                 return;
             }
 
-            speaker.spoken(utterance, function(request: any, response: any) {
+            speaker.spoken(utterance, function(error: any, response: any, request: any) {
                 let jsonPretty = JSON.stringify(response, null, 4);
                 console.log("Spoke: " + utterance);
                 console.log("");
