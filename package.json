@@ -8,6 +8,7 @@
     "bst-server": "./bin/bst-server.js"
   },
   "dependencies": {
+    "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "node-uuid": "1.4.7",
     "request": "^2.74.0",
