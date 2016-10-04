@@ -27,6 +27,7 @@ $ bst speak Hello World
 The speak command will return the full request and response of the interaction with your Skill service.  
 
 By default, the system will:
+
 * Use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
 * Use the service currently running via the `bst proxy` command
 
