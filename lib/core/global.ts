@@ -59,7 +59,6 @@ export class Global {
     }
 }
 
-
 export enum NetworkErrorType {
     CONNECTION_REFUSED,
     OTHER,

@@ -25,7 +25,7 @@ program
             }
 
             if (slotArg.indexOf("=") === -1) {
-                console.error("Invalid slot specified: " + slotArg + ". Must be in the form [SlotName=SlotValue]");
+                console.error("Invalid slot specified: " + slotArg + ". Must be in the form SlotName=SlotValue");
                 console.error();
                 process.exit(0);
                 return;

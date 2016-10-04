@@ -97,6 +97,23 @@ describe("bst-intend", function() {
             NodeUtil.load("../../bin/bst-intend.js");
         });
 
+        it("Intend With BadSlot", function(done) {
+            process.argv = command("node bst-intend.js Hello Test");
+            let matched = false;
+            sandbox.stub(console, "error", function(data: Buffer) {
+                if (data !== undefined && data.toString() === "Invalid slot specified: Test. Must be in the form SlotName=SlotValue") {
+                    matched = true;
+                }
+            });
+
+            sandbox.stub(process, "exit", function(exitCode: number) {
+                assert(matched);
+                assert.equal(exitCode, 0);
+                done();
+            });
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
         it("Intend With Multiple Slots", function(done) {
             process.argv = command("node bst-intend.js Hello Test=Test1 Test2=TestValue");
             BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
