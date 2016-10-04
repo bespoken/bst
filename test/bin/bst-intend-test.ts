@@ -74,7 +74,7 @@ describe("bst-intend", function() {
 
         it("Intend No Match", function(done) {
             process.argv = command("node bst-intend.js Hello");
-            BSTAlexa.prototype.intended = function (intent: string, {}, callback: Function) {
+            BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
                 throw Error("No intent matching: " + intent);
             };
 
