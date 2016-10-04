@@ -32,13 +32,13 @@ Create a branch to do NPM work - use the next version as the branch name:
 
 This is necessary because master is a protected branch - changes cannot be pushed directly to it.
 
-Create a remote version of the new branch:  
+Create a remote version of the new branch (MAKE SURE TO PUSH THIS FIRST OR THE VERSION COMMAND WILL FAIL):  
 `git push --set-upstream origin <NewBranch>`
 
 Updated the version number:  
 `npm version patch`
 
-Create a pull request. Merge the pull request.
+**Create a pull request. Merge the pull request.**
 
 Checkout master locally and get the latest:  
 `git checkout master`  
