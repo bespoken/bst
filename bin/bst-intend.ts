@@ -50,7 +50,7 @@ program
                 console.log("");
                 console.log("URL (--url) must be specified if no proxy is currently running");
                 console.log("");
-                console.log("If a proxy is running, utterances will automatically be sent to it");
+                console.log("If a proxy is running, intents will automatically be sent to it");
                 process.exit(0);
                 return;
             }
@@ -64,7 +64,6 @@ program
                 process.exit(0);
                 return;
             }
-
 
             try {
                 speaker.intended(intentName, slots, function(error: any, response: any, request: any) {

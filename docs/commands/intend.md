@@ -44,7 +44,7 @@ By default, we look for:
 
 Example:
 ```
-$ bst intend Hello World -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt
+$ bst intend HelloIntent -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt
 ```
 
 The format of these files is the same as they are entered in the Alexa Skill configuration.  
