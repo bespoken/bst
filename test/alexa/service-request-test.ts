@@ -43,12 +43,13 @@ describe("ServiceRequest", function() {
             assert.equal(request.session.application.applicationId, "MyApp");
             assert.equal(request.session.new, true);
             assert.equal(request.version, "1.0");
+            assert(request.request.requestId.startsWith("amzn1.echo-api.request"));
             assert.equal(request.request.type, "IntentRequest");
             assert.equal(request.request.intent.name, "Test");
             assert.equal(request.request.timestamp.length, 20);
             assert(request.context.System.application.applicationId);
             assert(request.context.System.device.supportedInterfaces.AudioPlayer);
-
+            assert(request.context.System.user.userId.startsWith("amzn1.ask.account."));
 
             done();
         });

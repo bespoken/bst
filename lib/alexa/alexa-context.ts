@@ -21,6 +21,9 @@ export class AlexaContext {
 
 
     public userID(): string {
+        if (this._userID === undefined || this._userID === null) {
+            this._userID = "amzn1.ask.account." + uuid.v4();
+        }
         return this._userID;
     }
 

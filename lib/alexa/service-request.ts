@@ -93,7 +93,7 @@ export class ServiceRequest {
             request: {
                 type: requestType,
                 locale: "en-US",
-                requestID: requestID,
+                requestId: requestID,
                 timestamp: timestamp
             },
             context: {
@@ -170,7 +170,7 @@ export class ServiceRequest {
     }
 
     private static requestID() {
-        return "EdwRequestId." + uuid.v4();
+        return "amzn1.echo-api.request." + uuid.v4();
     }
 
     public toJSON() {
