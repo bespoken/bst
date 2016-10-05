@@ -48,6 +48,7 @@ This is necessary because master is a protected branch - changes cannot be pushe
 7) Add release notes:  
 https://github.com/bespoken/bst/releases
 
+**Notes on testing:**
 To test your new package before publishing, follow these instructions:  
 https://docs.npmjs.com/misc/developers
 
