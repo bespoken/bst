@@ -41,6 +41,7 @@ describe("BSTAlexa", function() {
         });
 
         it("Initializes with application ID", function (done) {
+            this.timeout(5000);
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt",
