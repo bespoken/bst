@@ -28,10 +28,12 @@ export class LambdaConfig {
     public static PREBUILT_DIRECTORY: string;
     public static AWS_FUNCTION_VERSION: string;
 
+    // Looked up
+    public static AWS_ROLE_ARN: string;
+
     public static defaultConfig(): any {
         return {
             "lambdaDeploy": {
-                "functionName": "",
                 "runtime": "nodejs4.3",
                 "role": "",
                 "handler": "index.handler",
@@ -65,15 +67,23 @@ export class LambdaConfig {
             awsConfig = PropertiesReader(home + "/.aws/config").append(home + "/.aws/credentials");
         } catch (err) {
             if (err.code === "ENOENT") {
-                throw "AWS configuration files (in ~/.aws) are missing!";
+                console.log("Warning! AWS configuration files (in ~/.aws) are missing!");
             } else {
                 throw err;
             }
         }
 
-        LambdaConfig.AWS_ACCESS_KEY_ID = awsConfig.get("default.aws_access_key_id");
-        LambdaConfig.AWS_SECRET_ACCESS_KEY = awsConfig.get("default.aws_secret_access_key");
-        LambdaConfig.AWS_REGION = awsConfig.get("default.region") || "us-east-1";
+        // Process anv variables take precedence
+
+        if (awsConfig) {
+            LambdaConfig.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || awsConfig.get("default.aws_access_key_id");
+            LambdaConfig.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || awsConfig.get("default.aws_secret_access_key");
+            LambdaConfig.AWS_REGION = process.env.AWS_REGION || awsConfig.get("default.region") || "us-east-1";
+        } else {
+            LambdaConfig.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+            LambdaConfig.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+            LambdaConfig.AWS_REGION = process.env.AWS_REGION || "us-east-1";
+        }
 
         LambdaConfig.AWS_FUNCTION_NAME = bstConfig.functionName || "";
         LambdaConfig.AWS_RUNTIME = bstConfig.runtime || "nodejs4.3";
@@ -94,8 +104,16 @@ export class LambdaConfig {
     }
 
     public static validate(): void {
-        if (!LambdaConfig.AWS_ROLE) {
-            throw "Lambda execution role is not defined!";
+        if (!LambdaConfig.AWS_ACCESS_KEY_ID) {
+            throw "AWS access key is not defined!";
+        }
+
+        if (!LambdaConfig.AWS_SECRET_ACCESS_KEY) {
+            throw "AWS secret access key is not defined!";
+        }
+
+        if (!LambdaConfig.AWS_REGION) {
+            throw "AWS region is not defined!";
         }
     }
 

@@ -28,10 +28,21 @@ program
         let isDir = fs.lstatSync(lambdaFolder).isDirectory();
 
         if (!isDir) {
-            throw lambdaFolder + " is not a directory!";
+            console.error(lambdaFolder+" is not a folder! You need to specify the project folder!");
+            console.error("");
+            process.exit(1);
+            return;
         }
 
-        LambdaConfig.initialize();
+        try {
+            LambdaConfig.initialize();
+            LambdaConfig.validate();
+        } catch (err) {
+            console.error("Parameter validation error: "+err);
+            console.error("");
+            process.exit(1);
+            return;
+        }
 
         if (options.lambdaName !== undefined) {
             LambdaConfig.AWS_FUNCTION_NAME = options.lambdaName;
@@ -41,18 +52,35 @@ program
 
         if (!LambdaConfig.AWS_FUNCTION_NAME) {
             LambdaConfig.AWS_FUNCTION_NAME = path.resolve(lambdaFolder).split(path.sep).pop();
-            console.log("We named your lambda " + LambdaConfig.AWS_FUNCTION_NAME + " (your project folder). You are welcome!");
-
-            Global.config().configuration.lambdaDeploy.functionName = LambdaConfig.AWS_FUNCTION_NAME;
-            Global.config().save();
+            console.log("We named your lambda " + LambdaConfig.AWS_FUNCTION_NAME + " (after your project folder). You are welcome!");
         }
 
         let deployer = new LambdaDeploy(lambdaFolder);
+        let roleHelper = new LambdaRole();
 
-        // Create role if not specified (use the existing one).
+        if (LambdaConfig.AWS_ROLE) {
+            let getRolePromise: Promise<string> = roleHelper.getRole(LambdaConfig.AWS_ROLE);
 
-        if (!LambdaConfig.AWS_ROLE) {
-            let roleHelper = new LambdaRole();
+            getRolePromise
+                .then((arn: string) => {
+                    if (arn) {
+                        console.log("Re-using existing lambda role.");
+                        LambdaConfig.AWS_ROLE_ARN = arn;
+
+                        deployer.deploy();
+                    } else {
+                        console.error("The lambda role you have specified doesn't exist.");
+                        console.error("Create it or delete it from the config and we create one for you!");
+                        process.exit(1);
+                        return;
+                    }
+                })
+                .catch((err) => {
+                    console.error("Error looking up AWS role: " + err);
+                });
+
+        } else {
+            // Create role if not specified (use the existing one).
 
             let getRolePromise: Promise<string> = roleHelper.getRole(defaultLambdaRoleName);
 
@@ -68,22 +96,20 @@ program
                     }
                 })
                 .then((arn: string) => {
-                    LambdaConfig.AWS_ROLE = arn;
+                    LambdaConfig.AWS_ROLE = defaultLambdaRoleName;
+                    LambdaConfig.AWS_ROLE_ARN = arn;
+
                     Global.config().configuration.lambdaDeploy.role = LambdaConfig.AWS_ROLE;
                     Global.config().save();
 
-                    console.log("We need to wait for the AWS role change to propagate. Zzzz....");
-
+                    console.log("We need to wait for the AWS role change to propagate. Zzzz...");
                     setTimeout(() => {
                         deployer.deploy();
                     }, 3000);
                 })
                 .catch((err) => {
-                    console.log("Error: " + err);
+                    console.error("Error creating AWS role: " + err);
                 });
-
-        } else {
-            deployer.deploy();
         }
     });
 

@@ -21,8 +21,6 @@ export class LambdaDeploy {
     public constructor(public lambdaFolder: string) {}
 
     public deploy(): void {
-        LambdaConfig.validate();
-
         let self = this;
 
         let regions = LambdaConfig.AWS_REGION.split(",");
@@ -96,6 +94,9 @@ export class LambdaDeploy {
      * Creates a deployable zip file of a lambda project
      * (not used yet)
      */
+
+    /**** V2
+
     public pack(): void {
         if (!LambdaConfig.PACKAGE_DIRECTORY) {
             throw "packageDirectory not specified!";
@@ -136,7 +137,9 @@ export class LambdaDeploy {
         });
     }
 
-    private uploadExisting(lambda: any, params: any, callback: (err: Error, result: string) => any) {
+    ****/
+
+    public uploadExisting(lambda: any, params: any, callback: (err: Error, result: string) => any) {
         return lambda.updateFunctionCode({
             "FunctionName": params.FunctionName,
             "ZipFile": params.Code.ZipFile,
@@ -160,13 +163,15 @@ export class LambdaDeploy {
         });
     }
 
-    private uploadNew(lambda: any, params: any, callback: (err: Error, result: string) => any) {
+    public uploadNew(lambda: any, params: any, callback: (err: Error, result: string) => any) {
         return lambda.createFunction(params, function(err: Error, functionData: any) {
             if (!err) {
                 LoggingHelper.verbose(logger, "Lambda function was created: " + params.FunctionName);
             }
 
             // Lets wait a second before we use the function
+
+            console.log("Let's take a nap before we add the trigger. Zzzz...");
 
             setTimeout(() => {
                 return lambda.addPermission({
@@ -181,7 +186,7 @@ export class LambdaDeploy {
 
                     return callback(err, functionData);
                 });
-            }, 1000);
+            }, 3000);
         });
     }
 
@@ -192,7 +197,7 @@ export class LambdaDeploy {
                 ZipFile: buffer
             },
             Handler: LambdaConfig.AWS_HANDLER,
-            Role: LambdaConfig.AWS_ROLE,
+            Role: LambdaConfig.AWS_ROLE_ARN,
             Runtime: LambdaConfig.AWS_RUNTIME,
             Description: LambdaConfig.AWS_DESCRIPTION,
             MemorySize: LambdaConfig.AWS_MEMORY_SIZE,
@@ -234,7 +239,7 @@ export class LambdaDeploy {
             LoggingHelper.verbose(logger, "Moving files to temporary directory");
 
             // Move files to tmp folder
-            self.rsync(self.lambdaFolder, codeDirectory, true, function (err: Error) {
+            self.copyFiles(self.lambdaFolder, codeDirectory, true, function (err: Error) {
                 if (err) {
                     return callback(err);
                 }
@@ -254,17 +259,29 @@ export class LambdaDeploy {
                         LoggingHelper.verbose(logger, "Zipping deployment package");
 
                         if (process.platform !== "win32") {
-                            self.nativeZip(codeDirectory, callback);
+                            self.nativeZipFiles(codeDirectory, callback);
                         } else {
-                            self.zip(codeDirectory, callback);
+                            self.zipFiles(codeDirectory, callback);
                         }
                     });
+
                 });
             });
         });
     }
 
+    /**
+     * Post-install hook
+     * @param codeDirectory
+     * @param callback
+     */
+
     private postInstallScript(codeDirectory: string, callback: (err: Error) => any) {
+
+        callback(null);
+
+        /**** V2
+
         let script_filename = "post-install.sh";
         let cmd = this.lambdaFolder + "/" + script_filename;
 
@@ -291,9 +308,11 @@ export class LambdaDeploy {
                 callback(null);
             }
         });
+
+        ****/
     }
 
-    private npmInstall(codeDirectory: string, callback: (err: Error) => any) {
+    public npmInstall(codeDirectory: string, callback: (err: Error) => any) {
         exec("npm -s install --production --prefix " + codeDirectory, function (err: Error) {
             if (err) {
                 return callback(err);
@@ -303,10 +322,10 @@ export class LambdaDeploy {
         });
     }
 
-    private archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
+    public archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
         let codeDirectory = this.codeDirectory();
 
-        this.rsync(LambdaConfig.PREBUILT_DIRECTORY, codeDirectory, false, function (err: Error) {
+        this.copyFiles(LambdaConfig.PREBUILT_DIRECTORY, codeDirectory, false, function (err: Error) {
             if (err) {
                 return callback(err);
             }
@@ -314,9 +333,9 @@ export class LambdaDeploy {
             LoggingHelper.verbose(logger, "Zipping deployment package");
 
             if (process.platform !== "win32") {
-                this.nativeZip(codeDirectory, callback);
+                this.nativeZipFiles(codeDirectory, callback);
             } else {
-                this.zip(codeDirectory, callback);
+                this.zipFiles(codeDirectory, callback);
             }
         });
     }
@@ -327,7 +346,7 @@ export class LambdaDeploy {
         return os.tmpdir() + "/" + LambdaConfig.AWS_FUNCTION_NAME + "-" + epoch_time;
     };
 
-    private nativeZip = function (codeDirectory: string, callback: (err: Error, buffer?: Buffer) => any) {
+    public nativeZipFiles = function (codeDirectory: string, callback: (err: Error, buffer?: Buffer) => any) {
         let ms_since_epoch: number = new Date().getTime();
         let filename: string = LambdaConfig.AWS_FUNCTION_NAME + "-" + ms_since_epoch + ".zip";
         let zipfile: string = path.join(os.tmpdir(), filename);
@@ -350,7 +369,7 @@ export class LambdaDeploy {
 
     };
 
-    private zip = function (codeDirectory: string, callback: (err: Error, buffer?: Buffer) => any) {
+    public zipFiles = function (codeDirectory: string, callback: (err: Error, buffer?: Buffer) => any) {
         let options = {
             type: "nodebuffer",
             compression: "DEFLATE"
@@ -373,7 +392,7 @@ export class LambdaDeploy {
         return callback(null, data);
     };
 
-    private rsync(src: string, dest: string, excludeNodeModules: boolean, callback: (err: Error) => any) {
+    public copyFiles(src: string, dest: string, excludeNodeModules: boolean, callback: (err: Error) => any) {
         // Usual suspects
         let excludes = [".git*", "*.swp", ".editorconfig", "deploy.env", "*.log", "build/", ".DS_Store"];
 
