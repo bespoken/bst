@@ -20,32 +20,33 @@ Use tsconfig.json settings
 Set the project preferences to ECMAScript 6
 
 ## Publishing to NPM
+### Pre-Requisites
 Need to do this the first time to publish:  
 `npm adduser`
 
-Make sure you are on master and have the latest:  
+### Steps
+1) Make sure you are on master and have the latest:  
 `git checkout master`  
 `git pull`  
 
-Create a branch to do NPM work - use the next version as the branch name:  
+2) Create a branch to do NPM work - use the next version as the branch name:  
 `git checkout -b Version0-6-5`
 
 This is necessary because master is a protected branch - changes cannot be pushed directly to it.
 
-Create a remote version of the new branch (MAKE SURE TO PUSH THIS FIRST OR THE VERSION COMMAND WILL FAIL):  
+3) Create a remote version of the new branch (MAKE SURE TO PUSH THIS FIRST OR THE VERSION COMMAND WILL FAIL):  
 `git push --set-upstream origin <NewBranch>`
 
-Updated the version number:  
+4) Updated the version number:  
 `npm version patch`
 
-**Create a pull request. Merge the pull request.**
-
-Checkout master locally and get the latest:  
-`git checkout master`  
-`git pull`
-
-Run publish command to push new client to NPM:  
+5) Publish the new version:  
 `npm publish`
+
+6) Create and merge a pull request for the branch
+
+7) Add release notes:  
+https://github.com/bespoken/bst/releases
 
 To test your new package before publishing, follow these instructions:  
 https://docs.npmjs.com/misc/developers
