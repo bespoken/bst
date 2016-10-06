@@ -3,12 +3,13 @@ import {ServiceRequest, RequestType, SessionEndedReason} from "./service-request
 import {EventEmitter} from "events";
 import {AudioItem} from "./audio-item";
 
-export enum AudioPlayerState {
-    PlaybackError,
-    PlaybackFinished,
-    PlaybackNearlyFinished,
-    PlaybackStarted,
-    PlaybackStopped
+export enum AudioPlayerActivity {
+    BUFFER_UNDERRUN,
+    FINISHED,
+    IDLE,
+    PLAYING,
+    PAUSED,
+    STOPPED
 }
 
 /**
@@ -24,47 +25,40 @@ export class AudioPlayer {
     public static PlayBehaviorReplaceEnqueued = "REPLACE_ENQUEUED";
 
     private _emitter: EventEmitter = null;
-    private _playingOffset: number = 0;
+    private _playing: AudioItem = null;
     private _queue: Array<AudioItem> = [];
-    private _state: AudioPlayerState = null;
+    private _activity: AudioPlayerActivity = null;
     private _suspended: boolean = false;
 
     public constructor (public alexa: Alexa) {
-        this._state = AudioPlayerState.PlaybackStopped;
+        this._activity = AudioPlayerActivity.IDLE;
         this._emitter = new EventEmitter();
     }
 
     public enqueue(audioItem: AudioItem, playBehavior: string) {
         if (playBehavior === AudioPlayer.PlayBehaviorEnqueue) {
-            this.queueAdd(audioItem);
+            this._queue.push(audioItem);
 
         } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
             if (this.isPlaying()) {
                 this.playbackStopped();
             }
-            this.queueClear();
-            this.queueAdd(audioItem);
+
+            this._queue = [];
+            this._queue.push(audioItem);
 
         } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceEnqueued) {
-            this.queueReplace();
-            this.queueAdd(audioItem);
+            this._queue = [];
+            this._queue.push(audioItem);
+        }
+
+        if (!this.isPlaying()) {
+            this.playNext();
         }
     }
 
-    public offsetInMilliseconds(): number {
-        return this._playingOffset;
-    }
-
-    public state() {
-        return this._state;
-    }
-
-    public token(): string {
-        let token: string = null;
-        if (this.playing() !== null) {
-            token = this.playing().token;
-        }
-        return token;
+    public activity(): AudioPlayerActivity {
+        return this._activity;
     }
 
     public playNext() {
@@ -72,11 +66,9 @@ export class AudioPlayer {
             return;
         }
 
-        this._playingOffset = 0;
-
-        let audioItem = this.playing();
+        this._playing = this.dequeue();
         // If the URL for AudioItem is http, we throw an error
-        if (audioItem.url.startsWith("http:")) {
+        if (this._playing.url.startsWith("http:")) {
             this.alexa.sessionEnded(SessionEndedReason.ERROR, {
                 type: "INVALID_RESPONSE",
                 message: "The URL specified in the Play directive must be HTTPS"
@@ -101,11 +93,13 @@ export class AudioPlayer {
      * @param offset
      */
     public playbackOffset(offset: number) {
-        this._playingOffset = offset;
+        if (this.isPlaying()) {
+            this.playing().offsetInMilliseconds = offset;
+        }
     }
 
-    public on(audioPlayerState: AudioPlayerState, listener: Function) {
-        this._emitter.on(AudioPlayerState[audioPlayerState], listener);
+    public on(audioPlayerRequest: string, listener: Function) {
+        this._emitter.on(audioPlayerRequest, listener);
     }
 
     public resume() {
@@ -114,43 +108,35 @@ export class AudioPlayer {
     }
 
     public playbackNearlyFinished(): void {
-        let serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest);
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished);
     }
 
     public playbackFinished(): void {
-        this._state = AudioPlayerState.PlaybackFinished;
-        let serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest);
+        this._activity = AudioPlayerActivity.FINISHED;
+
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished);
 
         // Go the next track, if there is one
-        this.queueSlice();
         this.playNext();
     }
 
     public playbackStarted(): void {
-        const self = this;
-        this._state = AudioPlayerState.PlaybackStarted;
-
-        const currentlyPlaying = this.playing();
-        const serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest, function () {
-            self._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStarted], currentlyPlaying.json);
-        });
+        this._activity = AudioPlayerActivity.PLAYING;
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted);
     }
 
     public playbackStopped(): void {
-        const self = this;
-        this._state = AudioPlayerState.PlaybackStopped;
+        this._activity = AudioPlayerActivity.STOPPED;
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped);
+    }
 
-        const currentlyPlaying = this.playing();
+    private audioPlayerRequest(requestType: string) {
+        const self = this;
+        const nowPlaying = this.playing();
         const serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped, this.playing().token, this._playingOffset);
+        serviceRequest.audioPlayerRequest(requestType, nowPlaying.token, nowPlaying.offsetInMilliseconds);
         this.alexa.callSkill(serviceRequest, function () {
-            self._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStopped], currentlyPlaying.json);
+            self._emitter.emit(requestType, nowPlaying.json);
         });
     }
 
@@ -176,34 +162,17 @@ export class AudioPlayer {
         }
     }
 
-
     public isPlaying(): boolean {
-        return (this._state === AudioPlayerState.PlaybackStarted || this._state === AudioPlayerState.PlaybackNearlyFinished);
+        return (this._activity === AudioPlayerActivity.PLAYING);
     }
 
-    private queueAdd(audioItem: AudioItem): void {
-        this._queue.push(audioItem);
-        if (this._queue.length === 1) {
-            this.playNext();
-        }
-    }
-
-    private queueClear(): void {
-        this._queue = [];
-    }
-
-    private queueReplace(): void {
-        this._queue = [this._queue[0]];
-    }
-
-    private queueSlice(): void {
+    private dequeue(): AudioItem {
+        const audioItem = this._queue[0];
         this._queue = this._queue.slice(1);
+        return audioItem;
     }
 
-    private playing(): AudioItem {
-        if (this._queue.length === 0) {
-            return null;
-        }
-        return this._queue[0];
+    public playing(): AudioItem {
+        return this._playing;
     }
 }

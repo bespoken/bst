@@ -197,7 +197,7 @@ export class Alexa {
         };
 
         this.post({
-            url: this._context.skillURL,
+            url: this.context().skillURL(),
             method: "POST",
             json: requestJSON,
         }, responseHandler);

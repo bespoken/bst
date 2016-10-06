@@ -18,7 +18,7 @@ describe("AudioPlayer", function() {
 
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.type, "LaunchRequest");
-                assert.equal(alexa.call(0).context.AudioPlayer.playerActivity, "STOPPED");
+                assert.equal(alexa.call(0).context.AudioPlayer.playerActivity, "IDLE");
                 done();
             });
         });
@@ -174,6 +174,31 @@ describe("AudioPlayer", function() {
                 assert.equal(alexa.call(2).request.offsetInMilliseconds, 3000);
                 assert.equal(alexa.call(3).request.token, "2");
                 assert.equal(alexa.call(3).request.offsetInMilliseconds, 0);
+                done();
+            });
+        });
+
+        it("Finishes playing, then sends an intent", function(done) {
+            let item = new AudioItem({stream: {
+                url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "10",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+            let alexa = new MockAlexa(
+                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackFinished", "IntentRequest"],
+                [null, null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorReplaceAll);
+            audioPlayer.playbackOffset(100);
+            audioPlayer.playbackFinished();
+            alexa.intended("AMAZON.HelpIntent");
+
+            alexa.verify(function () {
+                // Want to make sure that the finished state is passed correctly
+                assert.equal(alexa.call(2).context.AudioPlayer.playerActivity, "FINISHED");
+                assert.equal(alexa.call(2).context.AudioPlayer.offsetInMilliseconds, 100);
                 done();
             });
         });

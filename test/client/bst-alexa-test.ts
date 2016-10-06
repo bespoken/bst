@@ -194,13 +194,27 @@ describe("BSTAlexa", function() {
 
         describe("#on()", function() {
             it("Audio Item Started Event received", function (done) {
-                alexa.intended("PlayIntent", null, function () {
-                    alexa.audioItemFinished();
-                    alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
-                        assert.equal(audioItem.stream.token, "2");
-                        done();
-                    });
+                let i = 0;
+                alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
+                    i++;
+
+                    alexa.playbackOffset(i * 1000);
+                    alexa.playbackFinished();
+                    assert.equal(audioItem.stream.token, i + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
                 });
+
+                let j = 0;
+                alexa.on("AudioPlayer.PlaybackFinished", function (audioItem: any) {
+                    j++;
+                    assert.equal(audioItem.stream.token, j + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    if (j === 2) {
+                        done();
+                    }
+                });
+
+                alexa.intended("PlayIntent");
             });
         });
 
@@ -217,7 +231,7 @@ describe("BSTAlexa", function() {
                 });
 
                 alexa.intended("PlayIntent", null, function () {
-                    alexa.audioItemFinished();
+                    alexa.playbackFinished();
                 });
             });
         });

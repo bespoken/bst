@@ -1,6 +1,5 @@
-import {AlexaSession} from "./alexa-session";
 import {AlexaContext} from "./alexa-context";
-import {AudioPlayerState} from "./audio-player";
+import {AudioPlayerActivity} from "./audio-player";
 const uuid = require("node-uuid");
 
 export class RequestType {
@@ -172,7 +171,7 @@ export class ServiceRequest {
     }
 
     public toJSON() {
-        let applicationID = this.context.applicationID();
+        const applicationID = this.context.applicationID();
         const userID = this.context.userID();
 
         // If we have a session, set the info
@@ -203,23 +202,17 @@ export class ServiceRequest {
             || this.requestType === RequestType.LaunchRequest
             || this.requestType === RequestType.SessionEndedRequest) {
             if (this.context.audioPlayerEnabled()) {
-                let offset = this.context.audioPlayer().offsetInMilliseconds();
-                let token = this.context.audioPlayer().token();
-
-                let state = this.context.audioPlayer().state();
-                let activity: string = null;
-
-                if (state === AudioPlayerState.PlaybackFinished) {
-                    activity = "FINISHED";
-                } else if (state === AudioPlayerState.PlaybackStopped) {
-                    activity = "STOPPED";
-                }
-
+                const activity = AudioPlayerActivity[this.context.audioPlayer().activity()];
                 this.requestJSON.context.AudioPlayer = {
-                    offsetInMilliseconds: offset,
-                    token: token,
                     playerActivity: activity
                 };
+
+                // Anything other than IDLE, we send token and offset
+                if (this.context.audioPlayer().activity() !== AudioPlayerActivity.IDLE) {
+                    const playing = this.context.audioPlayer().playing();
+                    this.requestJSON.context.AudioPlayer.token = playing.token;
+                    this.requestJSON.context.AudioPlayer.offsetInMilliseconds = playing.offsetInMilliseconds;
+                }
             }
         }
         return this.requestJSON;

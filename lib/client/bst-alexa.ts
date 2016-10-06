@@ -6,6 +6,20 @@ import {SessionEndedReason} from "../alexa/service-request";
 
 export class BSTAlexaEvents {
     /**
+     * Fired when an {@link AudioItem} finishes playing. Means that it played to completion (as opposed to being stopped)
+     *
+     * Payload is an {@link AudioItem}.
+     */
+    public static AudioPlayerPlaybackFinished = "AudioPlayer.PlaybackFinished";
+
+    /**
+     * Fired when an {@link AudioItem} has nearly finished. An opporuntity to queue the next track.
+     *
+     * Payload is an {@link AudioItem}.
+     */
+    public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished";
+
+    /**
      * Fired when an {@link AudioItem} begins playing.
      *
      * Payload is an {@link AudioItem}.
@@ -95,13 +109,9 @@ export class BSTAlexa {
      * @param callback
      */
     public on(eventType: string, callback: Function): void {
-        if (eventType === BSTAlexaEvents.AudioPlayerPlaybackStarted) {
+        if (eventType.startsWith("AudioPlayer")) {
             if (this._alexa.context().audioPlayerEnabled()) {
-                this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStarted, callback);
-            }
-        } else if (eventType === BSTAlexaEvents.AudioPlayerPlaybackStopped) {
-            if (this._alexa.context().audioPlayerEnabled()) {
-                this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStopped, callback);
+                this._alexa.context().audioPlayer().on(eventType, callback);
             }
         } else if (eventType === BSTAlexaEvents.Error) {
             this._alexa.on(AlexaEvent.SkillError, callback);
