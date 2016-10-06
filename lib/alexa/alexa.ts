@@ -156,7 +156,7 @@ export class Alexa {
         //  What can happen is this gets queued, and then another request ends the session
         //  So we want to wait until just before we send this to create the session
         // This ensures it is in the proper state for the duration
-        if (serviceRequest.requiresSession()) {
+        if (serviceRequest.requiresSession() && !this.context().activeSession()) {
             this.context().newSession();
         }
 

@@ -113,13 +113,10 @@ describe("Alexa", function() {
                 });
             };
             alexa.startSession(skillURL, model, false);
-            alexa.spoken("Nearest Location");
-            try {
-                alexa.spoken("Nearest Location");
-            } catch (e) {
-                assert.equal(e.message, "Session must be started before calling spoken");
+            alexa.spoken("Nearest Location", function () {
+                assert(!alexa.context().activeSession());
                 done();
-            }
+            });
         });
 
         it("Handles session attributes", function(done) {
@@ -128,9 +125,13 @@ describe("Alexa", function() {
             let count = 0;
             (<any> alexa).post = function(options: any, responseHandler: RequestCallback) {
                 count++;
+                let shouldEndSession = false;
+                if (count === 2) {
+                    shouldEndSession = true;
+                }
                 responseHandler(null, null, {
                     response: {
-                        shouldEndSession: false
+                        shouldEndSession: true
                     },
                     sessionAttributes: {
                         attribute1: "Test"
@@ -141,8 +142,13 @@ describe("Alexa", function() {
                 if (count === 2) {
                     assert.equal(options.json.session.attributes.attribute1, "Test");
                 }
+
+                if (count === 3) {
+                    assert(!options.json.session.attributes.attribute1);
+                }
             };
             alexa.startSession(skillURL, model, false);
+            alexa.spoken("Nearest Location");
             alexa.spoken("Nearest Location");
             alexa.spoken("Nearest Location", function () {
                 done();

@@ -1,7 +1,6 @@
 import {InteractionModel} from "../alexa/interaction-model";
 import {Alexa, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
-import {AudioPlayerState} from "../alexa/audio-player";
 import {SessionEndedReason} from "../alexa/service-request";
 
 export class BSTAlexaEvents {

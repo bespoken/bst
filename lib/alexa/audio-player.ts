@@ -136,7 +136,7 @@ export class AudioPlayer {
         const serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(requestType, nowPlaying.token, nowPlaying.offsetInMilliseconds);
         this.alexa.callSkill(serviceRequest, function () {
-            self._emitter.emit(requestType, nowPlaying.json);
+            self._emitter.emit(requestType, nowPlaying.json());
         });
     }
 

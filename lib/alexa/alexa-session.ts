@@ -1,4 +1,3 @@
-import {InteractionModel} from "./interaction-model";
 const uuid = require("node-uuid");
 
 export class AlexaSession {

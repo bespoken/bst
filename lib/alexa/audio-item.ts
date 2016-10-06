@@ -9,10 +9,21 @@ export class AudioItem {
     public expectedPreviousToken: string = null;
     public offsetInMilliseconds: number;
 
-    public constructor (public json: any) {
-        this.url = json.stream.url;
-        this.token = json.stream.token;
-        this.expectedPreviousToken = json.stream.expectedPreviousToken;
-        this.offsetInMilliseconds = json.stream.offsetInMilliseconds;
+    public constructor (private _json: any) {
+        this.url = _json.stream.url;
+        this.token = _json.stream.token;
+        this.expectedPreviousToken = _json.stream.expectedPreviousToken;
+        this.offsetInMilliseconds = _json.stream.offsetInMilliseconds;
+    }
+
+    public json(): any {
+        return {
+            stream: {
+                url: this.url,
+                token: this.token,
+                expectedPreviousToken: this.expectedPreviousToken,
+                offsetInMilliseconds: this.offsetInMilliseconds
+            }
+        };
     }
 }
