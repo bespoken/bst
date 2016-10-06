@@ -4,10 +4,10 @@
  * Directly ties off to the JSON payload from Alexa.
  */
 export class AudioItem {
-    public stream: Stream;
+    public stream: AudioItemStream;
 
     public constructor (private _json: any) {
-        this.stream = new Stream();
+        this.stream = new AudioItemStream();
         this.stream.url = _json.stream.url;
         this.stream.token = _json.stream.token;
         this.stream.expectedPreviousToken = _json.stream.expectedPreviousToken;
@@ -22,7 +22,7 @@ export class AudioItem {
     }
 }
 
-export class Stream {
+export class AudioItemStream {
     public url: string = null;
     public token: string = null;
     public expectedPreviousToken: string = null;
