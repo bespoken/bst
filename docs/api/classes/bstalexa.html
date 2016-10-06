@@ -99,9 +99,13 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#audioitemfinished" class="tsd-kind-icon">audio<wbr>Item<wbr>Finished</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#intended" class="tsd-kind-icon">intended</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#launched" class="tsd-kind-icon">launched</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#on" class="tsd-kind-icon">on</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#playbackfinished" class="tsd-kind-icon">playback<wbr>Finished</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#playbacknearlyfinished" class="tsd-kind-icon">playback<wbr>Nearly<wbr>Finished</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#playbackoffset" class="tsd-kind-icon">playback<wbr>Offset</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#sessionended" class="tsd-kind-icon">session<wbr>Ended</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#spoken" class="tsd-kind-icon">spoken</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#start" class="tsd-kind-icon">start</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstalexa.html#stop" class="tsd-kind-icon">stop</a></li>
@@ -122,7 +126,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L38">bst-alexa.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L59">bst-alexa.ts:59</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -178,7 +182,7 @@
 					<div class="tsd-signature tsd-kind-icon">Default<wbr>Intent<wbr>Schema<wbr>Location<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;speechAssets/IntentSchema.json&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L36">bst-alexa.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L57">bst-alexa.ts:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -188,7 +192,7 @@
 					<div class="tsd-signature tsd-kind-icon">Default<wbr>Sample<wbr>Utterances<wbr>Location<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;speechAssets/SampleUtterances.txt&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L37">bst-alexa.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L58">bst-alexa.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -196,41 +200,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="audioitemfinished" class="tsd-anchor"></a>
-					<h3>audio<wbr>Item<wbr>Finished</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">audio<wbr>Item<wbr>Finished<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L136">bst-alexa.ts:136</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Emulates the current track playing to completion.
-										The Alexa Emulator will automatically play the next queued track
-										as well as signal to your skill the current track has completed
-									@returns Returns false if not audio item is currently playing</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="intended" class="tsd-anchor"></a>
 					<h3>intended</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">intended<span class="tsd-signature-symbol">(</span>intentName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, slots<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">intended<span class="tsd-signature-symbol">(</span>intentName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, slots<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L122">bst-alexa.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L148">bst-alexa.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -248,8 +227,6 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
@@ -276,7 +253,61 @@
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+							<p>Itself</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="launched" class="tsd-anchor"></a>
+					<h3>launched</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">launched<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L162">bst-alexa.ts:162</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Emulates the specified skill being launched</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, response<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, request<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>error: <span class="tsd-signature-type">any</span></h5>
+														</li>
+														<li>
+															<h5>response: <span class="tsd-signature-type">any</span></h5>
+														</li>
+														<li>
+															<h5>request: <span class="tsd-signature-type">any</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+							<p>Itself</p>
 						</li>
 					</ul>
 				</section>
@@ -290,16 +321,16 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L89">bst-alexa.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L112">bst-alexa.ts:112</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Registers a callback for Skill responses
-										For event type <a href="bstalexaevents.html#response">BSTAlexaEvents.Response</a>, the payload is the response body as JSON
-										A second parameter with the body of the request as JSON is also passed
-									For event type <a href="bstalexaevents.html#error">BSTAlexaEvents.Error</a>, the payload is the error.</p>
+									<p>Registers a callback for Skill responses</p>
 								</div>
+								<p>For event type <a href="bstalexaevents.html#response">BSTAlexaEvents.Response</a>, the payload is the response body as JSON
+								A second parameter with the body of the request as JSON is also passed</p>
+								<p>For event type <a href="bstalexaevents.html#error">BSTAlexaEvents.Error</a>, the payload is the error.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -317,32 +348,116 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="spoken" class="tsd-anchor"></a>
-					<h3>spoken</h3>
+					<a name="playbackfinished" class="tsd-anchor"></a>
+					<h3>playback<wbr>Finished</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">spoken<span class="tsd-signature-symbol">(</span>phrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">playback<wbr>Finished<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L108">bst-alexa.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L188">bst-alexa.ts:188</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Emulates the specified phrase being said to an Alexa device</p>
+									<p>Emulates the current track playing to completion.</p>
+								</div>
+								<p>The Alexa Emulator will automatically play the next queued track
+								as well as signal to your skill the current track has completed</p>
+								<p> @returns Returns false if not audio item is currently playing</p>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="playbacknearlyfinished" class="tsd-anchor"></a>
+					<h3>playback<wbr>Nearly<wbr>Finished</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">playback<wbr>Nearly<wbr>Finished<span class="tsd-signature-symbol">(</span>offsetInMilliseconds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L204">bst-alexa.ts:204</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Triggers a AudioPlayer.PlaybackNearlyFinished request from Alexa</p>
+								</div>
+								<p>Updates the track playback offset by the specified amount</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>offsetInMilliseconds: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="playbackoffset" class="tsd-anchor"></a>
+					<h3>playback<wbr>Offset</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">playback<wbr>Offset<span class="tsd-signature-symbol">(</span>offsetInMilliseconds<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L217">bst-alexa.ts:217</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Emulates the track being played back</p>
+								</div>
+								<p>Updates the offset time on the track</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>offsetInMilliseconds: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="sessionended" class="tsd-anchor"></a>
+					<h3>session<wbr>Ended</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">session<wbr>Ended<span class="tsd-signature-symbol">(</span>sessionEndedReason<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L173">bst-alexa.ts:173</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Ends the session - requires a reason</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>phrase: <span class="tsd-signature-type">string</span></h5>
+									<h5>sessionEndedReason: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Can be ERROR, EXCEEDED_MAX_REPROMPTS or USER_INITIATED</p>
+									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
@@ -369,7 +484,64 @@
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+							<p>Itself</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="spoken" class="tsd-anchor"></a>
+					<h3>spoken</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">spoken<span class="tsd-signature-symbol">(</span>phrase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L132">bst-alexa.ts:132</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Emulates the specified phrase being said to an Alexa device</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>phrase: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, response<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, request<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>error: <span class="tsd-signature-type">any</span></h5>
+														</li>
+														<li>
+															<h5>response: <span class="tsd-signature-type">any</span></h5>
+														</li>
+														<li>
+															<h5>request: <span class="tsd-signature-type">any</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="bstalexa.html" class="tsd-signature-type">BSTAlexa</a></h4>
+							<p>Itself</p>
 						</li>
 					</ul>
 				</section>
@@ -383,7 +555,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L69">bst-alexa.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L90">bst-alexa.ts:90</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -432,7 +604,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b079e/lib/client/bst-alexa.ts#L152">bst-alexa.ts:152</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/031c70a/lib/client/bst-alexa.ts#L226">bst-alexa.ts:226</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -445,6 +617,8 @@
 							<ul class="tsd-parameters">
 								<li>
 									<h5>onStop: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
@@ -490,13 +664,25 @@
 								<a href="bstalexa.html#defaultsampleutteranceslocation" class="tsd-kind-icon">Default<wbr>Sample<wbr>Utterances<wbr>Location</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="bstalexa.html#audioitemfinished" class="tsd-kind-icon">audio<wbr>Item<wbr>Finished</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="bstalexa.html#intended" class="tsd-kind-icon">intended</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstalexa.html#launched" class="tsd-kind-icon">launched</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="bstalexa.html#on" class="tsd-kind-icon">on</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstalexa.html#playbackfinished" class="tsd-kind-icon">playback<wbr>Finished</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstalexa.html#playbacknearlyfinished" class="tsd-kind-icon">playback<wbr>Nearly<wbr>Finished</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstalexa.html#playbackoffset" class="tsd-kind-icon">playback<wbr>Offset</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstalexa.html#sessionended" class="tsd-kind-icon">session<wbr>Ended</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="bstalexa.html#spoken" class="tsd-kind-icon">spoken</a>

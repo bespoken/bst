@@ -101,8 +101,10 @@ export class BSTAlexa {
 
     /**
      * Registers a callback for Skill responses
+     *
      * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
      *  A second parameter with the body of the request as JSON is also passed
+     *
      * For event type {@link BSTAlexaEvents.Error}, the payload is the error.
      * @param eventType {@link BSTAlexaEvents}
      * @param callback
@@ -177,8 +179,10 @@ export class BSTAlexa {
 
     /**
      * Emulates the current track playing to completion.
+     *
      * The Alexa Emulator will automatically play the next queued track
      *  as well as signal to your skill the current track has completed
+     *
      *  @returns Returns false if not audio item is currently playing
      */
     public playbackFinished(): BSTAlexa {
@@ -192,6 +196,7 @@ export class BSTAlexa {
 
     /**
      * Triggers a AudioPlayer.PlaybackNearlyFinished request from Alexa
+     *
      * Updates the track playback offset by the specified amount
      * @param offsetInMilliseconds
      * @returns {BSTAlexa}
@@ -204,6 +209,7 @@ export class BSTAlexa {
 
     /**
      * Emulates the track being played back
+     *
      * Updates the offset time on the track
      * @param offsetInMilliseconds
      * @returns {BSTAlexa}

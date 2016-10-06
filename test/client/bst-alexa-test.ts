@@ -197,11 +197,11 @@ describe("BSTAlexa", function() {
                 let i = 0;
                 alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
                     i++;
+                    assert.equal(audioItem.stream.token, i + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
 
                     alexa.playbackOffset(i * 1000);
                     alexa.playbackFinished();
-                    assert.equal(audioItem.stream.token, i + "");
-                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
                 });
 
                 let j = 0;

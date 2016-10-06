@@ -68,7 +68,7 @@ export class AudioPlayer {
 
         this._playing = this.dequeue();
         // If the URL for AudioItem is http, we throw an error
-        if (this._playing.url.startsWith("http:")) {
+        if (this._playing.stream.url.startsWith("http:")) {
             this.alexa.sessionEnded(SessionEndedReason.ERROR, {
                 type: "INVALID_RESPONSE",
                 message: "The URL specified in the Play directive must be HTTPS"
@@ -94,7 +94,7 @@ export class AudioPlayer {
      */
     public playbackOffset(offset: number) {
         if (this.isPlaying()) {
-            this.playing().offsetInMilliseconds = offset;
+            this.playing().stream.offsetInMilliseconds = offset;
         }
     }
 
@@ -134,9 +134,9 @@ export class AudioPlayer {
         const self = this;
         const nowPlaying = this.playing();
         const serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(requestType, nowPlaying.token, nowPlaying.offsetInMilliseconds);
+        serviceRequest.audioPlayerRequest(requestType, nowPlaying.stream.token, nowPlaying.stream.offsetInMilliseconds);
         this.alexa.callSkill(serviceRequest, function () {
-            self._emitter.emit(requestType, nowPlaying.json());
+            self._emitter.emit(requestType, nowPlaying.clone());
         });
     }
 

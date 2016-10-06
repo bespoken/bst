@@ -210,8 +210,8 @@ export class ServiceRequest {
                 // Anything other than IDLE, we send token and offset
                 if (this.context.audioPlayer().activity() !== AudioPlayerActivity.IDLE) {
                     const playing = this.context.audioPlayer().playing();
-                    this.requestJSON.context.AudioPlayer.token = playing.token;
-                    this.requestJSON.context.AudioPlayer.offsetInMilliseconds = playing.offsetInMilliseconds;
+                    this.requestJSON.context.AudioPlayer.token = playing.stream.token;
+                    this.requestJSON.context.AudioPlayer.offsetInMilliseconds = playing.stream.offsetInMilliseconds;
                 }
             }
         }
