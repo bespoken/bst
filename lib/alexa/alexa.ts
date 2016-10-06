@@ -216,6 +216,10 @@ export class Alexa {
         this._emitter.on(AlexaEvent[event], callback);
     }
 
+    public once(event: AlexaEvent, callback: Function) {
+        this._emitter.once(AlexaEvent[event], callback);
+    }
+
     public stop(onStop: () => void) {
         // Wait until the current call finishes if the queue > 0 - otherwise, call complete now
         this._actionQueue.stop(function () {

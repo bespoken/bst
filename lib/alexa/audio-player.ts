@@ -102,6 +102,10 @@ export class AudioPlayer {
         this._emitter.on(audioPlayerRequest, listener);
     }
 
+    public once(audioPlayerRequest: string, listener: Function) {
+        this._emitter.once(audioPlayerRequest, listener);
+    }
+
     public resume() {
         this._suspended = false;
         this.playbackStarted();

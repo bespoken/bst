@@ -122,6 +122,28 @@ describe("AudioPlayer", function() {
             });
         });
 
+        it("Plays a track, stops", function(done) {
+            let item = new AudioItem({stream: {
+                url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "0",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+
+            let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted",
+                "AudioPlayer.PlaybackStopped"], [directiveResponse("AudioPlayer.Stop", null, "0"), null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.playbackOffset(100);
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
+                assert.equal(alexa.call(0).request.token, "0");
+                done();
+            });
+        });
+
         it("Replaces existing track with nothing playing", function(done) {
             let item = new AudioItem({stream: {
                 url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",

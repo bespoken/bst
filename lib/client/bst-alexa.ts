@@ -33,13 +33,6 @@ export class BSTAlexaEvents {
     public static AudioPlayerPlaybackStopped = "AudioPlayer.PlaybackStopped";
 
     /**
-     * Fired when an error occurs.
-     *
-     * Payload is the error.
-     */
-    public static Error = "error";
-
-    /**
      * Fired when a response is received from the Alexa Skill.
      *
      * Parameters are the raw response JSON and the request JSON that triggered it.
@@ -100,27 +93,53 @@ export class BSTAlexa {
     }
 
     /**
-     * Registers a callback for Skill responses
+     * Registers a callback for Skill events
+     *
+     * For AudioPlayer events, the payload is an {@link AudioItem}
      *
      * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
      *  A second parameter with the body of the request as JSON is also passed
      *
-     * For event type {@link BSTAlexaEvents.Error}, the payload is the error.
      * @param eventType {@link BSTAlexaEvents}
      * @param callback
      */
-    public on(eventType: string, callback: Function): void {
+    public on(eventType: string, callback: Function): BSTAlexa {
         if (eventType.startsWith("AudioPlayer")) {
             if (this._alexa.context().audioPlayerEnabled()) {
                 this._alexa.context().audioPlayer().on(eventType, callback);
             }
-        } else if (eventType === BSTAlexaEvents.Error) {
-            this._alexa.on(AlexaEvent.SkillError, callback);
         } else if (eventType === BSTAlexaEvents.Response) {
             this._alexa.on(AlexaEvent.SkillResponse, callback);
         } else {
             throw Error("No event type: " + eventType + " is defined");
         }
+
+        return this;
+    }
+
+    /**
+     * Registers a one-time callback for Skill events
+     *
+     * For AudioPlayer events, the payload is an {@link AudioItem}
+     *
+     * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
+     *  A second parameter with the body of the request as JSON is also passed
+     *
+     * @param eventType {@link BSTAlexaEvents}
+     * @param callback
+     */
+    public once(eventType: string, callback: Function): BSTAlexa {
+        if (eventType.startsWith("AudioPlayer")) {
+            if (this._alexa.context().audioPlayerEnabled()) {
+                this._alexa.context().audioPlayer().once(eventType, callback);
+            }
+        } else if (eventType === BSTAlexaEvents.Response) {
+            this._alexa.once(AlexaEvent.SkillResponse, callback);
+        } else {
+            throw Error("No event type: " + eventType + " is defined");
+        }
+
+        return this;
     }
 
     /**
@@ -201,8 +220,10 @@ export class BSTAlexa {
      * @param offsetInMilliseconds
      * @returns {BSTAlexa}
      */
-    public playbackNearlyFinished(offsetInMilliseconds: number): BSTAlexa {
-        this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+    public playbackNearlyFinished(offsetInMilliseconds?: number): BSTAlexa {
+        if (offsetInMilliseconds !== undefined) {
+            this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+        }
         this._alexa.context().audioPlayer().playbackNearlyFinished();
         return this;
     }

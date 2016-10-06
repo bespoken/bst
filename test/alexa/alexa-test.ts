@@ -131,7 +131,7 @@ describe("Alexa", function() {
                 }
                 responseHandler(null, null, {
                     response: {
-                        shouldEndSession: true
+                        shouldEndSession: shouldEndSession
                     },
                     sessionAttributes: {
                         attribute1: "Test"
