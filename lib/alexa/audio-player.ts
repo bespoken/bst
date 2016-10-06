@@ -24,7 +24,6 @@ export class AudioPlayer {
     public static PlayBehaviorReplaceEnqueued = "REPLACE_ENQUEUED";
 
     private _emitter: EventEmitter = null;
-    private _playingStartTime: number = 0;
     private _playingOffset: number = 0;
     private _queue: Array<AudioItem> = [];
     private _state: AudioPlayerState = null;
@@ -41,7 +40,7 @@ export class AudioPlayer {
 
         } else if (playBehavior === AudioPlayer.PlayBehaviorReplaceAll) {
             if (this.isPlaying()) {
-                this.stop();
+                this.playbackStopped();
             }
             this.queueClear();
             this.queueAdd(audioItem);
@@ -73,7 +72,6 @@ export class AudioPlayer {
             return;
         }
 
-        this._playingStartTime = new Date().getTime();
         this._playingOffset = 0;
 
         let audioItem = this.playing();
@@ -86,19 +84,12 @@ export class AudioPlayer {
         } else {
             this.playbackStarted();
 
-            // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
-            this.playbackNearlyFinished();
         }
-    }
-
-    public stop() {
-        this._playingOffset = this._playingOffset + (new Date().getTime() - this._playingStartTime);
-        this.playbackStopped();
     }
 
     public suspend() {
         this._suspended = true;
-        this.stop();
+        this.playbackStopped();
     }
 
     public suspended(): boolean {
@@ -106,17 +97,11 @@ export class AudioPlayer {
     }
 
     /**
-     * For testing purposes - jumps to the end of audio
-     * Simulates audio being completed - not the same as AMAZON.NextIntent
+     * Emulates a certain amount of a track being played back
+     * @param offset
      */
-    public fastForward(): void {
-        this.finish();
-        this.playNext();
-    }
-
-    public finish(): void {
-        this.playbackFinished(this._playingOffset + 1000);
-        this.queueSlice();
+    public playbackOffset(offset: number) {
+        this._playingOffset = offset;
     }
 
     public on(audioPlayerState: AudioPlayerState, listener: Function) {
@@ -125,44 +110,48 @@ export class AudioPlayer {
 
     public resume() {
         this._suspended = false;
-        this._playingStartTime = new Date().getTime();
-
         this.playbackStarted();
-
-        // If this is a new track, we send a PlaybackNearlyFinished after a brief pause
-        this.playbackNearlyFinished();
     }
 
-    private playbackNearlyFinished(): void {
-        let offset = new Date().getTime() - this._playingStartTime;
+    public playbackNearlyFinished(): void {
         let serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, this.playing().token, offset);
+        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, this.playing().token, this._playingOffset);
         this.alexa.callSkill(serviceRequest);
     }
 
-    private playbackFinished(offset: number): void {
+    public playbackFinished(): void {
         this._state = AudioPlayerState.PlaybackFinished;
         let serviceRequest = new ServiceRequest(this.alexa.context());
-        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished, this.playing().token, offset);
+        serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished, this.playing().token, this._playingOffset);
         this.alexa.callSkill(serviceRequest);
+
+        // Go the next track, if there is one
+        this.queueSlice();
+        this.playNext();
     }
 
-    private playbackStarted(): void {
+    public playbackStarted(): void {
+        const self = this;
         this._state = AudioPlayerState.PlaybackStarted;
-        // So far, this is the only event we emit. We will add others - probably
-        this._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStarted], this.playing().json);
 
-        let serviceRequest = new ServiceRequest(this.alexa.context());
+        const currentlyPlaying = this.playing();
+        const serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest);
+        this.alexa.callSkill(serviceRequest, function () {
+            self._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStarted], currentlyPlaying.json);
+        });
     }
 
-    private playbackStopped(): void {
+    public playbackStopped(): void {
+        const self = this;
         this._state = AudioPlayerState.PlaybackStopped;
 
-        let serviceRequest = new ServiceRequest(this.alexa.context());
+        const currentlyPlaying = this.playing();
+        const serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped, this.playing().token, this._playingOffset);
-        this.alexa.callSkill(serviceRequest);
+        this.alexa.callSkill(serviceRequest, function () {
+            self._emitter.emit(AudioPlayerState[AudioPlayerState.PlaybackStopped], currentlyPlaying.json);
+        });
     }
 
     public directivesReceived(directives: Array<any>): void {
@@ -182,7 +171,7 @@ export class AudioPlayer {
             if (this.suspended()) {
                 this._suspended = false;
             } else if (this.playing()) {
-                this.stop();
+                this.playbackStopped();
             }
         }
     }

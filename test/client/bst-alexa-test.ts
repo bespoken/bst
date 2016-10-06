@@ -210,7 +210,7 @@ describe("BSTAlexa", function() {
                 alexa.on("response", function (response: any, request: any) {
                     console.log("RequestType: " + request.request.type);
                     count++;
-                    if (count === 4) {
+                    if (count === 3) {
                         assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
                         done();
                     }

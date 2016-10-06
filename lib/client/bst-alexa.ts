@@ -13,6 +13,13 @@ export class BSTAlexaEvents {
     public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
 
     /**
+     * Fired when an {@link AudioItem} has stopped playing.
+     *
+     * Payload is an {@link AudioItem}.
+     */
+    public static AudioPlayerPlaybackStopped = "AudioPlayer.PlaybackStopped";
+
+    /**
      * Fired when an error occurs.
      *
      * Payload is the error.
@@ -92,6 +99,10 @@ export class BSTAlexa {
             if (this._alexa.context().audioPlayerEnabled()) {
                 this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStarted, callback);
             }
+        } else if (eventType === BSTAlexaEvents.AudioPlayerPlaybackStopped) {
+            if (this._alexa.context().audioPlayerEnabled()) {
+                this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStopped, callback);
+            }
         } else if (eventType === BSTAlexaEvents.Error) {
             this._alexa.on(AlexaEvent.SkillError, callback);
         } else if (eventType === BSTAlexaEvents.Response) {
@@ -105,13 +116,15 @@ export class BSTAlexa {
      * Emulates the specified phrase being said to an Alexa device
      * @param phrase
      * @param callback
+     * @returns Itself
      */
-    public spoken(phrase: string, callback?: (error: any, response: any, request: any) => void): void {
+    public spoken(phrase: string, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
         this._alexa.spoken(phrase, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
                 callback(error, response, request);
             }
         });
+        return this;
     }
 
     /**
@@ -119,32 +132,38 @@ export class BSTAlexa {
      * @param intentName
      * @param slots
      * @param callback
+     * @returns Itself
      */
-    public intended(intentName: string, slots?: any, callback?: (error: any, response: any, request: any) => void): void {
+    public intended(intentName: string, slots?: any, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
         this._alexa.intended(intentName, slots, function (error: string, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
                 callback(error, response, request);
             }
         });
+        return this;
     }
 
     /**
      * Emulates the specified skill being launched
      * @param callback
+     * @returns Itself
      */
-    public launched(callback?: (error: any, response: any, request: any) => void): void {
+    public launched(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
         this._alexa.launched(callback);
+        return this;
     }
 
     /**
      * Ends the session - requires a reason
      * @param sessionEndedReason Can be ERROR, EXCEEDED_MAX_REPROMPTS or USER_INITIATED
      * @param callback
+     * @returns Itself
      */
-    public sessionEnded(sessionEndedReason: string, callback?: (error: any, response: any, request: any) => void): void {
+    public sessionEnded(sessionEndedReason: string, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
         // Convert to enum value
         const sessionEndedEnum = (<any> SessionEndedReason)[sessionEndedReason];
         this._alexa.sessionEnded(sessionEndedEnum, null, callback);
+        return this;
     }
 
     /**
@@ -153,17 +172,37 @@ export class BSTAlexa {
      *  as well as signal to your skill the current track has completed
      *  @returns Returns false if not audio item is currently playing
      */
-    public audioItemFinished(): boolean {
-        let playing = false;
+    public playbackFinished(): BSTAlexa {
         if (this._alexa.context().audioPlayerEnabled()) {
             if (this._alexa.context().audioPlayer().isPlaying()) {
-                playing = true;
-                this._alexa.context().audioPlayer().fastForward();
+                this._alexa.context().audioPlayer().playbackFinished();
             }
         }
-        return playing;
+        return this;
     }
 
+    /**
+     * Triggers a AudioPlayer.PlaybackNearlyFinished request from Alexa
+     * Updates the track playback offset by the specified amount
+     * @param offsetInMilliseconds
+     * @returns {BSTAlexa}
+     */
+    public playbackNearlyFinished(offsetInMilliseconds: number): BSTAlexa {
+        this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+        this._alexa.context().audioPlayer().playbackNearlyFinished();
+        return this;
+    }
+
+    /**
+     * Emulates the track being played back
+     * Updates the offset time on the track
+     * @param offsetInMilliseconds
+     * @returns {BSTAlexa}
+     */
+    public playbackOffset(offsetInMilliseconds: number): BSTAlexa {
+        this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+        return this;
+    }
     /**
      * Turns off the Alexa emulator.
      * Useful for running inside of tests to ensure all cleanup has completed before next test starts.

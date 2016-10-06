@@ -6,7 +6,6 @@ import {ServiceRequest} from "../../lib/alexa/service-request";
 import {InteractionModel} from "../../lib/alexa/interaction-model";
 import {SessionEndedReason} from "../../lib/alexa/service-request";
 import {AlexaContext} from "../../lib/alexa/alexa-context";
-import {AlexaSession} from "../../lib/alexa/alexa-session";
 import {RequestType} from "../../lib/alexa/service-request";
 
 
@@ -32,12 +31,12 @@ describe("ServiceRequest", function() {
     };
 
     let model: InteractionModel = new InteractionModel(new IntentSchema(intentSchemaJSON), null);
-    let context = new AlexaContext("https://skill.com/skillPath", null, "MyApp");
-    let session = new AlexaSession(model);
+    let context = new AlexaContext("https://skill.com/skillPath", model, null, "MyApp");
+    context.newSession();
 
     describe("#intentRequest()", function() {
         it("Correctly parses intents", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(context, session);
+            let requester: ServiceRequest = new ServiceRequest(context);
 
             let request: any = requester.intentRequest("Test").toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -54,7 +53,7 @@ describe("ServiceRequest", function() {
         });
 
         it("Handles error", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(context, session);
+            let requester: ServiceRequest = new ServiceRequest(context);
 
             try {
                 requester.intentRequest("Test2").toJSON();
@@ -66,7 +65,7 @@ describe("ServiceRequest", function() {
         });
 
         it("With Slot", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(context, session);
+            let requester: ServiceRequest = new ServiceRequest(context);
 
             let request: any = requester.intentRequest("WithSlot").withSlot("SlotName", "Value").toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -81,7 +80,7 @@ describe("ServiceRequest", function() {
         });
 
         it("With Slot, Values Unspecified", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(context, session);
+            let requester: ServiceRequest = new ServiceRequest(context);
 
             let request: any = requester.intentRequest("WithSlot").toJSON();
             // Make sure there is a spot for the slot but not value
@@ -95,7 +94,7 @@ describe("ServiceRequest", function() {
 
     describe("#launchRequest()", function() {
         it("Correctly parses intents", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(context, session);
+            let requester: ServiceRequest = new ServiceRequest(context);
 
             let request: any = requester.launchRequest().toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
@@ -110,7 +109,7 @@ describe("ServiceRequest", function() {
 
     describe("#sessionEndedRequest()", function() {
         it("Correctly parses intents", function(done) {
-            let requester: ServiceRequest = new ServiceRequest(context, session);
+            let requester: ServiceRequest = new ServiceRequest(context);
 
             let request: any = requester.sessionEndedRequest(SessionEndedReason.ERROR).toJSON();
             assert.equal(request.session.application.applicationId, "MyApp");
