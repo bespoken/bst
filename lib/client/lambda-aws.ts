@@ -5,20 +5,33 @@ const aws = require("aws-sdk");
 /**
  * Create AWS roles for the lambdas
  */
-export class LambdaRole {
+export class LambdaAws {
     private iam: any = null;
+    private lambda: any = null;
+    private lambdaConfig: LambdaConfig = null;
 
-    public constructor() {
+    public static create(lambdaConfig: LambdaConfig): LambdaAws {
+        let instance: LambdaAws = new LambdaAws();
+
+        instance.lambdaConfig = lambdaConfig;
+
         let aws_security = {
-            accessKeyId: LambdaConfig.AWS_ACCESS_KEY_ID,
-            secretAccessKey: LambdaConfig.AWS_SECRET_ACCESS_KEY,
+            accessKeyId: lambdaConfig.AWS_ACCESS_KEY_ID,
+            secretAccessKey: lambdaConfig.AWS_SECRET_ACCESS_KEY,
+            region: "us-east-1"
         };
 
         aws.config.update(aws_security);
 
-        this.iam = new aws.IAM({
+        instance.iam = new aws.IAM({
             apiVersion: "2016-03-01"
         });
+
+        instance.lambda = new aws.Lambda({
+            apiVersion: "2016-03-01"
+        });
+
+        return instance;
     }
 
     /**
@@ -80,12 +93,66 @@ export class LambdaRole {
 
             getRolePromise
                 .then((data: any) => {
-                    console.log("AWS role " + roleName + " already existed. ARN: " + data.Role.Arn);
+                    // console.log("AWS role " + roleName + " already existed. ARN: " + data.Role.Arn);
                     resolve(data.Role.Arn);
                 })
                 .catch((err: any) => {
                     if (err.code === "NoSuchEntity") {
                         resolve(null); // return null arn if not found
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+        });
+    }
+
+    /**
+     * Find role, return arn in resolve
+     *
+     * @param roleName
+     * @returns {Promise<T>}
+     */
+    public deleteRole(roleName: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+
+            this.deleteRolePolicy(roleName)
+                .then ((data: any) => {
+                    // console.log("AWS role " + roleName + "-access policy was deleted");
+                    return this.iam.deleteRole({"RoleName": roleName}).promise();
+                })
+                .then ((data: any) => {
+                    // console.log("AWS role " + roleName + " was deleted");
+                    resolve(null);
+                })
+                .catch((err: any) => {
+                    if (err.code === "NoSuchEntity") {
+                        resolve(null); // return null arn if not found
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+        });
+    }
+
+    /**
+     * Remove associated (<RoleName>-access) policy
+     *
+     * @param roleName
+     * @returns {Promise<T>}
+     */
+    private deleteRolePolicy(roleName: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            let policyName = roleName + "-access";
+
+            this.iam.deleteRolePolicy({"PolicyName": policyName, "RoleName": roleName}).promise()
+                .then((data: any) => {
+                    resolve(data);
+                })
+                .catch((err: any) => {
+                    if (err.code === "NoSuchEntity") {
+                        resolve(err.code); // return null arn if not found
                     }
                     else {
                         reject(err);
@@ -158,6 +225,29 @@ export class LambdaRole {
                     resolve(data);
                 })
                 .catch((err: Error) => {
+                    reject(err);
+                });
+        });
+    }
+
+    public invokeLambda(functionName: string, payload: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+
+            let params: any = {
+                FunctionName: functionName,
+                // ClientContext: JSON.stringify({"foo": "bar"}),
+                InvocationType: "RequestResponse",
+                LogType: "None",
+                Payload: JSON.stringify(payload)
+            };
+
+            let invokePromise = this.lambda.invoke(params).promise();
+
+            invokePromise
+                .then((data: any) => {
+                    resolve(data);
+                })
+                .catch((err: any) => {
                     reject(err);
                 });
         });

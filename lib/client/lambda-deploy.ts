@@ -18,12 +18,25 @@ let logger = "LambdaDeploy";
  * Deploys a lambda project to AWS
  */
 export class LambdaDeploy {
-    public constructor(public lambdaFolder: string) {}
+    public lambdaFolder: string;
+    public lambdaConfig: LambdaConfig;
+    /**
+     * Create a deployer (factory method to make mockery happy)
+     *
+     * @param lambdaFolder
+     * @returns {lambdaDeploy}
+     */
+    public static create(lambdaFolder: string, lambdaConfig: LambdaConfig): LambdaDeploy {
+        let instance: LambdaDeploy = new LambdaDeploy();
+        instance.lambdaConfig = lambdaConfig;
+        instance.lambdaFolder = lambdaFolder;
+        return instance;
+    }
 
-    public deploy(): void {
+    public deploy(callback?: (err: Error) => any): void {
         let self = this;
 
-        let regions = LambdaConfig.AWS_REGION.split(",");
+        let regions = this.lambdaConfig.AWS_REGION.split(",");
 
         this.archive(function (err, buffer) {
             if (err) {
@@ -46,6 +59,10 @@ export class LambdaDeploy {
                         console.log("\t" + result.FunctionArn);
                         console.log();
                     });
+
+                    if (callback) {
+                        callback(null);
+                    }
                 }
             });
 
@@ -55,8 +72,8 @@ export class LambdaDeploy {
                 self.logParams(params);
 
                 let aws_security = {
-                    accessKeyId: LambdaConfig.AWS_ACCESS_KEY_ID,
-                    secretAccessKey: LambdaConfig.AWS_SECRET_ACCESS_KEY,
+                    accessKeyId: self.lambdaConfig.AWS_ACCESS_KEY_ID,
+                    secretAccessKey: self.lambdaConfig.AWS_SECRET_ACCESS_KEY,
                     region: region
                 };
 
@@ -98,19 +115,19 @@ export class LambdaDeploy {
     /**** V2
 
     public pack(): void {
-        if (!LambdaConfig.PACKAGE_DIRECTORY) {
+        if (!this.lambdaConfig.PACKAGE_DIRECTORY) {
             throw "packageDirectory not specified!";
         } else {
             try {
-                let isDir = fs.lstatSync(LambdaConfig.PACKAGE_DIRECTORY).isDirectory();
+                let isDir = fs.lstatSync(this.lambdaConfig.PACKAGE_DIRECTORY).isDirectory();
 
                 if (!isDir) {
-                    throw LambdaConfig.PACKAGE_DIRECTORY + " is not a directory!";
+                    throw this.lambdaConfig.PACKAGE_DIRECTORY + " is not a directory!";
                 }
             } catch (err) {
                 if (err.code === "ENOENT") {
                     LoggingHelper.verbose(logger, "Creating package directory");
-                    fs.mkdirSync(LambdaConfig.PACKAGE_DIRECTORY);
+                    fs.mkdirSync(this.lambdaConfig.PACKAGE_DIRECTORY);
                 } else {
                     throw err;
                 }
@@ -122,8 +139,8 @@ export class LambdaDeploy {
                 throw err;
             }
 
-            let basename = LambdaConfig.AWS_FUNCTION_NAME;
-            let zipfile = path.join(LambdaConfig.PACKAGE_DIRECTORY, basename + ".zip");
+            let basename = this.lambdaConfig.AWS_FUNCTION_NAME;
+            let zipfile = path.join(this.lambdaConfig.PACKAGE_DIRECTORY, basename + ".zip");
 
             LoggingHelper.verbose(logger, "Writing packaged zip");
 
@@ -158,6 +175,8 @@ export class LambdaDeploy {
                 "Timeout": params.Timeout,
                 "VpcConfig": params.VpcConfig
             }, function(err: Error, data: string) {
+                LoggingHelper.verbose(logger, "Lambda function was updated: " + params.FunctionName);
+
                 return callback(err, data);
             });
         });
@@ -167,6 +186,8 @@ export class LambdaDeploy {
         return lambda.createFunction(params, function(err: Error, functionData: any) {
             if (!err) {
                 LoggingHelper.verbose(logger, "Lambda function was created: " + params.FunctionName);
+            } else {
+                return callback(err, functionData);
             }
 
             // Lets wait a second before we use the function
@@ -192,28 +213,28 @@ export class LambdaDeploy {
 
     private params(buffer: Buffer): any {
         let params = {
-            FunctionName: LambdaConfig.AWS_FUNCTION_NAME,
+            FunctionName: this.lambdaConfig.AWS_FUNCTION_NAME,
             Code: {
                 ZipFile: buffer
             },
-            Handler: LambdaConfig.AWS_HANDLER,
-            Role: LambdaConfig.AWS_ROLE_ARN,
-            Runtime: LambdaConfig.AWS_RUNTIME,
-            Description: LambdaConfig.AWS_DESCRIPTION,
-            MemorySize: LambdaConfig.AWS_MEMORY_SIZE,
-            Timeout: LambdaConfig.AWS_TIMEOUT,
-            Publish: LambdaConfig.AWS_PUBLISH,
+            Handler: this.lambdaConfig.AWS_HANDLER,
+            Role: this.lambdaConfig.AWS_ROLE_ARN,
+            Runtime: this.lambdaConfig.AWS_RUNTIME,
+            Description: this.lambdaConfig.AWS_DESCRIPTION,
+            MemorySize: this.lambdaConfig.AWS_MEMORY_SIZE,
+            Timeout: this.lambdaConfig.AWS_TIMEOUT,
+            Publish: this.lambdaConfig.AWS_PUBLISH,
             VpcConfig: {}
         };
 
-        if (LambdaConfig.AWS_FUNCTION_VERSION) {
-            params.FunctionName += ("-" + LambdaConfig.AWS_FUNCTION_VERSION);
+        if (this.lambdaConfig.AWS_FUNCTION_VERSION) {
+            params.FunctionName += ("-" + this.lambdaConfig.AWS_FUNCTION_VERSION);
         }
 
-        if (LambdaConfig.AWS_VPC_SUBNETS && LambdaConfig.AWS_VPC_SECURITY_GROUPS) {
+        if (this.lambdaConfig.AWS_VPC_SUBNETS && this.lambdaConfig.AWS_VPC_SECURITY_GROUPS) {
             params.VpcConfig = {
-                "SubnetIds": LambdaConfig.AWS_VPC_SUBNETS.split(","),
-                "SecurityGroupIds": LambdaConfig.AWS_VPC_SECURITY_GROUPS.split(",")
+                "SubnetIds": this.lambdaConfig.AWS_VPC_SUBNETS.split(","),
+                "SecurityGroupIds": this.lambdaConfig.AWS_VPC_SECURITY_GROUPS.split(",")
             };
         }
 
@@ -221,7 +242,7 @@ export class LambdaDeploy {
     };
 
     private archive(callback: (err: Error, buffer: Buffer) => any) {
-        return LambdaConfig.PREBUILT_DIRECTORY
+        return this.lambdaConfig.PREBUILT_DIRECTORY
             ? this.archivePrebuilt(callback) : this.buildAndArchive(callback);
     }
 
@@ -271,7 +292,7 @@ export class LambdaDeploy {
     }
 
     /**
-     * Post-install hook
+     * Post-install hook (dummy for now)
      * @param codeDirectory
      * @param callback
      */
@@ -322,10 +343,10 @@ export class LambdaDeploy {
         });
     }
 
-    public archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
+    private archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
         let codeDirectory = this.codeDirectory();
 
-        this.copyFiles(LambdaConfig.PREBUILT_DIRECTORY, codeDirectory, false, function (err: Error) {
+        this.copyFiles(this.lambdaConfig.PREBUILT_DIRECTORY, codeDirectory, false, function (err: Error) {
             if (err) {
                 return callback(err);
             }
@@ -343,12 +364,12 @@ export class LambdaDeploy {
     private codeDirectory = function () {
         let epoch_time = +new Date();
 
-        return os.tmpdir() + "/" + LambdaConfig.AWS_FUNCTION_NAME + "-" + epoch_time;
+        return os.tmpdir() + "/" + this.lambdaConfig.AWS_FUNCTION_NAME + "-" + epoch_time;
     };
 
     public nativeZipFiles = function (codeDirectory: string, callback: (err: Error, buffer?: Buffer) => any) {
         let ms_since_epoch: number = new Date().getTime();
-        let filename: string = LambdaConfig.AWS_FUNCTION_NAME + "-" + ms_since_epoch + ".zip";
+        let filename: string = this.lambdaConfig.AWS_FUNCTION_NAME + "-" + ms_since_epoch + ".zip";
         let zipfile: string = path.join(os.tmpdir(), filename);
 
         let cmd: string = "zip -r " + zipfile + " .";
@@ -398,8 +419,8 @@ export class LambdaDeploy {
 
         let excludeGlobs: string[] = [];
 
-        if (LambdaConfig.EXCLUDE_GLOBS) {
-            excludeGlobs = LambdaConfig.EXCLUDE_GLOBS.split(" ");
+        if (this.lambdaConfig.EXCLUDE_GLOBS) {
+            excludeGlobs = this.lambdaConfig.EXCLUDE_GLOBS.split(" ");
         }
 
         let excludeArgs = excludeGlobs
@@ -426,8 +447,9 @@ export class LambdaDeploy {
         });
     }
 
-    private cleanDirectory(codeDirectory: string, callback: (err: Error) => any) {
+    public cleanDirectory(codeDirectory: string, callback: (err: Error) => any) {
         exec("rm -rf " + codeDirectory, function (err: string) {
+
             if (err) {
                 throw err;
             }

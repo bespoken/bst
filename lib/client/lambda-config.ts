@@ -7,29 +7,41 @@ let PropertiesReader = require("properties-reader");
 let home: string = process.env[(process.platform === "win32") ? "USERPROFILE" : "HOME"];
 
 export class LambdaConfig {
-    public static EXCLUDE_GLOBS: string;
 
-    public static AWS_ACCESS_KEY_ID: string;
-    public static AWS_SECRET_ACCESS_KEY: string;
-    public static AWS_REGION: string;
-    public static AWS_FUNCTION_NAME: string;
-    public static AWS_HANDLER: string;
-    public static AWS_ROLE: string;
-    public static AWS_MEMORY_SIZE: number;
-    public static AWS_TIMEOUT: number;
-    public static AWS_DESCRIPTION: string;
-    public static AWS_RUNTIME: string;
-    public static AWS_PUBLISH: boolean;
-    public static AWS_VPC_SUBNETS: string;
-    public static AWS_VPC_SECURITY_GROUPS: string;
+    /**
+     * Mockery friendly factory method
+     *
+     * @param lambdaFolder
+     * @returns {LambdaConfig}
+     */
+    public static create(): LambdaConfig {
+        let instance: LambdaConfig = new LambdaConfig();
+        return instance;
+    }
+
+    public EXCLUDE_GLOBS: string;
+
+    public AWS_ACCESS_KEY_ID: string;
+    public AWS_SECRET_ACCESS_KEY: string;
+    public AWS_REGION: string;
+    public AWS_FUNCTION_NAME: string;
+    public AWS_HANDLER: string;
+    public AWS_ROLE: string;
+    public AWS_MEMORY_SIZE: number;
+    public AWS_TIMEOUT: number;
+    public AWS_DESCRIPTION: string;
+    public AWS_RUNTIME: string;
+    public AWS_PUBLISH: boolean;
+    public AWS_VPC_SUBNETS: string;
+    public AWS_VPC_SECURITY_GROUPS: string;
 
     // Future use
-    public static PACKAGE_DIRECTORY: string;
-    public static PREBUILT_DIRECTORY: string;
-    public static AWS_FUNCTION_VERSION: string;
+    public PACKAGE_DIRECTORY: string;
+    public PREBUILT_DIRECTORY: string;
+    public AWS_FUNCTION_VERSION: string;
 
     // Looked up
-    public static AWS_ROLE_ARN: string;
+    public AWS_ROLE_ARN: string;
 
     public static defaultConfig(): any {
         return {
@@ -49,13 +61,13 @@ export class LambdaConfig {
         };
     }
 
-    public static initialize(): void {
+    public initialize(): void {
         let awsConfig: any = null;
 
         // If bst lambdaDeploy is missing we need to upgrade
 
         if (!Global.config().configuration.lambdaDeploy) {
-            Global.config().configuration.lambdaDeploy = this.defaultConfig().lambdaDeploy;
+            Global.config().configuration.lambdaDeploy = LambdaConfig.defaultConfig().lambdaDeploy;
             Global.config().save();
         }
 
@@ -76,47 +88,44 @@ export class LambdaConfig {
         // Process anv variables take precedence
 
         if (awsConfig) {
-            LambdaConfig.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || awsConfig.get("default.aws_access_key_id");
-            LambdaConfig.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || awsConfig.get("default.aws_secret_access_key");
-            LambdaConfig.AWS_REGION = process.env.AWS_REGION || awsConfig.get("default.region") || "us-east-1";
+            this.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID || awsConfig.get("default.aws_access_key_id");
+            this.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY || awsConfig.get("default.aws_secret_access_key");
+            this.AWS_REGION = process.env.AWS_REGION || awsConfig.get("default.region") || "us-east-1";
         } else {
-            LambdaConfig.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
-            LambdaConfig.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
-            LambdaConfig.AWS_REGION = process.env.AWS_REGION || "us-east-1";
+            this.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+            this.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+            this.AWS_REGION = process.env.AWS_REGION || "us-east-1";
         }
 
-        LambdaConfig.AWS_FUNCTION_NAME = bstConfig.functionName || "";
-        LambdaConfig.AWS_RUNTIME = bstConfig.runtime || "nodejs4.3";
-        LambdaConfig.AWS_ROLE = bstConfig.role;
-        LambdaConfig.AWS_HANDLER = bstConfig.hander || "index.handler";
-        LambdaConfig.AWS_DESCRIPTION = bstConfig.description || "My BST lambda skill";
+        this.AWS_FUNCTION_NAME = bstConfig.functionName || "";
+        this.AWS_RUNTIME = bstConfig.runtime || "nodejs4.3";
+        this.AWS_ROLE = bstConfig.role;
+        this.AWS_HANDLER = bstConfig.hander || "index.handler";
+        this.AWS_DESCRIPTION = bstConfig.description || "My BST lambda skill";
 
-        LambdaConfig.AWS_TIMEOUT = bstConfig.timeout || 5;
-        LambdaConfig.AWS_MEMORY_SIZE = bstConfig.memorySize || 128;
+        this.AWS_TIMEOUT = bstConfig.timeout || 5;
+        this.AWS_MEMORY_SIZE = bstConfig.memorySize || 128;
 
-        LambdaConfig.AWS_PUBLISH = true;
+        this.AWS_PUBLISH = true;
 
-        LambdaConfig.AWS_VPC_SUBNETS = bstConfig.vpcSubnets || "";
-        LambdaConfig.AWS_VPC_SECURITY_GROUPS = bstConfig.vpcSecurityGroups || "";
+        this.AWS_VPC_SUBNETS = bstConfig.vpcSubnets || "";
+        this.AWS_VPC_SECURITY_GROUPS = bstConfig.vpcSecurityGroups || "";
 
-        LambdaConfig.EXCLUDE_GLOBS = bstConfig.excludeGlobs || "";
+        this.EXCLUDE_GLOBS = bstConfig.excludeGlobs || "";
 
     }
 
-    public static validate(): void {
-        if (!LambdaConfig.AWS_ACCESS_KEY_ID) {
+    public validate(): void {
+        if (!this.AWS_ACCESS_KEY_ID) {
             throw "AWS access key is not defined!";
         }
 
-        if (!LambdaConfig.AWS_SECRET_ACCESS_KEY) {
+        if (!this.AWS_SECRET_ACCESS_KEY) {
             throw "AWS secret access key is not defined!";
         }
 
-        if (!LambdaConfig.AWS_REGION) {
+        if (!this.AWS_REGION) {
             throw "AWS region is not defined!";
         }
-    }
-
-    constructor() {
     }
 }
