@@ -103,6 +103,7 @@ export class AudioPlayer {
     }
 
     public once(audioPlayerRequest: string, listener: Function) {
+
         this._emitter.once(audioPlayerRequest, listener);
     }
 

@@ -5,6 +5,7 @@ import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 import * as sinon from "sinon";
+import {AudioItem} from "../../lib/alexa/audio-item";
 
 describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;
@@ -184,6 +185,17 @@ describe("BSTAlexa", function() {
                     done();
                 }
             });
+
+            it("On no match for audio event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.on("AudioPlayer.PlaybackNope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
+            });
         });
 
         describe("#once()", function() {
@@ -205,6 +217,17 @@ describe("BSTAlexa", function() {
                 alexa.intended("HelloIntent", null);
                 try {
                     alexa.once("nope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
+            });
+
+            it("On no match for audio event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.once("AudioPlayer.PlaybackNope", function () {
                         assert(false, "This should not be reached");
                     });
                 } catch (e) {
@@ -294,20 +317,26 @@ describe("BSTAlexa", function() {
             });
         });
 
-        describe("#audioItemFinished()", function() {
+        describe("#playbackFinished()", function() {
             it("Audio Item Finished", function (done) {
                let count = 0;
                 alexa.on("response", function (response: any, request: any) {
-                    console.log("RequestType: " + request.request.type);
                     count++;
-                    if (count === 3) {
+                    if (count === 5) {
                         assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
+                    }
+
+                    if (count === 6) {
+                        assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
                         done();
                     }
                 });
 
                 alexa.intended("PlayIntent", null, function () {
-                    alexa.playbackFinished();
+                    alexa.playbackFinished(function (audioItem: AudioItem) {
+                        assert.equal(audioItem.stream.token, "1");
+                        alexa.playbackFinished();
+                    });
                 });
             });
         });
