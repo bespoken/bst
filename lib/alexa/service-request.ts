@@ -23,7 +23,6 @@ export enum SessionEndedReason {
  */
 export class ServiceRequest {
     private requestJSON: any = null;
-    private timestamp: string;
     private requestType: string;
     public constructor (private context: AlexaContext) {}
 
@@ -112,15 +111,15 @@ export class ServiceRequest {
         const applicationID = this.context.applicationID();
         const requestID = ServiceRequest.requestID();
         const userID = this.context.userID();
-        this.timestamp = ServiceRequest.timestamp();
+        const timestamp = ServiceRequest.timestamp();
 
         // First create the header part of the request
-        let request: any = {
+        return {
             request: {
                 type: requestType,
                 locale: "en-US",
-                requestID: requestID,
-                timestamp: this.timestamp
+                requestId: requestID,
+                timestamp: timestamp
             },
             context: {
                 System: {
@@ -139,8 +138,6 @@ export class ServiceRequest {
             },
             version: "1.0"
         };
-
-        return request;
     }
 
     /**
@@ -152,7 +149,7 @@ export class ServiceRequest {
     }
 
     private static requestID() {
-        return "EdwRequestId." + uuid.v4();
+        return "amzn1.echo-api.request." + uuid.v4();
     }
 
     /**
@@ -215,6 +212,7 @@ export class ServiceRequest {
                 }
             }
         }
+
         return this.requestJSON;
     }
 }

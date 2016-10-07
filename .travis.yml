@@ -11,3 +11,7 @@ script: npm run coveralls
 branches:
   only:
     - "master"
+cache:
+  directories:
+  - node_modules
+  - typings

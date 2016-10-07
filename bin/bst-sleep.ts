@@ -11,7 +11,7 @@ program
     .description("Instructs bst to sleep using specified location")
     .action(function (location: string) {
         if (location === undefined || location.toLowerCase() !== "brooklyn") {
-            console.log("Not until Brooklyn");
+            console.error("Not until Brooklyn");
             console.log();
             console.log("Did you know bst can be pronounced different ways?");
             console.log("It can be pronounced Bee-Ess-Tee, Beast (preferred) or even Bee-Stee?");

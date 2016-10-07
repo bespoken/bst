@@ -1,7 +1,8 @@
 
 ## Overview
 
-The speak command generates intent requests for your service as if they were coming from Alexa itself.  
+The speak command generates intent requests for your service as if they were coming from Alexa itself.
+
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
 To start using it, you will need a local file that contains your Intent Schema and Sample Utterances.  
@@ -26,6 +27,7 @@ $ bst speak Hello World
 The speak command will return the full request and response of the interaction with your Skill service.  
 
 By default, the system will:
+
 * Use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
 * Use the service currently running via the `bst proxy` command
 
@@ -44,7 +46,7 @@ By default, we look for:
 
 Example:
 ```
-$ bst speak https://my.skill.com/skill/path Hello World -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt
+$ bst speak Hello World -i interactions/IntentSchema.json -s interactions/SampleUtterances.txt
 ```
 
 The format of these files is the same as they are entered in the Alexa Skill configuration.  

@@ -12,7 +12,7 @@ export class BSTAlexaEvents {
     public static AudioPlayerPlaybackFinished = "AudioPlayer.PlaybackFinished";
 
     /**
-     * Fired when an {@link AudioItem} has nearly finished. An opporuntity to queue the next track.
+     * Fired when an {@link AudioItem} has nearly finished. An opportunity to queue the next track.
      *
      * Payload is an {@link AudioItem}.
      */
@@ -172,13 +172,12 @@ export class BSTAlexa {
 
     /**
      * Emulates the specified intent coming from the Alexa device.
-     * @param intentName
-     * @param slots
+     * @param intentName The name of the intent - must exactly match the IntentSchema
+     * @param slots A key-value dictionary of slots in the form { "slotName": "slotValue" }
      * @param callback Returns any error, along the response and request JSON associated with this call
-     * @returns Itself
      */
-    public intended(intentName: string, slots?: any, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
-        this._alexa.intended(intentName, slots, function (error: string, response: any, request: any) {
+    public intended(intentName: string, slots?: {[id: string]: string}, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        this._alexa.intended(intentName, slots, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
                 callback(error, response, request);
             }
