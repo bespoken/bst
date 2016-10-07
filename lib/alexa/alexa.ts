@@ -1,6 +1,6 @@
 import {AudioPlayer} from "./audio-player";
 import {LoggingHelper} from "../core/logging-helper";
-import {ServiceRequest} from "./service-request";
+import {ServiceRequest, SessionEndedReason} from "./service-request";
 import {AlexaSession} from "./alexa-session";
 import request = require("request");
 import http = require("http");
@@ -41,27 +41,19 @@ export class Alexa {
             audioPlayer = new AudioPlayer(this);
         }
         // The context is like a session but can live beyond it (if it supports audio)
-        this._context = new AlexaContext(skillURL, audioPlayer, applicationID);
-
-        this._session = new AlexaSession(model);
+        this._context = new AlexaContext(skillURL, model, audioPlayer, applicationID);
+        this._context.newSession();
 
         return this;
     }
 
-    public session(): AlexaSession {
-        return this._session;
-    }
-
-    public endSession(): void {
-        this._session = null;
-    }
-
-    public activeSession(): boolean {
-        return this._session !== null;
-    }
-
     public context(): AlexaContext {
         return this._context;
+    }
+
+    // Helper method for getting interaction model
+    private interactionModel(): InteractionModel {
+        return this.context().interactionModel();
     }
 
     /**
@@ -71,16 +63,12 @@ export class Alexa {
      * @param callback
      */
     public spoken(utterance: string, callback?: AlexaResponseCallback): void {
-        if (!this.activeSession()) {
-            throw Error("Session must be started before calling spoken");
-        }
-
-        let intent = this._session.interactionModel.sampleUtterances.intentForUtterance(utterance);
+        let intent = this.interactionModel().sampleUtterances.intentForUtterance(utterance);
 
         // If we don't match anything, we use the default utterance - simple algorithm for this
         if (intent === null) {
-            let defaultUtterance = this._session.interactionModel.sampleUtterances.defaultUtterance();
-            intent = this._session.interactionModel.sampleUtterances.intentForUtterance(defaultUtterance);
+            let defaultUtterance = this.interactionModel().sampleUtterances.defaultUtterance();
+            intent = this.interactionModel().sampleUtterances.intentForUtterance(defaultUtterance);
             LoggingHelper.warn(Logger, "No intentName matches utterance: " + utterance + ". Using fallback utterance: " + intent.utterance);
         }
 
@@ -88,9 +76,23 @@ export class Alexa {
     }
 
     public launched(callback?: AlexaResponseCallback) {
-        let serviceRequest = new ServiceRequest(this._context, this._session);
+        let serviceRequest = new ServiceRequest(this._context);
         serviceRequest.launchRequest();
         this.callSkill(serviceRequest, callback);
+    }
+
+    public sessionEnded(sessionEndedReason: SessionEndedReason, errorData: any, callback?: AlexaResponseCallback) {
+        if (sessionEndedReason === SessionEndedReason.ERROR) {
+            LoggingHelper.error(Logger, "SessionEndedRequest:\n" + JSON.stringify(errorData, null, 2));
+        }
+
+        let serviceRequest = new ServiceRequest(this._context);
+        // Convert to enum value and send request
+        serviceRequest.sessionEndedRequest(sessionEndedReason, errorData);
+        this.callSkill(serviceRequest, callback);
+
+        // We do not wait for a reply - the session ends right away
+        this.context().endSession();
     }
 
     /**
@@ -112,9 +114,10 @@ export class Alexa {
                 this._context.audioPlayer().suspend();
             }
 
+            console.log("Intent: " + intentName + " Session: " + this._session);
             // Now we generate the service request
             //  The request is built based on the state from the previous step, so important that it is suspended first
-            let serviceRequest = new ServiceRequest(this._context, this._session).intentRequest(intentName);
+            let serviceRequest = new ServiceRequest(this._context).intentRequest(intentName);
             if (slots !== undefined && slots !== null) {
                 for (let slotName of Object.keys(slots)) {
                     serviceRequest.withSlot(slotName, slots[slotName]);
@@ -149,18 +152,26 @@ export class Alexa {
 
     private callSkillImpl(serviceRequest: ServiceRequest, callback: AlexaResponseCallback, done: Function) {
         let self = this;
+        // Call this at the last possible minute, because of state issues
+        //  What can happen is this gets queued, and then another request ends the session
+        //  So we want to wait until just before we send this to create the session
+        // This ensures it is in the proper state for the duration
+        if (serviceRequest.requiresSession() && !this.context().activeSession()) {
+            this.context().newSession();
+        }
+
         let requestJSON = serviceRequest.toJSON();
         LoggingHelper.info(Logger, "CALLING: " + requestJSON.request.type);
 
         let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
             // After a call, set the session to used (no longer new)
-            if (self.activeSession()) {
-                self.session().used();
+            if (self.context().activeSession()) {
+                self.context().session().used();
                 if (!error) {
                     if (body.response !== undefined && body.response.shouldEndSession) {
-                        self.endSession();
+                        self.context().endSession();
                     } else {
-                        self.session().updateAttributes(body.sessionAttributes);
+                        self.context().session().updateAttributes(body.sessionAttributes);
                     }
                 }
             }
@@ -186,7 +197,7 @@ export class Alexa {
         };
 
         this.post({
-            url: this._context.skillURL,
+            url: this.context().skillURL(),
             method: "POST",
             json: requestJSON,
         }, responseHandler);
@@ -203,6 +214,10 @@ export class Alexa {
 
     public on(event: AlexaEvent, callback: Function) {
         this._emitter.on(AlexaEvent[event], callback);
+    }
+
+    public once(event: AlexaEvent, callback: Function) {
+        this._emitter.once(AlexaEvent[event], callback);
     }
 
     public stop(onStop: () => void) {

@@ -113,7 +113,7 @@ export class LambdaServer {
             path = [process.cwd(), this.file].join("/");
         }
 
-        LoggingHelper.info(Logger, "Invoking Lambda: " + this.file);
+        LoggingHelper.debug(Logger, "Invoking Lambda: " + this.file);
         if (this.lambda === null || this.dirty) {
             this.lambda = NodeUtil.load(path);
             this.dirty = false;

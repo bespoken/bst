@@ -5,6 +5,7 @@ import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 import * as sinon from "sinon";
+import {AudioItem} from "../../lib/alexa/audio-item";
 
 describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;
@@ -100,14 +101,46 @@ describe("BSTAlexa", function() {
                     done();
                 });
             });
+
+            it("Speak non-grammar phrase", function (done) {
+                alexa.spoken("Dumb", function (error: any, response: any) {
+                    assert(response.output === undefined);
+                    assert(response.success);
+                    assert.equal(response.intent, "Test");
+                    done();
+                });
+            });
+
+            it("Speak with error", function (done) {
+                lambdaServer.stop(function () {
+                    lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 9000);
+                    lambdaServer.start();
+
+                    alexa.spoken("Have I Erred", function (error: any, response: any) {
+                        assert(error);
+                        assert.equal(error.message, "connect ECONNREFUSED 127.0.0.1:10000");
+                        assert(!response);
+                        done();
+                    });
+                });
+            });
         });
 
-        it("Speak non-grammar phrase", function (done) {
-            alexa.spoken("Dumb", function (error: any, response: any) {
-                assert(response.output === undefined);
-                assert(response.success);
-                assert.equal(response.intent, "Test");
-                done();
+        describe("#launched()", function() {
+            it("Launched", function (done) {
+                alexa.launched(function (error: any, response: any) {
+                    assert(response.launched);
+                    done();
+                });
+            });
+        });
+
+        describe("#ended()", function() {
+            it("Ended", function (done) {
+                alexa.sessionEnded("ERROR", function (error: any, response: any) {
+                    assert(response.ended);
+                    done();
+                });
             });
         });
 
@@ -132,10 +165,75 @@ describe("BSTAlexa", function() {
         describe("#on()", function() {
             it("On skill response received", function (done) {
                 alexa.intended("HelloIntent", null);
+                let count = 0;
                 alexa.on("response", function (response: any) {
+                    count++;
                     assert.equal(response.output, "Well, Hello To You");
+                    alexa.intended("HelloIntent");
+                    if (count === 2) {
+                        done();
+                    }
+                });
+            });
+
+            it("On no match for event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.on("nope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
+            });
+
+            it("On no match for audio event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.on("AudioPlayer.PlaybackNope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
+            });
+        });
+
+        describe("#once()", function() {
+            it("Once skill response received", function (done) {
+                alexa.intended("HelloIntent", null);
+                let count = 0;
+                alexa.once("response", function (response: any) {
+                    count++;
+                    if (count === 2) {
+                        assert(false, "This should not be reached");
+                    }
+                    assert.equal(response.output, "Well, Hello To You");
+                    alexa.intended("HelloIntent");
                     done();
                 });
+            });
+
+            it("On no match for event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.once("nope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
+            });
+
+            it("On no match for audio event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.once("AudioPlayer.PlaybackNope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
             });
         });
     });
@@ -163,30 +261,103 @@ describe("BSTAlexa", function() {
 
         describe("#on()", function() {
             it("Audio Item Started Event received", function (done) {
-                alexa.intended("PlayIntent", null, function () {
-                    alexa.audioItemFinished();
-                    alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
-                        assert.equal(audioItem.stream.token, "2");
-                        done();
-                    });
+                let i = 0;
+                alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
+                    i++;
+                    assert.equal(audioItem.stream.token, i + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
+
+                    alexa.playbackOffset(i * 1000);
+                    alexa.playbackFinished();
                 });
+
+                let j = 0;
+                alexa.on("AudioPlayer.PlaybackFinished", function (audioItem: any) {
+                    j++;
+                    assert.equal(audioItem.stream.token, j + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    if (j === 2) {
+                        done();
+                    }
+                });
+
+                alexa.intended("PlayIntent");
             });
         });
 
-        describe("#audioItemFinished()", function() {
+        describe("#once()", function() {
+            it("Audio Item Started Event received", function (done) {
+                let i = 0;
+                alexa.once("AudioPlayer.PlaybackStarted", function (audioItem: any) {
+                    i++;
+                    assert.equal(audioItem.stream.token, i + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
+
+                    alexa.playbackOffset(i * 1000);
+                    alexa.playbackFinished();
+                    alexa.once("AudioPlayer.PlaybackFinished", function () {
+                        done();
+                    });
+
+                    if (i > 1) {
+                        assert.fail();
+                    }
+                });
+
+                let j = 0;
+                alexa.once("AudioPlayer.PlaybackFinished", function (audioItem: any) {
+                    j++;
+                    assert.equal(audioItem.stream.token, j + "");
+                    assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    if (j > 1) {
+                        assert.fail();
+                    }
+                });
+
+                alexa.intended("PlayIntent");
+            });
+        });
+
+        describe("#playbackFinished()", function() {
             it("Audio Item Finished", function (done) {
                let count = 0;
                 alexa.on("response", function (response: any, request: any) {
-                    console.log("RequestType: " + request.request.type);
                     count++;
-                    if (count === 4) {
+                    if (count === 5) {
                         assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
+                    }
+
+                    if (count === 6) {
+                        assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
                         done();
                     }
                 });
 
                 alexa.intended("PlayIntent", null, function () {
-                    alexa.audioItemFinished();
+                    alexa.playbackFinished(function (audioItem: AudioItem) {
+                        assert.equal(audioItem.stream.token, "1");
+                        alexa.playbackFinished();
+                    });
+                });
+            });
+        });
+
+        describe("#playbackNearlyFinished()", function() {
+            it("Audio Item Nearly Finished", function (done) {
+                let count = 0;
+                alexa.on("response", function (response: any, request: any) {
+                    console.log("RequestType: " + request.request.type);
+                    count++;
+                    if (count === 3) {
+                        assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
+                        assert.equal(request.request.token, "1");
+                        assert.equal(request.request.offsetInMilliseconds, 100);
+                        done();
+                    }
+                });
+
+                alexa.intended("PlayIntent", null, function () {
+                    alexa.playbackNearlyFinished(100);
                 });
             });
         });

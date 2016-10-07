@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BSTAlexaEvents | Bespoken Tools</title>
+	<title>AudioItemStream | Bespoken Tools</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,10 +53,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="bstalexaevents.html">BSTAlexaEvents</a>
+					<a href="audioitemstream.html">AudioItemStream</a>
 				</li>
 			</ul>
-			<h1>Class BSTAlexaEvents</h1>
+			<h1>Class AudioItemStream</h1>
 		</div>
 	</div>
 </header>
@@ -67,7 +67,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">BSTAlexaEvents</span>
+						<span class="target">AudioItemStream</span>
 					</li>
 				</ul>
 			</section>
@@ -78,11 +78,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="bstalexaevents.html#audioplayerplaybackfinished" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Finished</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="bstalexaevents.html#audioplayerplaybacknearlyfinished" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Nearly<wbr>Finished</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="bstalexaevents.html#audioplayerplaybackstarted" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Started</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="bstalexaevents.html#audioplayerplaybackstopped" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Stopped</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="bstalexaevents.html#response" class="tsd-kind-icon">Response</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#expectedprevioustoken" class="tsd-kind-icon">expected<wbr>Previous<wbr>Token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#offsetinmilliseconds" class="tsd-kind-icon">offset<wbr>InMilliseconds</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#token" class="tsd-kind-icon">token</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#url" class="tsd-kind-icon">url</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,85 +89,45 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="audioplayerplaybackfinished" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Audio<wbr>Player<wbr>Playback<wbr>Finished</h3>
-					<div class="tsd-signature tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Finished<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;AudioPlayer.PlaybackFinished&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="expectedprevioustoken" class="tsd-anchor"></a>
+					<h3>expected<wbr>Previous<wbr>Token</h3>
+					<div class="tsd-signature tsd-kind-icon">expected<wbr>Previous<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/client/bst-alexa.ts#L12">client/bst-alexa.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/alexa/audio-item.ts#L28">alexa/audio-item.ts:28</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Fired when an <a href="audioitem.html">AudioItem</a> finishes playing. Means that it played to completion (as opposed to being stopped)</p>
-						</div>
-						<p>Payload is an <a href="audioitem.html">AudioItem</a>.</p>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="audioplayerplaybacknearlyfinished" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Audio<wbr>Player<wbr>Playback<wbr>Nearly<wbr>Finished</h3>
-					<div class="tsd-signature tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Nearly<wbr>Finished<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;AudioPlayer.PlaybackNearlyFinished&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="offsetinmilliseconds" class="tsd-anchor"></a>
+					<h3>offset<wbr>InMilliseconds</h3>
+					<div class="tsd-signature tsd-kind-icon">offset<wbr>InMilliseconds<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/client/bst-alexa.ts#L19">client/bst-alexa.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/alexa/audio-item.ts#L29">alexa/audio-item.ts:29</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Fired when an <a href="audioitem.html">AudioItem</a> has nearly finished. An opportunity to queue the next track.</p>
-						</div>
-						<p>Payload is an <a href="audioitem.html">AudioItem</a>.</p>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="audioplayerplaybackstarted" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Audio<wbr>Player<wbr>Playback<wbr>Started</h3>
-					<div class="tsd-signature tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Started<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;AudioPlayer.PlaybackStarted&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="token" class="tsd-anchor"></a>
+					<h3>token</h3>
+					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/client/bst-alexa.ts#L26">client/bst-alexa.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/alexa/audio-item.ts#L27">alexa/audio-item.ts:27</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Fired when an <a href="audioitem.html">AudioItem</a> begins playing.</p>
-						</div>
-						<p>Payload is an <a href="audioitem.html">AudioItem</a>.</p>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="audioplayerplaybackstopped" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Audio<wbr>Player<wbr>Playback<wbr>Stopped</h3>
-					<div class="tsd-signature tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Stopped<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;AudioPlayer.PlaybackStopped&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="url" class="tsd-anchor"></a>
+					<h3>url</h3>
+					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/client/bst-alexa.ts#L33">client/bst-alexa.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/alexa/audio-item.ts#L26">alexa/audio-item.ts:26</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Fired when an <a href="audioitem.html">AudioItem</a> has stopped playing.</p>
-						</div>
-						<p>Payload is an <a href="audioitem.html">AudioItem</a>.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="response" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Response</h3>
-					<div class="tsd-signature tsd-kind-icon">Response<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;response&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/36b0d53/lib/client/bst-alexa.ts#L40">client/bst-alexa.ts:40</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Fired when a response is received from the Alexa Skill.</p>
-						</div>
-						<p>Parameters are the raw response JSON and the request JSON that triggered it.</p>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -185,36 +144,33 @@
 					<li class=" tsd-kind-class">
 						<a href="audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="audioitemstream.html" class="tsd-kind-icon">Audio<wbr>Item<wbr>Stream</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="bstalexa.html" class="tsd-kind-icon">BSTAlexa</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
+						<a href="audioitemstream.html" class="tsd-kind-icon">Audio<wbr>Item<wbr>Stream</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="bstalexaevents.html#audioplayerplaybackfinished" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Finished</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="audioitemstream.html#expectedprevioustoken" class="tsd-kind-icon">expected<wbr>Previous<wbr>Token</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="bstalexaevents.html#audioplayerplaybacknearlyfinished" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Nearly<wbr>Finished</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="audioitemstream.html#offsetinmilliseconds" class="tsd-kind-icon">offset<wbr>InMilliseconds</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="bstalexaevents.html#audioplayerplaybackstarted" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Started</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="audioitemstream.html#token" class="tsd-kind-icon">token</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="bstalexaevents.html#audioplayerplaybackstopped" class="tsd-kind-icon">Audio<wbr>Player<wbr>Playback<wbr>Stopped</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="bstalexaevents.html#response" class="tsd-kind-icon">Response</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="audioitemstream.html#url" class="tsd-kind-icon">url</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="bstalexa.html" class="tsd-kind-icon">BSTAlexa</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
 					</li>

@@ -1,9 +1,23 @@
 import {InteractionModel} from "../alexa/interaction-model";
-import {Alexa, AlexaResponseCallback, AlexaEvent} from "../alexa/alexa";
+import {Alexa, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
-import {AudioPlayerState} from "../alexa/audio-player";
+import {SessionEndedReason} from "../alexa/service-request";
 
 export class BSTAlexaEvents {
+    /**
+     * Fired when an {@link AudioItem} finishes playing. Means that it played to completion (as opposed to being stopped)
+     *
+     * Payload is an {@link AudioItem}.
+     */
+    public static AudioPlayerPlaybackFinished = "AudioPlayer.PlaybackFinished";
+
+    /**
+     * Fired when an {@link AudioItem} has nearly finished. An opportunity to queue the next track.
+     *
+     * Payload is an {@link AudioItem}.
+     */
+    public static AudioPlayerPlaybackNearlyFinished = "AudioPlayer.PlaybackNearlyFinished";
+
     /**
      * Fired when an {@link AudioItem} begins playing.
      *
@@ -12,11 +26,11 @@ export class BSTAlexaEvents {
     public static AudioPlayerPlaybackStarted = "AudioPlayer.PlaybackStarted";
 
     /**
-     * Fired when an error occurs.
+     * Fired when an {@link AudioItem} has stopped playing.
      *
-     * Payload is the error.
+     * Payload is an {@link AudioItem}.
      */
-    public static Error = "error";
+    public static AudioPlayerPlaybackStopped = "AudioPlayer.PlaybackStopped";
 
     /**
      * Fired when a response is received from the Alexa Skill.
@@ -33,6 +47,11 @@ export class BSTAlexaEvents {
  *
  */
 export class BSTAlexa {
+    private static AudioPlayerEvents: Array<string> = [BSTAlexaEvents.AudioPlayerPlaybackFinished,
+        BSTAlexaEvents.AudioPlayerPlaybackNearlyFinished,
+        BSTAlexaEvents.AudioPlayerPlaybackStarted,
+        BSTAlexaEvents.AudioPlayerPlaybackStopped];
+
     public static DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
     public static DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";
     private _alexa: Alexa = null;
@@ -79,77 +98,182 @@ export class BSTAlexa {
     }
 
     /**
-     * Registers a callback for Skill responses
+     * Registers a callback for Skill events
+     *
+     * For AudioPlayer events, the payload is an {@link AudioItem}
+     *
      * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
      *  A second parameter with the body of the request as JSON is also passed
-     * For event type {@link BSTAlexaEvents.Error}, the payload is the error.
+     *
      * @param eventType {@link BSTAlexaEvents}
      * @param callback
      */
-    public on(eventType: string, callback: Function): void {
-        if (eventType === BSTAlexaEvents.AudioPlayerPlaybackStarted) {
-            if (this._alexa.context().audioPlayerEnabled()) {
-                this._alexa.context().audioPlayer().on(AudioPlayerState.PlaybackStarted, callback);
+    public on(eventType: string, callback: Function): BSTAlexa {
+        if (eventType.startsWith("AudioPlayer")) {
+            if (!BSTAlexa.validateAudioEventType(eventType)) {
+                throw Error("No event type: " + eventType + " is defined");
             }
-        } else if (eventType === BSTAlexaEvents.Error) {
-            this._alexa.on(AlexaEvent.SkillError, callback);
+
+            if (this._alexa.context().audioPlayerEnabled()) {
+                this._alexa.context().audioPlayer().on(eventType, callback);
+            }
         } else if (eventType === BSTAlexaEvents.Response) {
             this._alexa.on(AlexaEvent.SkillResponse, callback);
         } else {
             throw Error("No event type: " + eventType + " is defined");
         }
+
+        return this;
+    }
+
+    /**
+     * Registers a one-time callback for Skill events
+     *
+     * For AudioPlayer events, the payload is an {@link AudioItem}
+     *
+     * For event type {@link BSTAlexaEvents.Response}, the payload is the response body as JSON
+     *  A second parameter with the body of the request as JSON is also passed
+     *
+     * @param eventType {@link BSTAlexaEvents}
+     * @param callback
+     */
+    public once(eventType: string, callback: Function): BSTAlexa {
+        if (eventType.startsWith("AudioPlayer")) {
+            if (!BSTAlexa.validateAudioEventType(eventType)) {
+                throw Error("No event type: " + eventType + " is defined");
+            }
+
+            if (this._alexa.context().audioPlayerEnabled()) {
+                this._alexa.context().audioPlayer().once(eventType, callback);
+            }
+        } else if (eventType === BSTAlexaEvents.Response) {
+            this._alexa.once(AlexaEvent.SkillResponse, callback);
+        } else {
+            throw Error("No event type: " + eventType + " is defined");
+        }
+
+        return this;
     }
 
     /**
      * Emulates the specified phrase being said to an Alexa device
      * @param phrase
-     * @param callback
+     * @param callback Returns any error, along the response and request JSON associated with this call
+     * @returns Itself
      */
-    public spoken(phrase: string, callback?: AlexaResponseCallback): void {
-        this._alexa.spoken(phrase, function (request: any, response: any, error?: string) {
+    public spoken(phrase: string, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        this._alexa.spoken(phrase, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
-                callback(request, response, error);
+                callback(error, response, request);
             }
         });
+        return this;
     }
 
     /**
      * Emulates the specified intent coming from the Alexa device.
      * @param intentName The name of the intent - must exactly match the IntentSchema
      * @param slots A key-value dictionary of slots in the form { "slotName": "slotValue" }
-     * @param callback
+     * @param callback Returns any error, along the response and request JSON associated with this call
      */
-    public intended(intentName: string, slots?: {[id: string]: string}, callback?: AlexaResponseCallback): void {
-        this._alexa.intended(intentName, slots, function (request: any, response: any, error?: string) {
+    public intended(intentName: string, slots?: {[id: string]: string}, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        this._alexa.intended(intentName, slots, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
-                callback(request, response, error);
+                callback(error, response, request);
             }
         });
+        return this;
+    }
+
+    /**
+     * Emulates the specified skill being launched
+     * @param callback
+     * @returns Itself
+     */
+    public launched(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        this._alexa.launched(callback);
+        return this;
+    }
+
+    /**
+     * Ends the session - requires a reason
+     * @param sessionEndedReason Can be ERROR, EXCEEDED_MAX_REPROMPTS or USER_INITIATED
+     * @param callback
+     * @returns Itself
+     */
+    public sessionEnded(sessionEndedReason: string, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        // Convert to enum value
+        const sessionEndedEnum = (<any> SessionEndedReason)[sessionEndedReason];
+        this._alexa.sessionEnded(sessionEndedEnum, null, callback);
+        return this;
     }
 
     /**
      * Emulates the current track playing to completion.
+     *
      * The Alexa Emulator will automatically play the next queued track
      *  as well as signal to your skill the current track has completed
-     *  @returns Returns false if not audio item is currently playing
+     *
+     *  @param onceFinished - Convenience method that automatically adds a "once" listener on the {@link BSTAlexaEvents.AudioPlayerPlaybackFinished}
+     *  @returns Returns Itself
      */
-    public audioItemFinished(): boolean {
-        let playing = false;
+    public playbackFinished(onceFinished?: Function): BSTAlexa {
+        if (onceFinished !== undefined) {
+            this.once(BSTAlexaEvents.AudioPlayerPlaybackFinished, onceFinished);
+        }
+
         if (this._alexa.context().audioPlayerEnabled()) {
             if (this._alexa.context().audioPlayer().isPlaying()) {
-                playing = true;
-                this._alexa.context().audioPlayer().fastForward();
+                this._alexa.context().audioPlayer().playbackFinished();
             }
         }
-        return playing;
+        return this;
+    }
+
+    /**
+     * Triggers a AudioPlayer.PlaybackNearlyFinished request from Alexa
+     *
+     * Updates the track playback offset by the specified amount
+     * @param offsetInMilliseconds
+     * @returns {BSTAlexa}
+     */
+    public playbackNearlyFinished(offsetInMilliseconds?: number): BSTAlexa {
+        if (offsetInMilliseconds !== undefined) {
+            this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+        }
+        this._alexa.context().audioPlayer().playbackNearlyFinished();
+        return this;
+    }
+
+    /**
+     * Emulates the track being played back
+     *
+     * Updates the offset time on the track
+     * @param offsetInMilliseconds
+     * @returns {BSTAlexa}
+     */
+    public playbackOffset(offsetInMilliseconds: number): BSTAlexa {
+        this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+        return this;
     }
 
     /**
      * Turns off the Alexa emulator.
      * Useful for running inside of tests to ensure all cleanup has completed before next test starts.
-     * @param onShutdown
+     * @param onStop
      */
     public stop(onStop: () => void) {
         this._alexa.stop(onStop);
+    }
+
+    private static validateAudioEventType(eventType: string): boolean {
+        let match = false;
+        for (let e of BSTAlexa.AudioPlayerEvents) {
+            if (eventType === e) {
+                match = true;
+                break;
+            }
+        }
+        return match;
     }
 }

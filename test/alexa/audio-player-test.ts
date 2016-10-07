@@ -18,7 +18,7 @@ describe("AudioPlayer", function() {
 
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.type, "LaunchRequest");
-                assert.equal(alexa.call(0).context.AudioPlayer.playerActivity, "STOPPED");
+                assert.equal(alexa.call(0).context.AudioPlayer.playerActivity, "IDLE");
                 done();
             });
         });
@@ -39,13 +39,35 @@ describe("AudioPlayer", function() {
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
-            audioPlayer.finish();
+            audioPlayer.playbackOffset(100);
+            audioPlayer.playbackNearlyFinished();
+            audioPlayer.playbackFinished();
             alexa.intended("AMAZON.LoopOffIntent", null);
 
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
                 assert.equal(alexa.call(3).context.AudioPlayer.playerActivity, "FINISHED");
+                done();
+            });
+        });
+
+        it("Enqueues a bad track, no existing track", function(done) {
+            let item = new AudioItem({stream: {
+                url: "http://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "0",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+            let alexa = new MockAlexa(["SessionEndedRequest"], [null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.reason, "ERROR");
+                assert.equal(alexa.call(0).request.error.type, "INVALID_RESPONSE");
+                assert.equal(alexa.call(0).request.error.message, "The URL specified in the Play directive must be HTTPS");
                 done();
             });
         });
@@ -58,15 +80,22 @@ describe("AudioPlayer", function() {
                 offsetInMilliseconds: 0
             }});
             let alexa = new MockAlexa(
-                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished", "AudioPlayer.PlaybackStarted",  "AudioPlayer.PlaybackNearlyFinished"],
+                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackFinished", "AudioPlayer.PlaybackStarted"],
                 [null, directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
-            audioPlayer.fastForward();
+            audioPlayer.playbackOffset(100);
+            audioPlayer.playbackNearlyFinished();
+            audioPlayer.playbackOffset(1000);
+            audioPlayer.playbackFinished();
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
+                assert.equal(alexa.call(1).request.offsetInMilliseconds, 100);
+                assert.equal(alexa.call(1).request.token, "0");
+                assert.equal(alexa.call(2).request.offsetInMilliseconds, 1000);
+                assert.equal(alexa.call(2).request.token, "0");
                 done();
             });
         });
@@ -79,15 +108,38 @@ describe("AudioPlayer", function() {
                 offsetInMilliseconds: 0
             }});
             let alexa = new MockAlexa(
-                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackStopped", "AudioPlayer.PlaybackStarted",  "AudioPlayer.PlaybackNearlyFinished"],
+                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished", "AudioPlayer.PlaybackStopped", "AudioPlayer.PlaybackStarted"],
                 [null, directiveResponse("AudioPlayer.Play", "REPLACE_ALL", "1"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.playbackNearlyFinished();
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
                 assert.equal(alexa.call(3).request.token, "1");
+                done();
+            });
+        });
+
+        it("Plays a track, stops", function(done) {
+            let item = new AudioItem({stream: {
+                url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "0",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+
+            let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted",
+                "AudioPlayer.PlaybackStopped"], [directiveResponse("AudioPlayer.Stop", null, "0"), null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.playbackOffset(100);
+
+            alexa.verify(function () {
+                assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
+                assert.equal(alexa.call(0).request.token, "0");
                 done();
             });
         });
@@ -100,7 +152,7 @@ describe("AudioPlayer", function() {
                 offsetInMilliseconds: 0
             }});
             let alexa = new MockAlexa(
-                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackNearlyFinished"],
+                ["AudioPlayer.PlaybackStarted"],
                 [null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
@@ -123,16 +175,17 @@ describe("AudioPlayer", function() {
                 ["AudioPlayer.PlaybackStarted",
                     "AudioPlayer.PlaybackNearlyFinished",
                     "AudioPlayer.PlaybackFinished",
-                    "AudioPlayer.PlaybackStarted",
-                    "AudioPlayer.PlaybackNearlyFinished"],
+                    "AudioPlayer.PlaybackStarted"],
                 [directiveResponse("AudioPlayer.Play", "ENQUEUE", "1"), directiveResponse("AudioPlayer.Play", "REPLACE_ENQUEUED", "2"), null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
+            audioPlayer.playbackNearlyFinished();
             let firstResponse = true;
             alexa.on(AlexaEvent.SkillResponse, function(skillResponseJSON: any, skillRequestJSON: any) {
                 if (firstResponse && skillRequestJSON.request.type === "AudioPlayer.PlaybackNearlyFinished") {
-                    audioPlayer.fastForward();
+                    audioPlayer.playbackOffset(3000);
+                    audioPlayer.playbackFinished();
                     firstResponse = false;
                 }
             });
@@ -140,7 +193,34 @@ describe("AudioPlayer", function() {
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
+                assert.equal(alexa.call(2).request.offsetInMilliseconds, 3000);
                 assert.equal(alexa.call(3).request.token, "2");
+                assert.equal(alexa.call(3).request.offsetInMilliseconds, 0);
+                done();
+            });
+        });
+
+        it("Finishes playing, then sends an intent", function(done) {
+            let item = new AudioItem({stream: {
+                url: "https://s3.amazonaws.com/xapp-alexa/JPKUnitTest-JPKUnitTest-1645-TAKEMETOWALMART-TRAILING.mp3",
+                token: "10",
+                expectedPreviousToken: null,
+                offsetInMilliseconds: 0
+            }});
+            let alexa = new MockAlexa(
+                ["AudioPlayer.PlaybackStarted", "AudioPlayer.PlaybackFinished", "IntentRequest"],
+                [null, null]);
+            let audioPlayer = new AudioPlayer(alexa);
+            alexa["_context"]["_audioPlayer"] = audioPlayer;
+            audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorReplaceAll);
+            audioPlayer.playbackOffset(100);
+            audioPlayer.playbackFinished();
+            alexa.intended("AMAZON.HelpIntent");
+
+            alexa.verify(function () {
+                // Want to make sure that the finished state is passed correctly
+                assert.equal(alexa.call(2).context.AudioPlayer.playerActivity, "FINISHED");
+                assert.equal(alexa.call(2).context.AudioPlayer.offsetInMilliseconds, 100);
                 done();
             });
         });
@@ -158,25 +238,27 @@ describe("AudioPlayer", function() {
                     "AudioPlayer.PlaybackNearlyFinished",
                     "AudioPlayer.PlaybackStopped",
                     "IntentRequest",
-                    "AudioPlayer.PlaybackStarted",
-                    "AudioPlayer.PlaybackNearlyFinished"],
+                    "AudioPlayer.PlaybackStarted"],
                 [null, null, null, null]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
-            setTimeout(function () {
-                alexa.intended("AMAZON.LoopOffIntent", null);
-            }, 5);
+            audioPlayer.playbackOffset(1000);
+            audioPlayer.playbackNearlyFinished();
+            alexa.intended("AMAZON.LoopOffIntent", null);
 
             alexa.verify(function () {
                 assert.equal(alexa.call(0).request.offsetInMilliseconds, 0);
                 assert.equal(alexa.call(0).request.token, "0");
-                let stopOffset = alexa.call(2).request.offsetInMilliseconds;
+                assert(!alexa.call(0).session);
+                assert.equal(alexa.call(2).request.offsetInMilliseconds, 1000);
                 assert.equal(alexa.call(3).context.AudioPlayer.token, "0");
-                assert.equal(alexa.call(3).context.AudioPlayer.offsetInMilliseconds, stopOffset);
+                assert.equal(alexa.call(3).context.AudioPlayer.offsetInMilliseconds, 1000);
                 assert.equal(alexa.call(3).context.AudioPlayer.playerActivity, "STOPPED");
+                assert(alexa.call(3).session);
+                assert.equal(alexa.call(3).session.new, true);
                 assert.equal(alexa.call(4).request.token, "0");
-                assert.equal(alexa.call(4).request.offsetInMilliseconds, stopOffset);
+                assert.equal(alexa.call(4).request.offsetInMilliseconds, 1000);
                 done();
             });
         });
@@ -189,10 +271,9 @@ describe("AudioPlayer", function() {
                 offsetInMilliseconds: 0
             }});
             let alexa = new MockAlexa(["AudioPlayer.PlaybackStarted",
-                    "AudioPlayer.PlaybackNearlyFinished",
                     "AudioPlayer.PlaybackStopped",
                     "IntentRequest"],
-                [null, null, null, directiveResponse("AudioPlayer.Stop", null, "0")]);
+                [null, null, directiveResponse("AudioPlayer.Stop", null, "0")]);
             let audioPlayer = new AudioPlayer(alexa);
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
@@ -234,7 +315,8 @@ class MockAlexa extends Alexa {
 
     public constructor(private expects?: Array<string>, private responses?: Array<any>) {
         super();
-        this["_context"] = new AlexaContext("http://dummy.com", null);
+        this["_context"] = new AlexaContext("http://dummy.com", null, null);
+        this.context().newSession();
     }
 
     public call(index: number) {
