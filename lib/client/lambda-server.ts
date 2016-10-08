@@ -71,7 +71,7 @@ export class LambdaServer {
                 if (request.method === "GET") {
                     return response.end("ALIVE");
                 } else {
-                    self.invoke(requestBody, response);
+                    self.invoke(request, requestBody, response);
                 }
             });
         });
@@ -107,7 +107,7 @@ export class LambdaServer {
         });
     }
 
-    private invoke (body: string, response: ServerResponse): void {
+    private invoke (request: IncomingMessage, body: string, response: ServerResponse): void {
         let path: string = this.file;
         if (!path.startsWith("/")) {
             path = [process.cwd(), this.file].join("/");
@@ -120,38 +120,54 @@ export class LambdaServer {
         }
 
         // let lambda = System.import("./" + file);
-        let context: LambdaContext = new LambdaContext(response, this.verbose);
+        const context: LambdaContext = new LambdaContext(request, response, this.verbose);
         try {
-            let bodyJSON: any = JSON.parse(body);
+            const bodyJSON: any = JSON.parse(body);
             if (this.verbose) {
                 console.log("Request:");
                 console.log(JSON.stringify(bodyJSON, null, 2));
             }
-            this.lambda.handler(bodyJSON, context);
+            this.lambda.handler(bodyJSON, context, function(error: Error, result: any) {
+                context.done(error, result);
+            });
         } catch (e) {
-            context.fail("Exception: " + e.message);
+            context.fail(e);
         }
     }
 }
 
 class LambdaContext {
+    public awsRequestId = "N/A";
+    public callbackWaitsForEmptyEventLoop = true;
+    public functionName = "BST.LambdaServer";
+    public functionVersion = "N/A";
+    public memoryLimitInMB = -1;
+    public invokedFunctionArn = "N/A";
+    public logGroupName = "N/A";
+    public logStreamName: string = null;
+    public identity: any = null;
+    public clientContext: any = null;
 
-    public constructor(public response: ServerResponse, public verbose: boolean) {}
+    public constructor(public request: IncomingMessage, public response: ServerResponse, public verbose: boolean) {}
 
-    public fail(body: any) {
-        this.done(false, body);
+    public fail(error: Error) {
+        this.done(error, null);
     }
 
     public succeed(body: any) {
-        this.done(true, body);
+        this.done(null, body);
     }
 
-    private done(success: boolean, body: any) {
+    public getRemainingTimeMillis() {
+        return -1;
+    }
+
+    public done(error: Error, body: any) {
         let statusCode: number = 200;
         let contentType: string = "application/json";
         let bodyString: string = null;
 
-        if (success) {
+        if (error === null) {
             bodyString = JSON.stringify(body);
             if (this.verbose) {
                 console.log("Response:");
@@ -160,18 +176,13 @@ class LambdaContext {
         } else {
             statusCode = 500;
             contentType = "text/plain";
-            bodyString = body.toString();
+            bodyString = error.message;
         }
 
         this.response.writeHead(statusCode, {
            "Content-Type": contentType
         });
 
-        if (body) {
-            this.response.end(new Buffer(bodyString));
-        } else {
-            this.response.end();
-        }
-
+        this.response.end(new Buffer(bodyString));
     }
 }

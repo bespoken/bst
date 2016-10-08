@@ -4,7 +4,7 @@ var ExampleLambda = function () {
 
 ExampleLambda.execute = function (event, context) {
     if (event.doFailure !== undefined && event.doFailure === true) {
-        context.fail("Failure!");
+        context.fail(new Error("Failure!"));
     } else {
         var responseData = {"success": true}
         context.succeed(responseData);
