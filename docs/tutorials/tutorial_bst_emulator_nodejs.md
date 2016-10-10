@@ -1,6 +1,6 @@
-This tutorial shows you how to get started using our BST Alexa emulator with Node and Javascript.  
+This tutorial shows you how to get started using our BST Alexa emulator with Node.js and Javascript.  
 
-The purpose of the emulator is to allow unit- and functional-testing of Alexa Skills, 
+The purpose of the emulator is to enable unit- and functional-testing of Alexa Skills, 
 allowing one to:
 
 * Emulate the complex behavior of the Alexa service, without an Alexa device or any manual interaction
@@ -11,7 +11,7 @@ allowing one to:
 Additionally, though this example focuses on the AudioPlayer interface, 
 the BSTAlexa emulator can be used for testing regular Alexa skills as well.
 
-## Prerequisites
+## Tutorial Prerequisites
 
 * Mocha Test Framework
     * https://mochajs.org/#getting-started
@@ -41,8 +41,6 @@ At the top of your test, include:
 var bst = require('bespoken-tools');
 ```
 
-Easy!
-
 ## Setup and Teardown
 
 ```
@@ -55,12 +53,15 @@ beforeEach(function (done) {
                              '../speechAssets/IntentSchema.json',
                              '../speechAssets/Utterances.txt');
     server.start(function() {
-        alexa.start(function () {
-            done();
+        alexa.start(function (error) {
+            if (error !== undefined) {
+                console.error("Error: " + error);
+            } else {
+                done();
+            }
         });
     });
 });
-
 
 afterEach(function(done) {
     alexa.stop(function () {
@@ -122,7 +123,7 @@ The goal is to test until we feel confident in the behavior of our skill, and th
 
 It is a straightforward exercise to add more property checks on the payload to further confirm behavior.
 
-## A Slightly More Complex Test
+## A More Complex Test
 
 ```
 it('Plays The First Podcast To Completion And Goes To Next', function (done) {
@@ -133,7 +134,8 @@ it('Plays The First Podcast To Completion And Goes To Next', function (done) {
             done();
         });
 
-        alexa.audioItemFinished();
+        alexa.playbackNearlyFinished();
+        alexa.playbackFinished();
     });
 });
 ```
@@ -141,11 +143,27 @@ it('Plays The First Podcast To Completion And Goes To Next', function (done) {
 This test uses the [BSTAlexa#audioItemFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#audioitemfinished) 
 to emulate the audio playing to completion on the device.  
 
-The Alexa service will send an 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to trigger the playback the next track in the queue.  
+The Alexa service first sends a 'AudioPlayer.PlaybackNearlyFinished' request to the skill. 
+This request is frequently used by skills to enqueue the next AudioItem in the queue for playback on the device.
+
+The Alexa service then sends a 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to then trigger the playback of the next track in the queue.  
 
 We also use the [BSTAlexa#on() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
+In this case, we want to confirm that the next track was queued correctly and has begun playing.
 
-The events that can be listened for are listed [here](../api/classes/bstalexaevents.html). These events are intended to directly correspond to what happens with the internal state of the real Alexa service.
+The events that can be listened for are listed [here](../api/classes/bstalexaevents.html).
+
+## Going Even Further
+Our sample project, [Bespoken Streamer](https://github.com/bespoken/streamer/), provides even more examples.
+
+The [tests for it](https://github.com/bespoken/streamer/blob/master/test/streamerTest.js) are meant to exercise all the different actions
+and states that the skill allows for. 
+
+It gets quite involved, and the complexity really illustrates the need for such a tool: without it, manually working through each of these scenarios initially is daunting.
+
+And ensuring all the scenarios still work when changes are made to the code is even more challenging. 
+
+It's essential to have a unit-test tool such as this in one's toolbelt to avoid being plagued with quality issues.
 
 ## Parting Words
 We are looking to continuously enhance the emulator. Right now, it supports:
