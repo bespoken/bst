@@ -32,6 +32,11 @@ export class LambdaServer {
      */
     public constructor(private file: string, private port: number, private verbose?: boolean) {}
 
+    /**
+     * Starts the LambdaServer listening on the port specified in the constructor.
+     *
+     * @param callback Called once the server has started successfully
+     */
     public start (callback?: () => void): void {
         let self = this;
 
