@@ -107,6 +107,7 @@ export class BSTAlexa {
      *
      * @param eventType {@link BSTAlexaEvents}
      * @param callback
+     * @return Itself
      */
     public on(eventType: string, callback: Function): BSTAlexa {
         if (eventType.startsWith("AudioPlayer")) {
@@ -136,6 +137,7 @@ export class BSTAlexa {
      *
      * @param eventType {@link BSTAlexaEvents}
      * @param callback
+     * @returns Itself
      */
     public once(eventType: string, callback: Function): BSTAlexa {
         if (eventType.startsWith("AudioPlayer")) {
@@ -175,6 +177,7 @@ export class BSTAlexa {
      * @param intentName The name of the intent - must exactly match the IntentSchema
      * @param slots A key-value dictionary of slots in the form { "slotName": "slotValue" }
      * @param callback Returns any error, along the response and request JSON associated with this call
+     * @returns Itself
      */
     public intended(intentName: string, slots?: {[id: string]: string}, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
         this._alexa.intended(intentName, slots, function (error: any, response: any, request: any) {
@@ -215,7 +218,7 @@ export class BSTAlexa {
      *  as well as signal to your skill the current track has completed
      *
      *  @param onceFinished - Convenience method that automatically adds a "once" listener on the {@link BSTAlexaEvents.AudioPlayerPlaybackFinished}
-     *  @returns Returns Itself
+     *  @returns Itself
      */
     public playbackFinished(onceFinished?: Function): BSTAlexa {
         if (onceFinished !== undefined) {
@@ -235,7 +238,7 @@ export class BSTAlexa {
      *
      * Updates the track playback offset by the specified amount
      * @param offsetInMilliseconds
-     * @returns {BSTAlexa}
+     * @returns Itself
      */
     public playbackNearlyFinished(offsetInMilliseconds?: number): BSTAlexa {
         if (offsetInMilliseconds !== undefined) {
@@ -250,7 +253,7 @@ export class BSTAlexa {
      *
      * Updates the offset time on the track
      * @param offsetInMilliseconds
-     * @returns {BSTAlexa}
+     * @returns Itself
      */
     public playbackOffset(offsetInMilliseconds: number): BSTAlexa {
         this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);

@@ -17,7 +17,7 @@ the BSTAlexa emulator can be used for testing regular Alexa skills as well.
     * https://mochajs.org/#getting-started
     * `$ npm install mocha --save-dev`
 * A Node.js, Lambda-based Alexa skill 
-    * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/skill-sample-nodejs-audio-player)
+    * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/streamer).
     * Derived from excellent streaming skill example provided by Amazon.
     * The test used in this tutorial is [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/js/test/skillTest.js).
 * Bespoken Tools added to your project's package.json
@@ -93,7 +93,7 @@ The afterEach block ensures the LambdaServer and BSTAlexa emulator are shutdown 
 ```
 it('Plays The First Podcast and Then Goes To Next', function (done) {
 
-    alexa.spoken('Play The Podcast', function(error, payload) {
+    alexa.spoken('Play', function(error, payload) {
         // Confirms the correct directive is returned when the Intent is spoken
         assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
         
@@ -140,7 +140,7 @@ it('Plays The First Podcast To Completion And Goes To Next', function (done) {
 });
 ```
 
-This test uses the [BSTAlexa#audioItemFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#audioitemfinished) 
+This test uses the [BSTAlexa#playbackFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbackfinished) 
 to emulate the audio playing to completion on the device.  
 
 The Alexa service first sends a 'AudioPlayer.PlaybackNearlyFinished' request to the skill. 
