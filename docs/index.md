@@ -15,11 +15,10 @@ The current version provides four commands - **proxy http**, **proxy lambda**, *
 The proxies make it super-easy to develop and debug your Alexa skill on your local machine.
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
 
-The proxies can work either with a service listening on a port (**proxy http**),  
-or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
+The proxies can work either with a service listening on a port (**proxy http**), or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
 
-The **speak** and **intend** commands simulate the Alexa service by sending any utterance or intent from the command-line to your service.  
-The request sent to your service is a properly formatted intent request.  
+The **speak** and **intend** commands simulate the Alexa service by sending any utterance or intent from the command-line to your service. 
+The request sent to your service is a properly formatted intent request. 
 It then prints out the JSON payload returned by your service.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
@@ -66,7 +65,7 @@ The API reference can be found [here](http://docs.bespoken.tools/en/latest/api).
 
 ## Tutorials
 
-* [Nodejs Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
+* [Node.js Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
 * [Java Server Tutorial](/tutorials/tutorial_local_server_java)
 * [Python & Flask-Ask](/tutorials/tutorial_flask_ask_python)
 * [Alexa Emulator Tutorial - Node.js](/tutorials/tutorial_bst_emulator_nodejs)

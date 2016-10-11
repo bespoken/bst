@@ -2,19 +2,18 @@ var ExampleLambda = function () {
 
 };
 
-ExampleLambda.execute = function (event, context) {
+ExampleLambda.execute = function (event, context, callback) {
     if (event.doFailure !== undefined && event.doFailure === true) {
-        context.fail(new Error("Failure!"));
+        callback(new Error("Failed!"));
     } else {
         var responseData = {"success": true}
-        context.succeed(responseData);
+        callback(null, responseData);
     }
-
 }
 
 // Create the handler that responds to the Alexa Request.
-exports.handler = function (event, context) {
+exports.handler = function (event, context, callback) {
     // Create an instance of the HelloWorld skill.
     var lambda = new ExampleLambda();
-    ExampleLambda.execute(event, context);
+    ExampleLambda.execute(event, context, callback);
 };

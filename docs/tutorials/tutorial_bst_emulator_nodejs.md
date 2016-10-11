@@ -1,6 +1,6 @@
-This tutorial shows you how to get started using our BST Alexa emulator with Node and Javascript.  
+This tutorial shows you how to get started using our BST Alexa emulator with Node.js and Javascript.  
 
-The purpose of the emulator is to allow unit- and functional-testing of Alexa Skills, 
+The purpose of the emulator is to enable unit- and functional-testing of Alexa Skills, 
 allowing one to:
 
 * Emulate the complex behavior of the Alexa service, without an Alexa device or any manual interaction
@@ -11,15 +11,15 @@ allowing one to:
 Additionally, though this example focuses on the AudioPlayer interface, 
 the BSTAlexa emulator can be used for testing regular Alexa skills as well.
 
-## Prerequisites
+## Tutorial Prerequisites
 
 * Mocha Test Framework
     * https://mochajs.org/#getting-started
     * `$ npm install mocha --save-dev`
 * A Node.js, Lambda-based Alexa skill 
-    * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/skill-sample-nodejs-audio-player)
+    * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/streamer).
     * Derived from excellent streaming skill example provided by Amazon.
-    * The test used in this tutorial is [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/js/test/skillTest.js).
+    * The test used in this tutorial is [found here](https://github.com/bespoken/streamer/blob/master/test/streamerTest.js).
 * Bespoken Tools added to your project's package.json
     * `$ npm install bespoken-tools --save-dev`
     * For this example, we make it a "dev" dependency as we will be using it only for testing.
@@ -41,8 +41,6 @@ At the top of your test, include:
 var bst = require('bespoken-tools');
 ```
 
-Easy!
-
 ## Setup and Teardown
 
 ```
@@ -55,12 +53,15 @@ beforeEach(function (done) {
                              '../speechAssets/IntentSchema.json',
                              '../speechAssets/Utterances.txt');
     server.start(function() {
-        alexa.start(function () {
-            done();
+        alexa.start(function (error) {
+            if (error !== undefined) {
+                console.error("Error: " + error);
+            } else {
+                done();
+            }
         });
     });
 });
-
 
 afterEach(function(done) {
     alexa.stop(function () {
@@ -90,20 +91,18 @@ The afterEach block ensures the LambdaServer and BSTAlexa emulator are shutdown 
 ## First Simple Test
 
 ```
-it('Plays The First Podcast and Then Goes To Next', function (done) {
+it('Launches and then plays first', function (done) {
+    // Launch the skill via sending it a LaunchRequest
+    alexa.launched(function (error, payload) {
+        // Check that the introduction is play as outputSpeech
+        assert.equal(payload.response.outputSpeech.ssml, '<speak> <audio src="https://s3.amazonaws.com/bespoken/streaming/bespokenspodcast-INTRODUCTION.mp3" />You can say play, scan titles, or about the podcast </speak>');
 
-    alexa.spoken('Play The Podcast', function(error, payload) {
-        // Confirms the correct directive is returned when the Intent is spoken
-        assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
-        
-        // Ensures the track with correct token is returned
-        assert.equal(payload.response.directives[0].audioItem.stream.token, '0');
-
-        alexa.intended('AMAZON.NextIntent', null, function (error, payload) {
-            // Ensures the track with next token is returned    
+        // Emulate the user saying 'Play'
+        alexa.spoken('Play', function (error, payload) {
+            // Ensure the correct directive and audioItem is returned
             assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
-            assert.equal(payload.response.directives[0].playBehavior, 'REPLACE_ALL');
-            assert.equal(payload.response.directives[0].audioItem.stream.token, '1');
+            assert.equal(payload.response.directives[0].audioItem.stream.token, '0');
+            assert.equal(payload.response.directives[0].audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP103.mp3?dest-id=432208');
             done();
         });
     });
@@ -112,40 +111,73 @@ it('Plays The First Podcast and Then Goes To Next', function (done) {
 
 This test runs through some simple behavior:
 
-* It emulates 'Play The Podcast' being spoken
-* It confirms the Skill returns the correct directive based on this utterance (AudioPlayer.Play)
-* It confirms the correct token is return by the skill
-* It issues a second intent, the builtin Amazon.NextIntent
-* It confirms the response from the Skill is correct based on the NextIntent
+* It emulates the Skill being launched
+* It confirms the Skill returns the correct outputSpeech after being launched
+* It emulates the user saying 'Play'
+* It confirms the correct directive and AudioItem is returned for the 'Play' intent
 
 The goal is to test until we feel confident in the behavior of our skill, and that it is correctly handling the interaction with the Alexa Service.
 
 It is a straightforward exercise to add more property checks on the payload to further confirm behavior.
 
-## A Slightly More Complex Test
+## A More Complex Test
 
 ```
-it('Plays The First Podcast To Completion And Goes To Next', function (done) {
-
-    alexa.spoken('Play The Podcast', function(error, payload) {
-        alexa.on('AudioPlayer.PlaybackStarted', function(audioItem) {
-            assert.equal(audioItem.stream.token, '1');
-            done();
+it('Plays To Completion', function (done) {
+    alexa.spoken('Play', function (error, payload) {
+        // Emulates the track being played 'NearlyFinished'
+        //  Alexa sends this event at some point during track playback
+        // Our skill uses the opportunity to queue up the next track to play
+        alexa.playbackNearlyFinished(function (error, payload) {
+            assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
+            assert.equal(payload.response.directives[0].playBehavior, 'ENQUEUE');
+            assert.equal(payload.response.directives[0].audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP104.mp3?dest-id=432208');
         });
 
-        alexa.audioItemFinished();
+        // Emulates the track playing to completion
+        // The callback is invoked after the skill responds to the PlaybackFinished request
+        alexa.playbackFinished(function (error, payload) {
+            // Confirm there are no directives in the reply to the PlaybackFinished request
+            // They came on the PlaybackNearlyFinished call
+            assert(!payload.response.directives);
+
+            // Check that playback started on the next track
+            alexa.once('AudioPlayer.PlaybackStarted', function(audioItem) {
+                assert.equal(audioItem.stream.token, '1');
+                assert.equal(audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP104.mp3?dest-id=432208');
+                done();
+            });
+        });
     });
 });
 ```
 
-This test uses the [BSTAlexa#audioItemFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#audioitemfinished) 
+This test uses the [BSTAlexa#playbackFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbackfinished) 
 to emulate the audio playing to completion on the device.  
 
-The Alexa service will send an 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to trigger the playback the next track in the queue.  
+The Alexa service first calls [BSTAlexa#playbackNearlyFinished()](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbacknearlyfinished). 
+This request is triggered by the Alexa service when a track is almost done playing, and is frequently used by skills to enqueue the next AudioItem in the queue for playback on the device.
 
-We also use the [BSTAlexa#on() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
+The Alexa service then sends a 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to then trigger the playback of the next track in the queue.  
 
-The events that can be listened for are listed [here](../api/classes/bstalexaevents.html). These events are intended to directly correspond to what happens with the internal state of the real Alexa service.
+We also use the [BSTAlexa#once() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#once) - this allows us to listen for specific events occurring within the Alexa emulator. 
+In this case, we want to confirm that the next track was queued correctly and has begun playing.
+
+We use the once call to indicate we only want to receive this event the first time it happens. This is useful for watching on events like PlaybackStarted, which are likely to happen many times in the course of an interaction.
+
+The events that can be listened for are listed [here](../api/classes/bstalexaevents.html).
+
+## Going Even Further
+Our sample project, [Bespoken Streamer](https://github.com/bespoken/streamer/), provides even more examples.
+
+The [tests for it](https://github.com/bespoken/streamer/blob/master/test/streamerTest.js) are meant to exercise all the different actions
+and states that the skill allows for. 
+
+It gets quite involved, and the complexity really illustrates the need for such a tool: without it, manually working through each of these scenarios initially is daunting.
+
+And ensuring all the scenarios still work when changes are made to the code is even more challenging. 
+
+It's essential to have a unit-test tool such as this in one's toolbelt to avoid being plagued with quality issues.
 
 ## Parting Words
 We are looking to continuously enhance the emulator. Right now, it supports:

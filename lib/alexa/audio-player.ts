@@ -112,35 +112,38 @@ export class AudioPlayer {
         this.playbackStarted();
     }
 
-    public playbackNearlyFinished(): void {
-        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished);
+    public playbackNearlyFinished(callback?: (error: Error, response: any, request: any) => void): void {
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackNearlyFinished, callback);
     }
 
-    public playbackFinished(): void {
+    public playbackFinished(callback?: (error: Error, response: any, request: any) => void): void {
         this._activity = AudioPlayerActivity.FINISHED;
 
-        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished);
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackFinished, callback);
 
         // Go the next track, if there is one
         this.playNext();
     }
 
-    public playbackStarted(): void {
+    public playbackStarted(callback?: (error: Error, response: any, request: any) => void): void {
         this._activity = AudioPlayerActivity.PLAYING;
-        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted);
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackStarted, callback);
     }
 
-    public playbackStopped(): void {
+    public playbackStopped(callback?: (error: Error, response: any, request: any) => void): void {
         this._activity = AudioPlayerActivity.STOPPED;
-        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped);
+        this.audioPlayerRequest(RequestType.AudioPlayerPlaybackStopped, callback);
     }
 
-    private audioPlayerRequest(requestType: string) {
+    private audioPlayerRequest(requestType: string, callback?: (error: Error, response: any, request: any) => void) {
         const self = this;
         const nowPlaying = this.playing();
         const serviceRequest = new ServiceRequest(this.alexa.context());
         serviceRequest.audioPlayerRequest(requestType, nowPlaying.stream.token, nowPlaying.stream.offsetInMilliseconds);
-        this.alexa.callSkill(serviceRequest, function () {
+        this.alexa.callSkill(serviceRequest, function (error, response, request) {
+            if (callback !== undefined && callback !== null) {
+                callback(error, response, request);
+            }
             self._emitter.emit(requestType, nowPlaying.clone());
         });
     }

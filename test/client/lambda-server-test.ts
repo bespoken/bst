@@ -56,7 +56,7 @@ describe("LambdaServer", function() {
             let inputData = {"data": "Test", "doFailure": true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal(responseString, "Exception: Cannot read property 'call' of undefined");
+                assert.equal(responseString, "Cannot read property 'call' of undefined");
                 runner.stop();
                 done();
             });
@@ -89,6 +89,45 @@ describe("LambdaServer", function() {
                 let o: any = JSON.parse(data.toString());
                 assert.equal(true, o.success);
                 assert.equal(2000, o.math);
+                runner.stop();
+                done();
+            });
+        });
+
+        it("Uses Callback Successfully", function(done) {
+            let runner = new LambdaServer("CallbackLambda.js", 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                let o: any = JSON.parse(data.toString());
+                assert(true, o.success);
+                runner.stop();
+                done();
+            });
+        });
+
+        it("Uses Callback With Failure", function(done) {
+            let runner = new LambdaServer("CallbackLambda.js", 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test", doFailure: true};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                assert.equal(data.toString(), "Failed!");
+                runner.stop();
+                done();
+            });
+        });
+
+        it("Checks Context Stuff", function(done) {
+            let runner = new LambdaServer("ContextLambda.js", 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test", doFailure: true};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 runner.stop();
                 done();
             });
