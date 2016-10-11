@@ -123,25 +123,30 @@ It is a straightforward exercise to add more property checks on the payload to f
 ## A More Complex Test
 
 ```
-it('Plays And Goes To Next', function (done) {
-    // Open the skill directly with a 'Play' intent
+it('Plays To Completion', function (done) {
     alexa.spoken('Play', function (error, payload) {
-        // Confirms the correct directive is returned when the Intent is spoken
-        assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
-
-        // We want to make sure playback started
-        //  This request comes from the Alexa service AFTER the AudioPlayer.Play directive is received
-        //  Once gets triggered a single time when the specified event occurs
-        alexa.once('AudioPlayer.PlaybackStarted', function (audioItem) {
-            assert.equal(audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP103.mp3?dest-id=432208')
-            done();
+        // Emulates the track being played 'NearlyFinished'
+        //  Alexa sends this event at some point during track playback
+        // Our skill uses the opportunity to queue up the next track to play
+        alexa.playbackNearlyFinished(function (error, payload) {
+            assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
+            assert.equal(payload.response.directives[0].playBehavior, 'ENQUEUE');
+            assert.equal(payload.response.directives[0].audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP104.mp3?dest-id=432208');
         });
 
-        // Emulate the user saying 'Next'
-        alexa.intended('AMAZON.NextIntent', null, function (error, response) {
-            assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
-            assert.equal(payload.response.directives[0].audioItem.stream.token, '1');
-            assert.equal(payload.response.directives[0].audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP104.mp3?dest-id=432208');
+        // Emulates the track playing to completion
+        // The callback is invoked after the skill responds to the PlaybackFinished request
+        alexa.playbackFinished(function (error, payload) {
+            // Confirm there are no directives in the reply to the PlaybackFinished request
+            // They came on the PlaybackNearlyFinished call
+            assert(!payload.response.directives);
+
+            // Check that playback started on the next track
+            alexa.once('AudioPlayer.PlaybackStarted', function(audioItem) {
+                assert.equal(audioItem.stream.token, '1');
+                assert.equal(audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP104.mp3?dest-id=432208');
+                done();
+            });
         });
     });
 });
@@ -150,13 +155,15 @@ it('Plays And Goes To Next', function (done) {
 This test uses the [BSTAlexa#playbackFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbackfinished) 
 to emulate the audio playing to completion on the device.  
 
-The Alexa service first sends a 'AudioPlayer.PlaybackNearlyFinished' request to the skill. 
-This request is frequently used by skills to enqueue the next AudioItem in the queue for playback on the device.
+The Alexa service first calls [BSTAlexa#playbackNearlyFinished()](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbacknearlyfinished). 
+This request is triggered by the Alexa service when a track is almost done playing, and is frequently used by skills to enqueue the next AudioItem in the queue for playback on the device.
 
 The Alexa service then sends a 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to then trigger the playback of the next track in the queue.  
 
-We also use the [BSTAlexa#on() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#on) - this allows us to listen for specific events occurring within the Alexa emulator. 
+We also use the [BSTAlexa#once() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#once) - this allows us to listen for specific events occurring within the Alexa emulator. 
 In this case, we want to confirm that the next track was queued correctly and has begun playing.
+
+We use the once call to indicate we only want to receive this event the first time it happens. This is useful for watching on events like PlaybackStarted, which are likely to happen many times in the course of an interaction.
 
 The events that can be listened for are listed [here](../api/classes/bstalexaevents.html).
 
