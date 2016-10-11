@@ -19,7 +19,7 @@ the BSTAlexa emulator can be used for testing regular Alexa skills as well.
 * A Node.js, Lambda-based Alexa skill 
     * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/streamer).
     * Derived from excellent streaming skill example provided by Amazon.
-    * The test used in this tutorial is [found here](https://github.com/bespoken/skill-sample-nodejs-audio-player/blob/mainline/js/test/skillTest.js).
+    * The test used in this tutorial is [found here](https://github.com/bespoken/streamer/blob/master/test/streamerTest.js).
 * Bespoken Tools added to your project's package.json
     * `$ npm install bespoken-tools --save-dev`
     * For this example, we make it a "dev" dependency as we will be using it only for testing.
@@ -91,20 +91,18 @@ The afterEach block ensures the LambdaServer and BSTAlexa emulator are shutdown 
 ## First Simple Test
 
 ```
-it('Plays The First Podcast and Then Goes To Next', function (done) {
+it('Launches and then plays first', function (done) {
+    // Launch the skill via sending it a LaunchRequest
+    alexa.launched(function (error, payload) {
+        // Check that the introduction is play as outputSpeech
+        assert.equal(payload.response.outputSpeech.ssml, '<speak> <audio src="https://s3.amazonaws.com/bespoken/streaming/bespokenspodcast-INTRODUCTION.mp3" />You can say play, scan titles, or about the podcast </speak>');
 
-    alexa.spoken('Play', function(error, payload) {
-        // Confirms the correct directive is returned when the Intent is spoken
-        assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
-        
-        // Ensures the track with correct token is returned
-        assert.equal(payload.response.directives[0].audioItem.stream.token, '0');
-
-        alexa.intended('AMAZON.NextIntent', null, function (error, payload) {
-            // Ensures the track with next token is returned    
+        // Emulate the user saying 'Play'
+        alexa.spoken('Play', function (error, payload) {
+            // Ensure the correct directive and audioItem is returned
             assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
-            assert.equal(payload.response.directives[0].playBehavior, 'REPLACE_ALL');
-            assert.equal(payload.response.directives[0].audioItem.stream.token, '1');
+            assert.equal(payload.response.directives[0].audioItem.stream.token, '0');
+            assert.equal(payload.response.directives[0].audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP103.mp3?dest-id=432208');
             done();
         });
     });
@@ -113,11 +111,10 @@ it('Plays The First Podcast and Then Goes To Next', function (done) {
 
 This test runs through some simple behavior:
 
-* It emulates 'Play The Podcast' being spoken
-* It confirms the Skill returns the correct directive based on this utterance (AudioPlayer.Play)
-* It confirms the correct token is return by the skill
-* It issues a second intent, the builtin Amazon.NextIntent
-* It confirms the response from the Skill is correct based on the NextIntent
+* It emulates the Skill being launched
+* It confirms the Skill returns the correct outputSpeech after being launched
+* It emulates the user saying 'Play'
+* It confirms the correct directive and AudioItem is returned for the 'Play' intent
 
 The goal is to test until we feel confident in the behavior of our skill, and that it is correctly handling the interaction with the Alexa Service.
 
@@ -126,16 +123,26 @@ It is a straightforward exercise to add more property checks on the payload to f
 ## A More Complex Test
 
 ```
-it('Plays The First Podcast To Completion And Goes To Next', function (done) {
+it('Plays And Goes To Next', function (done) {
+    // Open the skill directly with a 'Play' intent
+    alexa.spoken('Play', function (error, payload) {
+        // Confirms the correct directive is returned when the Intent is spoken
+        assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
 
-    alexa.spoken('Play The Podcast', function(error, payload) {
-        alexa.on('AudioPlayer.PlaybackStarted', function(audioItem) {
-            assert.equal(audioItem.stream.token, '1');
+        // We want to make sure playback started
+        //  This request comes from the Alexa service AFTER the AudioPlayer.Play directive is received
+        //  Once gets triggered a single time when the specified event occurs
+        alexa.once('AudioPlayer.PlaybackStarted', function (audioItem) {
+            assert.equal(audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP103.mp3?dest-id=432208')
             done();
         });
 
-        alexa.playbackNearlyFinished();
-        alexa.playbackFinished();
+        // Emulate the user saying 'Next'
+        alexa.intended('AMAZON.NextIntent', null, function (error, response) {
+            assert.equal(payload.response.directives[0].type, 'AudioPlayer.Play');
+            assert.equal(payload.response.directives[0].audioItem.stream.token, '1');
+            assert.equal(payload.response.directives[0].audioItem.stream.url, 'https://traffic.libsyn.com/bespoken/TIP104.mp3?dest-id=432208');
+        });
     });
 });
 ```

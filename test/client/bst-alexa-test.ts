@@ -251,9 +251,9 @@ describe("BSTAlexa", function() {
         });
 
         afterEach(function (done) {
-            lambdaServer.stop(function () {
-                alexa.stop(function () {
-                    process.chdir("../..");
+            alexa.stop(function () {
+                process.chdir("../..");
+                lambdaServer.stop(function () {
                     done();
                 });
             });
@@ -334,8 +334,8 @@ describe("BSTAlexa", function() {
                 });
 
                 alexa.intended("PlayIntent", null, function () {
-                    alexa.playbackFinished(function (audioItem: AudioItem) {
-                        assert.equal(audioItem.stream.token, "1");
+                    alexa.playbackFinished(function (error, response, request) {
+                        assert.equal(response.response.directives[0].audioItem.stream.token, "3");
                         alexa.playbackFinished();
                     });
                 });
@@ -344,6 +344,7 @@ describe("BSTAlexa", function() {
 
         describe("#playbackNearlyFinished()", function() {
             it("Audio Item Nearly Finished", function (done) {
+                this.timeout(5000);
                 let count = 0;
                 alexa.on("response", function (response: any, request: any) {
                     console.log("RequestType: " + request.request.type);
@@ -351,13 +352,30 @@ describe("BSTAlexa", function() {
                     if (count === 3) {
                         assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
                         assert.equal(request.request.token, "1");
-                        assert.equal(request.request.offsetInMilliseconds, 100);
+                        assert.equal(request.request.offsetInMilliseconds, 0);
                         done();
                     }
                 });
 
                 alexa.intended("PlayIntent", null, function () {
-                    alexa.playbackNearlyFinished(100);
+                    alexa.playbackNearlyFinished(function (error, response, request) {
+                        assert.equal(response.response.directives[0].audioItem.stream.token, "3");
+                    });
+                });
+            });
+        });
+
+        describe("#playbackStopped()", function() {
+            it("PlaybackStopped", function (done) {
+                this.timeout(5000);
+
+                alexa.intended("PlayIntent", null, function () {
+                    alexa.on("AudioPlayer.PlaybackStarted", function () {
+                        alexa.playbackStopped(function(error, response, request) {
+                            assert.equal(request.request.type, "AudioPlayer.PlaybackStopped");
+                            done();
+                        });
+                    });
                 });
             });
         });

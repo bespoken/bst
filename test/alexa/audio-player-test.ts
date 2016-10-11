@@ -86,7 +86,10 @@ describe("AudioPlayer", function() {
             alexa["_context"]["_audioPlayer"] = audioPlayer;
             audioPlayer.enqueue(item, AudioPlayer.PlayBehaviorEnqueue);
             audioPlayer.playbackOffset(100);
-            audioPlayer.playbackNearlyFinished();
+            audioPlayer.playbackNearlyFinished(function (error, response, request) {
+                assert.equal(response.response.directives[0].playBehavior, "ENQUEUE");
+            });
+
             audioPlayer.playbackOffset(1000);
             audioPlayer.playbackFinished();
             alexa.verify(function () {

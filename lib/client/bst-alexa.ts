@@ -190,7 +190,7 @@ export class BSTAlexa {
 
     /**
      * Emulates the specified skill being launched
-     * @param callback
+     * @param callback Returns any error, along the response and request JSON associated with this call
      * @returns Itself
      */
     public launched(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
@@ -201,7 +201,7 @@ export class BSTAlexa {
     /**
      * Ends the session - requires a reason
      * @param sessionEndedReason Can be ERROR, EXCEEDED_MAX_REPROMPTS or USER_INITIATED
-     * @param callback
+     * @param callback Returns any error, along the response and request JSON associated with this call
      * @returns Itself
      */
     public sessionEnded(sessionEndedReason: string, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
@@ -217,17 +217,13 @@ export class BSTAlexa {
      * The Alexa Emulator will automatically play the next queued track
      *  as well as signal to your skill the current track has completed
      *
-     *  @param onceFinished - Convenience method that automatically adds a "once" listener on the {@link BSTAlexaEvents.AudioPlayerPlaybackFinished}
+     *  @param callback Returns any error, along the response and request JSON associated with this call
      *  @returns Itself
      */
-    public playbackFinished(onceFinished?: Function): BSTAlexa {
-        if (onceFinished !== undefined) {
-            this.once(BSTAlexaEvents.AudioPlayerPlaybackFinished, onceFinished);
-        }
-
+    public playbackFinished(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
         if (this._alexa.context().audioPlayerEnabled()) {
             if (this._alexa.context().audioPlayer().isPlaying()) {
-                this._alexa.context().audioPlayer().playbackFinished();
+                this._alexa.context().audioPlayer().playbackFinished(callback);
             }
         }
         return this;
@@ -236,15 +232,30 @@ export class BSTAlexa {
     /**
      * Triggers a AudioPlayer.PlaybackNearlyFinished request from Alexa
      *
-     * Updates the track playback offset by the specified amount
-     * @param offsetInMilliseconds
+     * @param callback Returns any error, along the response and request JSON associated with this call
      * @returns Itself
      */
-    public playbackNearlyFinished(offsetInMilliseconds?: number): BSTAlexa {
-        if (offsetInMilliseconds !== undefined) {
-            this._alexa.context().audioPlayer().playbackOffset(offsetInMilliseconds);
+    public playbackNearlyFinished(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        if (this._alexa.context().audioPlayerEnabled()) {
+            if (this._alexa.context().audioPlayer().isPlaying()) {
+                this._alexa.context().audioPlayer().playbackNearlyFinished(callback);
+            }
         }
-        this._alexa.context().audioPlayer().playbackNearlyFinished();
+        return this;
+    }
+
+    /**
+     * Triggers a AudioPlayer.PlaybackStopped request from Alexa
+     *
+     * @param callback Returns any error, along the response and request JSON associated with this call
+     * @returns Itself
+     */
+    public playbackStopped(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
+        if (this._alexa.context().audioPlayerEnabled()) {
+            if (this._alexa.context().audioPlayer().isPlaying()) {
+                this._alexa.context().audioPlayer().playbackStopped(callback);
+            }
+        }
         return this;
     }
 
