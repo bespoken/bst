@@ -1,11 +1,13 @@
 import {LogQueue, Log, LogType} from "../logless/log-queue";
+const uuid = require("uuid");
 
 export class Logless {
+    private _callback: Function;
+    private _context: any;
+    private _event: any;
     private _queue: LogQueue = null;
     private _source: string;
-    private _event: any;
-    private _context: any;
-    private _callback: Function;
+    private _transactionID: string;
     private _wrappedCallback: Function;
 
     public static capture(source: string, event: any, context: any): Logless {
@@ -24,17 +26,23 @@ export class Logless {
         this.init();
 
         const requestString = JSON.stringify(event);
-        this._queue.enqueue(new Log(LogType.REQUEST, [requestString]));
+        this._queue.enqueue(new Log(LogType.INFO, [requestString], ["request"]));
     }
 
     private init () {
         let self = this;
-        this._queue = new LogQueue();
+        this._queue = new LogQueue(this);
 
-        this.wrapCall(console, "log", LogType.DEBUG);
-        this.wrapCall(console, "info", LogType.INFO);
-        this.wrapCall(console, "warn", LogType.WARN);
+        if (this._context.awsRequestId !== undefined && this._context.awsRequestId !== null) {
+            this._transactionID = this._context.awsRequestId;
+        } else {
+            this._transactionID = uuid.v4();
+        }
+
         this.wrapCall(console, "error", LogType.ERROR);
+        this.wrapCall(console, "info", LogType.INFO);
+        this.wrapCall(console, "log", LogType.DEBUG);
+        this.wrapCall(console, "warn", LogType.WARN);
 
         let done = this.context().done;
         this.context().done = function(error: any, result: any) {
@@ -73,6 +81,10 @@ export class Logless {
         return this._callback;
     }
 
+    public source(): string {
+        return this._source;
+    }
+
     public wrapCall(console: Console, name: string, type: LogType): void {
         let self = this;
         let originalCall = (<any> console)[name];
@@ -82,12 +94,16 @@ export class Logless {
         };
     }
 
+    public transactionID(): string {
+        return this._transactionID;
+    }
+
     private logResponse(error: Error, result: any) {
         if (error !== undefined && error !== null) {
             this._queue.enqueue(new Log(LogType.ERROR, [error.message]));
         } else {
             const resultString = JSON.stringify(result);
-            this._queue.enqueue(new Log(LogType.RESPONSE, [resultString]));
+            this._queue.enqueue(new Log(LogType.INFO, [resultString], ["response"]));
         }
 
     }

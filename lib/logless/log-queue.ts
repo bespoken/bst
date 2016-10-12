@@ -1,29 +1,44 @@
 import * as https from "http";
 import {IncomingMessage} from "http";
 import {ClientRequest} from "http";
+import {Logless} from "./logless";
 
 export class LogQueue {
     private _queue: Array<Log> = [];
+
+    public constructor(private logless: Logless) {}
     public enqueue(log: Log) {
         this._queue.push(log);
     }
 
     public flush() {
-        const data = {
+        const logBatch = {
+            source: this.logless.source(),
+            transactionID: this.logless.transactionID(),
             logs: new Array<any>()
         };
 
         for (let log of this._queue) {
-            const message = log.message();
             const timestamp = log.timestampAsISOString();
-            data.logs.push({
-                message: message,
+            let payload = log.data;
+            if (payload.length === 1) {
+                payload = log.data[0];
+            }
+
+            const logJSON: any = {
+                payload: payload,
                 type: LogType[log.type],
                 timestamp: timestamp,
-            });
+            };
+
+            if (log.tags !== undefined && log.tags !== null) {
+                logJSON.tags = log.tags;
+            }
+
+            logBatch.logs.push(logJSON);
         }
 
-        const dataAsString = JSON.stringify(data);
+        const dataAsString = JSON.stringify(logBatch);
         const dataLength = Buffer.byteLength(dataAsString);
         const options = {
             host: "logless.io",
@@ -58,22 +73,21 @@ export enum LogType {
     DEBUG,
     ERROR,
     INFO,
-    REQUEST,
-    RESPONSE,
+    TRACE,
     WARN,
 }
 
 export class Log {
     public _timestamp: Date;
 
-    public constructor(public type: LogType, public messages: Array<string>) {
+    public constructor(public type: LogType, public data: Array<any>, public tags?: Array<string>) {
         this._timestamp = new Date();
     }
 
-    public message(): string {
+    public dataAsString(): string {
         let buffer = new Buffer("");
-        for (let s of this.messages) {
-            buffer = Buffer.concat([buffer, new Buffer(s)]);
+        for (let b of this.data) {
+            buffer = Buffer.concat([buffer, b]);
         }
         return buffer.toString();
     }
