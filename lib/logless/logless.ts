@@ -14,19 +14,18 @@ export class Logless {
         return new Logless(source, event, context);
     }
 
-    public static captureWithCallback(source: string, event: any, context: any, callback: Function): Function {
-        return new Logless(source, event, context, callback)._wrappedCallback;
+    public static captureWithCallback(source: string, event: any, context: any, callback: Function): Logless {
+        return new Logless(source, event, context, callback);
     }
 
     constructor (source: string, event: any, context: any, callback?: Function, public captureURL?: string) {
         this._source = source;
         this._event = event;
         this._context = context;
-        this._callback = callback;
+        this._wrappedCallback = callback;
         this.init();
 
-        const requestString = JSON.stringify(event);
-        this._queue.enqueue(new Log(LogType.INFO, [requestString], ["request"]));
+        this._queue.enqueue(new Log(LogType.INFO, [event], ["request"]));
     }
 
     private init () {
@@ -65,10 +64,11 @@ export class Logless {
             succeed(result);
         };
 
-        if (this.callback() !== undefined && this.callback() !== null) {
-            this._wrappedCallback = function(error: any, result: any) {
+        if (this._wrappedCallback !== undefined && this._wrappedCallback !== null) {
+            this._callback = function(error: any, result: any) {
+                self.logResponse(error, result);
                 self._queue.flush();
-                self.callback().call(error, result);
+                self._wrappedCallback.call(this, error, result);
             };
         }
     }
@@ -88,9 +88,9 @@ export class Logless {
     public wrapCall(console: Console, name: string, type: LogType): void {
         let self = this;
         let originalCall = (<any> console)[name];
-        (<any> console)[name] = function (...messages: Array<string>) {
-            self._queue.enqueue(new Log(type, messages));
-            originalCall(messages);
+        (<any> console)[name] = function (...data: Array<any>) {
+            self._queue.enqueue(new Log(type, data));
+            originalCall.apply(this, data);
         };
     }
 
@@ -102,8 +102,7 @@ export class Logless {
         if (error !== undefined && error !== null) {
             this._queue.enqueue(new Log(LogType.ERROR, [error.message]));
         } else {
-            const resultString = JSON.stringify(result);
-            this._queue.enqueue(new Log(LogType.INFO, [resultString], ["response"]));
+            this._queue.enqueue(new Log(LogType.INFO, [result], ["response"]));
         }
 
     }
