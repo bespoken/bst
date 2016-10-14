@@ -2,7 +2,6 @@
 
 import * as assert from "assert";
 import {Logless} from "../../lib/logless/logless";
-import {StringUtil} from "../../lib/core/string-util";
 
 describe("Logless", function() {
     describe("Logging Using the Lambda Context", function() {
@@ -62,8 +61,9 @@ describe("Logless", function() {
             mockRequest.write = function (data: string) {
                 let json = JSON.parse(data);
                 assert.equal(json.source, "JPK");
+                assert.equal(json.logs.length, 2);
                 assert.equal(json.logs[1].type, "ERROR");
-                assert.equal(json.logs[1].payload, "TestError");
+                assert.equal(json.logs[1].payload, "Error: TestError");
             };
 
             const handler: any = Logless.capture("JPK", function (event: any, context: any) {
@@ -88,6 +88,7 @@ describe("Logless", function() {
             mockRequest.write = function (data: string) {
                 let json = JSON.parse(data);
                 assert.equal(json.source, "JPK");
+                assert.equal(json.logs.length, 2);
             };
 
             const handler: any = Logless.capture("JPK", function (event: any, context: any) {
@@ -117,7 +118,10 @@ describe("Logless", function() {
             mockRequest.write = function(data: string) {
                 let json = JSON.parse(data);
                 assert.equal(json.source, "JPK");
-                assert.equal(json.logs[0].payload, "ERROR");
+                assert.equal(json.logs.length, 3);
+                assert.equal(json.logs[0].payload.request, true);
+                assert.equal(json.logs[1].payload, "ERROR");
+                assert.equal(json.logs[2].payload, "Error: Test");
             };
 
             handler.logger.httpRequest = function () {
@@ -194,13 +198,13 @@ describe("Logless", function() {
 
             mockRequest.write = function (data: string) {
                 let json = JSON.parse(data);
-                console.log(JSON.stringify(json, null, 2));
+                // console.log(JSON.stringify(json, null, 2));
                 assert.equal(json.source, "JPK");
                 assert.equal(json.transactionID.length, 36);
                 assert.equal(json.logs.length, 3);
-                assert.strictEqual(json.logs[0].payload, "{\"request\":true}");
+                assert.strictEqual(json.logs[0].payload.request, true);
                 assert.strictEqual(json.logs[1].payload, "I am a log");
-                assert.strictEqual(json.logs[2].payload, "{\"response\":true}");
+                assert.strictEqual(json.logs[2].payload.response, true);
                 assert.strictEqual(json.logs[2].tags[0], "response");
             };
 

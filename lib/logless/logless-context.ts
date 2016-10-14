@@ -7,6 +7,7 @@ export class LoglessContext {
     private _callback: Function;
     private _queue: Array<Log> = [];
     private _transactionID: string;
+    private _completed = false;
 
     public constructor(private _source: string) {
 
@@ -155,6 +156,11 @@ export class LoglessContext {
         // Post the data
         httpRequest.write(dataAsString);
         httpRequest.end();
+        this._completed = true;
+    }
+
+    public completed(): boolean {
+        return this._completed;
     }
 
     public httpRequest(options: any, callback: (response: IncomingMessage) => void): ClientRequest {

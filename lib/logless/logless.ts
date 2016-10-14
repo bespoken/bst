@@ -27,12 +27,23 @@ export class Logless {
         Logless.wrapCall(console, "warn", LogType.WARN);
     }
 
-    private static wrapCall(console: Console, name: string, type: LogType): void {
+    private static wrapCall(console: any, name: string, type: LogType): void {
         let originalCall = (<any> console)[name];
-        (<any> console)[name] = function (...data: Array<any>) {
-            Logless._context.log(type, data);
+
+        // If this is already wrapped, then leave it alone
+        if (originalCall.wrapper !== undefined) {
+            return;
+        }
+
+        let newCall: any = function (...data: Array<any>) {
+            if (!Logless._context.completed()) {
+                Logless._context.log(type, data);
+            }
             originalCall.apply(this, data);
         };
+        newCall.wrapper = true;
+
+        console[name] = newCall;
     }
 
     public static newContext(): LoglessContext {
