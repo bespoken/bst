@@ -35,11 +35,17 @@ export class Logless {
             return;
         }
 
-        let newCall: any = function (...data: Array<any>) {
+        let newCall: any = function (data: any, ...params: any[]) {
             if (!Logless._context.completed()) {
-                Logless._context.log(type, data);
+                Logless._context.log(type, data, params);
             }
-            originalCall.apply(this, data);
+
+            // Need to put it all into one array and call the function or the params are not processed correctly
+            let allParams = [data];
+            for (let param of params) {
+                allParams.push(param);
+            }
+            originalCall.apply(this, allParams);
         };
         newCall.wrapper = true;
 
@@ -49,10 +55,6 @@ export class Logless {
     public static newContext(): LoglessContext {
         Logless._context = new LoglessContext(Logless._source);
         return Logless._context;
-    }
-
-    public static source(): string {
-        return Logless._source;
     }
 }
 

@@ -6,6 +6,7 @@ import {Logless} from "../../lib/logless/logless";
 describe("Logless", function() {
     describe("Logging Using the Lambda Context", function() {
         it("Logs stuff on done", function (done) {
+            context.awsRequestId = "FakeAWSRequestId";
             // Need to do this first, as it gets wrapped by Logless.capture
             context.done = function (error: Error, result: any) {
                 assert.equal(error, null);
@@ -18,12 +19,12 @@ describe("Logless", function() {
                 let json = JSON.parse(data);
                 console.log(JSON.stringify(json, null, 2));
                 assert.equal(json.source, "JPK");
-                assert.equal(json.transactionID.length, 36);
+                assert.equal(json.transactionID, "FakeAWSRequestId");
                 assert.equal(json.logs.length, 6);
                 assert(json.logs[0].payload.request);
                 assert.equal(json.logs[0].type, "INFO");
                 assert.strictEqual(json.logs[0].tags[0], "request");
-                assert.strictEqual(json.logs[1].payload, "I am a log");
+                assert.strictEqual(json.logs[1].payload, "I am a log with Test Test2");
                 assert.equal(json.logs[1].type, "DEBUG");
                 assert.equal(json.logs[2].payload, "I am info");
                 assert.equal(json.logs[2].type, "INFO");
@@ -37,7 +38,7 @@ describe("Logless", function() {
 
             // Emulate a lambda function
             const handler: any = Logless.capture("JPK", function (event: any, context: any) {
-                console.log("I am a log");
+                console.log("I am a log with %s %s", "Test", "Test2");
                 console.info("I am info");
                 console.warn("I am a warning");
                 console.error("I am an error");
@@ -52,6 +53,7 @@ describe("Logless", function() {
         });
 
         it("Logs stuff on done with error", function (done) {
+            delete context.awsRequestId;
             // Need to do this first, as it gets wrapped by Logless.capture
             context.done = function (error: Error, result: any) {
                 assert(error);
@@ -60,6 +62,7 @@ describe("Logless", function() {
 
             mockRequest.write = function (data: string) {
                 let json = JSON.parse(data);
+                assert.equal(json.transactionID.length, 36);
                 assert.equal(json.source, "JPK");
                 assert.equal(json.logs.length, 2);
                 assert.equal(json.logs[1].type, "ERROR");
@@ -187,6 +190,39 @@ describe("Logless", function() {
 
             handler.call(this, {request: true}, context);
         });
+
+        it("Logs stuff on timer", function (done) {
+            delete context.awsRequestId;
+            // Need to do this first, as it gets wrapped by Logless.capture
+            context.done = function (error: Error, result: any) {
+                done();
+            };
+
+            mockRequest.write = function (data: string) {
+                let json = JSON.parse(data);
+                assert.equal(json.transactionID.length, 36);
+                assert.equal(json.source, "JPK");
+                assert.equal(json.logs.length, 3);
+                assert.equal(json.logs[1].type, "DEBUG");
+                assert(json.logs[1].payload.startsWith("TestTimer:"));
+                assert(json.logs[1].payload.endsWith("ms"));
+            };
+
+            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
+                console.time("TestTimer");
+
+                setTimeout(function () {
+                    console.timeEnd("TestTimer");
+                    context.done(null, {"response": true});
+                }, 10);
+            });
+
+            handler.logger.httpRequest = function () {
+                return mockRequest;
+            };
+
+            handler.call(this, {request: true}, context);
+        });
     });
 
     describe("Logging Stuff on Callback", function() {
@@ -279,7 +315,7 @@ describe("Logless", function() {
     });
 });
 
-const context = {
+const context: any = {
     done: function (error: Error, result: any) {
 
     },

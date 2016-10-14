@@ -1,4 +1,5 @@
 import * as https from "http";
+import * as util from "util";
 const uuid = require("uuid");
 import {IncomingMessage} from "http";
 import {ClientRequest} from "http";
@@ -43,7 +44,7 @@ export class LoglessContext {
         };
 
         // Capture the request event
-        this.log(LogType.INFO, [event], ["request"]);
+        this.log(LogType.INFO, event, null, ["request"]);
 
         if (wrappedCallback !== undefined && wrappedCallback !== null) {
             this._callback = function(error: any, result: any) {
@@ -58,19 +59,28 @@ export class LoglessContext {
         return this._callback;
     }
 
-    public log(type: LogType, data: Array<any>, tags?: Array<string>) {
+    public log(type: LogType, data: any, params?: Array<any>, tags?: Array<string>) {
         // If this is a an error, do special handling
-        for (let log of data) {
-            if (log instanceof Error) {
-                this.logError(type, <Error> log, tags);
-                // If this is the only log message, no more processing
-                // Otherwise still push the other messages in the log
-                if (data.length === 1) {
-                    return;
+        if (data instanceof Error) {
+            this.logError(type, <Error> data, tags);
+
+        } else if (typeof data === "string") {
+            // For strings, we do string formatting for macros if they exist
+            let dataString = data;
+            if (params !== undefined && params !== null) {
+                // Apply the string formatting
+                let allParams = [data];
+                for (let param of params) {
+                    allParams.push(param);
                 }
+                dataString = util.format.apply(this, allParams);
             }
+            this._queue.push(new Log(type, dataString, null, tags));
+
+        } else {
+            this._queue.push(new Log(type, data, null, tags));
+
         }
-        this._queue.push(new Log(type, data, null, tags));
     }
 
     public logError(type: LogType, error: any, tags?: Array<string>) {
@@ -85,15 +95,11 @@ export class LoglessContext {
         this._queue.push(new Log(type, [message], error.stack, tags));
     }
 
-    public source(): string {
-        return this._source;
-    }
-
     private captureResponse(error: Error, result: any) {
         if (error !== undefined && error !== null) {
-            this.log(LogType.ERROR, [error], ["response"]);
+            this.log(LogType.ERROR, error, null, ["response"]);
         } else {
-            this.log(LogType.INFO, [result], ["response"]);
+            this.log(LogType.INFO, result, null, ["response"]);
         }
     }
 
@@ -102,6 +108,7 @@ export class LoglessContext {
     }
 
     public flush() {
+        this._completed = true;
         const logBatch = {
             source: this._source,
             transactionID: this.transactionID(),
@@ -156,7 +163,6 @@ export class LoglessContext {
         // Post the data
         httpRequest.write(dataAsString);
         httpRequest.end();
-        this._completed = true;
     }
 
     public completed(): boolean {
@@ -179,7 +185,7 @@ export enum LogType {
 export class Log {
     public _timestamp: Date;
 
-    public constructor(public type: LogType, public data: Array<any>, public stack?: string, public tags?: Array<string>) {
+    public constructor(public type: LogType, public data: any, public stack?: string, public tags?: Array<string>) {
         this._timestamp = new Date();
     }
 
