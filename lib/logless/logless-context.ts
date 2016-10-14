@@ -92,7 +92,7 @@ export class LoglessContext {
         if (error.syscall !== undefined) {
             message += " syscall: " + error.syscall;
         }
-        this._queue.push(new Log(type, [message], error.stack, tags));
+        this._queue.push(new Log(type, message, error.stack, tags));
     }
 
     private captureResponse(error: Error, result: any) {
@@ -108,7 +108,6 @@ export class LoglessContext {
     }
 
     public flush() {
-        this._completed = true;
         const logBatch = {
             source: this._source,
             transactionID: this.transactionID(),
@@ -118,9 +117,6 @@ export class LoglessContext {
         for (let log of this._queue) {
             const timestamp = log.timestampAsISOString();
             let payload = log.data;
-            if (payload.length === 1) {
-                payload = log.data[0];
-            }
 
             const logJSON: any = {
                 payload: payload,
@@ -163,6 +159,9 @@ export class LoglessContext {
         // Post the data
         httpRequest.write(dataAsString);
         httpRequest.end();
+
+        // Clear the queue
+        this._queue = [];
     }
 
     public completed(): boolean {

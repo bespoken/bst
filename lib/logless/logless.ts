@@ -9,6 +9,7 @@ export class Logless {
     //  At some point we might work in a non-stateless environment, in which case this will need to change
     private static _context: LoglessContext;
     private static _source: string;
+    private static _initialized = false;
 
     public static capture(source: string, handler: LambdaFunction): LambdaFunction {
         Logless._source = source;
@@ -21,19 +22,26 @@ export class Logless {
     }
 
     private static initialize(): void {
+        if (Logless._initialized) {
+            return;
+        }
+
+        Logless._initialized = true;
         Logless.wrapCall(console, "error", LogType.ERROR);
         Logless.wrapCall(console, "info", LogType.INFO);
         Logless.wrapCall(console, "log", LogType.DEBUG);
         Logless.wrapCall(console, "warn", LogType.WARN);
+        process.on("uncaughtException", function (error: Error) {
+            // In the case of an uncaught exception, we log it and then flush
+            // This can then lead to multiple flushes, but we don't want to lose the logs if this exception
+            //  caused the program to not return successfully
+            console.error(error);
+            Logless._context.flush();
+        });
     }
 
     private static wrapCall(console: any, name: string, type: LogType): void {
         let originalCall = (<any> console)[name];
-
-        // If this is already wrapped, then leave it alone
-        if (originalCall.wrapper !== undefined) {
-            return;
-        }
 
         let newCall: any = function (data: any, ...params: any[]) {
             if (!Logless._context.completed()) {
@@ -47,7 +55,6 @@ export class Logless {
             }
             originalCall.apply(this, allParams);
         };
-        newCall.wrapper = true;
 
         console[name] = newCall;
     }
@@ -71,7 +78,8 @@ export class LambdaWrapper {
         try {
             this.wrappedLambda.call(this, event, context, this.logger.callback());
         } catch (e) {
-            context.fail(e);
+            console.error(e);
+            this.logger.flush();
         }
     }
 

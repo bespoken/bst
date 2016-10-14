@@ -4,6 +4,21 @@ import * as assert from "assert";
 import {Logless} from "../../lib/logless/logless";
 
 describe("Logless", function() {
+    let uncaughtExceptionHandler: Function = null;
+
+    before(function() {
+        // Need to remove mocha listener for uncaught exceptions
+        //  We restore it at the end
+        //  If we don't do this, the uncaught exception is considered a failure by mocha
+        uncaughtExceptionHandler = process.listeners("uncaughtException").pop();
+        process.removeListener("uncaughtException", uncaughtExceptionHandler);
+    });
+
+    after(function() {
+        // Add back the mocha listener
+        process.addListener("uncaughtException", uncaughtExceptionHandler);
+    });
+
     describe("Logging Using the Lambda Context", function() {
         it("Logs stuff on done", function (done) {
             context.awsRequestId = "FakeAWSRequestId";
@@ -134,63 +149,6 @@ describe("Logless", function() {
             handler.call(this, {request: true}, context);
         });
 
-        it("Logs stuff on exception", function(done) {
-            // Need to do this first, as it gets wrapped by Logless.capture
-            context.fail = function (error: Error) {
-                assert(error);
-                assert.equal(error.message, "Test");
-                done();
-            };
-
-            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
-                throw Error("Test");
-            });
-
-            mockRequest.write = function(data: string) {
-                let json = JSON.parse(data);
-                assert.equal(json.source, "JPK");
-                assert.equal(json.logs[0].payload.request, true);
-                assert.equal(json.logs[1].payload, "Error: Test");
-                assert(json.logs[1].stack);
-            };
-
-            handler.logger.httpRequest = function () {
-                return mockRequest;
-            };
-
-            handler.call(this, {request: true}, context);
-        });
-
-        it("Logs stuff on throws a string", function(done) {
-            // It's possible for people to just throw anything with NodeJS
-            //  So want to handle weird objects okay as well
-            // Need to do this first, as it gets wrapped by Logless.capture
-            context.fail = function (error: any) {
-                assert(error);
-                assert.equal(error, "Error As String");
-                done();
-            };
-
-            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
-                throw "Error As String";
-            });
-
-            mockRequest.write = function(data: string) {
-                let json = JSON.parse(data);
-                assert.equal(json.source, "JPK");
-                assert.equal(json.logs[0].payload.request, true);
-                assert.equal(json.logs[1].payload, "Error As String");
-                assert.equal(json.logs[1].type, "ERROR");
-                assert(!json.logs[1].stack);
-            };
-
-            handler.logger.httpRequest = function () {
-                return mockRequest;
-            };
-
-            handler.call(this, {request: true}, context);
-        });
-
         it("Logs stuff on timer", function (done) {
             delete context.awsRequestId;
             // Need to do this first, as it gets wrapped by Logless.capture
@@ -216,6 +174,94 @@ describe("Logless", function() {
                     context.done(null, {"response": true});
                 }, 10);
             });
+
+            handler.logger.httpRequest = function () {
+                return mockRequest;
+            };
+
+            handler.call(this, {request: true}, context);
+        });
+    });
+
+    describe("Handles Exceptions", function () {
+        it("Logs stuff on exception", function(done) {
+            // Done, Succeed or Fail are not called?
+            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
+                throw new Error("Test");
+            });
+
+            mockRequest.write = function(data: string) {
+                let json = JSON.parse(data);
+                assert.equal(json.source, "JPK");
+                assert.equal(json.logs[0].payload.request, true);
+                assert.equal(json.logs[1].payload, "Error: Test");
+                assert(json.logs[1].stack);
+                done();
+            };
+
+            handler.logger.httpRequest = function () {
+                return mockRequest;
+            };
+
+            handler.call(this, {request: true}, context);
+        });
+
+        it("Logs stuff on throws a string", function(done) {
+            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
+                throw "Error As String";
+            });
+
+            mockRequest.write = function(data: string) {
+                let json = JSON.parse(data);
+                assert.equal(json.source, "JPK");
+                assert.equal(json.logs[0].payload.request, true);
+                assert.equal(json.logs[1].payload, "Error As String");
+                assert.equal(json.logs[1].type, "ERROR");
+                assert(!json.logs[1].stack);
+                done();
+            };
+
+            handler.logger.httpRequest = function () {
+                return mockRequest;
+            };
+
+            handler.call(this, {request: true}, context);
+        });
+
+        it("Logs stuff on uncaught exception", function(done) {
+            // Even though we don't do anything with it, reset it - otherwise it is wrapped from previous call
+            context.succeed = function () {};
+
+            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
+                setTimeout(function() {
+                    throw Error("Test");
+                }, 5);
+
+                setTimeout(function() {
+                    console.log("TestLog");
+                    context.succeed({ response: true });
+                }, 10);
+            });
+
+            let flushes = 0;
+            mockRequest.write = function(data: string) {
+                flushes++;
+                if (flushes === 1) {
+                    let json = JSON.parse(data);
+                    assert.equal(json.source, "JPK");
+                    assert.equal(json.logs.length, 2);
+                    assert.equal(json.logs[0].payload.request, true);
+                    assert.equal(json.logs[1].payload, "Error: Test");
+                    assert(json.logs[1].stack);
+                } else {
+                    let json = JSON.parse(data);
+                    assert.equal(json.logs.length, 2);
+                    assert.equal(json.logs[0].payload, "TestLog");
+                    assert.equal(json.logs[1].payload.response, true);
+
+                    done();
+                }
+            };
 
             handler.logger.httpRequest = function () {
                 return mockRequest;
