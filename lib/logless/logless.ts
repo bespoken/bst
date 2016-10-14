@@ -56,9 +56,9 @@ export class LambdaWrapper {
         this.logger.onLambdaEvent(event, context, callback);
 
         try {
-            this.wrappedLambda.call(this, event, context, callback);
+            this.wrappedLambda.call(this, event, context, this.logger.callback());
         } catch (e) {
-            console.error(e);
+            context.fail(e);
         }
     }
 

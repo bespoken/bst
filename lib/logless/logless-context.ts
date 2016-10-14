@@ -58,7 +58,30 @@ export class LoglessContext {
     }
 
     public log(type: LogType, data: Array<any>, tags?: Array<string>) {
-        this._queue.push(new Log(type, data, tags));
+        // If this is a an error, do special handling
+        for (let log of data) {
+            if (log instanceof Error) {
+                this.logError(type, <Error> log, tags);
+                // If this is the only log message, no more processing
+                // Otherwise still push the other messages in the log
+                if (data.length === 1) {
+                    return;
+                }
+            }
+        }
+        this._queue.push(new Log(type, data, null, tags));
+    }
+
+    public logError(type: LogType, error: any, tags?: Array<string>) {
+        let message = error.name + ": " + error.message;
+        if (error.code !== undefined) {
+            message += " code: " + error.code;
+        }
+
+        if (error.syscall !== undefined) {
+            message += " syscall: " + error.syscall;
+        }
+        this._queue.push(new Log(type, [message], error.stack, tags));
     }
 
     public source(): string {
@@ -67,7 +90,7 @@ export class LoglessContext {
 
     private captureResponse(error: Error, result: any) {
         if (error !== undefined && error !== null) {
-            this.log(LogType.ERROR, [error.message]);
+            this.log(LogType.ERROR, [error], ["response"]);
         } else {
             this.log(LogType.INFO, [result], ["response"]);
         }
@@ -99,6 +122,10 @@ export class LoglessContext {
 
             if (log.tags !== undefined && log.tags !== null) {
                 logJSON.tags = log.tags;
+            }
+
+            if (log.stack !== undefined && log.stack !== null) {
+                logJSON.stack = log.stack;
             }
 
             logBatch.logs.push(logJSON);
@@ -146,7 +173,7 @@ export enum LogType {
 export class Log {
     public _timestamp: Date;
 
-    public constructor(public type: LogType, public data: Array<any>, public tags?: Array<string>) {
+    public constructor(public type: LogType, public data: Array<any>, public stack?: string, public tags?: Array<string>) {
         this._timestamp = new Date();
     }
 
