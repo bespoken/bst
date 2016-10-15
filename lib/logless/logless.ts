@@ -36,7 +36,9 @@ export class Logless {
             // This can then lead to multiple flushes, but we don't want to lose the logs if this exception
             //  caused the program to not return successfully
             console.error(error);
-            Logless._context.flush();
+            Logless._context.flush(function () {
+
+            });
         });
     }
 

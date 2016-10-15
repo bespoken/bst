@@ -1,4 +1,4 @@
-import * as https from "http";
+import * as http from "http";
 import * as util from "util";
 const uuid = require("uuid");
 import {IncomingMessage} from "http";
@@ -25,22 +25,25 @@ export class LoglessContext {
         const done = context.done;
         context.done = function(error: any, result: any) {
             self.captureResponse(error, result);
-            self.flush();
-            done(error, result);
+            self.flush(function () {
+                done(error, result);
+            });
         };
 
         const fail = context.fail;
         context.fail = function(error: any) {
             self.captureResponse(error, null);
-            self.flush();
-            fail(error);
+            self.flush(function () {
+                fail(error);
+            });
         };
 
         const succeed = context.succeed;
         context.succeed = function(result: any) {
             self.captureResponse(null, result);
-            self.flush();
-            succeed(result);
+            self.flush(function () {
+                succeed(result);
+            });
         };
 
         // Capture the request event
@@ -49,8 +52,9 @@ export class LoglessContext {
         if (wrappedCallback !== undefined && wrappedCallback !== null) {
             this._callback = function(error: any, result: any) {
                 self.captureResponse(error, result);
-                self.flush();
-                wrappedCallback.call(this, error, result);
+                self.flush(function () {
+                    wrappedCallback.call(this, error, result);
+                });
             };
         }
     }
@@ -107,10 +111,11 @@ export class LoglessContext {
         return this._transactionID;
     }
 
-    public flush() {
+    public flush(flushed?: () => void) {
+
         const logBatch = {
             source: this._source,
-            transactionID: this.transactionID(),
+            transaction_id: this.transactionID(),
             logs: new Array()
         };
 
@@ -120,7 +125,7 @@ export class LoglessContext {
 
             const logJSON: any = {
                 payload: payload,
-                type: LogType[log.type],
+                log_type: LogType[log.type],
                 timestamp: timestamp,
             };
 
@@ -138,13 +143,18 @@ export class LoglessContext {
         const dataAsString = JSON.stringify(logBatch);
         const dataLength = Buffer.byteLength(dataAsString);
         const options = {
-            host: "logless.io",
-            port: 443,
-            path: "/capture",
+            // host: "logless.io",
+            host: "logless-server-049ff85c.4a0ac639.svc.dockerapp.io",
+            // host: "www.mocky.io",
+            port: 3000,
+            // port: 80,
+            path: "/v1/receive",
+            // path: "/v2/5185415ba171ea3a00704eed",
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Content-Length": dataLength
+                "Content-Length": dataLength,
+                "Connection": "keep-alive"
             }
         };
 
@@ -154,12 +164,21 @@ export class LoglessContext {
             response.on("data", function (chunk: Buffer) {
                 console.log("Response: " + chunk);
             });
+
+            response.on("end", function () {
+                console.log("Time: " + (new Date().getTime() - startTime));
+            });
         });
 
-        // Post the data
-        httpRequest.write(dataAsString);
-        httpRequest.end();
+        httpRequest.setNoDelay(true);
+        const startTime = new Date().getTime();
 
+        httpRequest.end(dataAsString, function () {
+            if (flushed !== undefined) {
+                console.log("TimeEnd: " + (new Date().getTime() - startTime));
+                flushed();
+            }
+        });
         // Clear the queue
         this._queue = [];
     }
@@ -169,7 +188,7 @@ export class LoglessContext {
     }
 
     public httpRequest(options: any, callback: (response: IncomingMessage) => void): ClientRequest {
-        return https.request(options, callback);
+        return http.request(options, callback);
     }
 }
 

@@ -67,6 +67,27 @@ describe("Logless", function() {
             handler.call(this, {request: true}, context);
         });
 
+        it("Logs real stuff", function (done) {
+            context.awsRequestId = "FakeAWSRequestId";
+            // Need to do this first, as it gets wrapped by Logless.capture
+            context.done = function (error: Error, result: any) {
+                assert.equal(error, null);
+                assert(result);
+                done();
+            };
+
+            // Emulate a lambda function
+            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
+                console.log("I am a log with %s %s", "Test", "Test2");
+                console.info("I am info");
+                console.warn("I am a warning");
+                console.error("I am an error");
+                context.done(null, "PAYLOAD NOW 3");
+            });
+
+            handler.call(this, "Request", context);
+        });
+
         it("Logs stuff on done with error", function (done) {
             delete context.awsRequestId;
             // Need to do this first, as it gets wrapped by Logless.capture
