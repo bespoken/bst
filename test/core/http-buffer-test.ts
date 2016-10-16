@@ -43,6 +43,26 @@ describe("HTTPBuffer", function() {
             done();
         });
 
+        it("Chunked payload, headers and body split", function (done) {
+            // I would not expect this test to be necessary, but this happened
+            //  A payload came in two parts, exactly split between header and body
+            //  In this case, the header is defined, but no body yet, and that ends up in an undefined error!
+            let headers = BufferUtil.fromString("POST /test?this=1 HTTP/1.1\r\nContent-Type: application/json; charset=utf-8\r\nTransfer-Encoding: chunked\r\n\r\n");
+            let body = BufferUtil.fromString("a\r\n1234567890\r\n0\r\n\r\n");
+            let httpBuffer = new HTTPBuffer();
+            httpBuffer.append(headers);
+            httpBuffer.complete();
+            httpBuffer.append(body);
+            assert(httpBuffer.complete());
+            assert(httpBuffer.hasHeader("Content-Type"));
+            assert.equal(httpBuffer.body(), "1234567890");
+            assert.equal(httpBuffer.statusCode(), undefined);
+            assert.equal(httpBuffer.method(), "POST");
+            assert.equal(httpBuffer.uri(), "/test?this=1");
+            done();
+        });
+
+
         it("Advanced chunked payload", function (done) {
             // Got this directly from actual sniffing of payloads
             //  {"version":"1.0","response":{"shouldEndSession":true,"card":{"type":"Simple","title":"Playing Episode 140","content":"Playing Episode 140"},"directives":[{"type":"AudioPlayer.Play","playBehavior":"REPLACE_ALL","audioItem":{"stream":{"url":"https://feeds.soundcloud.com/stream/275202399-amazon-web-services-306355661-amazon-web-services.mp3","token":"0","expectedPreviousToken":null,"offsetInMilliseconds":0}}}]},"sessionAttributes":{"playOrder":[0,1,2,3,4,5],"index":0,"offsetInMilliseconds":0,"loop":true,"shuffle":false,"playbackIndexChanged":false,"enqueuedToken":null,"STATE":"_PLAY_MODE"}}

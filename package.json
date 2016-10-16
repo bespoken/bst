@@ -39,12 +39,13 @@
   "scripts": {
     "library": "tsc --declaration index.ts --target ES6",
     "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
-    "preversion": "npm run typedoc && git add docs/api && git commit -m 'Updated generated API docs'",
-    "postversion": "git push && git push --tags",
     "pretest": "typings install && tsc && npm run lint",
-    "coverage": "typings install && tsc && istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
-    "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
     "test": "mocha test/**/*-test.js",
-    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts"
+    "precoverage": "typings install && tsc && npm run lint",
+    "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
+    "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
+    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts",
+    "preversion": "npm run typedoc && git add docs/api && git commit -m 'Updated generated API docs'",
+    "postversion": "git push && git push --tags"
   }
 }
