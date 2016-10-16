@@ -51,7 +51,7 @@ export class HTTPBuffer {
             // If we have the headers, then check the body
             if (this._headers !== undefined) {
                 let chunked = this.hasHeader("Transfer-Encoding") && this.header("Transfer-Encoding").toLowerCase() === "chunked";
-                if (chunked) {
+                if (chunked && this._rawBody !== undefined) {
                     let chunks = this.parseChunks();
                     // Only store the chunks if they are finalized
                     if (chunks !== null && chunks.length > 0 && chunks[chunks.length - 1].lastChunk()) {
