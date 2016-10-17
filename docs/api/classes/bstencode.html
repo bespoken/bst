@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AudioItem | Bespoken Tools</title>
+	<title>BSTEncode | Bespoken Tools</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,10 +53,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="audioitem.html">AudioItem</a>
+					<a href="bstencode.html">BSTEncode</a>
 				</li>
 			</ul>
-			<h1>Class AudioItem</h1>
+			<h1>Class BSTEncode</h1>
 		</div>
 	</div>
 </header>
@@ -66,16 +66,18 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Information about an AudioItem.</p>
+						<p>Encodes an audio file for use in SSML of OutputSpeech.</p>
 					</div>
-					<p>Directly ties off to the JSON payload from Alexa.</p>
+					<p>Once encoded it uploads it to S3.</p>
+					<p>This tool encodes file compliant to <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference" class="external">Alexa standards</a>:
+					MP3, 48 kbps, 16000 hz</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">AudioItem</span>
+						<span class="target">BSTEncode</span>
 					</li>
 				</ul>
 			</section>
@@ -86,19 +88,14 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="audioitem.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitem.html#stream" class="tsd-kind-icon">stream</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="bstencode.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="audioitem.html#clone" class="tsd-kind-icon">clone</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstencode.html#encodefileandpublish" class="tsd-kind-icon">encode<wbr>File<wbr>And<wbr>Publish</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstencode.html#encodeurlandpublish" class="tsd-kind-icon">encodeURLAnd<wbr>Publish</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,60 +107,147 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Audio<wbr>Item<span class="tsd-signature-symbol">(</span>_json<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="audioitem.html" class="tsd-signature-type">AudioItem</a></li>
+						<li class="tsd-signature tsd-kind-icon">new BSTEncode<span class="tsd-signature-symbol">(</span>awsConfiguration<span class="tsd-signature-symbol">: </span><a href="../interfaces/awsencoderconfig.html" class="tsd-signature-type">AWSEncoderConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstencode.html" class="tsd-signature-type">BSTEncode</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/f9278b8/lib/alexa/audio-item.ts#L7">alexa/audio-item.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/f9278b8/lib/client/bst-encode.ts#L29">client/bst-encode.ts:29</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>The <a href="../interfaces/awsencoderconfig.html">awsConfiguration</a> contains AWS credentials and S3 bucket to upload to</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>_json: <span class="tsd-signature-type">any</span></h5>
+									<h5>awsConfiguration: <a href="../interfaces/awsencoderconfig.html" class="tsd-signature-type">AWSEncoderConfig</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+										</div>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="audioitem.html" class="tsd-signature-type">AudioItem</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="bstencode.html" class="tsd-signature-type">BSTEncode</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="stream" class="tsd-anchor"></a>
-					<h3>stream</h3>
-					<div class="tsd-signature tsd-kind-icon">stream<span class="tsd-signature-symbol">:</span> <a href="audioitemstream.html" class="tsd-signature-type">AudioItemStream</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/f9278b8/lib/alexa/audio-item.ts#L7">alexa/audio-item.ts:7</a></li>
-						</ul>
-					</aside>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="clone" class="tsd-anchor"></a>
-					<h3>clone</h3>
+					<a name="encodefileandpublish" class="tsd-anchor"></a>
+					<h3>encode<wbr>File<wbr>And<wbr>Publish</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">clone<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="audioitem.html" class="tsd-signature-type">AudioItem</a></li>
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>File<wbr>And<wbr>Publish<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/f9278b8/lib/alexa/audio-item.ts#L20">alexa/audio-item.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/f9278b8/lib/client/bst-encode.ts#L44">client/bst-encode.ts:44</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Clone function to prevent changes being made to internal state</p>
+									<p>Encodes a file and publishes it to S3</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="audioitem.html" class="tsd-signature-type">AudioItem</a></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Returns the URL of the encoded file on S3. Error if there is any.</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span>, encodedURL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>error: <span class="tsd-signature-type">Error</span></h5>
+														</li>
+														<li>
+															<h5>encodedURL: <span class="tsd-signature-type">string</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="encodeurlandpublish" class="tsd-anchor"></a>
+					<h3>encodeURLAnd<wbr>Publish</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">encodeURLAnd<wbr>Publish<span class="tsd-signature-symbol">(</span>sourceURL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/f9278b8/lib/client/bst-encode.ts#L62">client/bst-encode.ts:62</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes a URL and publishes it to S3</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>sourceURL: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The URL of the file to encode</p>
+									</div>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Returns the URL of the encoded file on S3. Error if there is any.</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span>, encodedURL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>error: <span class="tsd-signature-type">Error</span></h5>
+														</li>
+														<li>
+															<h5>encodedURL: <span class="tsd-signature-type">string</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -179,24 +263,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class=" tsd-kind-class">
 						<a href="audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="audioitem.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="audioitem.html#stream" class="tsd-kind-icon">stream</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="audioitem.html#clone" class="tsd-kind-icon">clone</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="audioitemstream.html" class="tsd-kind-icon">Audio<wbr>Item<wbr>Stream</a>
 					</li>
@@ -206,9 +275,24 @@
 					<li class=" tsd-kind-class">
 						<a href="bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
 					</li>
-					<li class=" tsd-kind-class">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
 						<a href="bstencode.html" class="tsd-kind-icon">BSTEncode</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="bstencode.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstencode.html#encodefileandpublish" class="tsd-kind-icon">encode<wbr>File<wbr>And<wbr>Publish</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bstencode.html#encodeurlandpublish" class="tsd-kind-icon">encodeURLAnd<wbr>Publish</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
 					</li>

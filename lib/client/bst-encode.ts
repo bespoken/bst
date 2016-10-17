@@ -9,33 +9,39 @@ import {IncomingMessage} from "http";
 const AWS = require("aws-sdk");
 
 export interface AWSEncoderConfig {
-    region: string;
     bucket: string;
     accessKeyId: string;
     secretAccessKey: string;
 }
 
 /**
- * Encodes an audio file for use in SSML of OutputSpeech
+ * Encodes an audio file for use in SSML of OutputSpeech.
  *
- * Once encoded it uploads it to S3
+ * Once encoded it uploads it to S3.
+ *
+ * This tool encodes file compliant to [Alexa standards]{@link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference}:
+ * MP3, 48 kbps, 16000 hz
  */
-export class BSTEncoder {
+export class BSTEncode {
     private static EncoderHost = "elb-ecs-bespokenencoder-dev-299768275.us-east-1.elb.amazonaws.com";
     private static EncoderPath = "/encode";
 
     private _awsConfiguration: AWSEncoderConfig;
 
-    public constructor(awsConfiguration?: AWSEncoderConfig) {
+    /**
+     * The [awsConfiguration]{@link AWSEncoderConfig} contains AWS credentials and S3 bucket to upload to
+     * @param awsConfiguration
+     */
+    public constructor(awsConfiguration: AWSEncoderConfig) {
         this._awsConfiguration = awsConfiguration;
     }
 
     /**
-     *
+     * Encodes a file and publishes it to S3
      * @param filePath
-     * @param callback
+     * @param callback Returns the URL of the encoded file on S3. Error if there is any.
      */
-    public encodeAndPublishFile(filePath: string, callback: (error: Error, encodedURL: string) => void): void {
+    public encodeFileAndPublish(filePath: string, callback: (error: Error, encodedURL: string) => void): void {
         const self = this;
         FileUtil.readFile(filePath, function(data: Buffer) {
             const fp = path.parse(filePath);
@@ -48,15 +54,19 @@ export class BSTEncoder {
         });
     }
 
-    public encodeAndPublishURL(url: string, callback: (error: Error, encodedURL: string) => void): void {
+    /**
+     * Encodes a URL and publishes it to S3
+     * @param sourceURL The URL of the file to encode
+     * @param callback Returns the URL of the encoded file on S3. Error if there is any.
+     */
+    public encodeURLAndPublish(sourceURL: string, callback: (error: Error, encodedURL: string) => void): void {
         const self = this;
-        self.callEncode(url, function(error: Error, encodedURL: string) {
+        self.callEncode(sourceURL, function(error: Error, encodedURL: string) {
             callback(error, encodedURL);
         });
     }
 
     private uploadFile(bucket: string, name: string, data: Buffer, callback: (uploadedURL: string) => void) {
-        const self = this;
         if (this._awsConfiguration === undefined) {
             throw new Error("No AWS Configuration parameters defined");
         }
@@ -67,15 +77,14 @@ export class BSTEncoder {
         };
 
         const config = {
-            credentials: credentials,
-            region: this._awsConfiguration.region
+            credentials: credentials
         };
 
         const s3 = new AWS.S3(config);
 
         const params = {Bucket: bucket, Key: name, Body: data, ACL: "public-read"};
-        s3.putObject(params, function (error: Error, data: Buffer) {
-            callback(self.urlForS3(self.region(), bucket, name));
+        s3.putObject(params, function (error: Error) {
+            callback(BSTEncode.urlForS3(bucket, name));
         });
     }
 
@@ -90,8 +99,8 @@ export class BSTEncoder {
         const newFilename = basename + "-encoded.mp3";
 
         const options = {
-            host: BSTEncoder.EncoderHost,
-            path: BSTEncoder.EncoderPath,
+            host: BSTEncode.EncoderHost,
+            path: BSTEncode.EncoderPath,
             method: "POST",
             headers: {
                 accessKeyId: this._awsConfiguration.accessKeyId,
@@ -112,7 +121,7 @@ export class BSTEncoder {
                 });
 
                 response.on("end", function () {
-                    const officialURL = self.urlForS3(self.region(), self.bucket(), newFilename);
+                    const officialURL = BSTEncode.urlForS3(self.bucket(), newFilename);
                     callback(null, officialURL);
                 });
             }
@@ -121,19 +130,11 @@ export class BSTEncoder {
         request.end();
     }
 
-    private region(): string {
-        let region = this._awsConfiguration.region;
-        if (region === undefined || region === null) {
-            region = "us-east-1";
-        }
-        return region;
-    }
-
     private bucket(): string {
         return this._awsConfiguration.bucket;
     }
 
-    private urlForS3(region: string, bucket: string, key: string) {
-        return "https://s3.dualstack." + region + ".amazonaws.com/" + bucket + "/" + key;
+    private static urlForS3(bucket: string, key: string) {
+        return "https://s3.amazonaws.com/" + bucket + "/" + key;
     }
 }

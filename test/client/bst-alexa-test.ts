@@ -5,7 +5,6 @@ import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 import * as sinon from "sinon";
-import {AudioItem} from "../../lib/alexa/audio-item";
 
 describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;

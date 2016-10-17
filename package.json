@@ -46,6 +46,6 @@
     "coverage": "typings install && tsc && istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
     "test": "mocha test/**/*-test.js",
-    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts"
+    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/bst-encode.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts"
   }
 }

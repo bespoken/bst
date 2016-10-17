@@ -63,14 +63,16 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="bespoken-tools-reference-api">Bespoken Tools Reference API</h1>
 				<h1 id="overview">Overview</h1>
-				<p>We currently only expose two primary classes:</p>
+				<p>We currently only expose three primary classes:</p>
 				<ul>
 					<li><a href="classes/bstalexa.html">BSTAlexa</a></li>
+					<li><a href="classes/bstencode.html">BSTEncode</a></li>
 					<li><a href="classes/lambdaserver.html">LambdaServer</a></li>
 				</ul>
 				<p>We make them available to facilitate testing of Skills using our emulator.</p>
 				<p><a href="classes/bstalexa.html">BSTAlexa</a> is our Alexa emulator. It allows one to write unit tests and functional tests that mimic the functionality of the Alexa service.</p>
 				<p>The <a href="classes/lambdaserver.html">LambdaServer</a> makes it easy to run your Lambdas locally for unit and functional tests.</p>
+				<p><a href="classes/bstencode.html">BSTEncode</a> encodes audio files to <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference">Alexa standards</a> and makes them available via S3.</p>
 				<p>We will be adding more classes as we go forward.</p>
 				<h1 id="example-unit-test">Example Unit Test</h1>
 				<p>Below is a simple example Mocha test. </p>
@@ -172,7 +174,13 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
 						<a href="classes/bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/bstencode.html" class="tsd-kind-icon">BSTEncode</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/awsencoderconfig.html" class="tsd-kind-icon">AWSEncoder<wbr>Config</a>
 					</li>
 				</ul>
 			</nav>
