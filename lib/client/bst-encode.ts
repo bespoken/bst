@@ -15,11 +15,11 @@ export interface AWSEncoderConfig {
 }
 
 /**
- * Encodes an audio file for use in SSML of OutputSpeech.
+ * Encodes an audio file so that it can be used in Alexa responses, as part of an <audio> tag in an SSML response.
  *
- * Once encoded it uploads it to S3.
+ * Once encoded it uploads it to S3 so it is accessible to Alexa.
  *
- * This tool encodes file compliant to [Alexa standards]{@link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference}:
+ * This tool encodes the file in compliance with [Alexa standards]{@link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference}:
  * MP3, 48 kbps, 16000 hz
  */
 export class BSTEncode {
