@@ -15,7 +15,7 @@ export interface AWSEncoderConfig {
 }
 
 /**
- * Encodes an audio file so that it can be used in Alexa responses, as part of an <audio> tag in an SSML response.
+ * Encodes an audio file so that it can be used in Alexa responses, as part of an &lt;audio&gt; tag in an SSML response.
  *
  * Once encoded it uploads it to S3 so it is accessible to Alexa.
  *
