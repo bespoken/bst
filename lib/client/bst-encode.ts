@@ -17,9 +17,11 @@ export interface AWSEncoderConfig {
 /**
  * Encodes an audio file so that it can be used in Alexa responses, as part of an &lt;audio&gt; tag in an SSML response.
  *
- * Once encoded it uploads it to S3 so it is accessible to Alexa.
+ * Allows for the use of pre-recorded audio in "regular" (i.e., non-AudioPlayer) skills. More info [here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/handling-requests-sent-by-alexa#h2_pre-recorded-audio).
  *
- * This tool encodes the file in compliance with [Alexa standards]{@link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference}:
+ * Once the audio is encoded, BSTEncode uploads it to S3 so it is accessible to Alexa.
+ *
+ * Audio is encoded in compliance with [Alexa standards]{@link https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference}:
  * MP3, 48 kbps, 16000 hz
  */
 export class BSTEncode {
