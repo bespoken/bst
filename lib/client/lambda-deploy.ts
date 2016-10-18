@@ -3,13 +3,15 @@ import * as os from "os";
 import * as path from "path";
 
 import async = require("async");
-import wrench = require("wrench");
 
 import {LambdaConfig} from "./lambda-config";
 import {LoggingHelper} from "../core/logging-helper";
 
+// V2
+// const nodeZip = require("node-zip");
+// import wrench = require("wrench");
+
 const aws = require("aws-sdk");
-const nodeZip = require("node-zip");
 const exec = require("child_process").exec;
 
 let logger = "LambdaDeploy";
@@ -298,10 +300,9 @@ export class LambdaDeploy {
      */
 
     private postInstallScript(codeDirectory: string, callback: (err: Error) => any) {
-
         callback(null);
 
-        /**** V2
+        /***** V2
 
         let script_filename = "post-install.sh";
         let cmd = this.lambdaFolder + "/" + script_filename;
@@ -344,6 +345,10 @@ export class LambdaDeploy {
     }
 
     private archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
+        callback(null);
+
+        /**** V2
+
         let codeDirectory = this.codeDirectory();
 
         this.copyFiles(this.lambdaConfig.PREBUILT_DIRECTORY, codeDirectory, false, function (err: Error) {
@@ -359,6 +364,7 @@ export class LambdaDeploy {
                 this.zipFiles(codeDirectory, callback);
             }
         });
+        */
     }
 
     private codeDirectory = function () {
@@ -391,6 +397,10 @@ export class LambdaDeploy {
     };
 
     public zipFiles = function (codeDirectory: string, callback: (err: Error, buffer?: Buffer) => any) {
+        callback(null);
+
+        /**** V2
+
         let options = {
             type: "nodebuffer",
             compression: "DEFLATE"
@@ -411,6 +421,7 @@ export class LambdaDeploy {
         let data = nodeZip.generate(options);
 
         return callback(null, data);
+        */
     };
 
     public copyFiles(src: string, dest: string, excludeNodeModules: boolean, callback: (err: Error) => any) {

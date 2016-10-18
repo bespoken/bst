@@ -50,6 +50,40 @@ describe("LambdaDeploy", function() {
     let lambdaConfig = LambdaConfig.create();
     let awsHelper = LambdaAws.create(lambdaConfig);
 
+    describe("initializes the lambda configuration", function() {
+        let oldHome: string = null;
+
+        beforeEach(function () {
+            oldHome = process.env.HOME;
+        });
+
+        afterEach(function () {
+            process.env.HOME = oldHome;
+        });
+
+        it("checks config (good home)", function (done) {
+            lambdaConfig.initialize();
+
+            if (lambdaConfig.AWS_ACCESS_KEY_ID) {
+                done();
+            } else {
+                done(new Error("No AWS access key (bad home)"));
+            }
+        });
+
+        it("checks config (bad home)", function (done) {
+            process.env.HOME = "/Users/foo";
+
+            lambdaConfig.initialize();
+
+            if (lambdaConfig.AWS_ACCESS_KEY_ID) {
+                done();
+            } else {
+                done(new Error("No AWS access key (bad home)"));
+            }
+        });
+    });
+
     describe("prepares the lambda function code", function() {
         beforeEach(function () {
             process.chdir("test/resources");
@@ -151,6 +185,20 @@ describe("LambdaDeploy", function() {
             }, 2000);
         });
 
+        it("creates invalid role", function (done) {
+            console.log("Waited 2 seconds for AWS after delete");
+            awsHelper.createRole("#$%^&*_i_hope_invalid")
+                .then((arn: string) => {
+                    console.error("Created role: " + arn);
+                    testRoleArn = arn;
+                    done(new Error("Created invalid role"));
+                })
+                .catch((err) => {
+                    console.log("Error creating AWS role: " + err);
+                    done();
+                });
+        });
+
         it("finds a role", function(done) {
             awsHelper.getRole(testAwsRole)
                 .then((arn: string) => {
@@ -162,6 +210,55 @@ describe("LambdaDeploy", function() {
                     done(err);
                 });
         });
+
+        it("finds nonexistent role", function(done) {
+            awsHelper.getRole("this_doesnt_exist")
+                .then((arn: string) => {
+                    if (arn) {
+                        console.error("Role was found");
+                        done(new Error("Nonexistent role found"));
+                    } else {
+                        done();
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error finding AWS role: " + err);
+                    done();
+                });
+        });
+
+        it("deletes nonexistent role", function(done) {
+            awsHelper.deleteRole("this_doesnt_exist")
+                .then((arn: string) => {
+                    if (arn) {
+                        console.error("Role was found");
+                        done(new Error("Nonexistent role was deleted"));
+                    } else {
+                        done();
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error deleting AWS role: " + err);
+                    done();
+                });
+        });
+
+        it("deletes nonexistent function", function(done) {
+            awsHelper.deleteFunction("this_doesnt_exist")
+                .then((arn: string) => {
+                    if (arn) {
+                        console.error("function was found");
+                        done(new Error("Nonexistent function was deleted"));
+                    } else {
+                        done();
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error deleting function " + err);
+                    done();
+                });
+        });
+
     });
 
     describe("installs new lambda", function() {
@@ -176,6 +273,18 @@ describe("LambdaDeploy", function() {
             } catch (err) {
                 done(new Error("Parameter validation error: " + err));
             }
+
+            awsHelper.deleteFunction(testAwsLambda)
+                .then((arn: string) => {
+                    if (arn) {
+                        console.log("Function was deleted");
+                    } else {
+                        console.log("Function was not deleted (wasn't there)");
+                    }
+                })
+                .catch((err) => {
+                    console.log("Error deleting function: " + err);
+                });
 
             lambdaConfig.AWS_ROLE_ARN = testRoleArn;
             lambdaConfig.AWS_FUNCTION_NAME = testAwsLambda;

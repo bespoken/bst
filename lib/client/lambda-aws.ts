@@ -252,4 +252,21 @@ export class LambdaAws {
                 });
         });
     }
+
+    public deleteFunction(functionName: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.lambda.deleteFunction({"FunctionName": functionName}).promise()
+                .then((data: any) => {
+                    resolve(data);
+                })
+                .catch((err: any) => {
+                    if (err.code === "NoSuchEntity") {
+                        resolve(err.code);
+                    }
+                    else {
+                        reject(err);
+                    }
+                });
+        });
+    }
 }

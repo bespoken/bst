@@ -4,8 +4,6 @@ import {Global} from "../core/global";
 
 let PropertiesReader = require("properties-reader");
 
-let home: string = process.env[(process.platform === "win32") ? "USERPROFILE" : "HOME"];
-
 export class LambdaConfig {
 
     /**
@@ -76,6 +74,8 @@ export class LambdaConfig {
         // Get AWS credentials and region first
 
         try {
+            let home: string = process.env[(process.platform === "win32") ? "USERPROFILE" : "HOME"];
+
             awsConfig = PropertiesReader(home + "/.aws/config").append(home + "/.aws/credentials");
         } catch (err) {
             if (err.code === "ENOENT") {
