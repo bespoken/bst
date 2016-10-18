@@ -2,17 +2,20 @@
 
 import * as assert from "assert";
 import {BSTEncode} from "../../lib/client/bst-encode";
-const AWS = require("aws-sdk");
+
+const awsAccessKeyId = process.env["AWS_ACCESS_KEY_ID"];
+const awsSecretAccessKey = process.env["AWS_SECRET_ACCESS_KEY"];
 
 describe("BSTEncode", function() {
+
     describe("#encodeAndPublishURL()", function() {
         it("Encodes and Publishes a URL", function (done) {
-            const s3 = new AWS.S3();
+            if (doNotRun(this, done)) return;
 
             const config = {
                 bucket: "bespoken/encoded",
-                accessKeyId: s3.config.credentials.accessKeyId,
-                secretAccessKey: s3.config.credentials.secretAccessKey
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey
             };
 
             let encoder = new BSTEncode(config);
@@ -24,12 +27,12 @@ describe("BSTEncode", function() {
         });
 
         it("Encodes and Publishes a URL that is m4a", function (done) {
-            const s3 = new AWS.S3();
+            if (doNotRun(this, done)) return;
 
             const config = {
                 bucket: "bespoken/encoded",
-                accessKeyId: s3.config.credentials.accessKeyId,
-                secretAccessKey: s3.config.credentials.secretAccessKey
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey
             };
 
             let encoder = new BSTEncode(config);
@@ -41,12 +44,12 @@ describe("BSTEncode", function() {
         });
 
         it("Tries to encode bad URL", function (done) {
-            const s3 = new AWS.S3();
+            if (doNotRun(this, done)) return;
 
             const config = {
                 bucket: "bespoken/encoded",
-                accessKeyId: s3.config.credentials.accessKeyId,
-                secretAccessKey: s3.config.credentials.secretAccessKey
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey
             };
 
             let encoder = new BSTEncode(config);
@@ -60,12 +63,12 @@ describe("BSTEncode", function() {
     describe("#encodeAndPublishFile()", function() {
         it("Encodes and Publishes a file", function (done) {
             this.timeout(10000);
-            const s3 = new AWS.S3();
+            if (doNotRun(this, done)) return;
 
             const config = {
                 bucket: "bespoken/encoded",
-                accessKeyId: s3.config.credentials.accessKeyId,
-                secretAccessKey: s3.config.credentials.secretAccessKey
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey
             };
 
             let encoder = new BSTEncode(config);
@@ -77,3 +80,11 @@ describe("BSTEncode", function() {
         });
     });
 });
+
+function doNotRun(test: any, done: Function): boolean {
+    if (awsAccessKeyId === undefined || awsSecretAccessKey === undefined) {
+        assert(false, "AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables must be set for these tests\n" +
+            " OR AWS_SKIP_TESTS must be set to true.");
+        return true;
+    }
+}
