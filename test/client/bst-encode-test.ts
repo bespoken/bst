@@ -83,8 +83,7 @@ describe("BSTEncode", function() {
 
 function doNotRun(test: any, done: Function): boolean {
     if (awsAccessKeyId === undefined || awsSecretAccessKey === undefined) {
-        console.warn("AWS dependent test skipped. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables must be set for these tests\n" +
-            " Test: " + test.test.title);
+        console.warn("AWS dependent test skipped. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables must be set for these tests");
         return true;
     }
 }
