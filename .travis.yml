@@ -1,13 +1,17 @@
 language: node_js
 node_js:
-  - "6"
-  - "5"
-  - "4"
-  - "4.4.7"
-  - "4.4.6"
-  - "4.4.5"
-  - "4.4.4"
+- '6'
+- '5'
+- '4'
+- 4.4.7
+- 4.4.6
+- 4.4.5
+- 4.4.4
 script: npm run coveralls
 branches:
   only:
-    - "master"
+  - master
+env:
+  global:
+  - secure: AVFl7Vt3QZLq8S2KblbYWZVaU7dNI01tphAkoDO4suLQgcqtncp8aMyLsL+W3Q0mbALNtGlVXShKJOgA9ahsB7WYb0v3kPmqgc3l3x10PvDH/w+H86+guvqhIPV8Qc8OrIGnjZ0smtrVF3MIWb67bauE0OoGEEDXxi/m8Yk+Tz8tR1jeXgu1fEZ/1OHWDVcxqr8zBMwHl7DW1O7PWhygl5mp92PQgYUDBOAd1PUcmWtRSYj3XRmGJLxnA0YY/4R3CRwYLVYBrEGULD4TKxYolVKFaA+/yIbiSh5/iNWLs5B0B/IVTjwmV2FKsAS2k1ZlRWDoqjd5r1W9fF3mevlFmyJ4W/eHkf1zatQ9hFlnLTZYog79sCuWdCvedQhRRgxoA+irKjUcdujVd5G8w41l/6PerYetDby2Jd66MGneUXUplXEaZaEJdTH+JioVkS3/0u7vDoNQcKX/ymiDVmxLhVKrWUgeMjp/lpH+AqQoWMXEsO81apxD0rB00nPk17ODGWVcz6L5BaxBA90vBgc/GICFggqkictHoVal2NQ+FLby6Y8c7Y2rUhq78zOGLKD54hZDmFmhwphVJxyUOvClfF11i0YwJp4sEvW12C+YAikDQOgJ0ENjsv+iv4F2i93Vf7H2YMxML0d5GIjV++gFYem1jVZdLC10zuL2Nq0ezU0=
+  - secure: TycCCmD+k3wniKkKsJ8/yFs5DMqhOxCelHppQqobxrihaVOn2+/kjjIut3X5j9yJ+mPxjxrTUa6MSRPKYMQuRlBTMnqJcc3HhugrKOcV+pYJB1b3kLjRBE/8Rf4Pm42kmoMZjxMOWUmR9F+HJ/VmZIu1Tf4TMKuYpzCdry/H5ms8gU7dWq6KpAbZ0t93X6KmHr0Rkbz/OuxP8rmx6uIfG6bQ8nrnisFafi6KeyV8Vf5QP2DNy9jaogYb5qcGycmEBu1l0KGf4jcu6Ol9iiytNaATMmbLT74/xIMJXRWDQmlUIax1z0zrITggAFbFWKM6x3g2xzEq5nIyWtSN5Is7pcpRVY9wIbdtrqn4U1IKEIdZu3FLkfvGxlmAeEWmpdOnIrT0phjtRED0/L+MWSCfdUthbUwiGaaYOwNDKCQk08ul85SuFTHha5Mla1j9ZyLUQ0zVXyf0sRXnpj7cVxH6fkWs8NZ1y/BSt1yjetTnqE2c3hO8T1lWSHXVOztlqxQtHj8y0lg7a0pGNP71wij4RzpMMAXFk1bAf7z0zV5LMGZETuy39GJdUeJKB2+0cxMC+8D8L7xb4giK+3cLy39482j5PJcqXFZKwmCH+k9oM86W6OCEMQ/OyhwCBA+emp+9mESQl8AYPWywTZqNAeFnY2IPy/ksAo8G/kiVD7oFmko=
