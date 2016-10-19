@@ -1,0 +1,4 @@
+app:
+  build:
+    image: xappmedia/bst-server
+    dockerfile_path: docker/Dockerfile
