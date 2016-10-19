@@ -12,6 +12,6 @@ EXPOSE 5000
 
 WORKDIR /opt/bst
 
-RUN echo Test: $CI_BRANCH_ID
+RUN echo Test: "$CI_BRANCH" P "$PATH"
 
-RUN echo Test2: ${CI_BRANCH_ID}
+RUN echo Test2: "${CI_BUILD_ID}" "${CI_BRANCH}"

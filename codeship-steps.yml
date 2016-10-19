@@ -1,6 +1,7 @@
 - name: prepare
   service: app
-  command: echo One $CI_BUILD_ID Two ${CI_BUILD_ID}
+  command: echo One $CI_BUILD_ID Two ${CI_BUILD_ID} Three $CI_BRANCH ${CI_BRANCH}
+  encrypted_dockercfg_path: docker/dockercfg.encrypted
 
 - name: DockerHub push
   type: push
