@@ -43,15 +43,15 @@ export class BespokeServer {
                     let node = self.nodeManager.node(webhookRequest.nodeID());
 
                     if (node == null) {
+                        HTTPHelper.respond(webhookRequest.sourceSocket, 404, "Node is not active: " + webhookRequest.nodeID());
+
                         // Capture the request was not forwarded
                         Statistics.instance().record(webhookRequest.nodeID(), AccessType.REQUEST_DROPPED);
-
-                        HTTPHelper.respond(webhookRequest.sourceSocket, 404, "Node is not active: " + webhookRequest.nodeID());
                     } else {
+                        node.forward(webhookRequest);
+
                         // Capture the request was forwarded
                         Statistics.instance().record(node.id, AccessType.REQUEST_FORWARDED);
-
-                        node.forward(webhookRequest);
                     }
                 }
             }

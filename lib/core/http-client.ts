@@ -8,6 +8,7 @@ export class HTTPClient {
     public post(host: string, port: number, path: string, data: string, callback?: (data: Buffer, statusCode: number, success: boolean) => void) {
         // An object of options to indicate where to post to
         let post_options = {
+            agent: false,
             host: host,
             port: port,
             path: path,
@@ -23,10 +24,12 @@ export class HTTPClient {
         let post_req = http.request(post_options, function(response) {
             // response.setEncoding("utf8");
             response.on("data", function (chunk: Buffer) {
+                console.log("Chunk: " + chunk.toString());
                 responseData = Buffer.concat([responseData, chunk]);
             });
 
             response.on("end", function () {
+                console.log("End");
                 if (callback !== undefined && callback !== null) {
                     callback(responseData, response.statusCode, true);
                 }

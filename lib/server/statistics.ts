@@ -22,7 +22,11 @@ export class Statistics {
     private docClient (): any {
         this.configure();
         if (this._docClient === null) {
-            this._docClient = new AWS.DynamoDB.DocumentClient();
+            console.time("OpenClient");
+            this._docClient = new AWS.DynamoDB.DocumentClient({
+                maxRetries: 0
+            });
+            console.timeEnd("OpenClient");
         }
         return this._docClient;
     }
@@ -69,6 +73,7 @@ export class Statistics {
     }
 
     public record (nodeID: string, accessType: AccessType, confirmation?: (error?: Error) => void) {
+        console.time("Statistics.record");
         const self = this;
 
         const timestamp = new Date().toISOString();
@@ -86,6 +91,7 @@ export class Statistics {
         console.log("Access Node: " + nodeID + " Time: " + timestamp + " Access: " + AccessType[accessType]);
         docClient.put(dynamoParams, function(error: any) {
             if (error) {
+                console.error("DynamoPutError: " + error);
                 console.assert(error.code, "ResourceNotFoundException");
                 self.createTable(function () {
                     self.record(nodeID, accessType, confirmation);
@@ -96,6 +102,7 @@ export class Statistics {
                 }
             }
         });
+        console.timeEnd("Statistics.record");
     }
 }
 

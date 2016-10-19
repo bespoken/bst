@@ -48,15 +48,15 @@ export class NodeManager {
                     node = new Node(connectData.id, socketHandler);
                     self.nodes[node.id] = node;
 
-                    // Capture the connection
-                    Statistics.instance().record(node.id, AccessType.CONNECT);
-
                     socketHandler.send("ACK");
                     initialConnection = false;
 
                     if (self.onConnect != null) {
                         self.onConnect(node);
                     }
+
+                    // Capture the connection
+                    Statistics.instance().record(node.id, AccessType.CONNECT);
                 } else if (message === Global.KeepAliveMessage) {
                     NodeManager.onKeepAliveReceived(node);
 

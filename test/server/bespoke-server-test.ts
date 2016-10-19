@@ -23,7 +23,6 @@ describe("BespokeServerTest", function() {
             // Connect a client
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 9011);
             (<any> bespokeClient).onWebhookReceived = function(webhookRequest: WebhookRequest) {
-                console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
 
                 // Dummy response from a non-existent HTTP service
@@ -50,7 +49,7 @@ describe("BespokeServerTest", function() {
         });
 
         it("Connects Multiple Lambdas", function(done) {
-            this.timeout(2000);
+            this.timeout(10000);
 
             // Start all the stuff
             let server = new BespokeServer(8010, 9010);
@@ -69,7 +68,7 @@ describe("BespokeServerTest", function() {
             let onStarted = function () {
                 let webhookCaller = new HTTPClient();
                 webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                    console.log("data: " + data.toString());
+                    console.log("data1: " + data.toString());
                     let json = JSON.parse(data.toString());
                     assert(json.success);
                     onCompleted();
@@ -78,22 +77,20 @@ describe("BespokeServerTest", function() {
                 // Stagger the requests slightly
                 setTimeout(function () {
                     webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        console.log("data: " + data.toString());
                         let json = JSON.parse(data.toString());
                         assert(json.success);
                         onCompleted();
                     });
-                }, 10);
+                }, 50);
 
 
                 setTimeout(function () {
                     webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        console.log("data: " + data.toString());
                         let json = JSON.parse(data.toString());
                         assert(json.success);
                         onCompleted();
                     });
-                }, 20);
+                }, 100);
             };
 
             let count = 0;
