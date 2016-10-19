@@ -5,6 +5,7 @@ import {SocketHandler} from "../core/socket-handler";
 import {Server} from "net";
 import {Global} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
+import {Statistics, AccessType} from "./statistics";
 
 let Logger = "NODEMGR";
 
@@ -53,6 +54,9 @@ export class NodeManager {
                     if (self.onConnect != null) {
                         self.onConnect(node);
                     }
+
+                    // Capture the connection
+                    Statistics.instance().record(node.id, AccessType.CONNECT);
                 } else if (message === Global.KeepAliveMessage) {
                     NodeManager.onKeepAliveReceived(node);
 
