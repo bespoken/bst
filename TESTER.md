@@ -8,6 +8,13 @@ Make sure the project follows the Node conventions.
 - you have an index.js in the top folder
 - your index.js exports a function called 'handler'
 
+## AWS credentials
+
+Don't forget to set the 
+
+`AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` 
+
+environment variables!
 
 ## Cleanup after deploy 
 
