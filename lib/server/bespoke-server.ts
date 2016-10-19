@@ -13,8 +13,8 @@ export class BespokeServer {
 
     public start (started?: () => void): void {
         let self = this;
-        console.log("KEY: " + process.env["AWS_ACCESS_KEY_ID"]);
-        console.log("KEY: " + process.env["AWS_SECRET_ACCESS_KEY"]);
+        console.error("KEY: " + process.env["AWS_ACCESS_KEY_ID"]);
+        console.error("KEY: " + process.env["AWS_SECRET_ACCESS_KEY"]);
 
         let count = 0;
         // Make sure both NodeManager and WebhookManager have started
