@@ -24,12 +24,10 @@ export class HTTPClient {
         let post_req = http.request(post_options, function(response) {
             // response.setEncoding("utf8");
             response.on("data", function (chunk: Buffer) {
-                console.log("Chunk: " + chunk.toString());
                 responseData = Buffer.concat([responseData, chunk]);
             });
 
             response.on("end", function () {
-                console.log("End");
                 if (callback !== undefined && callback !== null) {
                     callback(responseData, response.statusCode, true);
                 }

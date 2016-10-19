@@ -68,7 +68,6 @@ describe("BespokeServerTest", function() {
             let onStarted = function () {
                 let webhookCaller = new HTTPClient();
                 webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                    console.log("data1: " + data.toString());
                     let json = JSON.parse(data.toString());
                     assert(json.success);
                     onCompleted();
