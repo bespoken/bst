@@ -11,6 +11,7 @@ describe("BSTEncode", function() {
     describe("#encodeAndPublishURL()", function() {
         it("Encodes and Publishes a URL", function (done) {
             if (doNotRun(this, done)) return;
+            this.timeout(10000);
 
             const config = {
                 bucket: "bespoken/encoded",
@@ -28,6 +29,7 @@ describe("BSTEncode", function() {
 
         it("Encodes and Publishes a URL that is m4a", function (done) {
             if (doNotRun(this, done)) return;
+            this.timeout(10000);
 
             const config = {
                 bucket: "bespoken/encoded",

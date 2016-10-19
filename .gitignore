@@ -6,6 +6,9 @@ target/
 coverage/
 index.js.map
 
+codeship.aes
+docker/aws.env
+
 # Do not track the generated javascript and map files from typescript
 bin/**/*.js
 bin/**/*.map
