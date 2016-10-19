@@ -2,9 +2,29 @@ const AWS = require("aws-sdk");
 
 export class Statistics {
     public static Table = "bst-stats";
+    private static Singleton = new Statistics();
 
-    public constructor () {
+    private _dynamoClient: any = null;
+    private _docClient: any = null;
+
+    public static instance(): Statistics {
+        return Statistics.Singleton;
+    }
+
+    private dynamoClient (): any {
         this.configure();
+        if (this._dynamoClient === null) {
+            this._dynamoClient = new AWS.DynamoDB();
+        }
+        return this._dynamoClient;
+    }
+
+    private docClient (): any {
+        this.configure();
+        if (this._docClient === null) {
+            this._docClient = new AWS.DynamoDB.DocumentClient();
+        }
+        return this._docClient;
     }
 
     private configure () {
@@ -14,7 +34,7 @@ export class Statistics {
     }
 
     public deleteTable(deleted: () => void): void {
-        const dynamoClient = new AWS.DynamoDB();
+        const dynamoClient = this.dynamoClient();
         const dynamoParams = {
             TableName: Statistics.Table
         };
@@ -25,7 +45,7 @@ export class Statistics {
     }
 
     public createTable(created: () => void): void {
-        const dynamoClient = new AWS.DynamoDB();
+        const dynamoClient = this.dynamoClient();
 
         const dynamoParams = {
             TableName : Statistics.Table,
@@ -52,7 +72,8 @@ export class Statistics {
         const self = this;
 
         const timestamp = new Date().toISOString();
-        const dynamoClient = new AWS.DynamoDB.DocumentClient();
+        const docClient = this.docClient();
+
         const dynamoParams = {
             TableName: Statistics.Table,
             Item: {
@@ -63,14 +84,16 @@ export class Statistics {
         };
 
         console.log("Access Node: " + nodeID + " Time: " + timestamp + " Access: " + AccessType[accessType]);
-        dynamoClient.put(dynamoParams, function(error: any, data: any) {
+        docClient.put(dynamoParams, function(error: any) {
             if (error) {
                 console.assert(error.code, "ResourceNotFoundException");
                 self.createTable(function () {
                     self.record(nodeID, accessType, confirmation);
                 });
             } else {
-                confirmation();
+                if (confirmation !== undefined) {
+                    confirmation();
+                }
             }
         });
     }
@@ -78,5 +101,6 @@ export class Statistics {
 
 export enum AccessType {
     CONNECT,
-    REQUEST
+    REQUEST_FORWARDED,
+    REQUEST_DROPPED
 }

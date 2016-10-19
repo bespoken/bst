@@ -13,15 +13,20 @@ describe("StatisticsTest", function() {
 
             if (doNotRun(this, done)) return;
 
-            this.timeout(5000);
+            this.timeout(10000);
             const stats = new Statistics();
 
             const nodeID = uuid.v4();
             stats.record(nodeID, AccessType.CONNECT, function (error: Error) {
                 assert(!error);
-                stats.record(nodeID, AccessType.REQUEST, function (error: Error) {
+
+                stats.record(nodeID, AccessType.REQUEST_FORWARDED, function (error: Error) {
                     assert(!error);
-                    done();
+
+                    stats.record(nodeID, AccessType.REQUEST_DROPPED, function (error: Error) {
+                        assert(!error);
+                        done();
+                    });
                 });
             });
         });
@@ -32,7 +37,7 @@ describe("StatisticsTest", function() {
             if (doNotRun(this, done)) return;
 
             Statistics.Table = "bst-stats-delete";
-            this.timeout(10000);
+            this.timeout(30000);
 
             const stats = new Statistics();
 

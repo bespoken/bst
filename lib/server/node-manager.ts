@@ -5,6 +5,7 @@ import {SocketHandler} from "../core/socket-handler";
 import {Server} from "net";
 import {Global} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
+import {Statistics, AccessType} from "./statistics";
 
 let Logger = "NODEMGR";
 
@@ -46,6 +47,9 @@ export class NodeManager {
 
                     node = new Node(connectData.id, socketHandler);
                     self.nodes[node.id] = node;
+
+                    // Capture the connection
+                    Statistics.instance().record(node.id, AccessType.CONNECT);
 
                     socketHandler.send("ACK");
                     initialConnection = false;
