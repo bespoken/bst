@@ -8,6 +8,7 @@
     "bst-server": "./bin/bst-server.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.6.8",
     "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "node-uuid": "1.4.7",
@@ -44,7 +45,7 @@
     "precoverage": "typings install && tsc && npm run lint",
     "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
-    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts",
+    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/bst-encode.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts",
     "preversion": "npm run typedoc && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
   }

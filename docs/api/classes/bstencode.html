@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>LambdaServer | Bespoken Tools</title>
+	<title>BSTEncode | Bespoken Tools</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -53,10 +53,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="lambdaserver.html">LambdaServer</a>
+					<a href="bstencode.html">BSTEncode</a>
 				</li>
 			</ul>
-			<h1>Class LambdaServer</h1>
+			<h1>Class BSTEncode</h1>
 		</div>
 	</div>
 </header>
@@ -66,17 +66,19 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The LambdaServer wraps a Node.js Lambda routine in a simple HTTP service.</p>
+						<p>Encodes an audio file so that it can be used in Alexa responses, as part of an &lt;audio&gt; tag in an SSML response.</p>
 					</div>
-					<p>It makes it easy to test Lambdas locally, and in conjunction with our other Bespoken Tools.</p>
-					<p>To use it, simply provide the filename of the Lambda function along with the port the HTTP server should listen on.</p>
+					<p>Allows for the use of pre-recorded audio in &quot;regular&quot; (i.e., non-AudioPlayer) skills. More info <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/handling-requests-sent-by-alexa#h2_pre-recorded-audio">here</a>.</p>
+					<p>Once the audio is encoded, BSTEncode uploads it to S3 so it is accessible to Alexa.</p>
+					<p>Audio is encoded in compliance with <a href="https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference" class="external">Alexa standards</a>:
+					MP3, 48 kbps, 16000 hz</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">LambdaServer</span>
+						<span class="target">BSTEncode</span>
 					</li>
 				</ul>
 			</section>
@@ -87,14 +89,14 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="lambdaserver.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="bstencode.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="lambdaserver.html#start" class="tsd-kind-icon">start</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="lambdaserver.html#stop" class="tsd-kind-icon">stop</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstencode.html#encodefileandpublish" class="tsd-kind-icon">encode<wbr>File<wbr>And<wbr>Publish</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bstencode.html#encodeurlandpublish" class="tsd-kind-icon">encodeURLAnd<wbr>Publish</a></li>
 							</ul>
 						</section>
 					</div>
@@ -106,48 +108,31 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Lambda<wbr>Server<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, port<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, verbose<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="lambdaserver.html" class="tsd-signature-type">LambdaServer</a></li>
+						<li class="tsd-signature tsd-kind-icon">new BSTEncode<span class="tsd-signature-symbol">(</span>awsConfiguration<span class="tsd-signature-symbol">: </span><a href="../interfaces/awsencoderconfig.html" class="tsd-signature-type">AWSEncoderConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstencode.html" class="tsd-signature-type">BSTEncode</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/73ef823/lib/client/lambda-server.ts#L25">client/lambda-server.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/73ef823/lib/client/bst-encode.ts#L31">client/bst-encode.ts:31</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates a server that exposes a Lambda as an HTTP service</p>
+									<p>The <a href="../interfaces/awsencoderconfig.html">awsConfiguration</a> contains AWS credentials and S3 bucket to upload to</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>file: <span class="tsd-signature-type">string</span></h5>
+									<h5>awsConfiguration: <a href="../interfaces/awsencoderconfig.html" class="tsd-signature-type">AWSEncoderConfig</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>The file the defines the Lambda</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5>port: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>The port the service should listen on</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> verbose: <span class="tsd-signature-type">boolean</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Prints out verbose information about requests and responses</p>
 										</div>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="lambdaserver.html" class="tsd-signature-type">LambdaServer</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="bstencode.html" class="tsd-signature-type">BSTEncode</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -155,37 +140,49 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="start" class="tsd-anchor"></a>
-					<h3>start</h3>
+					<a name="encodefileandpublish" class="tsd-anchor"></a>
+					<h3>encode<wbr>File<wbr>And<wbr>Publish</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">encode<wbr>File<wbr>And<wbr>Publish<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/73ef823/lib/client/lambda-server.ts#L40">client/lambda-server.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/73ef823/lib/client/bst-encode.ts#L46">client/bst-encode.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Starts the LambdaServer listening on the port specified in the constructor.</p>
+									<p>Encodes a file and publishes it to S3</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> callback: <span class="tsd-signature-type">function</span></h5>
+									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-type">function</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Called once the server has started successfully</p>
+										<p>Returns the URL of the encoded file on S3. Error if there is any.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span>, encodedURL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>error: <span class="tsd-signature-type">Error</span></h5>
+														</li>
+														<li>
+															<h5>encodedURL: <span class="tsd-signature-type">string</span></h5>
+														</li>
+													</ul>
 													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 												</li>
 											</ul>
@@ -198,37 +195,52 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="stop" class="tsd-anchor"></a>
-					<h3>stop</h3>
+					<a name="encodeurlandpublish" class="tsd-anchor"></a>
+					<h3>encodeURLAnd<wbr>Publish</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span>onStop<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">encodeURLAnd<wbr>Publish<span class="tsd-signature-symbol">(</span>sourceURL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/73ef823/lib/client/lambda-server.ts#L96">client/lambda-server.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/73ef823/lib/client/bst-encode.ts#L64">client/bst-encode.ts:64</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Stops the lambda service</p>
+									<p>Encodes a URL and publishes it to S3</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> onStop: <span class="tsd-signature-type">function</span></h5>
+									<h5>sourceURL: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Callback when all sockets related to the LambdaServer have been cleaned up</p>
+										<p>The URL of the file to encode</p>
+									</div>
+								</li>
+								<li>
+									<h5>callback: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Returns the URL of the encoded file on S3. Error if there is any.</p>
 									</div>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-siganture">
 											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span>, encodedURL<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 											</ul>
 											<ul class="tsd-descriptions">
 												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>error: <span class="tsd-signature-type">Error</span></h5>
+														</li>
+														<li>
+															<h5>encodedURL: <span class="tsd-signature-type">string</span></h5>
+														</li>
+													</ul>
 													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 												</li>
 											</ul>
@@ -264,27 +276,27 @@
 					<li class=" tsd-kind-class">
 						<a href="bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="bstencode.html" class="tsd-kind-icon">BSTEncode</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
+						<a href="bstencode.html" class="tsd-kind-icon">BSTEncode</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="lambdaserver.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="bstencode.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="lambdaserver.html#start" class="tsd-kind-icon">start</a>
+								<a href="bstencode.html#encodefileandpublish" class="tsd-kind-icon">encode<wbr>File<wbr>And<wbr>Publish</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="lambdaserver.html#stop" class="tsd-kind-icon">stop</a>
+								<a href="bstencode.html#encodeurlandpublish" class="tsd-kind-icon">encodeURLAnd<wbr>Publish</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/awsencoderconfig.html" class="tsd-kind-icon">AWSEncoder<wbr>Config</a>
 					</li>
