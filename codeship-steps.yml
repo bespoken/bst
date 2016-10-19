@@ -1,7 +1,7 @@
 - name: DockerHub push
   type: push
   service: app
-  tag: master
+  tag: ^(master|DockerCloudDebug)
   image_name: xappmedia/bst-server
   image_tag: "{{.Branch}}.test"
   registry: https://index.docker.io/v1/
