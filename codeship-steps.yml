@@ -1,8 +1,3 @@
-- name: Test
-  service: app
-  command: npm test
-  encrypted_dockercfg_path: docker/dockercfg.encrypted
-
 - name: DockerHub push
   type: push
   service: app
