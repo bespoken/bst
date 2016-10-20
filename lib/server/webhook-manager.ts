@@ -32,6 +32,7 @@ export class WebhookManager {
             socket.on("data", function(data: Buffer) {
                 // Throw away the pings - too much noise
                 let dataString = data.toString();
+
                 if (dataString.length > 4 && dataString.substr(0, 3) !== "GET") {
                     LoggingHelper.info(Logger, "Webhook From " + socket.remoteAddress + ":" + socket.remotePort);
                 }

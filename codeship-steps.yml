@@ -1,4 +1,4 @@
-- name: prepare
+- name: Prepare
   service: app
   command: echo Sanity Check
   encrypted_dockercfg_path: docker/dockercfg.encrypted
