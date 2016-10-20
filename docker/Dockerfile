@@ -1,4 +1,4 @@
-FROM xappmedia/bst-server:baseline
+FROM xappmedia/bst-server:clean
 
 MAINTAINER John Kelvie
 
@@ -12,6 +12,22 @@ EXPOSE 5000
 
 WORKDIR /opt/bst
 
-RUN echo Test: "$CI_BRANCH" P "$PATH"
+COPY bin/ ./bin/
 
-RUN echo Test2: "${CI_BUILD_ID}" "${CI_BRANCH}"
+COPY lib/ ./lib/
+
+COPY test/ ./test/
+
+COPY typings/ ./typings/
+
+COPY *.yml ./
+
+COPY *.json ./
+
+RUN npm install
+
+RUN node node_modules/typings/dist/bin.js install
+
+RUN tsc
+
+CMD node bin/bst-server.js start 4000 5000

@@ -1,6 +1,6 @@
 - name: prepare
   service: app
-  command: echo One $CI_BUILD_ID Two ${CI_BUILD_ID} Three $CI_BRANCH ${CI_BRANCH}
+  command: echo Sanity Check
   encrypted_dockercfg_path: docker/dockercfg.encrypted
 
 - name: DockerHub push
