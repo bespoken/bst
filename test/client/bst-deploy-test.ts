@@ -10,8 +10,8 @@ const exec = require("child_process").exec;
 import * as fs from "fs";
 import {LambdaAws} from "../../lib/client/lambda-aws";
 
-const testAwsRole = "bst-unit-test-role-"+process.version.replace(/\./g,"-");
-const testAwsLambda = "bstUnittestLambda-"+process.version.replace(/\./g,"-");
+const testAwsRole = "bst-unit-test-role-" + process.version.replace(/\./g, "-");
+const testAwsLambda = "bstUnittestLambda-" + process.version.replace(/\./g, "-");
 
 Global.initializeCLI();
 
