@@ -9,6 +9,7 @@ const exec = require("child_process").exec;
 
 import * as fs from "fs";
 import {LambdaAws} from "../../lib/client/lambda-aws";
+import {LoggingHelper} from "../../lib/core/logging-helper";
 
 const testAwsRole = "bst-unit-test-role-" + process.version.replace(/\./g, "-");
 const testAwsLambda = "bstUnittestLambda-" + process.version.replace(/\./g, "-");
@@ -291,7 +292,7 @@ describe("LambdaDeploy", function() {
 
             let deployer: LambdaDeploy = LambdaDeploy.create(deployProject, lambdaConfig);
 
-            // LoggingHelper.setVerbose(true);
+            LoggingHelper.setVerbose(true);
 
             setTimeout(() => {
                 deployer.deploy(function(error: Error) {

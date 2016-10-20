@@ -83,9 +83,9 @@ describe("bst-deploy", function() {
                 }
             };
 
-            setTimeout(() => {
-                process.stderr.write("##### " + dataString + "\n#####\n");
+            // Wait for all - maybe more than one message
 
+            setTimeout(() => {
                 if (dataString.indexOf("Usage") !== -1) {
                     done();
                 } else {

@@ -448,7 +448,11 @@ export class LambdaDeploy {
 
             // we need the extra / after src to make sure we are copying the content
             // of the directory, not the directory itself.
-            exec("rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest, function (err: Error) {
+
+            let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
+            console.log("#### cmd: " + cmd);
+
+            exec(cmd, function (err: Error) {
                 if (err) {
                     return callback(err);
                 }
