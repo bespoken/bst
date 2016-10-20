@@ -451,11 +451,9 @@ export class LambdaDeploy {
 
             let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
 
-            cmd = "ls -latr " + src.trim();
-
             exec(cmd, function (err: Error, stdout: string, stderr: string) {
-                LoggingHelper.verbose(logger, "rsync Out: " + stdout);
-                LoggingHelper.verbose(logger, "rsync Err: " + stderr);
+                // LoggingHelper.verbose(logger, "rsync Out: " + stdout);
+                // LoggingHelper.verbose(logger, "rsync Err: " + stderr);
 
                 if (err) {
                     return callback(err);
