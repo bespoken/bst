@@ -1,4 +1,4 @@
-FROM xappmedia/bst-server:baseline
+FROM xappmedia/bst-server:clean
 
 MAINTAINER John Kelvie
 
@@ -12,7 +12,17 @@ EXPOSE 5000
 
 WORKDIR /opt/bst
 
-RUN git pull
+COPY bin/ ./bin/
+
+COPY lib/ ./lib/
+
+COPY test/ ./test/
+
+COPY typings/ ./typings/
+
+COPY *.yml ./
+
+COPY *.json ./
 
 RUN npm install
 
