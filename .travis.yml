@@ -1,16 +1,20 @@
 language: node_js
 node_js:
-- '6'
-- '5'
-- '4'
-- 4.4.7
-- 4.4.6
-- 4.4.5
-- 4.4.4
+  - "6"
+  - "5"
+  - "4"
+  - "4.4.7"
+  - "4.4.6"
+  - "4.4.5"
+  - "4.4.4"
 script: npm run coveralls
 branches:
   only:
-  - master
+    - "master"
+cache:
+  directories:
+  - node_modules
+  - typings
 env:
   global:
   - secure: AVFl7Vt3QZLq8S2KblbYWZVaU7dNI01tphAkoDO4suLQgcqtncp8aMyLsL+W3Q0mbALNtGlVXShKJOgA9ahsB7WYb0v3kPmqgc3l3x10PvDH/w+H86+guvqhIPV8Qc8OrIGnjZ0smtrVF3MIWb67bauE0OoGEEDXxi/m8Yk+Tz8tR1jeXgu1fEZ/1OHWDVcxqr8zBMwHl7DW1O7PWhygl5mp92PQgYUDBOAd1PUcmWtRSYj3XRmGJLxnA0YY/4R3CRwYLVYBrEGULD4TKxYolVKFaA+/yIbiSh5/iNWLs5B0B/IVTjwmV2FKsAS2k1ZlRWDoqjd5r1W9fF3mevlFmyJ4W/eHkf1zatQ9hFlnLTZYog79sCuWdCvedQhRRgxoA+irKjUcdujVd5G8w41l/6PerYetDby2Jd66MGneUXUplXEaZaEJdTH+JioVkS3/0u7vDoNQcKX/ymiDVmxLhVKrWUgeMjp/lpH+AqQoWMXEsO81apxD0rB00nPk17ODGWVcz6L5BaxBA90vBgc/GICFggqkictHoVal2NQ+FLby6Y8c7Y2rUhq78zOGLKD54hZDmFmhwphVJxyUOvClfF11i0YwJp4sEvW12C+YAikDQOgJ0ENjsv+iv4F2i93Vf7H2YMxML0d5GIjV++gFYem1jVZdLC10zuL2Nq0ezU0=

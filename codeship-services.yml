@@ -1,0 +1,5 @@
+app:
+  build:
+    image: xappmedia/bst-server
+    dockerfile_path: docker/Dockerfile
+  encrypted_env_file: docker/aws.env.encrypted
