@@ -29,5 +29,30 @@ describe("WebhookManager", function() {
             let client = new HTTPClient();
             client.post("localhost", 8080, "/test?node-id=10", "Test");
         });
+
+        it("Should Send Two in a row", function(done) {
+            this.timeout(5000);
+            let manager = new WebhookManager(8080);
+
+            let count = 0;
+            manager.onWebhookReceived = function(request: WebhookRequest) {
+                count++;
+                console.log("NodeID: " + request.nodeID());
+                assert.equal(request.nodeID(), 10);
+                assert.equal((request.id() + "").length, 13);
+                assert.equal(request.body, "Test");
+                if (count === 2) {
+                    manager.stop(function () {
+                        done();
+                    });
+                }
+            };
+
+            manager.start();
+
+            let client = new HTTPClient();
+            client.post("localhost", 8080, "/test?node-id=10", "Test");
+            client.post("localhost", 8080, "/test?node-id=10", "Test");
+        });
     });
 });

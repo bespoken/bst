@@ -6,7 +6,7 @@ import {BespokeClient} from "../../lib/client/bespoke-client";
 import {WebhookRequest} from "../../lib/core/webhook-request";
 import {HTTPClient} from "../../lib/core/http-client";
 import {BespokeServer} from "../../lib/server/bespoke-server";
-import {LambdaRunner} from "../../lib/client/lambda-runner";
+import {LambdaServer} from "../../lib/client/lambda-server";
 import * as request from "request";
 import {IncomingMessage} from "http";
 import {Global} from "../../lib/core/global";
@@ -23,7 +23,6 @@ describe("BespokeServerTest", function() {
             // Connect a client
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 9011);
             (<any> bespokeClient).onWebhookReceived = function(webhookRequest: WebhookRequest) {
-                console.log("Client ReceivedData: " + webhookRequest.body);
                 assert.equal("Test", webhookRequest.body);
 
                 // Dummy response from a non-existent HTTP service
@@ -50,15 +49,15 @@ describe("BespokeServerTest", function() {
         });
 
         it("Connects Multiple Lambdas", function(done) {
-            this.timeout(2000);
+            this.timeout(10000);
 
             // Start all the stuff
             let server = new BespokeServer(8010, 9010);
-            let lambdaRunner = new LambdaRunner("./test/resources/DelayedLambda.js", 10000);
+            let lambdaServer = new LambdaServer("./test/resources/DelayedLambda.js", 10000);
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
 
             server.start(function () {
-                lambdaRunner.start(function () {
+                lambdaServer.start(function () {
                     bespokeClient.connect(function () {
                         onStarted();
                     });
@@ -69,7 +68,6 @@ describe("BespokeServerTest", function() {
             let onStarted = function () {
                 let webhookCaller = new HTTPClient();
                 webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                    console.log("data: " + data.toString());
                     let json = JSON.parse(data.toString());
                     assert(json.success);
                     onCompleted();
@@ -78,29 +76,27 @@ describe("BespokeServerTest", function() {
                 // Stagger the requests slightly
                 setTimeout(function () {
                     webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        console.log("data: " + data.toString());
                         let json = JSON.parse(data.toString());
                         assert(json.success);
                         onCompleted();
                     });
-                }, 10);
+                }, 50);
 
 
                 setTimeout(function () {
                     webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        console.log("data: " + data.toString());
                         let json = JSON.parse(data.toString());
                         assert(json.success);
                         onCompleted();
                     });
-                }, 20);
+                }, 100);
             };
 
             let count = 0;
             let onCompleted = function () {
                 count++;
                 if (count === 3) {
-                    lambdaRunner.stop(function () {
+                    lambdaServer.stop(function () {
                         bespokeClient.shutdown(function () {
                             server.stop(function () {
                                 done();
@@ -117,7 +113,7 @@ describe("BespokeServerTest", function() {
             let server = new BespokeServer(8010, 9010);
             server.start();
 
-            let badLambda = new LambdaRunner("./test/resources/NoOpLambda.js", 10000, true);
+            let badLambda = new LambdaServer("./test/resources/NoOpLambda.js", 10000, true);
             badLambda.start();
 
             let count = 0;
@@ -143,7 +139,7 @@ describe("BespokeServerTest", function() {
                 });
 
                 setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": false}", function (data: Buffer) {
+                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": false}", function () {
                         count++;
                     });
                 }, 10);

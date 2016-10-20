@@ -3,6 +3,7 @@ import {WebhookManager} from "./webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {HTTPHelper} from "../core/http-helper";
 import {Global} from "../core/global";
+import {Statistics, AccessType} from "./statistics";
 
 export class BespokeServer {
     private nodeManager: NodeManager;
@@ -40,10 +41,17 @@ export class BespokeServer {
                 } else {
                     // Lookup the node
                     let node = self.nodeManager.node(webhookRequest.nodeID());
+
                     if (node == null) {
                         HTTPHelper.respond(webhookRequest.sourceSocket, 404, "Node is not active: " + webhookRequest.nodeID());
+
+                        // Capture the request was not forwarded
+                        Statistics.instance().record(webhookRequest.nodeID(), AccessType.REQUEST_DROPPED);
                     } else {
                         node.forward(webhookRequest);
+
+                        // Capture the request was forwarded
+                        Statistics.instance().record(node.id, AccessType.REQUEST_FORWARDED);
                     }
                 }
             }

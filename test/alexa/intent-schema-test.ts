@@ -68,14 +68,14 @@ describe("IntentSchema", function() {
 
     describe("#fromFile()", function() {
         it("Correctly loads schema", function(done) {
-            IntentSchema.fromFile("test/alexa/resources/IntentSchema.json", function (schema: IntentSchema, error?: string) {
+            IntentSchema.fromFile("test/alexa/resources/IntentSchema.json", function (schema: IntentSchema) {
                 assert.equal(schema.intents().length, 5);
                 done();
             });
         });
 
         it("Passes error when files does not exist", function(done) {
-            IntentSchema.fromFile("test/alexa/resources/InentSchema.json", function (schema: IntentSchema, error?: string) {
+            IntentSchema.fromFile("test/alexa/resources/IntentSchemaNonExistent.json", function (schema: IntentSchema, error?: string) {
                 assert(error.indexOf("not found") !== -1);
                 done();
             });

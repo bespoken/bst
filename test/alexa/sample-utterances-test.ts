@@ -8,7 +8,7 @@ import {Phrase} from "../../lib/alexa/sample-utterances";
 describe("SamplesUtterances", function() {
     let sampleUtterancesJSON: any = {
         "TestIntent": ["Test", "Intent"],
-        "AnotherTest": ["Another", "Anothers"],
+        "AnotherTest": ["Another", "AnotherPhrase"],
         "Slots": ["Slot {A} and {B}", "Reversed {B} and {A}"]
     };
 

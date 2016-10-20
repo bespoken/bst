@@ -4,6 +4,10 @@ node_modules/
 **/*.iml
 target/
 coverage/
+index.js.map
+
+codeship.aes
+docker/aws.env
 
 # Do not track the generated javascript and map files from typescript
 bin/**/*.js
@@ -12,6 +16,7 @@ lib/**/*.js
 lib/**/*.map
 test/**/*.js
 test/**/*.map
+test/resources/.bst/config
 
 **/.DS_Store
 

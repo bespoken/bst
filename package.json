@@ -2,14 +2,15 @@
   "name": "bespoken-tools",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "0.6.14",
+  "version": "0.8.4",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js"
   },
   "dependencies": {
     "async": "^2.0.0",
-    "aws-sdk": "^2.4.8",
+    "aws-sdk": "^2.6.8",
+    "chalk": "^1.1.3",
     "commander": "^2.9.0",
     "node-uuid": "1.4.7",
     "node-zip": "^1.1.1",
@@ -21,12 +22,14 @@
     "wrench": "^1.5.9"
   },
   "devDependencies": {
+    "bst-typedoc": "^0.4.6",
     "coveralls": "^2.11.11",
     "istanbul": "^0.4.4",
     "mocha": "2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
     "mockery": "^1.7.0",
     "remap-istanbul": "^0.6.4",
+    "ts-node": "^1.3.0",
     "tslint": "^3.13.0",
     "typemoq": "^0.3.2",
     "typings": "1.3.1"
@@ -39,11 +42,15 @@
     "url": "git://github.com/bespoken/bst.git"
   },
   "scripts": {
+    "library": "tsc --declaration index.ts --target ES6",
     "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
-    "postversion": "git push && git push --tags",
     "pretest": "typings install && tsc && npm run lint",
-    "coverage": "typings install && tsc && istanbul --include-all-sources cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
+    "test": "mocha test/**/*-test.js",
+    "precoverage": "typings install && tsc && npm run lint",
+    "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
-    "test": "mocha test/**/*-test.js"
+    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/bst-encode.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts",
+    "preversion": "npm run typedoc && git add docs/api && git commit -m 'Updated generated API docs'",
+    "postversion": "git push && git push --tags"
   }
 }

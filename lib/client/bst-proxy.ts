@@ -1,7 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import {BespokeClient} from "./bespoke-client";
-import {LambdaRunner} from "./lambda-runner";
+import {LambdaServer} from "./lambda-server";
 import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
@@ -18,7 +18,7 @@ const DefaultLambdaPort = 10000;
  */
 export class BSTProxy {
     private bespokenClient: BespokeClient = null;
-    private lambdaRunner: LambdaRunner = null;
+    private lambdaServer: LambdaServer = null;
 
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
@@ -75,8 +75,9 @@ export class BSTProxy {
      * Specifies the port the Lambda runner should listen on. Only for lambda proxies.
      * @param port
      */
-    public lambdaPort(port: number) {
+    public lambdaPort(port: number): BSTProxy {
         this.httpPort = port;
+        return this;
     }
 
     public start(onStarted?: (error?: any) => void): void {
@@ -84,14 +85,25 @@ export class BSTProxy {
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
 
         this.bespokenClient = new BespokeClient(Global.config().nodeID(), this.bespokenHost, this.bespokenPort, this.httpPort);
-        if (onStarted !== undefined) {
-            this.bespokenClient.onConnect = onStarted;
-        }
+
+        // Make sure all callbacks have been hit before returning
+        //  We will have to wait for two callbacks if this using the Lambda proxy
+        //  Otherwise, it is just one
+        let callbackCountDown = 1;
+        const callback = function () {
+            callbackCountDown--;
+            if (callbackCountDown === 0 && onStarted !== undefined) {
+                onStarted();
+            }
+        };
+
+        this.bespokenClient.onConnect = callback;
         this.bespokenClient.connect();
 
         if (this.proxyType === ProxyType.LAMBDA) {
-            this.lambdaRunner = new LambdaRunner(this.lambdaFile, this.httpPort);
-            this.lambdaRunner.start();
+            callbackCountDown++;
+            this.lambdaServer = new LambdaServer(this.lambdaFile, this.httpPort);
+            this.lambdaServer.start(callback);
         }
     }
 
@@ -100,8 +112,8 @@ export class BSTProxy {
             this.bespokenClient.shutdown();
         }
 
-        if (this.lambdaRunner !== null) {
-            this.lambdaRunner.stop(onStopped);
+        if (this.lambdaServer !== null) {
+            this.lambdaServer.stop(onStopped);
         } else {
             if (onStopped !== undefined && onStopped !== null) {
                 onStopped();

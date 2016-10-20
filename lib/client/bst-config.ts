@@ -38,6 +38,20 @@ export class BSTConfig {
         return this.configuration.nodeID;
     }
 
+    public applicationID(): string {
+        return this.configuration.applicationID;
+    }
+
+    public updateApplicationID(applicationID: string): void {
+        this.configuration.applicationID = applicationID;
+        this.commit();
+    }
+
+    public commit() {
+        let configBuffer = new Buffer(JSON.stringify(this.configuration, null, 4) + "\n");
+        fs.writeFileSync(BSTConfig.configPath(), configBuffer);
+    }
+
     private loadFromJSON(config: any): void {
         this.configuration = config;
     }
@@ -59,8 +73,8 @@ export class BSTConfig {
             fs.mkdirSync(directory);
         }
 
-       if (!fs.existsSync(BSTConfig.configPath())) {
-           LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
+        if (!fs.existsSync(BSTConfig.configPath())) {
+            LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
 
            // Create the config file if it does not yet exist
             let configJSON = BSTConfig.createConfig();
@@ -137,6 +151,16 @@ export class BSTProcess {
 
         fs.writeFileSync(BSTProcess.processPath(), jsonBuffer);
         return process;
+    }
+
+    public kill(): boolean {
+        try {
+            process.kill(this.pid, "SIGKILL");
+            return true;
+        } catch (e) {
+            console.error("Error killing process[" + this.pid + "] Message: " + e.message);
+            return false;
+        }
     }
 
     private loadJSON(json: any) {

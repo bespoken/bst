@@ -3,6 +3,8 @@
     {"intent": "Test"},
     {"intent": "Another Test"},
     {"intent": "HelloIntent"},
+    {"intent": "PlayIntent"},
+    {"intent": "ErrorIntent"},
     {"intent": "AMAZON.HelpIntent"},
     {"intent": "WithSlot",
       "slots": [

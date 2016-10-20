@@ -10,16 +10,15 @@ Do not slow-down for:
 * Over-complicated and error-prone packaging scripts
 * Seemingly-innocuous-but-still-pesky service restarts
 
-The current version provides three commands - **proxy http**, **proxy lambda** and **speak**.
+The current version provides four commands - **proxy http**, **proxy lambda**, **speak** and **intend**.
 
 The proxies make it super-easy to develop and debug your Alexa skill on your local machine.
 Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
 
-The proxies can work either with a service listening on a port (**proxy http**),  
-or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
+The proxies can work either with a service listening on a port (**proxy http**), or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
 
-The **speak** command simulates the Alexa service by sending any utterance from the command-line to your service.  
-The request sent to your service is a properly formatted intent request.  
+The **speak** and **intend** commands simulate the Alexa service by sending any utterance or intent from the command-line to your service. 
+The request sent to your service is a properly formatted intent request. 
 It then prints out the JSON payload returned by your service.
 
 Keep an eye out as we add more features and commands in the future. Current plans:  
@@ -43,16 +42,33 @@ Read the docs [here](/commands/proxy).
 
 ## bst speak Command
 
-The speak command generates intent requests for your service as if they were coming from Alexa itself.  
+The speak command generates intent requests for your service as if they were coming from Alexa itself.
+
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
 Read the docs [here](/commands/speak).
 
+## bst intend Command
+
+The intend command generates intent requests for your service as if they were coming from Alexa itself.
+ 
+It works by taking an intent and wrapping it in the correct JSON payload.  
+
+Read the docs [here](/commands/intend).
+
+## Bespoken Tools API
+
+The emulator the underlies the speak command can be used for unit and functional testing,
+as well as other purposes.
+
+The API reference can be found [here](http://docs.bespoken.tools/en/latest/api). 
+
 ## Tutorials
 
-* [Nodejs Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
+* [Node.js Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
 * [Java Server Tutorial](/tutorials/tutorial_local_server_java)
 * [Python & Flask-Ask](/tutorials/tutorial_flask_ask_python)
+* [Alexa Emulator Tutorial - Node.js](/tutorials/tutorial_bst_emulator_nodejs)
 
 ## Questions/Feedback?
 

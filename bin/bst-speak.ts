@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTSpeak} from "../lib/client/bst-speak";
+import {BSTAlexa} from "../lib/client/bst-alexa";
 
 Global.initializeCLI();
 
@@ -12,6 +12,7 @@ program
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
+    .option("-a, --appId <application-id>", "The application ID for the skill")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
@@ -33,15 +34,17 @@ program
         let url = options.url;
         let intentSchemaPath = options.intents;
         let samplesPath = options.samples;
+        let applicationID = options.appId;
 
         if (options.url === undefined) {
             let proxyProcess = Global.running();
             if (proxyProcess === null) {
-                console.log("No URL specified and no proxy is currently running");
-                console.log("");
+                console.error("No URL specified and no proxy is currently running");
+                console.log();
                 console.log("URL (--url) must be specified if no proxy is currently running");
-                console.log("");
+                console.log();
                 console.log("If a proxy is running, utterances will automatically be sent to it");
+                console.log();
                 process.exit(0);
                 return;
             }
@@ -49,17 +52,14 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        let speaker = new BSTSpeak(url, intentSchemaPath, samplesPath, null);
-        speaker.initialize(function (error: string) {
+        let speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        speaker.start(function (error: string) {
             if (error !== undefined) {
-                console.error("Error loading Interaction Model!");
-                console.error("Cause: " + error);
-                console.error("");
                 process.exit(0);
                 return;
             }
 
-            speaker.speak(utterance, function(request: any, response: any) {
+            speaker.spoken(utterance, function(error: any, response: any, request: any) {
                 let jsonPretty = JSON.stringify(response, null, 4);
                 console.log("Spoke: " + utterance);
                 console.log("");
