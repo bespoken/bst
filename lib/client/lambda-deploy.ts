@@ -335,24 +335,13 @@ export class LambdaDeploy {
     }
 
     public npmInstall(codeDirectory: string, callback: (err: Error) => any) {
-        exec("ls -latr " + codeDirectory, function (err: Error, stdout: string, stderr: string) {
-            LoggingHelper.verbose(logger, "Out: " + stdout);
-            LoggingHelper.verbose(logger, "Err: " + stderr);
-
+        exec("npm -s install --production --prefix " + codeDirectory, function (err: Error) {
             if (err) {
                 return callback(err);
             }
 
             return callback(null);
         });
-
-        // exec("npm -s install --production --prefix " + codeDirectory, function (err: Error) {
-        //     if (err) {
-        //         return callback(err);
-        //     }
-        //
-        //     return callback(null);
-        // });
     }
 
     private archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
@@ -460,9 +449,13 @@ export class LambdaDeploy {
             // we need the extra / after src to make sure we are copying the content
             // of the directory, not the directory itself.
 
-            let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
+            // let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
+            let cmd: string = "ls -latr " + src.trim();
 
-            exec(cmd, function (err: Error) {
+            exec(cmd, function (err: Error, stdout: string, stderr: string) {
+                LoggingHelper.verbose(logger, "rsync Out: " + stdout);
+                LoggingHelper.verbose(logger, "rsync Err: " + stderr);
+
                 if (err) {
                     return callback(err);
                 }
