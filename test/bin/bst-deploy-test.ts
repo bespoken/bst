@@ -70,7 +70,7 @@ describe("bst-deploy", function() {
 
                 process.stdout.write = originalFunction; // you have to restore it here
 
-                if (dataString.indexOf("Usage") !== -1) {
+                if (dataString.indexOf("usage") !== -1) {
                     done();
                 } else {
                     done(new Error("Usage wasn't in the output"));

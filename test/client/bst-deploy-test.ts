@@ -10,8 +10,8 @@ const exec = require("child_process").exec;
 import * as fs from "fs";
 import {LambdaAws} from "../../lib/client/lambda-aws";
 
-const testAwsRole = "bst-unit-test-role";
-const testAwsLambda = "bstUnittestLambda";
+const testAwsRole = "bst-unit-test-role-"+process.version.replace(/\./g,"-");
+const testAwsLambda = "bstUnittestLambda-"+process.version.replace(/\./g,"-");
 
 Global.initializeCLI();
 
@@ -346,7 +346,7 @@ describe("LambdaDeploy", function() {
             }
 
             lambdaConfig.AWS_ROLE_ARN = testRoleArn;
-            lambdaConfig.AWS_FUNCTION_NAME = "bstUnittestLambda";
+            lambdaConfig.AWS_FUNCTION_NAME = testAwsLambda;
 
             let deployer: LambdaDeploy = LambdaDeploy.create(deployProject, lambdaConfig);
 
