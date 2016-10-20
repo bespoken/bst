@@ -15,9 +15,12 @@ The deploy lambda command allows you to deploy a Node/JavaScript lambda function
 
 **Notes**
 
-- The command currently only supports Node/JavaScript Lambdas
+- The command currently only supports Node/JavaScript Lambdas and only works on OS X and Linux
+- You need to have an AWS account with appropriate privileges and credentials
 - Considering the options and complexity of the Amazon web services, this tool wasn't meant to be a production deploy tool,
   but it will help you to quickly verify your skill on the device
+- `npm` and `zip` commands need to be installed and seen in your $PATH. On OS X the zip is installed by default. 
+  On Linux you may have to install it, depending on your distribution. 
 
 
 **Usage**  
