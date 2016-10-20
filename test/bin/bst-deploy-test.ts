@@ -59,18 +59,25 @@ describe("bst-deploy", function() {
         process.chdir("../..");
     });
 
-    describe("help command", function() {
-        it("with no-args", function(done) {
-            let originalFunction = process.stdout.write;
+    describe("Help command", function() {
+        let originalFunction: any = null;
+        beforeEach (function () {
+            originalFunction = process.stdout.write;
+        });
 
+        afterEach (function () {
+        });
+
+        it("Prints help with no-args", function(done) {
             process.argv = command("node bst-deploy.js");
 
-            (<any> process.stdout).write = function (data: Buffer) {
-                let dataString: string = data.toString();
+            // Confirm the help prints out
+            (<any> process.stdout).write = function (s: string) {
+                let dataString: string = s;
 
-                process.stdout.write = originalFunction; // you have to restore it here
+                process.stdout.write = originalFunction;
 
-                if (dataString.indexOf("usage") !== -1) {
+                if (dataString.indexOf("Usage") !== -1) {
                     done();
                 } else {
                     done(new Error("Usage wasn't in the output"));
