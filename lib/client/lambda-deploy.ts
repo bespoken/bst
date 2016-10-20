@@ -335,13 +335,24 @@ export class LambdaDeploy {
     }
 
     public npmInstall(codeDirectory: string, callback: (err: Error) => any) {
-        exec("npm -s install --production --prefix " + codeDirectory, function (err: Error) {
+        exec("ls -latr " + codeDirectory, function (err: Error, stdout: string, stderr: string) {
+            LoggingHelper.verbose(logger, "Out: " + stdout);
+            LoggingHelper.verbose(logger, "Err: " + stderr);
+
             if (err) {
                 return callback(err);
             }
 
             return callback(null);
         });
+
+        // exec("npm -s install --production --prefix " + codeDirectory, function (err: Error) {
+        //     if (err) {
+        //         return callback(err);
+        //     }
+        //
+        //     return callback(null);
+        // });
     }
 
     private archivePrebuilt(callback: (err: Error, buffer?: Buffer) => any) {
@@ -450,7 +461,6 @@ export class LambdaDeploy {
             // of the directory, not the directory itself.
 
             let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
-            console.log("#### cmd: " + cmd);
 
             exec(cmd, function (err: Error) {
                 if (err) {
