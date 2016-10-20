@@ -449,8 +449,9 @@ export class LambdaDeploy {
             // we need the extra / after src to make sure we are copying the content
             // of the directory, not the directory itself.
 
-            // let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
-            let cmd: string = "ls -latr " + src.trim();
+            let cmd: string = "rsync -rL " + excludeArgs + " " + src.trim() + "/ " + dest;
+
+            cmd = "ls -latr " + src.trim();
 
             exec(cmd, function (err: Error, stdout: string, stderr: string) {
                 LoggingHelper.verbose(logger, "rsync Out: " + stdout);
