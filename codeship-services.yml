@@ -3,3 +3,10 @@ app:
     image: xappmedia/bst-server
     dockerfile_path: docker/Dockerfile
   encrypted_env_file: docker/aws.env.encrypted
+lb:
+  image: 'dockercloud/haproxy:latest'
+    links:
+      - app
+    ports:
+      - '80:4000'
+      - '5000:5000'
