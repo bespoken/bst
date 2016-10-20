@@ -72,15 +72,22 @@ describe("bst-deploy", function() {
             process.argv = command("node bst-deploy.js");
 
             // Confirm the help prints out
-            (<any> process.stdout).write = function (s: string) {
-                let dataString: string = s;
+            (<any> process.stdout).write = function (buffer: Buffer|string) {
+
+                let dataString: string;
+
+                if (buffer instanceof Buffer) {
+                    dataString = buffer.toString();
+                } else {
+                    dataString = buffer;
+                }
 
                 process.stdout.write = originalFunction;
 
                 if (dataString.indexOf("Usage") !== -1) {
                     done();
                 } else {
-                    done(new Error("Usage wasn't in the output"));
+                    done(new Error("Usage was not in the output"));
                 }
             };
 
