@@ -66,32 +66,32 @@ describe("bst-deploy", function() {
         });
 
         afterEach (function () {
+            process.stdout.write = originalFunction;
         });
 
         it("Prints help with no-args", function(done) {
+            this.timeout(2000);
+
             process.argv = command("node bst-deploy.js");
+            let dataString: string = "";
 
-            // Confirm the help prints out
             (<any> process.stdout).write = function (buffer: Buffer|string) {
-
-                let dataString: string;
-
                 if (buffer instanceof Buffer) {
-                    dataString = buffer.toString();
+                    dataString = dataString + buffer.toString();
                 } else {
-                    dataString = buffer;
+                    dataString = dataString + buffer;
                 }
+            };
 
-                process.stderr.write("##### " + dataString + "\n#####");
-
-                process.stdout.write = originalFunction;
+            setTimeout(() => {
+                process.stderr.write("##### " + dataString + "\n#####\n");
 
                 if (dataString.indexOf("Usage") !== -1) {
                     done();
                 } else {
-                    done(new Error("Usage was not in the output"));
+                    done(new Error("Usage was not in the output!"));
                 }
-            };
+            }, 1000);
 
             NodeUtil.load("../../bin/bst-deploy.js");
         });
