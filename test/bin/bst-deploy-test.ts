@@ -82,6 +82,8 @@ describe("bst-deploy", function() {
                     dataString = buffer;
                 }
 
+                process.stderr.write("##### " + dataString + "\n#####");
+
                 process.stdout.write = originalFunction;
 
                 if (dataString.indexOf("Usage") !== -1) {
