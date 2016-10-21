@@ -75,7 +75,6 @@ export class Statistics {
     public record (nodeID: string, accessType: AccessType, confirmation?: (error?: Error) => void) {
         console.time("Statistics.record");
         const self = this;
-
         const timestamp = new Date().toISOString();
         const docClient = this.docClient();
 

@@ -37,7 +37,7 @@ describe("StatisticsTest", function() {
             if (doNotRun(this, done)) return;
 
             Statistics.Table = "bst-stats-delete";
-            this.timeout(30000);
+            this.timeout(60000);
 
             const stats = new Statistics();
 
