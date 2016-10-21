@@ -41,20 +41,32 @@ const testPayload: any = {
     "version": "1.0"
 };
 
+// No need to initialize
+let lambdaConfig = LambdaConfig.create();
+
+lambdaConfig.initialize();
+
+let skip: boolean = false;
+
+if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+    console.log("Skipping deployer tests. No AWS credentials.");
+    skip = true;
+}
+
 describe("LambdaDeploy", function() {
     let deployProject: string = "./deployProject";
     let destinationFolder: string  = os.tmpdir() + "/.bst-deploy-test";
 
     let testRoleArn: string = null;
 
-    // No need to initialize
-    let lambdaConfig = LambdaConfig.create();
     let awsHelper = LambdaAws.create(lambdaConfig);
 
     describe("initializes the lambda configuration", function() {
         let oldHome: string = null;
 
         beforeEach(function () {
+            if (skip) this.skip();
+
             oldHome = process.env.HOME;
         });
 
@@ -87,6 +99,8 @@ describe("LambdaDeploy", function() {
 
     describe("prepares the lambda function code", function() {
         beforeEach(function () {
+            if (skip) this.skip();
+
             process.chdir("test/resources");
         });
 
@@ -158,6 +172,10 @@ describe("LambdaDeploy", function() {
 
     describe("manipulates the aws roles", function() {
         this.timeout(10000);
+
+        beforeEach(function () {
+            if (skip) this.skip();
+        });
 
         it("creates a role", function(done) {
             awsHelper.deleteRole(testAwsRole)
@@ -266,6 +284,8 @@ describe("LambdaDeploy", function() {
         this.timeout(60000);
 
         before(function(done) {
+            if (skip) this.skip();
+
             process.chdir("test/resources");
 
             try {
@@ -311,8 +331,8 @@ describe("LambdaDeploy", function() {
         });
 
         it("creates new", function(done) {
-                console.log("Wait is over! We have the lambda!");
-                done();
+            console.log("Wait is over! We have the lambda!");
+            done();
         });
 
         it("talks to lamda", function(done) {
@@ -337,6 +357,8 @@ describe("LambdaDeploy", function() {
         this.timeout(60000);
 
         before(function(done) {
+            if (skip) this.skip();
+
             process.chdir("test/resources");
 
             try {

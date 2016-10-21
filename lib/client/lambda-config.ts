@@ -116,16 +116,6 @@ export class LambdaConfig {
     }
 
     public validate(): void {
-        if (!this.AWS_ACCESS_KEY_ID) {
-            throw "AWS access key is not defined!";
-        }
-
-        if (!this.AWS_SECRET_ACCESS_KEY) {
-            throw "AWS secret access key is not defined!";
-        }
-
-        if (!this.AWS_REGION) {
-            throw "AWS region is not defined!";
-        }
+        // Validate
     }
 }

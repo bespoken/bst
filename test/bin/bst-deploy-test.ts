@@ -13,6 +13,16 @@ const deployProject: string = "./deployProject";
 // Test lambda name
 const testLambdaName: string = "test-lamda-name";
 
+let lambdaConfig = LambdaConfig.create();
+lambdaConfig.initialize();
+
+let skip: boolean = false;
+
+if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+    console.log("Skipping deployer tests. No AWS credentials.");
+    skip = true;
+}
+
 describe("bst-deploy", function() {
     let sandbox: SinonSandbox = null;
 
@@ -44,6 +54,8 @@ describe("bst-deploy", function() {
     let mockDeploy: any = mockDeployModule.LambdaDeploy;
 
     beforeEach(function () {
+        if (skip) this.skip();
+
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/client/lambda-deploy", mockDeployModule);
