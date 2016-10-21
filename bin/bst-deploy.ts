@@ -54,7 +54,7 @@ program
 
         if (!lambdaConfig.AWS_FUNCTION_NAME) {
             lambdaConfig.AWS_FUNCTION_NAME = path.resolve(lambdaFolder).split(path.sep).pop();
-            console.log("We named your lambda " + lambdaConfig.AWS_FUNCTION_NAME + " (after your project folder). You are welcome!");
+            console.log("We named your lambda function " + lambdaConfig.AWS_FUNCTION_NAME + " (same as the project folder)");
         }
 
         let deployer = LambdaDeploy.create(lambdaFolder, lambdaConfig);
@@ -109,7 +109,7 @@ program
                     if (reuse) {
                         deployer.deploy();
                     } else {
-                        console.log("We need to wait for the AWS role change to propagate. Zzzz...");
+                        console.log("Waiting for AWS to propagate the changes");
                         setTimeout(() => {
                             deployer.deploy();
                         }, 3000);

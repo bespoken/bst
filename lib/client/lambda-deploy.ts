@@ -194,8 +194,7 @@ export class LambdaDeploy {
 
             // Lets wait a second before we use the function
 
-            console.log("Let's take a nap before we add the trigger. Zzzz...");
-
+            console.log("Waiting for AWS to propagate the changes");
             setTimeout(() => {
                 return lambda.addPermission({
                     "FunctionName": params.FunctionName,
