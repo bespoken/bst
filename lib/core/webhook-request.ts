@@ -9,14 +9,17 @@ export class WebhookRequest {
     public method: string;
     public uri: string;
     public body: string;
-    public headers: { [id: string]: string };
     public queryParameters: {[id: string]: string} = {};
+    private headers: { [id: string]: string };
     private requestID: number;
 
-    public constructor(public sourceSocket: Socket) {
+    public constructor(public sourceSocket?: Socket) {
         this.rawContents = new Buffer("");
         this.body = "";
         this.requestID = new Date().getTime();
+        if (this.sourceSocket === undefined) {
+            this.sourceSocket = null;
+        }
     }
 
     public static fromString(sourceSocket: Socket, payload: string, id?: number): WebhookRequest {
@@ -61,7 +64,7 @@ export class WebhookRequest {
     public contentLength(): number {
         let contentLength = -1;
         if (this.headers != null) {
-            let contentLengthString = this.headers["Content-Length"];
+            let contentLengthString = this.headers["content-length"];
             contentLength = parseInt(contentLengthString);
         }
 
@@ -80,14 +83,15 @@ export class WebhookRequest {
         this.uri = requestLineParts[1];
 
         if (this.uri.indexOf("?") >= 0) {
-            this.queryParameters = querystring.parse(this.uri.replace(/^.*\?/, ""));
+            const qs = this.uri.replace(/^.*\?/, "");
+            this.queryParameters = querystring.parse(qs);
         }
 
         // Handle the headers
         for (let i = 1; i < lines.length; i++) {
             let headerLine: string = lines[i];
             let headerParts: Array<string> = headerLine.split(":");
-            let key = headerParts[0];
+            let key = headerParts[0].toLowerCase();
             this.headers[key] = headerParts[1].trim();
         }
     }

@@ -1,8 +1,9 @@
 Bespoken Tools Reference API
 ============================
 # Overview
-We currently only expose two primary classes:
+We currently only expose three primary classes:
 - [BSTAlexa](classes/bstalexa.html)
+- [BSTEncode](classes/bstencode.html)
 - [LambdaServer](classes/lambdaserver.html)
 
 We make them available to facilitate testing of Skills using our emulator.
@@ -10,6 +11,8 @@ We make them available to facilitate testing of Skills using our emulator.
 [BSTAlexa](classes/bstalexa.html) is our Alexa emulator. It allows one to write unit tests and functional tests that mimic the functionality of the Alexa service.
 
 The [LambdaServer](classes/lambdaserver.html) makes it easy to run your Lambdas locally for unit and functional tests.
+
+[BSTEncode](classes/bstencode.html) encodes audio files to [Alexa standards](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference) and makes them available via S3.
 
 We will be adding more classes as we go forward.
 

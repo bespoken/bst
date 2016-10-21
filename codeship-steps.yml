@@ -1,0 +1,13 @@
+- name: Prepare
+  service: app
+  command: echo Sanity Check
+  encrypted_dockercfg_path: docker/dockercfg.encrypted
+
+- name: DockerHub push
+  type: push
+  service: app
+  tag: ^(master|DockerCloudDebug)
+  image_name: xappmedia/bst-server
+  image_tag: "{{.Branch}}.test"
+  registry: https://index.docker.io/v1/
+  encrypted_dockercfg_path: docker/dockercfg.encrypted

@@ -71,7 +71,7 @@ The API reference can be found [here](http://docs.bespoken.tools/en/latest/api).
 * [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
 * [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
 * [Python & Flask-Ask](http://docs.bespoken.tools/en/latest/tutorials/tutorial_flask_ask_python)
-* [Alexa Emulator Tutorial - Node.js](/tutorials/tutorial_bst_emulator_nodejs)
+* [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.tools/en/latest/tutorials/tutorial_bst_emulator_nodejs)
 
 ## Questions/Feedback?
 

@@ -6,6 +6,9 @@ target/
 coverage/
 index.js.map
 
+codeship.aes
+docker/aws.env
+
 # Do not track the generated javascript and map files from typescript
 bin/**/*.js
 bin/**/*.map
@@ -26,3 +29,4 @@ site/
 # Include all stuff under test/resources
 !test/resources/*
 !test/resources/exampleProject/*
+!test/resources/deployProject/*
