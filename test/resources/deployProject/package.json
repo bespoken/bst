@@ -1,0 +1,26 @@
+{
+  "name": "brandhaiku",
+  "version": "1.0.0",
+  "description": "Read Brand Haikus",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/"
+  },
+  "author": "Bela Vizy",
+  "license": "ISC",
+  "dependencies": {
+    "alexa-app": "^2.3.4",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "lodash": "^4.13.1",
+    "mocha": "^2.5.3",
+    "request-promise": "^2.0.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xappmedia/brandhaiku.git"
+  }
+}

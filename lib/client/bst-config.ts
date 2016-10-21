@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import {ProxyType} from "./bst-proxy";
 import {LoggingHelper} from "../core/logging-helper";
+import {LambdaConfig} from "./lambda-config";
+
 let uuid = require("node-uuid");
 
 const Logger = "CONFIG";
@@ -26,6 +28,10 @@ export class BSTConfig {
         let bstConfig = new BSTConfig();
         bstConfig.loadFromJSON(config);
         return bstConfig;
+    }
+
+    public save() {
+        BSTConfig.saveConfig(this.configuration);
     }
 
     public nodeID(): string {
@@ -70,20 +76,26 @@ export class BSTConfig {
         if (!fs.existsSync(BSTConfig.configPath())) {
             LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
 
-            // Create the config file if it does not yet exist
-            let config = BSTConfig.createConfig();
-            config.commit();
+           // Create the config file if it does not yet exist
+            let configJSON = BSTConfig.createConfig();
+
+           BSTConfig.saveConfig(configJSON);
         }
     }
 
-    private static createConfig(): BSTConfig {
-        let nodeID = uuid.v4();
+    private static saveConfig(config: any) {
+        let configBuffer = new Buffer(JSON.stringify(config, null, 4) + "\n");
+        fs.writeFileSync(BSTConfig.configPath(), configBuffer);
+    }
 
-        let config = new BSTConfig();
-        config.loadFromJSON({
-            "nodeID": nodeID
-        });
-        return config;
+    private static createConfig(): any {
+        let nodeID = uuid.v4();
+        let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
+
+        return {
+            "nodeID": nodeID,
+            "lambdaDeploy": lambdaConfig
+        };
     }
 }
 
