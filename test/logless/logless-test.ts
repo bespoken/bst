@@ -175,6 +175,17 @@ describe("Logless", function() {
             handler.call(this, {request: true}, context);
         });
 
+        it("Throws error if there is no handler passed", function(done) {
+            try {
+                Logless.capture("JPK", null);
+                assert(false, "Should not get here");
+            } catch (e) {
+                assert(e);
+                assert(e.message.startsWith("Handler is null"));
+                done();
+            }
+        });
+
         it("Logs stuff on timer", function (done) {
             delete context.awsRequestId;
             // Need to do this first, as it gets wrapped by Logless.capture

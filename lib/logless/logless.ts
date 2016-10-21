@@ -12,6 +12,10 @@ export class Logless {
     private static _initialized = false;
 
     public static capture(source: string, handler: LambdaFunction): LambdaFunction {
+        if (handler === undefined || handler === null) {
+            throw new Error("Handler is null or undefined! This must be passed.");
+        }
+
         Logless._source = source;
         // We call this every time, just for convenience - we assume stateless
         Logless.initialize();

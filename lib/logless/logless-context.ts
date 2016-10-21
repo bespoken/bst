@@ -26,7 +26,7 @@ export class LoglessContext {
         context.done = function(error: any, result: any) {
             self.captureResponse(error, result);
             self.flush(function () {
-                done(error, result);
+                done.call(context, error, result);
             });
         };
 
@@ -34,7 +34,7 @@ export class LoglessContext {
         context.fail = function(error: any) {
             self.captureResponse(error, null);
             self.flush(function () {
-                fail(error);
+                fail.call(context, error);
             });
         };
 
@@ -42,7 +42,7 @@ export class LoglessContext {
         context.succeed = function(result: any) {
             self.captureResponse(null, result);
             self.flush(function () {
-                succeed(result);
+                succeed.call(context, result);
             });
         };
 
@@ -160,22 +160,15 @@ export class LoglessContext {
 
         // Set up the request
         const httpRequest = this.httpRequest(options, function(response: IncomingMessage) {
-            response.setEncoding("utf8");
-            response.on("data", function (chunk: Buffer) {
-                console.log("Response: " + chunk);
-            });
 
-            response.on("end", function () {
-                console.log("Time: " + (new Date().getTime() - startTime));
-            });
         });
 
         httpRequest.setNoDelay(true);
-        const startTime = new Date().getTime();
+        console.time("Logless.FlushTime");
 
         httpRequest.end(dataAsString, function () {
             if (flushed !== undefined) {
-                console.log("TimeEnd: " + (new Date().getTime() - startTime));
+                console.timeEnd("Logless.FlushTime");
                 flushed();
             }
         });
