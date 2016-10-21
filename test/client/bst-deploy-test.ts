@@ -120,7 +120,7 @@ describe("LambdaDeploy", function() {
         });
 
         it("runs npm", function (done) {
-            this.timeout(10000);
+            this.timeout(20000);
 
             deployer.npmInstall(destinationFolder, function (err: Error) {
                 if (err) {
@@ -374,7 +374,7 @@ describe("LambdaDeploy", function() {
             done();
         });
 
-        it("talks to lamda", function(done) {
+        it("talks to lambda", function(done) {
             awsHelper.invokeLambda(testAwsLambda, testPayload)
                 .then((data: any) => {
                     console.log("Lambda said: status=" + data.StatusCode + ", payload=" + data.Payload);

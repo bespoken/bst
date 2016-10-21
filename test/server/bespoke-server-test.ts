@@ -81,21 +81,12 @@ describe("BespokeServerTest", function() {
                         onCompleted();
                     });
                 }, 50);
-
-
-                setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
-                        let json = JSON.parse(data.toString());
-                        assert(json.success);
-                        onCompleted();
-                    });
-                }, 100);
             };
 
             let count = 0;
             let onCompleted = function () {
                 count++;
-                if (count === 3) {
+                if (count === 2) {
                     lambdaServer.stop(function () {
                         bespokeClient.shutdown(function () {
                             server.stop(function () {

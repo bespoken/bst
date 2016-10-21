@@ -14,7 +14,7 @@ describe("BSTEncode", function() {
             this.timeout(10000);
 
             const config = {
-                bucket: "bespoken/encoded",
+                bucket: "bespoken-encoding-test",
                 accessKeyId: awsAccessKeyId,
                 secretAccessKey: awsSecretAccessKey
             };
@@ -22,7 +22,7 @@ describe("BSTEncode", function() {
             let encoder = new BSTEncode(config);
             encoder.encodeURLAndPublish("https://s3.amazonaws.com/xapp-alexa/UnitTestOutput.mp3", function(error: Error, url: string) {
                 assert(!error);
-                assert(url, "https://s3.amazonaws.com/bespoken/encoded/UnitTestOutput-encoded.mp3");
+                assert(url, "https://s3.amazonaws.com/bespoken-encoding-test/UnitTestOutput-encoded.mp3");
                 done();
             });
         });
@@ -32,15 +32,16 @@ describe("BSTEncode", function() {
             this.timeout(10000);
 
             const config = {
-                bucket: "bespoken/encoded",
+                bucket: "bespoken-encoding-test",
                 accessKeyId: awsAccessKeyId,
                 secretAccessKey: awsSecretAccessKey
             };
 
             let encoder = new BSTEncode(config);
-            encoder.encodeURLAndPublish("https://s3.amazonaws.com/bespoken/encoded/ContentPromoPromptGood.m4a", function(error: Error, url: string) {
+            encoder.encodeURLAndPublish("https://s3.amazonaws.com/bespoken-encoding-test/ContentPromoPromptGood.m4a", function(error: Error, url: string) {
+                console.log(error);
                 assert(!error);
-                assert.equal(url, "https://s3.amazonaws.com/bespoken/encoded/ContentPromoPromptGood-encoded.mp3");
+                assert.equal(url, "https://s3.amazonaws.com/bespoken-encoding-test/ContentPromoPromptGood-encoded.mp3");
                 done();
             });
         });
@@ -49,7 +50,7 @@ describe("BSTEncode", function() {
             if (doNotRun(this, done)) return;
 
             const config = {
-                bucket: "bespoken/encoded",
+                bucket: "bespoken-encoding-test",
                 accessKeyId: awsAccessKeyId,
                 secretAccessKey: awsSecretAccessKey
             };
@@ -68,7 +69,7 @@ describe("BSTEncode", function() {
             if (doNotRun(this, done)) return;
 
             const config = {
-                bucket: "bespoken/encoded",
+                bucket: "bespoken-encoding-test",
                 accessKeyId: awsAccessKeyId,
                 secretAccessKey: awsSecretAccessKey
             };
@@ -76,7 +77,7 @@ describe("BSTEncode", function() {
             let encoder = new BSTEncode(config);
             encoder.encodeFileAndPublish("test/resources/ContentPromoPrompt.m4a", function (error: Error, url: string) {
                 assert(!error);
-                assert(url, "https://s3.amazonaws.com/bespoken/encoded/ContentPromoPrompt-encoded.mp3");
+                assert(url, "https://s3.amazonaws.com/bespoken-encoding-test/ContentPromoPrompt-encoded.mp3");
                 done();
             });
         });
