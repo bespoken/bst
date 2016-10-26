@@ -36,6 +36,7 @@ describe("Logless", function() {
                 console.info("I am info");
                 console.warn("I am a warning");
                 console.error("I am an error");
+                console.info(); // Test new line
                 context.done(null, {"response": true, "key": "value"});
             });
 
@@ -46,7 +47,7 @@ describe("Logless", function() {
                 console.log(JSON.stringify(json, null, 2));
                 assert.equal(json.source, "JPK");
                 assert.equal(json.transaction_id, "FakeAWSRequestId");
-                assert.equal(json.logs.length, 6);
+                assert.equal(json.logs.length, 7);
                 assert(json.logs[0].payload.request);
                 assert.equal(json.logs[0].log_type, "INFO");
                 assert.strictEqual(json.logs[0].tags[0], "request");
@@ -57,9 +58,11 @@ describe("Logless", function() {
                 assert.equal(json.logs[3].timestamp.length, 24);
                 assert.equal(json.logs[3].log_type, "WARN");
                 assert.equal(json.logs[4].log_type, "ERROR");
-                assert(json.logs[5].payload.response);
-                assert(json.logs[5].payload.key, "value");
-                assert.strictEqual(json.logs[5].tags[0], "response");
+                assert.equal(json.logs[5].log_type, "INFO");
+                assert.equal(json.logs[5].payload, null);
+                assert(json.logs[6].payload.response);
+                assert(json.logs[6].payload.key, "value");
+                assert.strictEqual(json.logs[6].tags[0], "response");
             };
 
             handler.logger.httpRequest = function () {

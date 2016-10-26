@@ -82,6 +82,9 @@ export class LoglessContext {
             this._queue.push(new Log(type, dataString, null, tags));
 
         } else {
+            if (data === undefined) {
+                data = null;
+            }
             this._queue.push(new Log(type, data, null, tags));
 
         }

@@ -49,19 +49,19 @@ export class Logless {
     private static wrapCall(console: any, name: string, type: LogType): void {
         let originalCall = (<any> console)[name];
 
-        let newCall: any = function (data: any, params: any[]) {
+        let newCall: any = function (data: any) {
             if (!Logless._context.completed()) {
-                Logless._context.log(type, data, params);
+                let args = Array.prototype.slice.call(arguments);
+                if (args.length > 1) {
+                    args = args.slice(1);
+                } else {
+                    args = null;
+                }
+                Logless._context.log(type, data, args);
             }
 
             // Need to put it all into one array and call the function or the params are not processed correctly
-            let allParams = [data];
-            if (params !== undefined && params !== null) {
-                for (let param of params) {
-                    allParams.push(param);
-                }
-            }
-            originalCall.apply(this, allParams);
+            originalCall.apply(this, arguments);
         };
 
         console[name] = newCall;
