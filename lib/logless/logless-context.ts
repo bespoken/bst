@@ -146,19 +146,17 @@ export class LoglessContext {
         };
 
         // Set up the request
-        const httpRequest = this.httpRequest(options, function(response: IncomingMessage) {
-
-        });
-
-        httpRequest.setNoDelay(true);
         console.time("Logless.FlushTime");
-
-        httpRequest.end(dataAsString, function () {
+        const httpRequest = this.httpRequest(options, function(response: IncomingMessage) {
             if (flushed !== undefined) {
                 console.timeEnd("Logless.FlushTime");
                 flushed();
             }
         });
+
+        httpRequest.setNoDelay(true);
+        httpRequest.end(dataAsString);
+
         // Clear the queue
         this._queue = [];
     }
