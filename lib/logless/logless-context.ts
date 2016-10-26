@@ -8,10 +8,34 @@ export class LoglessContext {
     private _callback: Function;
     private _queue: Array<Log> = [];
     private _transactionID: string;
-    private _completed = false;
 
     public constructor(private _source: string) {
 
+    }
+
+    private wrapCall(console: any, name: string, type: LogType): void {
+        const self = this;
+        let originalCall = (<any> console)[name];
+        if (originalCall.logless !== undefined) {
+            console.log("Already Wrapped");
+            return originalCall;
+        }
+
+        let newCall: any = function (data: any) {
+            let args = Array.prototype.slice.call(arguments);
+            if (args.length > 1) {
+                args = args.slice(1);
+            } else {
+                args = null;
+            }
+            self.log(type, data, args);
+
+            // Need to put it all into one array and call the function or the params are not processed correctly
+            originalCall.apply(this, arguments);
+        };
+
+        newCall.logless = true;
+        console[name] = newCall;
     }
 
     public onLambdaEvent(event: any, context: any, wrappedCallback: Function): void {
@@ -21,6 +45,20 @@ export class LoglessContext {
         } else {
             this._transactionID = uuid.v4();
         }
+
+        this.wrapCall(console, "error", LogType.ERROR);
+        this.wrapCall(console, "info", LogType.INFO);
+        this.wrapCall(console, "log", LogType.DEBUG);
+        this.wrapCall(console, "warn", LogType.WARN);
+        process.on("uncaughtException", function (error: Error) {
+            // In the case of an uncaught exception, we log it and then flush
+            // This can then lead to multiple flushes, but we don't want to lose the logs if this exception
+            //  caused the program to not return successfully
+            console.error(error);
+            self.flush(function () {
+
+            });
+        });
 
         const done = context.done;
         context.done = function(error: any, result: any) {
@@ -163,10 +201,6 @@ export class LoglessContext {
 
         // Clear the queue
         this._queue = [];
-    }
-
-    public completed(): boolean {
-        return this._completed;
     }
 
     public httpRequest(options: any, callback: (response: IncomingMessage) => void): ClientRequest {

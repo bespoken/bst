@@ -21,30 +21,6 @@ describe("Logless", function() {
     });
 
     describe("Logging Using the Lambda Context", function() {
-        it("Logs stuff on done", function (done) {
-            context.awsRequestId = "FakeAWSRequestId";
-            // Need to do this first, as it gets wrapped by Logless.capture
-            context.done = function (error: Error, result: any) {
-                assert(!error);
-                assert(result);
-                done();
-            };
-
-            // Emulate a lambda function
-            const handler: any = Logless.capture("JPK", function (event: any, context: any) {
-                console.log("I am a log with %s %s", "Test", "Test2");
-                console.info("I am info");
-                console.warn("I am a warning");
-                console.error("I am an error");
-                console.info(); // Test new line
-                context.succeed({"response": true, "key": "value"});
-            });
-
-
-
-            handler.call(this, {request: true}, context);
-        });
-
         it("Logs real stuff", function (done) {
             context.awsRequestId = "FakeAWSRequestId";
             // Need to do this first, as it gets wrapped by Logless.capture
@@ -54,22 +30,21 @@ describe("Logless", function() {
                 done();
             };
 
-            const onCall = function () {
-
-                const flush = handler.logger.flush;
+            const onCall = function (context: any) {
+                const flush = context.logger.flush;
 
                 let flushCount = 0;
-                handler.logger.flush = function(onFlush: Function) {
+                context.logger.flush = function(onFlush: Function) {
                     flushCount++;
                     if (flushCount > 1) {
                         assert(false, "Flushed called more than once");
                     }
-                    flush.call(handler.logger, onFlush);
-                    handler.logger.flush = flush;
+                    flush.call(context.logger, onFlush);
+                    context.logger.flush = flush;
                 };
 
                 // Confirm all the data that tries to be sent
-                let mockRequest = new MockRequest(handler.logger);
+                let mockRequest = new MockRequest(context.logger);
                 mockRequest.write = function (data: string) {
                     let json = JSON.parse(data);
                     console.log(JSON.stringify(json, null, 2));
@@ -93,22 +68,23 @@ describe("Logless", function() {
                     assert.strictEqual(json.logs[6].tags[0], "response");
                 };
 
-                handler.logger.httpRequest = function () {
+                context.logger.httpRequest = function () {
                     return mockRequest;
                 };
             };
 
             // Emulate a lambda function
             const handler: any = Logless.capture("JPK", function (event: any, context: any) {
-                onCall();
+                onCall(context);
                 console.log("I am a log with %s %s", "Test", "Test2");
                 console.info("I am info");
                 console.warn("I am a warning");
                 console.error("I am an error");
-                context.done(null, "PAYLOAD NOW 3");
+                console.info();
+                context.done(null, { response: true, key: "value" });
             });
 
-            handler.call(this, "Request", context);
+            handler.call(this, { request: true }, context);
         });
 
         it("Logs stuff on done with error", function (done) {
