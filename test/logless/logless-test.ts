@@ -456,7 +456,7 @@ class MockRequest {
         if (data !== undefined && data !== null) {
             this.write(data);
         }
-        
+
         if (this.onFlush !== undefined && this.onFlush !== null) {
             this.onFlush();
         }

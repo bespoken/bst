@@ -26,6 +26,7 @@ export class Logless {
     }
 
     private static initialize(): void {
+        console.log("Logless.initialize: " + Logless._initialized);
         if (Logless._initialized) {
             return;
         }
@@ -48,6 +49,9 @@ export class Logless {
 
     private static wrapCall(console: any, name: string, type: LogType): void {
         let originalCall = (<any> console)[name];
+        if (originalCall.logless !== undefined) {
+            return originalCall;
+        }
 
         let newCall: any = function (data: any) {
             if (!Logless._context.completed()) {
