@@ -25,7 +25,7 @@ describe("Logless", function() {
             context.awsRequestId = "FakeAWSRequestId";
             // Need to do this first, as it gets wrapped by Logless.capture
             context.done = function (error: Error, result: any) {
-                assert.equal(error, null);
+                assert(!error);
                 assert(result);
                 done();
             };
@@ -37,8 +37,20 @@ describe("Logless", function() {
                 console.warn("I am a warning");
                 console.error("I am an error");
                 console.info(); // Test new line
-                context.done(null, {"response": true, "key": "value"});
+                context.succeed({"response": true, "key": "value"});
             });
+
+            const flush = handler.logger.flush;
+
+            let flushCount = 0;
+            handler.logger.flush = function(onFlush: Function) {
+                flushCount++;
+                if (flushCount > 1) {
+                    assert(false, "Flushed called more than once");
+                }
+                flush.call(handler.logger, onFlush);
+                handler.logger.flush = flush;
+            };
 
             // Confirm all the data that tries to be sent
             let mockRequest = new MockRequest(handler.logger);
@@ -272,8 +284,9 @@ describe("Logless", function() {
         });
 
         it("Logs stuff on uncaught exception", function(done) {
-            // Even though we don't do anything with it, reset it - otherwise it is wrapped from previous call
-            context.succeed = function () {};
+            context.done = function(error: any, result: any) {
+
+            };
 
             const handler: any = Logless.capture("JPK", function (event: any, context: any) {
                 setTimeout(function() {
@@ -282,7 +295,7 @@ describe("Logless", function() {
 
                 setTimeout(function() {
                     console.log("TestLog");
-                    context.succeed({ response: true });
+                    context.done(null, { response: true });
                 }, 10);
             });
 
@@ -414,11 +427,11 @@ const context: any = {
     },
 
     succeed: function(result: any) {
-
+        this.done(null, result);
     },
 
     fail: function(error: Error) {
-
+        this.done(error);
     }
 };
 

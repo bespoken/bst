@@ -30,22 +30,6 @@ export class LoglessContext {
             });
         };
 
-        const fail = context.fail;
-        context.fail = function(error: any) {
-            self.captureResponse(error, null);
-            self.flush(function () {
-                fail.call(context, error);
-            });
-        };
-
-        const succeed = context.succeed;
-        context.succeed = function(result: any) {
-            self.captureResponse(null, result);
-            self.flush(function () {
-                succeed.call(context, result);
-            });
-        };
-
         // Capture the request event
         this.log(LogType.INFO, event, null, ["request"]);
 
