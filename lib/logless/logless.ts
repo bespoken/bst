@@ -56,8 +56,10 @@ export class Logless {
 
             // Need to put it all into one array and call the function or the params are not processed correctly
             let allParams = [data];
-            for (let param of params) {
-                allParams.push(param);
+            if (params !== undefined && params !== null) {
+                for (let param of params) {
+                    allParams.push(param);
+                }
             }
             originalCall.apply(this, allParams);
         };
