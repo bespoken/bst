@@ -49,7 +49,7 @@ export class Logless {
     private static wrapCall(console: any, name: string, type: LogType): void {
         let originalCall = (<any> console)[name];
 
-        let newCall: any = function (data: any, ...params: any[]) {
+        let newCall: any = function (data: any, params: any[]) {
             if (!Logless._context.completed()) {
                 Logless._context.log(type, data, params);
             }
