@@ -17,21 +17,14 @@ export class Logless {
         }
 
         Logless._source = source;
-        // We call this every time, just for convenience - we assume stateless
-        Logless.initialize();
 
         // Create a new logger for this context
         const logger = Logless.newContext();
         return new LambdaWrapper(logger, handler).lambdaFunction();
     }
 
-    private static initialize(): void {
+    public static initialize(): void {
         console.log("Logless.initialize: " + Logless._initialized);
-        if (Logless._initialized) {
-            return;
-        }
-
-        Logless._initialized = true;
         Logless.wrapCall(console, "error", LogType.ERROR);
         Logless.wrapCall(console, "info", LogType.INFO);
         Logless.wrapCall(console, "log", LogType.DEBUG);
@@ -86,6 +79,7 @@ export class LambdaWrapper {
     public constructor (public logger: LoglessContext, public wrappedLambda: LambdaFunction) {}
 
     public handle(event: any, context: any, callback?: Function): void {
+        Logless.initialize();
         this.logger.onLambdaEvent(event, context, callback);
 
         try {
