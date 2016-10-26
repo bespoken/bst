@@ -456,7 +456,10 @@ class MockRequest {
         if (data !== undefined && data !== null) {
             this.write(data);
         }
-        this.onFlush();
+        
+        if (this.onFlush !== undefined && this.onFlush !== null) {
+            this.onFlush();
+        }
     }
 
     public setNoDelay () {

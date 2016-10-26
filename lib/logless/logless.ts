@@ -64,6 +64,7 @@ export class Logless {
             originalCall.apply(this, arguments);
         };
 
+        newCall.logless = true;
         console[name] = newCall;
     }
 

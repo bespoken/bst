@@ -150,6 +150,10 @@ export class LoglessContext {
         const httpRequest = this.httpRequest(options, function(response: IncomingMessage) {
             if (flushed !== undefined) {
                 console.timeEnd("Logless.FlushTime");
+                if ((<any> console.log).logless !== undefined) {
+                    console.log("Logless: " + (<any> console.log).logless);
+                }
+                console.log("Flushed Logs: " + logBatch.logs.length);
                 flushed();
             }
         });
