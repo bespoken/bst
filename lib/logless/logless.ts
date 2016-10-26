@@ -18,13 +18,12 @@ export class Logless {
 
         Logless._source = source;
 
-        // Create a new logger for this context
-        const logger = Logless.newContext();
-        return new LambdaWrapper(logger, handler).lambdaFunction();
+        return new LambdaWrapper(handler).lambdaFunction();
     }
 
     public static initialize(): void {
         console.log("Logless.initialize: " + Logless._initialized);
+
         Logless.wrapCall(console, "error", LogType.ERROR);
         Logless.wrapCall(console, "info", LogType.INFO);
         Logless.wrapCall(console, "log", LogType.DEBUG);
@@ -38,11 +37,13 @@ export class Logless {
 
             });
         });
+        Logless._initialized = true;
     }
 
     private static wrapCall(console: any, name: string, type: LogType): void {
         let originalCall = (<any> console)[name];
         if (originalCall.logless !== undefined) {
+            console.log("Already Wrapped");
             return originalCall;
         }
 
@@ -76,23 +77,26 @@ export class Logless {
  */
 export class LambdaWrapper {
 
-    public constructor (public logger: LoglessContext, public wrappedLambda: LambdaFunction) {}
+    public constructor (public wrappedLambda: LambdaFunction) {}
 
     public handle(event: any, context: any, callback?: Function): void {
+        // Create a new logger for this context
+        const logger = Logless.newContext();
+
         Logless.initialize();
-        this.logger.onLambdaEvent(event, context, callback);
+        (<any> this.handle).logger = logger;
+        logger.onLambdaEvent(event, context, callback);
 
         try {
-            this.wrappedLambda.call(this, event, context, this.logger.callback());
+            this.wrappedLambda.call(this, event, context, logger.callback());
         } catch (e) {
             console.error(e);
-            this.logger.flush();
+            logger.flush();
         }
     }
 
     public lambdaFunction(): LambdaFunction {
         let lambda = this.handle.bind(this);
-        lambda.logger = this.logger;
         return lambda;
     }
 }

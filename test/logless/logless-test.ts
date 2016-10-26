@@ -40,46 +40,7 @@ describe("Logless", function() {
                 context.succeed({"response": true, "key": "value"});
             });
 
-            const flush = handler.logger.flush;
 
-            let flushCount = 0;
-            handler.logger.flush = function(onFlush: Function) {
-                flushCount++;
-                if (flushCount > 1) {
-                    assert(false, "Flushed called more than once");
-                }
-                flush.call(handler.logger, onFlush);
-                handler.logger.flush = flush;
-            };
-
-            // Confirm all the data that tries to be sent
-            let mockRequest = new MockRequest(handler.logger);
-            mockRequest.write = function (data: string) {
-                let json = JSON.parse(data);
-                console.log(JSON.stringify(json, null, 2));
-                assert.equal(json.source, "JPK");
-                assert.equal(json.transaction_id, "FakeAWSRequestId");
-                assert.equal(json.logs.length, 7);
-                assert(json.logs[0].payload.request);
-                assert.equal(json.logs[0].log_type, "INFO");
-                assert.strictEqual(json.logs[0].tags[0], "request");
-                assert.strictEqual(json.logs[1].payload, "I am a log with Test Test2");
-                assert.equal(json.logs[1].log_type, "DEBUG");
-                assert.equal(json.logs[2].payload, "I am info");
-                assert.equal(json.logs[2].log_type, "INFO");
-                assert.equal(json.logs[3].timestamp.length, 24);
-                assert.equal(json.logs[3].log_type, "WARN");
-                assert.equal(json.logs[4].log_type, "ERROR");
-                assert.equal(json.logs[5].log_type, "INFO");
-                assert.equal(json.logs[5].payload, null);
-                assert(json.logs[6].payload.response);
-                assert(json.logs[6].payload.key, "value");
-                assert.strictEqual(json.logs[6].tags[0], "response");
-            };
-
-            handler.logger.httpRequest = function () {
-                return mockRequest;
-            };
 
             handler.call(this, {request: true}, context);
         });
@@ -93,8 +54,53 @@ describe("Logless", function() {
                 done();
             };
 
+            const onCall = function () {
+
+                const flush = handler.logger.flush;
+
+                let flushCount = 0;
+                handler.logger.flush = function(onFlush: Function) {
+                    flushCount++;
+                    if (flushCount > 1) {
+                        assert(false, "Flushed called more than once");
+                    }
+                    flush.call(handler.logger, onFlush);
+                    handler.logger.flush = flush;
+                };
+
+                // Confirm all the data that tries to be sent
+                let mockRequest = new MockRequest(handler.logger);
+                mockRequest.write = function (data: string) {
+                    let json = JSON.parse(data);
+                    console.log(JSON.stringify(json, null, 2));
+                    assert.equal(json.source, "JPK");
+                    assert.equal(json.transaction_id, "FakeAWSRequestId");
+                    assert.equal(json.logs.length, 7);
+                    assert(json.logs[0].payload.request);
+                    assert.equal(json.logs[0].log_type, "INFO");
+                    assert.strictEqual(json.logs[0].tags[0], "request");
+                    assert.strictEqual(json.logs[1].payload, "I am a log with Test Test2");
+                    assert.equal(json.logs[1].log_type, "DEBUG");
+                    assert.equal(json.logs[2].payload, "I am info");
+                    assert.equal(json.logs[2].log_type, "INFO");
+                    assert.equal(json.logs[3].timestamp.length, 24);
+                    assert.equal(json.logs[3].log_type, "WARN");
+                    assert.equal(json.logs[4].log_type, "ERROR");
+                    assert.equal(json.logs[5].log_type, "INFO");
+                    assert.equal(json.logs[5].payload, null);
+                    assert(json.logs[6].payload.response);
+                    assert(json.logs[6].payload.key, "value");
+                    assert.strictEqual(json.logs[6].tags[0], "response");
+                };
+
+                handler.logger.httpRequest = function () {
+                    return mockRequest;
+                };
+            };
+
             // Emulate a lambda function
             const handler: any = Logless.capture("JPK", function (event: any, context: any) {
+                onCall();
                 console.log("I am a log with %s %s", "Test", "Test2");
                 console.info("I am info");
                 console.warn("I am a warning");
