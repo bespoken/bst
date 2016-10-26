@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as util from "util";
-const uuid = require("uuid");
+const uuid = require("node-uuid");
 import {IncomingMessage} from "http";
 import {ClientRequest} from "http";
 
