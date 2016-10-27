@@ -63,6 +63,30 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Logless will automatically capture logs and diagnostics for your Node.js Lambda.</p>
+					</div>
+					<p>To use it, simply wrap your function handler, like so:</p>
+					<pre><code>
+    var bst = require('bespoken-tools');
+
+    exports.handler = bst.Logless.capture("<SOURCE_ID>", function (event, context) {
+        // Lambda code goes here
+        context.done(null, "Hello World");
+    });
+
+</code></pre>
+					<p>That&#39;s all there is to it. Then you can see all your logs through our handy dashboard!</p>
+					<p>We will effortlessly capture and format:</p>
+					<ul>
+						<li>Request and response payloads
+							<li>Console output (including instrumentation for timing and all debug levels)
+								<li>Error and stack traces
+					</ul>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -85,7 +109,6 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#capture" class="tsd-kind-icon">capture</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#newcontext" class="tsd-kind-icon">new<wbr>Context</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,7 +122,7 @@
 					<div class="tsd-signature tsd-kind-icon">Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;logless.bespoken.tools&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/48e81f3/lib/logless/logless.ts#L8">logless/logless.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/385881e/lib/logless/logless.ts#L28">logless/logless.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -116,7 +139,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/48e81f3/lib/logless/logless.ts#L11">logless/logless.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/385881e/lib/logless/logless.ts#L30">logless/logless.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -129,23 +152,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/lambdafunction.html" class="tsd-signature-type">LambdaFunction</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="newcontext" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> new<wbr>Context</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">new<wbr>Context<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">LoglessContext</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/48e81f3/lib/logless/logless.ts#L20">logless/logless.ts:20</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">LoglessContext</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -179,9 +185,6 @@
 					<li class=" tsd-kind-class">
 						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
 					</li>
-					<li class=" tsd-kind-class">
-						<a href="lambdawrapper.html" class="tsd-kind-icon">Lambda<wbr>Wrapper</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
@@ -192,9 +195,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="logless.html#capture" class="tsd-kind-icon">capture</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="logless.html#newcontext" class="tsd-kind-icon">new<wbr>Context</a>
 							</li>
 						</ul>
 					</li>

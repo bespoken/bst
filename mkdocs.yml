@@ -7,6 +7,7 @@ pages:
 - Getting Started: getting_started.md
 - Alexa Skill Configuration: alexa_skills_kit_configuration.md
 - Commands:
+    - bst deploy: commands/deploy.md
     - bst intend: commands/intend.md
     - bst proxy: commands/proxy.md
     - bst speak: commands/speak.md
