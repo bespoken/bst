@@ -1,9 +1,20 @@
 const gulp = require('gulp');
+const mocha = require('gulp-mocha');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
+const tslint = require('gulp-tslint');
 const typedoc = require('gulp-bst-typedoc');
 const run = require('gulp-run');
-const tsc = require('gulp-tsc');
+const shell = require('gulp-shell');
+
+gulp.task('build', ['setup', 'lint'], function () {
+    return run('node_modules/typescript/bin/tsc').exec();
+});
+
+gulp.task('test', ['build'], function() {
+    return gulp.src(['test/**/*-test.js'])
+        .pipe(mocha());
+});
 
 gulp.task('setup', function (done) {
     run('npm install').exec(function () {
@@ -13,10 +24,12 @@ gulp.task('setup', function (done) {
     });
 });
 
-gulp.task('build', function () {
-    gulp.src(['lib/**/*.ts'])
-        .pipe(tsc())
-        .pipe(gulp.dest('/'))
+gulp.task('lint', function(done) {
+    run('npm install').exec(function () {
+        run('typings install').exec(function () {
+            done();
+        });
+    });
 });
 
 gulp.task('docs', ['mkdocs', 'typedoc']);

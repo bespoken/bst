@@ -1,5 +1,3 @@
-# Notes on setup
-
 # Initial Setup
 ## Install typings and gulp
 `npm install typings --global`  
@@ -7,8 +5,8 @@
 
 These commands will be used commonly for development tasks.
 
-## Run gulp setup
-`gulp setup`  
+## Run gulp build
+`gulp build`  
 
 Under the covers this runs `npm install` and sets everything up.
 

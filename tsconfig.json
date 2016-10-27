@@ -8,6 +8,11 @@
     "sourceMap": true,
     "target": "ES6"
   },
+  "include": [
+    "lib/**/*.ts",
+    "test/**/*.ts",
+    "index.ts"
+  ],
   "exclude": [
     "node_modules",
     "wwwroot"
