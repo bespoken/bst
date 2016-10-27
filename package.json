@@ -24,6 +24,10 @@
   "devDependencies": {
     "bst-typedoc": "^0.4.6",
     "coveralls": "^2.11.11",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-token-replace": "^1.0.3",
     "istanbul": "^0.4.4",
     "mocha": "2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
