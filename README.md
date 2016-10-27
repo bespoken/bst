@@ -29,7 +29,7 @@
 
 ---
 # Overview
-With Bespoken Tools, develop faster and better. Do not slow-down for:
+With Bespoken Tools, develop faster and better. Do not slow-down for:  
 
 * Time-consuming server deployments
 * Over-complicated and highly manual testing routines
@@ -37,13 +37,13 @@ With Bespoken Tools, develop faster and better. Do not slow-down for:
 
 With Bespoken tools, build high-quality, faster.
 
-The command-line tools include:
+The command-line tools include:  
 
 * [Deploy](http://docs.bespoken.tools/en/latest/commands/deploy) - One-command deployment of Lambda functions  
 * [Proxy](http://docs.bespoken.tools/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop  
 * [Speak](http://docs.bespoken.tools/en/latest/commands/speak) and [Intend](http://docs.bespoken.tools/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
 
-The library provides:
+The library provides:  
 
 * [BSTAlexa](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) - Alexa emulator for unit-testing and functional-testing of your skills
 * [BSTEncode](http://docs.bespoken.tools/en/latest/api/classes/bstencode.html) - Encodes audio files for use in SSML without pesky ffmpeg
