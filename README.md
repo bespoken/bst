@@ -11,19 +11,19 @@
 
 <p align="center">
     <a href="https://travis-ci.org/bespoken/bst">
-        <img alt="Build Status" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
+        <img alt="Build Status" class="badge" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
     </a>
     <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
-        <img alt="Coverage Status" src="https://coveralls.io/github/bespoken/bst?branch=master">
+        <img alt="Coverage Status" class="badge" src="https://coveralls.io/github/bespoken/bst?branch=master">
     </a>
     <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
-        <img alt="NPM Version" src="https://img.shields.io/npm/v/bespoken-tools.svg">
+        <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
     <a href="http://docs.bespoken.tools/">
-        <img alt="Read The Docs" src="https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat">
+        <img alt="Read The Docs" class="badge" src="https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat">
     </a>
     <a href="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
-        <img alt="Read The Docs" src="https://badges.gitter.im/bespoken/bst.svg">
+        <img alt="Read The Docs" class="badge" src="https://badges.gitter.im/bespoken/bst.svg">
     </a>
 </p>
 
