@@ -27,6 +27,24 @@ describe("BSTEncode", function() {
             });
         });
 
+        it("Encodes and Publishes a URL as another name", function (done) {
+            if (doNotRun(this, done)) return;
+            this.timeout(10000);
+
+            const config = {
+                bucket: "bespoken-encoding-test",
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey
+            };
+
+            let encoder = new BSTEncode(config);
+            encoder.encodeURLAndPublishAs("http://traffic.libsyn.com/bespoken/Introduction.mp3", "UNIT_TEST_INTRODUCTION.mp3", function(error: Error, url: string) {
+                assert(!error);
+                assert(url, "https://s3.amazonaws.com/bespoken-encoding-test/UNIT_TEST_INTRODUCTION.mp3.mp3");
+                done();
+            });
+        });
+
         it("Encodes and Publishes a URL that is m4a", function (done) {
             if (doNotRun(this, done)) return;
             this.timeout(10000);

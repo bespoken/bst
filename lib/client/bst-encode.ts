@@ -36,6 +36,10 @@ export class BSTEncode {
      */
     public constructor(awsConfiguration: AWSEncoderConfig) {
         this._awsConfiguration = awsConfiguration;
+        if (awsConfiguration.accessKeyId === undefined) {
+            awsConfiguration.accessKeyId = AWS.config.credentials.accessKeyId;
+            awsConfiguration.secretAccessKey = AWS.config.credentials.secretAccessKey;
+        }
     }
 
     /**
@@ -44,12 +48,22 @@ export class BSTEncode {
      * @param callback Returns the URL of the encoded file on S3. Error if there is any.
      */
     public encodeFileAndPublish(filePath: string, callback: (error: Error, encodedURL: string) => void): void {
+        this.encodeFileAndPublishAs(filePath, null, callback);
+    }
+
+    /**
+     * Encodes a file and publishes it to S3
+     * @param filePath
+     * @param outputKey The key to publish this as on S3
+     * @param callback Returns the URL of the encoded file on S3. Error if there is any.
+     */
+    public encodeFileAndPublishAs(filePath: string, outputKey: string, callback: (error: Error, encodedURL: string) => void): void {
         const self = this;
         FileUtil.readFile(filePath, function(data: Buffer) {
             const fp = path.parse(filePath);
             const filename = fp.name + fp.ext;
             self.uploadFile(self._awsConfiguration.bucket, filename, data, function (url: string) {
-                self.callEncode(url, function(error: Error, encodedURL: string) {
+                self.callEncode(url, outputKey, function(error: Error, encodedURL: string) {
                     callback(error, encodedURL);
                 });
             });
@@ -62,8 +76,18 @@ export class BSTEncode {
      * @param callback Returns the URL of the encoded file on S3. Error if there is any.
      */
     public encodeURLAndPublish(sourceURL: string, callback: (error: Error, encodedURL: string) => void): void {
+        this.encodeURLAndPublishAs(sourceURL, null, callback);
+    }
+
+    /**
+     * Encodes a URL and publishes it to S3 as the specified key
+     * @param sourceURL The URL of the file to encode
+     * @param outputKey The key to publish this as on S3
+     * @param callback Returns the URL of the encoded file on S3. Error if there is any.
+     */
+    public encodeURLAndPublishAs(sourceURL: string, outputKey: string, callback: (error: Error, encodedURL: string) => void): void {
         const self = this;
-        self.callEncode(sourceURL, function(error: Error, encodedURL: string) {
+        self.callEncode(sourceURL, outputKey, function(error: Error, encodedURL: string) {
             callback(error, encodedURL);
         });
     }
@@ -73,32 +97,33 @@ export class BSTEncode {
             throw new Error("No AWS Configuration parameters defined");
         }
 
-        const credentials = {
-            accessKeyId: this._awsConfiguration.accessKeyId,
-            secretAccessKey: this._awsConfiguration.secretAccessKey
-        };
-
         const config = {
-            credentials: credentials
+            credentials: {
+                accessKeyId: this._awsConfiguration.accessKeyId,
+                secretAccessKey: this._awsConfiguration.secretAccessKey
+            }
         };
 
         const s3 = new AWS.S3(config);
 
         const params = {Bucket: bucket, Key: name, Body: data, ACL: "public-read"};
-        s3.putObject(params, function (error: Error) {
+        s3.putObject(params, function () {
             callback(BSTEncode.urlForS3(bucket, name));
         });
     }
 
-    private callEncode(sourceURL: string, callback: (error: Error, encodedURL: string) => void) {
+    private callEncode(sourceURL: string, bucketKey: string, callback: (error: Error, encodedURL: string) => void) {
         const self = this;
-        let filename = sourceURL.substring(sourceURL.lastIndexOf("/") + 1);
-        if (filename.indexOf("?") !== -1) {
-            filename = filename.substring(0, filename.indexOf("?"));
-        }
 
-        const basename = filename.substring(0, filename.indexOf("."));
-        const newFilename = basename + "-encoded.mp3";
+        if (bucketKey === null) {
+            bucketKey = sourceURL.substring(sourceURL.lastIndexOf("/") + 1);
+            if (bucketKey.indexOf("?") !== -1) {
+                bucketKey = bucketKey.substring(0, bucketKey.indexOf("?"));
+            }
+
+            const basename = bucketKey.substring(0, bucketKey.indexOf("."));
+            bucketKey = basename + "-encoded.mp3";
+        }
 
         const options = {
             host: BSTEncode.EncoderHost,
@@ -109,7 +134,7 @@ export class BSTEncode {
                 accessSecretKey: this._awsConfiguration.secretAccessKey,
                 sourceURL: sourceURL,
                 targetBucket: this.bucket(),
-                targetKey: newFilename
+                targetKey: bucketKey
             }
         };
 
@@ -123,7 +148,7 @@ export class BSTEncode {
                 });
 
                 response.on("end", function () {
-                    const officialURL = BSTEncode.urlForS3(self.bucket(), newFilename);
+                    const officialURL = BSTEncode.urlForS3(self.bucket(), bucketKey);
                     callback(null, officialURL);
                 });
             }
