@@ -1,10 +1,11 @@
-import {LogType, LoglessContext} from "../logless/logless-context";
+import {LoglessContext} from "../logless/logless-context";
 
 export interface LambdaFunction {
     (event: any, context: any, callback?: Function): void;
 }
 
 export class Logless {
+    public static Domain: string = "logless.bespoken.tools";
     private static _source: string;
 
     public static capture(source: string, handler: LambdaFunction): LambdaFunction {
@@ -13,7 +14,6 @@ export class Logless {
         }
 
         Logless._source = source;
-
         return new LambdaWrapper(handler).lambdaFunction();
     }
 
@@ -41,6 +41,7 @@ export class LambdaWrapper {
         } catch (e) {
             console.error(e);
             logger.flush();
+            logger.cleanup();
         }
     }
 

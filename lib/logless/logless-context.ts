@@ -1,13 +1,13 @@
-import * as http from "http";
+import * as https from "https";
 import * as util from "util";
+import {Logless} from "./logless";
 const uuid = require("node-uuid");
-import {IncomingMessage} from "http";
-import {ClientRequest} from "http";
 
 export class LoglessContext {
     private _callback: Function;
     private _queue: Array<Log> = [];
     private _transactionID: string;
+    private _uncaughtExceptionHandler: Function;
 
     public constructor(private _source: string) {
 
@@ -50,20 +50,22 @@ export class LoglessContext {
         this.wrapCall(console, "info", LogType.INFO);
         this.wrapCall(console, "log", LogType.DEBUG);
         this.wrapCall(console, "warn", LogType.WARN);
-        process.on("uncaughtException", function (error: Error) {
+
+        this._uncaughtExceptionHandler = function (error: Error) {
             // In the case of an uncaught exception, we log it and then flush
             // This can then lead to multiple flushes, but we don't want to lose the logs if this exception
             //  caused the program to not return successfully
             console.error(error);
-            self.flush(function () {
+            self.flush();
+        };
 
-            });
-        });
+        process.on("uncaughtException", this._uncaughtExceptionHandler);
 
         const done = context.done;
         context.done = function(error: any, result: any) {
             self.captureResponse(error, result);
             self.flush(function () {
+                self.cleanup();
                 done.call(context, error, result);
             });
         };
@@ -75,6 +77,7 @@ export class LoglessContext {
             this._callback = function(error: any, result: any) {
                 self.captureResponse(error, result);
                 self.flush(function () {
+                    self.cleanup();
                     wrappedCallback.call(this, error, result);
                 });
             };
@@ -136,8 +139,11 @@ export class LoglessContext {
         return this._transactionID;
     }
 
-    public flush(flushed?: () => void) {
+    public cleanup(): void {
+        process.removeListener("uncaughtException", this._uncaughtExceptionHandler);
+    }
 
+    public flush(flushed?: () => void) {
         const logBatch = {
             source: this._source,
             transaction_id: this.transactionID(),
@@ -146,10 +152,8 @@ export class LoglessContext {
 
         for (let log of this._queue) {
             const timestamp = log.timestampAsISOString();
-            let payload = log.data;
-
             const logJSON: any = {
-                payload: payload,
+                payload: log.data,
                 log_type: LogType[log.type],
                 timestamp: timestamp,
             };
@@ -165,16 +169,19 @@ export class LoglessContext {
             logBatch.logs.push(logJSON);
         }
 
+        this.transmit(logBatch, flushed);
+
+        // Clear the queue
+        this._queue = [];
+    }
+
+    public transmit(logBatch: any, flushed?: () => void)  {
         const dataAsString = JSON.stringify(logBatch);
         const dataLength = Buffer.byteLength(dataAsString);
         const options = {
             // host: "logless.io",
-            host: "logless-server-049ff85c.4a0ac639.svc.dockerapp.io",
-            // host: "www.mocky.io",
-            port: 3000,
-            // port: 80,
+            host: Logless.Domain,
             path: "/v1/receive",
-            // path: "/v2/5185415ba171ea3a00704eed",
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -183,28 +190,26 @@ export class LoglessContext {
             }
         };
 
-        // Set up the request
         console.time("Logless.FlushTime");
-        const httpRequest = this.httpRequest(options, function(response: IncomingMessage) {
+        const httpRequest = https.request(options);
+
+        httpRequest.on("error", function(error: Error) {
+            console.error(error.toString());
             if (flushed !== undefined) {
                 console.timeEnd("Logless.FlushTime");
-                if ((<any> console.log).logless !== undefined) {
-                    console.log("Logless: " + (<any> console.log).logless);
-                }
                 console.log("Flushed Logs: " + logBatch.logs.length);
                 flushed();
             }
         });
 
         httpRequest.setNoDelay(true);
-        httpRequest.end(dataAsString);
-
-        // Clear the queue
-        this._queue = [];
-    }
-
-    public httpRequest(options: any, callback: (response: IncomingMessage) => void): ClientRequest {
-        return http.request(options, callback);
+        httpRequest.end(dataAsString, null, function () {
+            if (flushed !== undefined) {
+                console.timeEnd("Logless.FlushTime");
+                console.log("Flushed Logs: " + logBatch.logs.length);
+                flushed();
+            }
+        });
     }
 }
 

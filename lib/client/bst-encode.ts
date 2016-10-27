@@ -48,7 +48,7 @@ export class BSTEncode {
      * @param callback Returns the URL of the encoded file on S3. Error if there is any.
      */
     public encodeFileAndPublish(filePath: string, callback: (error: Error, encodedURL: string) => void): void {
-        this.encodeURLAndPublishAs(filePath, null, callback);
+        this.encodeFileAndPublishAs(filePath, null, callback);
     }
 
     /**
@@ -63,7 +63,7 @@ export class BSTEncode {
             const fp = path.parse(filePath);
             const filename = fp.name + fp.ext;
             self.uploadFile(self._awsConfiguration.bucket, filename, data, function (url: string) {
-                self.callEncode(url, null, function(error: Error, encodedURL: string) {
+                self.callEncode(url, outputKey, function(error: Error, encodedURL: string) {
                     callback(error, encodedURL);
                 });
             });
