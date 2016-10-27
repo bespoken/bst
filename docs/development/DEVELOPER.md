@@ -1,30 +1,23 @@
 # Notes on setup
 
-## Setting up typescript with Mocha
-Got some info here:  
-http://jonnyreeves.co.uk/2015/hello-typescript-and-mocha/
+# Initial Setup
+## Install typings and gulp
+`npm install typings --global`  
+`npm install gulp --global`
 
-### Install typings to get TypeScript definitions for libraries
-npm install typings --global
+These commands will be used commonly for development tasks.
 
-### Run npm install to setup packages
-npm install
+## Run gulp setup
+`gulp setup`  
 
-## Getting WebStorm working correctly with TSC
-Go To preferences
-Enable typescript compiler
-Point WebStorm at the node_modules/typescript/lib directory for the TypeScript compiler
-Use tsconfig.json settings
+Under the covers this runs `npm install` and sets everything up.
 
-### Setting up Javascript
-Set the project preferences to ECMAScript 6
-
-## Publishing to NPM
-### Pre-Requisites
+# Publishing to NPM
+## Pre-Requisites
 Need to do this the first time to publish:  
 `npm adduser`
 
-### Steps
+## Steps
 1) Make sure you are on master and have the latest:  
 `git checkout master`  
 `git pull`  
@@ -52,56 +45,6 @@ https://github.com/bespoken/bst/releases
 To test your new package before publishing, follow these instructions:  
 https://docs.npmjs.com/misc/developers
 
-## Deploying server versions
+# Deploying server versions
 Deploy new server version (from Docker Templates):
 `python ecs_manager.py deploy conf/bst-server bst-server.json dev`
-
-
-# Documentation
-
-## Building
-
-Make sure you have mkdocs installed
-
-```bash
-$ pip install mkdocs
-```
-
-Then, from root project root directory, build HTML:
-
-```bash
-$ mkdocs build
-```
-
-## Writing
-
-When writing the docs, it is often helpful to autogen the HTML after every change:
-
-```
-$ mkdocs serve --livereload
-```
-
-If things are not updating and you think something isn't right, clean the docs:
-```bash
-$ mkdocs build -c
-```
-
-## Overriding Styles
-
-If you want to override the style on an element, use the [attr_list](https://pythonhosted.org/Markdown/extensions/attr_list.html) markdown feature.  With attr_list you can add classes to elements and then create the class in `/docs/assets/css/style.css`.
-
-For example, in the `docs/index.md` file, the class `.badge` is added to the image badges:
-
-```
-[![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master){: class="badge" }](https://travis-ci.org/bespoken/bst)
-```
-
-and the style is declared as:
-
-```
-img.badge {
-    width: auto;
-}
-```
-
-which prevents full width badge images on mobile.

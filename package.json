@@ -25,9 +25,11 @@
     "bst-typedoc": "^0.4.6",
     "coveralls": "^2.11.11",
     "gulp": "^3.9.1",
+    "gulp-bst-typedoc": "^2.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
-    "gulp-token-replace": "^1.0.3",
+    "gulp-run": "^1.7.1",
+    "gulp-tsc": "^1.2.4",
     "istanbul": "^0.4.4",
     "mocha": "2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
@@ -46,15 +48,13 @@
     "url": "git://github.com/bespoken/bst.git"
   },
   "scripts": {
-    "library": "tsc --declaration index.ts --target ES6",
     "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
     "pretest": "typings install && tsc && npm run lint",
     "test": "mocha test/**/*-test.js",
     "precoverage": "typings install && tsc && npm run lint",
     "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
-    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/bst-encode.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts",
-    "preversion": "npm run typedoc && git add docs/api && git commit -m 'Updated generated API docs'",
+    "preversion": "gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
   }
 }
