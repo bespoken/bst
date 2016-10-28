@@ -22,7 +22,7 @@ program
     .command("intend <intent> [SlotName=SlotValue...]", "Sends the specified intent to your service")
     .command("speak <utterance>", "Sends an intent with the specified utterance to your service")
     .command("sleep <location>", "Instructs bst to sleep using specified location")
-    .command("deploy <lambda>", "Deploys a skill");
+    .command("deploy <lambda>", "Deploys a lambda");
 
 program.parse(process.argv);
 

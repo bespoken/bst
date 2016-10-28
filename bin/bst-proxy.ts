@@ -85,7 +85,19 @@ program
 // Forces help to be printed if neither lambda nor HTTP is printed
 if (process.argv.length < 3) {
     program.outputHelp();
+    process.exit();
 }
+
+if (["http", "lambda", "stop", "urlgen"].indexOf(process.argv[2]) < 0) {
+    console.error("  error: unknown command: " + process.argv[2] + "\n");
+    process.exit();
+}
+
+program.Command.prototype.missingArgument = function(name: string): void {
+    console.error("  error: missing required argument " + name);
+    console.error();
+    process.exit(1);
+};
 
 program.parse(process.argv);
 
