@@ -40,7 +40,7 @@ export class Logless {
  * Interface for AWS Node.js Lambda signature
  */
 export interface LambdaFunction {
-    (event: any, context: any, callback?: (error: Error, result: any) => void): void;
+    (event: any, context: any, callback?: (error?: Error, result?: any) => void): void;
 }
 
 /**
