@@ -25,11 +25,11 @@ gulp.task('setup', function (done) {
 });
 
 gulp.task('lint', function(done) {
-    run('npm install').exec(function () {
-        run('typings install').exec(function () {
-            done();
-        });
-    });
+    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts"])
+        .pipe(tslint({
+            formatter: "verbose"
+        }))
+        .pipe(tslint.report())
 });
 
 gulp.task('docs', ['mkdocs', 'typedoc']);
