@@ -181,7 +181,7 @@ class LambdaContext {
         } else {
             statusCode = 500;
             contentType = "text/plain";
-            bodyString = error.message;
+            bodyString = error.toString();
         }
 
         this.response.writeHead(statusCode, {
