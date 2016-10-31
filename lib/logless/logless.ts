@@ -7,7 +7,7 @@ import {LoglessContext} from "../logless/logless-context";
  * <pre><code>
  *     var bst = require('bespoken-tools');
  *
- *     exports.handler = bst.Logless.capture("<SOURCE_ID>", function (event, context) {
+ *     exports.handler = bst.Logless.capture("&lt;SOURCE_ID&gt;", function (event, context) {
  *         // Lambda code goes here
  *         context.done(null, "Hello World");
  *     });
