@@ -3,9 +3,8 @@ We are using typedoc and mkdocs to generate documentation.
 
 Mkdocs is used to generate documentation that is shown on ReadTheDocs - http://docs.bespoken.tools.
 
-**Please note - do not change the README.md file directly**   
-Instead README.raw.md should be modified.   
-Then it will be generated/copied using the **docs** gulp task:
+**Please note - do not change the docs/index.md file directly**   
+It will be generated/copied from the README.md using the **docs** gulp task:
 ```
 gulp docs
 ```

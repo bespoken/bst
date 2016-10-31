@@ -20,6 +20,17 @@ Verify the installation by typing:
 $ bst
 ```
 
+To work with the Bespoken Tools API, install it with your project as part of the package.json:
+```
+npm install bespoken-tools --save
+```
+
+You will then be able to use our:
+ 
+* [BSTAlexa](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) emulator 
+* [BSTEncode](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) audio encoder
+* [Logless](http://docs.bespoken.tools/en/latest/api/classes/logless.html) effortless logging and diagnostics service
+
 ## Updating
 
 To update bst:

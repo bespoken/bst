@@ -60,7 +60,7 @@ $ npm install bespoken-tools -g
 For use of the Bespoken Tools library (including Logless and the Emulator):
 
 ```bash
-$ npm install bespoken-tools --save-dev
+$ npm install bespoken-tools --save
 ```
 
 For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started)
