@@ -2,7 +2,7 @@
   "name": "bespoken-tools",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "0.9.12",
+  "version": "0.9.13",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js"
@@ -24,6 +24,14 @@
   "devDependencies": {
     "bst-typedoc": "^0.4.6",
     "coveralls": "^2.11.11",
+    "gulp": "^3.9.1",
+    "gulp-bst-typedoc": "^2.0.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
+    "gulp-run": "^1.7.1",
+    "gulp-shell": "^0.5.2",
+    "gulp-tslint": "^6.1.2",
     "istanbul": "^0.4.4",
     "mocha": "2.5.3",
     "mocha-lcov-reporter": "^1.2.0",
@@ -42,15 +50,11 @@
     "url": "git://github.com/bespoken/bst.git"
   },
   "scripts": {
-    "library": "tsc --declaration index.ts --target ES6",
-    "lint": "tslint lib/**/*.ts && tslint test/**/*.ts && tslint bin/*.ts",
-    "pretest": "typings install && tsc && npm run lint",
-    "test": "mocha test/**/*-test.js",
-    "precoverage": "typings install && tsc && npm run lint",
+    "test": "gulp test",
+    "precoverage": "node_modules/gulp/bin/gulp.js build",
     "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
-    "typedoc": "typedoc --excludePrivate --excludeNotExported --excludeExternals --readme docs/api_readme.md --out docs/api --name 'Bespoken Tools' --mode file lib/client/bst-alexa.ts lib/client/bst-encode.ts lib/client/lambda-server.ts lib/alexa/audio-item.ts",
-    "preversion": "npm run typedoc && git add docs/api && git commit -m 'Updated generated API docs'",
+    "preversion": "gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
   }
 }

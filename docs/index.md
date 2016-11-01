@@ -1,74 +1,76 @@
-[![Build Status](https://travis-ci.org/bespoken/bst.svg?branch=master){: class="badge" }](https://travis-ci.org/bespoken/bst) [![Coverage Status](https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master){: class="badge" }](https://coveralls.io/github/bespoken/bst?branch=master) [![npm version](https://img.shields.io/npm/v/bespoken-tools.svg){: class="badge" }](https://www.npmjs.com/package/bespoken-tools) [![Read the Docs](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat){: class="badge" }](http://docs.bespoken.tools/) [![Stories in Ready](https://badge.waffle.io/bespoken/bst.svg?label=ready&title=Ready){: class="badge" }](http://waffle.io/bespoken/bst) [![Join the chat at https://gitter.im/bespoken/bst](https://badges.gitter.im/bespoken/bst.svg){: class="badge" }](https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+<p align="center">
+  <a href="https://bespoken.tools/">
+    <img alt="BST" src="https://bespoken.tools/assets/bst-cli-9f9b8d685e450d33985b23d86505ffd7217635305f126625bc992b0865ff7a4d.png" width="546">
+  </a>
+</p>
 
-## Overview
-The **bst** (aka Bespoken Tools) makes it easy to develop for Alexa/Echo.  
+<p align="center">
+  Switch to BEAST mode<br>
+  Rampage through code/test iterations for Alexa development
+</p>
 
-We call it working in BEAST mode - rampage through code/test iterations as Alexa requests are sent **directly** to your laptop.
-Do not slow-down for:  
+<p align="center">
+    <a href="https://travis-ci.org/bespoken/bst">
+        <img alt="Build Status" class="badge" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
+    </a>
+    <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
+        <img alt="Coverage Status" class="badge" src="https://coveralls.io/github/bespoken/bst?branch=master">
+    </a>
+    <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
+        <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
+    </a>
+    <a href="http://docs.bespoken.tools/">
+        <img alt="Read The Docs" class="badge" src="https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat">
+    </a>
+    <a href="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
+        <img alt="Read The Docs" class="badge" src="https://badges.gitter.im/bespoken/bst.svg">
+    </a>
+</p>
+
+---
+# Overview
+With Bespoken Tools, develop faster and better. Do not slow-down for:
 
 * Time-consuming server deployments
-* Over-complicated and error-prone packaging scripts
-* Seemingly-innocuous-but-still-pesky service restarts
+* Over-complicated and highly manual testing routines
+* Complex ffmpeg encoding and configuration
 
-The current version provides four commands - **proxy http**, **proxy lambda**, **speak** and **intend**.
+With Bespoken tools, build high-quality, faster.
 
-The proxies make it super-easy to develop and debug your Alexa skill on your local machine.
-Just point the bst at the local service running on your machine, and your code changes will be instantaneously available via Alexa.  
+The command-line tools include:
 
-The proxies can work either with a service listening on a port (**proxy http**), or directly with a Lambda written with Node/JavaScript (**proxy lambda**).
+* [Deploy](http://docs.bespoken.tools/en/latest/commands/deploy) - One-command deployment of Lambda functions  
+* [Proxy](http://docs.bespoken.tools/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop  
+* [Speak](http://docs.bespoken.tools/en/latest/commands/speak) and [Intend](http://docs.bespoken.tools/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
 
-The **speak** and **intend** commands simulate the Alexa service by sending any utterance or intent from the command-line to your service. 
-The request sent to your service is a properly formatted intent request. 
-It then prints out the JSON payload returned by your service.
+The library provides:
 
-Keep an eye out as we add more features and commands in the future. Current plans:  
-- **deploy**: Automatically deploy Alexa Lambdas to the cloud with a single command
+* [BSTAlexa](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) - Alexa emulator for unit-testing and functional-testing of your skills
+* [BSTEncode](http://docs.bespoken.tools/en/latest/api/classes/bstencode.html) - Encodes audio files for use in SSML without pesky ffmpeg
+* [Logless](http://docs.bespoken.tools/en/latest/api/classes/logless.html) - Completely painless, serverless logging
 
-## Installation
+# Installation
 
-Using NPM:
+For use of the CLI:
 
 ```bash
 $ npm install bespoken-tools -g
 ```
 
-For additional help, see [Getting Started](/getting_started)
+For use of the Bespoken Tools library (including Logless and the Emulator):
 
-## bst proxy Command
+```bash
+$ npm install bespoken-tools --save
+```
 
-The proxy command allows you to interact with a local service running on your machine via an Alexa device.  
+For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started)
 
-Read the docs [here](/commands/proxy).
+# Tutorials
 
-## bst speak Command
-
-The speak command generates intent requests for your service as if they were coming from Alexa itself.
-
-It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
-
-Read the docs [here](/commands/speak).
-
-## bst intend Command
-
-The intend command generates intent requests for your service as if they were coming from Alexa itself.
- 
-It works by taking an intent and wrapping it in the correct JSON payload.  
-
-Read the docs [here](/commands/intend).
-
-## Bespoken Tools API
-
-The emulator the underlies the speak command can be used for unit and functional testing,
-as well as other purposes.
-
-The API reference can be found [here](http://docs.bespoken.tools/en/latest/api). 
-
-## Tutorials
-
-* [Node.js Lambda Tutorial](/tutorials/tutorial_lambda_nodejs)
-* [Java Server Tutorial](/tutorials/tutorial_local_server_java)
-* [Python & Flask-Ask](/tutorials/tutorial_flask_ask_python)
-* [Alexa Emulator Tutorial - Node.js](/tutorials/tutorial_bst_emulator_nodejs)
+* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
+* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
+* [Python & Flask-Ask](http://docs.bespoken.tools/en/latest/tutorials/tutorial_flask_ask_python)
+* [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.tools/en/latest/tutorials/tutorial_bst_emulator_nodejs)
 
 ## Questions/Feedback?
 

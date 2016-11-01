@@ -4,7 +4,7 @@ instrumentation:
     extensions:
         - .js
     default-excludes: true
-    excludes: ['docs/api/**', 'index.js']
+    excludes: ['docs/api/**', 'index.js', 'gulpfile.js']
     embed-source: false
     variable: __coverage__
     compact: true

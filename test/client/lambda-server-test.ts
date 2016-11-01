@@ -42,7 +42,7 @@ describe("LambdaServer", function() {
             let inputData = {"data": "Test", "doFailure": true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal(responseString, "Failure!");
+                assert.equal(responseString, "Error: Failure!");
                 runner.stop();
                 done();
             });
@@ -56,7 +56,7 @@ describe("LambdaServer", function() {
             let inputData = {"data": "Test", "doFailure": true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal(responseString, "Cannot read property 'call' of undefined");
+                assert.equal(responseString, "TypeError: Cannot read property 'call' of undefined");
                 runner.stop();
                 done();
             });
@@ -115,7 +115,7 @@ describe("LambdaServer", function() {
             let client = new HTTPClient();
             let inputData = {"data": "Test", doFailure: true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
-                assert.equal(data.toString(), "Failed!");
+                assert.equal(data.toString(), "Error: Failed!");
                 runner.stop();
                 done();
             });
@@ -176,7 +176,9 @@ describe("LambdaServer", function() {
             let runner = new LambdaServer("ExampleLambda.js", 10000);
             runner.start();
 
-            fs.mkdirSync("node_modules");
+            if (!fs.existsSync("node_modules")) {
+                fs.mkdirSync("node_modules");
+            }
 
             (<any> runner).onDirty = function (filename: string) {
                 if (filename === "ExampleLambdaCopy.js") {
