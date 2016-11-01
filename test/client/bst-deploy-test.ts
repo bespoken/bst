@@ -190,7 +190,7 @@ describe("LambdaDeploy", function() {
             // We can put this in the callback (then) of the delete above, but the problem is the propagation time
 
             setTimeout(() => {
-                console.log("Waited 2 seconds for AWS after delete");
+                console.log("Waited a few seconds for AWS after delete");
                 awsHelper.createRole(testAwsRole)
                     .then((arn: string) => {
                         console.log("Created role: " + arn);
@@ -205,7 +205,6 @@ describe("LambdaDeploy", function() {
         });
 
         it("creates invalid role", function (done) {
-            console.log("Waited 2 seconds for AWS after delete");
             awsHelper.createRole("#$%^&*_i_hope_invalid")
                 .then((arn: string) => {
                     console.error("Created role: " + arn);
@@ -219,15 +218,18 @@ describe("LambdaDeploy", function() {
         });
 
         it("finds a role", function(done) {
-            awsHelper.getRole(testAwsRole)
-                .then((arn: string) => {
-                    console.log("Role was found");
-                    done();
-                })
-                .catch((err) => {
-                    console.error("Error finding AWS role: " + err);
-                    done(err);
-                });
+            setTimeout(() => {
+                console.log("Waited a few seconds for AWS before role lookup");
+                awsHelper.getRole(testAwsRole)
+                    .then((arn: string) => {
+                        console.log("Role was found: " + arn);
+                        done();
+                    })
+                    .catch((err) => {
+                        console.error("Error finding AWS role: " + err);
+                        done(err);
+                    });
+                }, 2000);
         });
 
         it("finds nonexistent role", function(done) {
@@ -314,6 +316,7 @@ describe("LambdaDeploy", function() {
 
             LoggingHelper.setVerbose(true);
 
+            console.log("Waited a few seconds for AWS before function deploy");
             setTimeout(() => {
                 deployer.deploy(function(error: Error) {
                     if (error) {
