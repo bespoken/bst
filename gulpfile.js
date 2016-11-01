@@ -13,7 +13,13 @@ gulp.task('build', ['setup', 'lint'], function () {
 
 gulp.task('test', ['build'], function() {
     return gulp.src(['test/**/*-test.js'])
-        .pipe(mocha());
+        .pipe(mocha())
+        .once('error', () => {
+            process.exit(1);
+        })
+        .once('end', () => {
+            process.exit();
+        });
 });
 
 gulp.task('setup', function (done) {
