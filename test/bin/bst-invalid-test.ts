@@ -9,8 +9,8 @@ describe("bst commands", function() {
     let sandbox: SinonSandbox = null;
     let originalFunction: any = null;
     let dataString: string = "";
-    let resultPattern:string = "";
-    let mochaDone:MochaDone = null;
+    let resultPattern: string = "";
+    let mochaDone: MochaDone = null;
 
     let collectError = function (buffer: Buffer|string) {
         if (buffer instanceof Buffer) {
@@ -28,7 +28,7 @@ describe("bst commands", function() {
         } else {
             mochaDone(new Error(resultPattern + " was not in the output!"));
         }
-    }
+    };
 
     beforeEach(function () {
         mockery.enable({useCleanCache: true});
