@@ -41,9 +41,7 @@ const testPayload: any = {
     "version": "1.0"
 };
 
-// No need to initialize
 let lambdaConfig = LambdaConfig.create();
-
 lambdaConfig.initialize();
 
 let skip: boolean = false;
@@ -63,38 +61,48 @@ describe("LambdaDeploy", function() {
 
     describe("initializes the lambda configuration", function() {
         let oldHome: string = null;
+        let oldKey: string = null;
 
         beforeEach(function () {
             if (skip) this.skip();
 
             oldHome = process.env.HOME;
+            oldKey = process.env.AWS_ACCESS_KEY_ID;
         });
 
         afterEach(function () {
             process.env.HOME = oldHome;
+            process.env.AWS_ACCESS_KEY_ID = oldKey;
         });
 
-        it("checks config (good home)", function (done) {
-            lambdaConfig.initialize();
-
-            if (lambdaConfig.AWS_ACCESS_KEY_ID) {
-                done();
-            } else {
-                done(new Error("No AWS access key (bad home)"));
-            }
-        });
-
-        it("checks config (bad home)", function (done) {
+        it("checks existing key", function (done) {
             process.env.HOME = "/Users/foo";
+            process.env.AWS_ACCESS_KEY_ID = "foo";
 
-            lambdaConfig.initialize();
+            let testConfig = LambdaConfig.create();
+            testConfig.initialize();
 
-            if (lambdaConfig.AWS_ACCESS_KEY_ID) {
+            if (testConfig.AWS_ACCESS_KEY_ID === "foo") {
                 done();
             } else {
-                done(new Error("No AWS access key (bad home)"));
+                done(new Error("AWS access key is missing"));
             }
         });
+
+        it("checks missing key", function (done) {
+            process.env.HOME = "/Users/foo";
+            process.env.AWS_ACCESS_KEY_ID = "";
+
+            let testConfig = LambdaConfig.create();
+            testConfig.initialize();
+
+            if (!testConfig.AWS_ACCESS_KEY_ID) {
+                done();
+            } else {
+                done(new Error("AWS access key is present: \"" + testConfig.AWS_ACCESS_KEY_ID + "\""));
+            }
+        });
+
     });
 
     describe("prepares the lambda function code", function() {
@@ -290,13 +298,6 @@ describe("LambdaDeploy", function() {
 
             process.chdir("test/resources");
 
-            try {
-                lambdaConfig.initialize();
-                lambdaConfig.validate();
-            } catch (err) {
-                done(new Error("Parameter validation error: " + err));
-            }
-
             awsHelper.deleteFunction(testAwsLambda)
                 .then((arn: string) => {
                     if (arn) {
@@ -363,13 +364,6 @@ describe("LambdaDeploy", function() {
             if (skip) this.skip();
 
             process.chdir("test/resources");
-
-            try {
-                lambdaConfig.initialize();
-                lambdaConfig.validate();
-            } catch (err) {
-                done(new Error("Parameter validation error: " + err));
-            }
 
             lambdaConfig.AWS_ROLE_ARN = testRoleArn;
             lambdaConfig.AWS_FUNCTION_NAME = testAwsLambda;
