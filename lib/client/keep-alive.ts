@@ -18,6 +18,7 @@ export class KeepAlive {
     private startedTimestamp: number;
     private onFailureCallback: () => void;
     private timeout: any = null;
+    private stopped: boolean = false;
 
     public constructor (private socket: SocketHandler) {}
 
@@ -47,8 +48,10 @@ export class KeepAlive {
         }
 
         this.timeout = setTimeout(function () {
-            self.socket.send(Global.KeepAliveMessage);
-            self.keepAlive();
+            if (!self.stopped) {
+                self.socket.send(Global.KeepAliveMessage);
+                self.keepAlive();
+            }
         }, this.pingPeriod);
     }
 
@@ -74,6 +77,7 @@ export class KeepAlive {
 
     public stop(): void {
         if (this.timeout !== null) {
+            this.stopped = true;
             clearTimeout(this.timeout);
         }
     }
