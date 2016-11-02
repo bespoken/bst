@@ -15,11 +15,16 @@ gulp.task('build', ['setup', 'lint'], function () {
 gulp.task('test', ['build'], function() {
     return gulp.src(['test/**/*-test.js'])
         .pipe(mocha())
-        .once('error', () => {
+        .on('error', () => {
+            console.log("Yeepee! Tests error!");
             process.exit(1);
         })
-        .once('end', () => {
-            console.log("Yeepee! Tests ended!");
+        .on('stop', () => {
+            console.log("Yeepee! Tests stop!");
+            process.exit();
+        })
+        .on('end', () => {
+            console.log("Yeepee! Tests end!");
             process.exit();
         });
 });
