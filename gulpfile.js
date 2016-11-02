@@ -14,19 +14,7 @@ gulp.task('build', ['setup', 'lint'], function () {
 // http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
 gulp.task('test', ['build'], function() {
     return gulp.src(['test/**/*-test.js'])
-        .pipe(mocha())
-        .on('error', () => {
-            console.log("Yeepee! Tests error!");
-            process.exit(1);
-        })
-        .on('stop', () => {
-            console.log("Yeepee! Tests stop!");
-            process.exit();
-        })
-        .on('end', () => {
-            console.log("Yeepee! Tests end!");
-            process.exit();
-        });
+        .pipe(mocha());
 });
 
 gulp.task('setup', function (done) {
