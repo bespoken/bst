@@ -12,7 +12,7 @@ gulp.task('build', ['setup', 'lint'], function () {
 });
 
 gulp.task('test', ['build'], function() {
-    return gulp.src(['test/**/*-test.js'])
+    return gulp.src(['test/client/keep-alive-test.js'])
         .pipe(mocha());
 });
 
@@ -24,7 +24,7 @@ gulp.task('setup', function (done) {
     });
 });
 
-gulp.task('lint', function(done) {
+gulp.task('lint', function() {
     return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts"])
         .pipe(tslint({
             formatter: "verbose"
