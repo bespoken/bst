@@ -14,7 +14,7 @@
         <img alt="Build Status" class="badge" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
     </a>
     <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
-        <img alt="Coverage Status" class="badge" src="https://coveralls.io/github/bespoken/bst?branch=master">
+        <img alt="Coverage Status" class="badge" src="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
     </a>
     <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
