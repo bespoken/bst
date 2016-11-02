@@ -12,7 +12,7 @@ gulp.task('build', ['setup', 'lint'], function () {
 });
 
 gulp.task('test', ['build'], function() {
-    return gulp.src(['test/client/keep-alive-test.js'])
+    return gulp.src(['test/**/*-test.js'])
         .pipe(mocha());
 });
 
