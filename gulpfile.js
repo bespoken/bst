@@ -11,6 +11,7 @@ gulp.task('build', ['setup', 'lint'], function () {
     return run('node_modules/typescript/bin/tsc').exec();
 });
 
+// http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
 gulp.task('test', ['build'], function() {
     return gulp.src(['test/**/*-test.js'])
         .pipe(mocha())
