@@ -7,16 +7,21 @@ const typedoc = require('gulp-bst-typedoc');
 const run = require('gulp-run');
 const shell = require('gulp-shell');
 
-gulp.on('stop', () => { process.exit(0); });
-gulp.on('err', () => { process.exit(1); });
-
 gulp.task('build', ['setup', 'lint'], function () {
     return run('node_modules/typescript/bin/tsc').exec();
 });
 
+// http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
 gulp.task('test', ['build'], function() {
     return gulp.src(['test/**/*-test.js'])
-        .pipe(mocha());
+        .pipe(mocha())
+        .once('error', () => {
+            process.exit(1);
+        })
+        .once('end', () => {
+            console.log("Yeepee! Tests ended!");
+            process.exit();
+        });
 });
 
 gulp.task('setup', function (done) {
