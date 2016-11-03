@@ -62,7 +62,7 @@ The actual output from the Lambda is highlighted in red.
 Obviously, much more complex Lambdas and responses are possible. With this complexity, being able to test them locally like this only becomes more vital.
 
 *Note* - we recommend using Postman for these sort of manual tests - it provides essentially a nice UI for curl:
-https://www.getpostman.com/apps
+[Get Postman](https://www.getpostman.com/apps).
 
 ## More Neat Stuff
 This is meant to be a basic demonstration, but there is much more that you can do:  

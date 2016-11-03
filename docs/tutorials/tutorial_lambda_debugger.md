@@ -5,10 +5,10 @@ Using this, you can run AWS Lambdas directly on your machine, and step through t
 
 ## Prerequisites
 * Bespoken Tools (bst)
-  * Install bespoken-tools as part of your project
-  * `npm install bespoken-tools --save-dev`
+    * Install bespoken-tools as part of your project
+    * `npm install bespoken-tools --save-dev`
 * WebStorm
-  * [Download site](https://www.jetbrains.com/webstorm/)
+    * [Download site](https://www.jetbrains.com/webstorm/)
 
 These examples are based on a simple sample project. If  you want to use the same, just clone this repo:
 ```
@@ -20,11 +20,11 @@ Of course, feel free to use your own existing Lambda project.
 ## Configuring WebStorm
 From your AWS Lambda project in WebStorm, right-click on the Lambda JS file and select 'Create &lt;LambdaFile.js&gt;':
 
-<img src='../../assets/images/lambda-webstorm-configure.png'  height='400'/>
+<img src='../../assets/images/lambda-webstorm-configure.png' />
 
 Fill out the configuration:
 
-<img src='../../assets/images/lambda-webstorm-configuration.png'  height='400'/>
+<img src='../../assets/images/lambda-webstorm-configuration.png'  />
 
 Make sure the JavaScript File is set to:  
 `node_modules/bespoken-tools/bin/bst-proxy.js`
@@ -54,4 +54,4 @@ With a breakpoint added at Line 7, here is what you will see:
 
 Lots of great information, right? WebStorm offers a host of capabilities via their debugger - [you can learn more here](https://www.jetbrains.com/help/webstorm/2016.2/running-and-debugging-node-js.html).
 
-We hope this helps accelerate how you developer and debug with Lambdas.
+We hope this helps accelerate how you develop and debug with Lambdas.
