@@ -61,6 +61,7 @@ describe("bst-deploy", function() {
         mockery.registerMock("../lib/client/lambda-deploy", mockDeployModule);
         mockery.registerMock("../lib/client/lambda-role", mockRoleModule);
         sandbox = sinon.sandbox.create();
+        sandbox.stub(process, "exit", function () {}); // Ignore exit()
         process.chdir("test/resources");
     });
 
@@ -78,7 +79,6 @@ describe("bst-deploy", function() {
         });
 
         afterEach (function () {
-            process.stdout.write = originalFunction;
         });
 
         it("Prints help with no-args", function(done) {
@@ -96,8 +96,9 @@ describe("bst-deploy", function() {
             };
 
             // Wait for all - maybe more than one message
-
             setTimeout(() => {
+                process.stdout.write = originalFunction;
+
                 if (dataString.indexOf("Usage") !== -1) {
                     done();
                 } else {
@@ -109,8 +110,8 @@ describe("bst-deploy", function() {
         });
     });
 
-    describe("lambda command", function() {
-        it("with no options", function(done) {
+    describe("Lambda command", function() {
+        it("No options", function(done) {
             this.timeout(5000);
 
             process.argv = command("node bst-deploy.js lambda " + deployProject);
@@ -122,7 +123,7 @@ describe("bst-deploy", function() {
             NodeUtil.load("../../bin/bst-deploy.js");
         });
 
-        it("with options", function(done) {
+        it("Options", function(done) {
             this.timeout(5000);
 
             process.argv = command("node bst-deploy.js lambda " + deployProject + " --verbose --lambdaName " + testLambdaName);
@@ -137,6 +138,8 @@ describe("bst-deploy", function() {
             let optionsSet = false;
 
             mockDeploy.deploy = function () {
+                sandbox.restore();
+
                 optionsSet = mockDeploy.lambdaConfig.AWS_FUNCTION_NAME === testLambdaName;
 
                 if (!verboseCalled) {
@@ -151,7 +154,6 @@ describe("bst-deploy", function() {
             NodeUtil.load("../../bin/bst-deploy.js");
         });
     });
-
 });
 
 let command = function (command: string): Array<string> {

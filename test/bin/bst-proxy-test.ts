@@ -30,6 +30,7 @@ describe("bst-proxy", function() {
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/client/bst-proxy", mockModule);
         sandbox = sinon.sandbox.create();
+        sandbox.stub(process, "exit", function () {}); // Ignore exit()
     });
 
     afterEach(function () {

@@ -19,16 +19,21 @@ program
     .option("--verbose", "Print out verbose diagnostics")
     .description("Deploys a AWS Lambda defined in the specified folder")
     .action(function (lambdaFolder: string, options: any) {
-
         if (options.verbose !== undefined && options.verbose) {
             console.log("Enabling verbose logging");
             LoggingHelper.setVerbose(true);
         }
 
-        let isDir = fs.lstatSync(lambdaFolder).isDirectory();
+        let isDir: boolean = false;
+
+        try {
+            isDir = fs.lstatSync(lambdaFolder).isDirectory();
+        } catch (e) {
+            // oops
+        }
 
         if (!isDir) {
-            console.error(lambdaFolder + " is not a folder! You need to specify the project folder!");
+            console.error("  error: " + lambdaFolder + " is not a folder! You need to specify the lambda project folder!");
             console.error("");
             process.exit(1);
             return;
@@ -40,7 +45,7 @@ program
             lambdaConfig.initialize();
             lambdaConfig.validate();
         } catch (err) {
-            console.error("Parameter validation error: " + err);
+            console.error("error: parameter validation error: " + err);
             console.error("");
             process.exit(1);
             return;
@@ -123,7 +128,19 @@ program
 
 if (process.argv.length < 3) {
     program.outputHelp();
+    process.exit();
 }
+
+if (["lambda"].indexOf(process.argv[2]) < 0) {
+    console.error("  error: unknown command: " + process.argv[2] + "\n");
+    process.exit();
+}
+
+program.Command.prototype.missingArgument = function(name: string): void {
+    console.error("  error: missing required argument " + name);
+    console.error();
+    process.exit(1);
+};
 
 program.parse(process.argv);
 

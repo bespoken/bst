@@ -41,9 +41,7 @@ const testPayload: any = {
     "version": "1.0"
 };
 
-// No need to initialize
 let lambdaConfig = LambdaConfig.create();
-
 lambdaConfig.initialize();
 
 let skip: boolean = false;
@@ -63,38 +61,48 @@ describe("LambdaDeploy", function() {
 
     describe("initializes the lambda configuration", function() {
         let oldHome: string = null;
+        let oldKey: string = null;
 
         beforeEach(function () {
             if (skip) this.skip();
 
             oldHome = process.env.HOME;
+            oldKey = process.env.AWS_ACCESS_KEY_ID;
         });
 
         afterEach(function () {
             process.env.HOME = oldHome;
+            process.env.AWS_ACCESS_KEY_ID = oldKey;
         });
 
-        it("checks config (good home)", function (done) {
-            lambdaConfig.initialize();
-
-            if (lambdaConfig.AWS_ACCESS_KEY_ID) {
-                done();
-            } else {
-                done(new Error("No AWS access key (bad home)"));
-            }
-        });
-
-        it("checks config (bad home)", function (done) {
+        it("checks existing key", function (done) {
             process.env.HOME = "/Users/foo";
+            process.env.AWS_ACCESS_KEY_ID = "foo";
 
-            lambdaConfig.initialize();
+            let testConfig = LambdaConfig.create();
+            testConfig.initialize();
 
-            if (lambdaConfig.AWS_ACCESS_KEY_ID) {
+            if (testConfig.AWS_ACCESS_KEY_ID === "foo") {
                 done();
             } else {
-                done(new Error("No AWS access key (bad home)"));
+                done(new Error("AWS access key is missing"));
             }
         });
+
+        it("checks missing key", function (done) {
+            process.env.HOME = "/Users/foo";
+            process.env.AWS_ACCESS_KEY_ID = "";
+
+            let testConfig = LambdaConfig.create();
+            testConfig.initialize();
+
+            if (!testConfig.AWS_ACCESS_KEY_ID) {
+                done();
+            } else {
+                done(new Error("AWS access key is present: \"" + testConfig.AWS_ACCESS_KEY_ID + "\""));
+            }
+        });
+
     });
 
     describe("prepares the lambda function code", function() {
@@ -190,7 +198,7 @@ describe("LambdaDeploy", function() {
             // We can put this in the callback (then) of the delete above, but the problem is the propagation time
 
             setTimeout(() => {
-                console.log("Waited 2 seconds for AWS after delete");
+                console.log("Waited a few seconds for AWS after delete");
                 awsHelper.createRole(testAwsRole)
                     .then((arn: string) => {
                         console.log("Created role: " + arn);
@@ -205,7 +213,6 @@ describe("LambdaDeploy", function() {
         });
 
         it("creates invalid role", function (done) {
-            console.log("Waited 2 seconds for AWS after delete");
             awsHelper.createRole("#$%^&*_i_hope_invalid")
                 .then((arn: string) => {
                     console.error("Created role: " + arn);
@@ -219,15 +226,18 @@ describe("LambdaDeploy", function() {
         });
 
         it("finds a role", function(done) {
-            awsHelper.getRole(testAwsRole)
-                .then((arn: string) => {
-                    console.log("Role was found");
-                    done();
-                })
-                .catch((err) => {
-                    console.error("Error finding AWS role: " + err);
-                    done(err);
-                });
+            setTimeout(() => {
+                console.log("Waited a few seconds for AWS before role lookup");
+                awsHelper.getRole(testAwsRole)
+                    .then((arn: string) => {
+                        console.log("Role was found: " + arn);
+                        done();
+                    })
+                    .catch((err) => {
+                        console.error("Error finding AWS role: " + err);
+                        done(err);
+                    });
+                }, 2000);
         });
 
         it("finds nonexistent role", function(done) {
@@ -288,13 +298,6 @@ describe("LambdaDeploy", function() {
 
             process.chdir("test/resources");
 
-            try {
-                lambdaConfig.initialize();
-                lambdaConfig.validate();
-            } catch (err) {
-                done(new Error("Parameter validation error: " + err));
-            }
-
             awsHelper.deleteFunction(testAwsLambda)
                 .then((arn: string) => {
                     if (arn) {
@@ -314,6 +317,7 @@ describe("LambdaDeploy", function() {
 
             LoggingHelper.setVerbose(true);
 
+            console.log("Waited a few seconds for AWS before function deploy");
             setTimeout(() => {
                 deployer.deploy(function(error: Error) {
                     if (error) {
@@ -360,13 +364,6 @@ describe("LambdaDeploy", function() {
             if (skip) this.skip();
 
             process.chdir("test/resources");
-
-            try {
-                lambdaConfig.initialize();
-                lambdaConfig.validate();
-            } catch (err) {
-                done(new Error("Parameter validation error: " + err));
-            }
 
             lambdaConfig.AWS_ROLE_ARN = testRoleArn;
             lambdaConfig.AWS_FUNCTION_NAME = testAwsLambda;

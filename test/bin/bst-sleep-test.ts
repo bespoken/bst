@@ -10,6 +10,7 @@ describe("bst-sleep", function() {
         // Picks up lint on re-runs - dump it every time
         delete require.cache[require.resolve("commander")];
         sandbox = sinon.sandbox.create();
+        sandbox.stub(process, "exit", function () {}); // Ignore exit()
     });
 
     afterEach(function () {
