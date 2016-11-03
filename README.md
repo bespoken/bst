@@ -67,10 +67,15 @@ For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/
 
 # Tutorials
 
+## Alexa Skills Kit Tutorials
 * [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
 * [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
 * [Python & Flask-Ask](http://docs.bespoken.tools/en/latest/tutorials/tutorial_flask_ask_python)
 * [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.tools/en/latest/tutorials/tutorial_bst_emulator_nodejs)
+
+## General Lambda Tutorials
+* [Running Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_local)
+* [Debugging Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger)
 
 ## Questions/Feedback?
 
