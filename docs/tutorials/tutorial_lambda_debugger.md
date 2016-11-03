@@ -20,16 +20,16 @@ Of course, feel free to use your own existing Lambda project.
 ## Configuring WebStorm
 From your AWS Lambda project in WebStorm, right-click on the Lambda JS file and select 'Create &lt;LambdaFile.js&gt;':
 
-<img src='../assets/images/lambda-webstorm-configure.png'  height='400'/>
+<img src='../../assets/images/lambda-webstorm-configure.png'  height='400'/>
 
 Fill out the configuration:
 
-<img src='../assets/images/lambda-webstorm-configuration.png'  height='400'/>
+<img src='../../assets/images/lambda-webstorm-configuration.png'  height='400'/>
 
 Make sure the JavaScript File is set to:  
 `node_modules/bespoken-tools/bin/bst-proxy.js`
 
-Set the application parameters with the 'lambda' followed by the name of the Lambda JS entry-point:  
+Set the application parameters with 'lambda' followed by the filename of the Lambda entry-point:  
 `lambda <LambdaFile.js> --verbose`
 
 (The --verbose parameter prints out helpful information to the console).
@@ -37,10 +37,10 @@ Set the application parameters with the 'lambda' followed by the name of the Lam
 Select 'OK' to save the configuration.
 
 To start debugging, click on the little bug icon next to the configuration at the top:
-<img src='../assets/images/lambda-webstorm-debug.png' />
+<img src='../../assets/images/lambda-webstorm-debug.png' />
 
 ## Seeing It In Action
-Will use a simple curl to send a request to the service:
+We will use a simple curl to send a request to the service:
 ```
 curl -H "Content-Type: application/json" \
   -X POST \
@@ -50,7 +50,7 @@ curl -H "Content-Type: application/json" \
 
 With a breakpoint added at Line 7, here is what you will see:
 
-<img src='../assets/images/lambda-webstorm-inspecting.png' />
+<img src='../../assets/images/lambda-webstorm-inspecting.png' />
 
 Lots of great information, right? WebStorm offers a host of capabilities via their debugger - [you can learn more here](https://www.jetbrains.com/help/webstorm/2016.2/running-and-debugging-node-js.html).
 

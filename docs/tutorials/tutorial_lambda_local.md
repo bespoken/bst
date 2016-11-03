@@ -4,20 +4,20 @@ This tutorial shows you how to get use Bespoken Tools to test a AWS Lambdas loca
 Using this, you can send HTTP requests directly to and from your AWS Lambda (Node.js or Python) on your laptop.
 
 ## Prerequisites
-For Node.js:
-* Bespoken Tools (bst)
-  * `$ npm install bespoken-tools -g`
-  * [Installation Instructions](/getting_started/)
+For Node.js - Install bst:
 
-For Python:
-* Bespoken Tools Python (bstpy)
-  * `git clone the bstpy repo`
-  * `cd bstpy`
-  * `pip install -e bstpy`
-  * [Installation Instructions](https://github.com/bespoken/bstpy/blob/master/README.md)
+* `$ npm install bespoken-tools -g`
+* [Full Installation Instructions](/getting_started/)
+
+For Python - Install bstpy:
+
+* `git clone the bstpy repo`
+* `cd bstpy`
+* `pip install -e bstpy`
+* [Full Installation Instructions](https://github.com/bespoken/bstpy/blob/master/README.md)
 
 ## Creating The HTTP Service
-These examples are based on a simple sample project. If  you want to use the same, just clone this repo:
+These examples are based on our own sample project (which in turn is based on Amazon's HelloWorld Lambda examples). If  you want to use our sample project, just clone this repo:
 ```
 git clone https://github.com/bespoken/lambda_samples
 ```
@@ -55,7 +55,7 @@ curl -H "Content-Type: application/json" \
 
 And the output:
 
-<img src='../assets/images/bst-lambda-local-curl.png' />
+<img src='../../assets/images/bst-lambda-local-curl.png' />
 
 The actual output from the Lambda is highlighted in red.
 
@@ -76,11 +76,11 @@ You can step through your code using your favorite IDE. [Follow this tutorial](t
 **Webhooks**  
 Using the URL printed out when the `bst proxy` starts up, you can access your local service from across the web.
 
-<img src='../assets/images/bst-lambda-local-proxy.png' />
+<img src='../../assets/images/bst-lambda-local-proxy.png' />
 
 Take the URL that is printed out for you and see that you can hit it from anywhere on the web.
 
-This is extremely useful for debugging Webhook-based services (like Facebook Messenger Platform, Alexa Skills, Slack Webhooks, Microsoft BOT framework, etc.) that require having a public-facing server.
+This is extremely useful for debugging Webhook-based services (like Facebook Messenger Platform, Alexa Skills, Slack Webhooks, Microsoft Bot framework, etc.) that require having a public-facing server.
 
 **Deployment**  
 For Node.js Lambdas, we have a one-step deploy tool. You can [read about it here](../commands/deploy).
