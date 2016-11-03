@@ -6,7 +6,7 @@
 
 <p align="center">
   Switch to BEAST mode<br>
-  Rampage through code/test iterations for Alexa development
+  Rampage through code/test iterations for Alexa and Lambda development
 </p>
 
 <p align="center">
