@@ -232,16 +232,16 @@ $
 
 What happened? 
 
-- The tool created (or updated if it existed) the BST configuration file in `~/.bst` where you can tweak the install parameters later. 
-- Created a role called `lambda-bst-execution` for your lambda with an associated basic policy.
-- Packaged and uploaded your lambda to AWS.
+- The tool created (or updated if it existed) the BST configuration file in `~/.bst` where you can tweak the install parameters later
+- Created a role called `lambda-bst-execution` for your lambda with an associated basic policy
+- Packaged and uploaded your lambda to AWS
 
 You can ask BST to give a specific name to the function with the `--lambdaName` option.
 Otherwise the tool uses the folder name. 
 
 At the end BST handed you over the `arn` to setup your lambda skill on the Alexa setup UI.
 
-That was it! You can modify your code now then call the command again the same way. BST will update your lambda.
+That was it! You can now modify your code and call the `bst deploy` command again the same way. BST will update your lambda.
 
 ## Customization
 
@@ -266,16 +266,16 @@ Let's take a look at the BST config file I mentioned before. It looks like this:
 }
 ```
 
-You can tailor these parameters as you wish. They follow the AWS API parameters except the `excludeGlobs` parameter.
+You can tailor these parameters as you wish. They are similar to the AWS API parameters except the `excludeGlobs`.
 The `excludeGlobs` is a comma delimited list of files and folders that you can exclude from the packaged lambda.
 Things you don't need at runtime.
 
-The `nodeID` is used by the BST proxy to expose your lambda or custom http endpoint on the public internet.
+The `nodeID` is used by the BST proxy to expose your lambda or local http endpoint on the public internet.
 
 ### Lambda role
 
 The `lambda-bst-execution` role only has the basics. Access rights to logging, S3 (put, get) and Dynamo (persistent storage).
-If you need more access rights, you will have to do it on the AWS console.
+If you need more access rights, you will have to modify it on the AWS console.
 
 This is the default policy:
 
@@ -321,7 +321,6 @@ This is the default policy:
 }
 ```
 
-
 ## Use local resources within your VPC
 
 Lambdas are stateless. This means we cannot maintain a connection pool to a database.
@@ -358,8 +357,8 @@ The reason is security. I'm open for a debate.
 You need to add ENI access to the policy on the **lambda execution role**, 
 not to the role of the entity that installs the lambda!
 
-Go to the `IAM > Roles` menu on the AWS console and select ``lambda-bst-execution``,
-and edit the policy. It's called ``lambda-bst-execution-access`` by default. 
+Go to the `IAM > Roles` menu on the AWS console and select `lambda-bst-execution`,
+and edit the policy. It's called `lambda-bst-execution-access` by default. 
 
 Add this to the JSON array and save:
 
@@ -390,7 +389,7 @@ It probably already has the ssh (22) port open. Let's add our server port, the 3
 
 <img src='../../assets/images/add-tcp-3000.png' />
 
-Add the ids to BST config file in `~/.bst/config` like this:
+Add the ids to the BST config file in `~/.bst/config` like this:
 
 ```json
 {
@@ -413,7 +412,7 @@ Add the ids to BST config file in `~/.bst/config` like this:
 ### Update the lambda
 
 The lambda function code update is easy with BST. The same command will update the lambda. 
-From the lambda project folder, run this:
+From the lambda project folder run this:
 
 ```shell
 $ bst deploy lambda . 
