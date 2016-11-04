@@ -3,11 +3,12 @@ This tutorial shows you how to use the Bespoken Tools to test and deploy your No
 It will also show you how to install a lambda that will access resources inside your private VPC.
 
 ## Use case
-We would like to create an Alexa skill that tells random quotes from famous people. I'm sure nobody thought about this before...
+We would like to create an Alexa skill that tells random quotes from famous people.
+I'm sure nobody thought about this before...
 
-We will try two versions. A simple skill that chooses a random quote from an array. To make it more interesting,
-later we will pull the quotes from a local AWS resource, a REST service with Mongo we installed on an EC2 instance. 
-
+We will try two versions. A simple skill that chooses a random quote from a static array. 
+To make it more interesting, later we will pull the quotes from a local AWS resource, a REST service with Mongo 
+we installed on an EC2 instance. 
 
 ## Prerequisites
 
@@ -29,13 +30,13 @@ Installing the AWS CLI is not required, but it is very useful.
 
 Alternatively you can set these two shell environment variables with the respective values.
 
-```bsh
+```shell
 $ export AWS_SECRET_ACCESS_KEY=...
 $ export AWS_ACCESS_KEY_ID=...
 ```
 
 *Note*
-It's not the scope of this tutorial to pontificate about security, but please don't use your root level credentials!
+It's not the scope of this tutorial to pontificate about security, but please don't use your root AWS credentials!
 
 ### Zip
 
@@ -46,12 +47,12 @@ You may need to install `zip` depending on your operating system. It's needed fo
 The sources for this demo are [here](https://github.com/bespoken/deploy-vpc-demo). Feel free to clone the repo.
 
 There are two folders. The `quote-server-mongo` is a simple express REST service with Mongo. 
-We will use that as a backend later. If you want to try the demo end-to-end, then copy the code to your
-EC2 instance. Simple instructions to run the service are in the README file.
+We will use that for the backend later. If you want to try the demo end-to-end, then copy the code to your
+EC2 instance. Simple instructions to run the service are in the README.md file.
 
-The actual skill lambda is in the ```quote-skill``` folder. Navigate to the folder and run
+The actual skill lambda is in the `quote-skill` folder. Navigate to the folder and run
 
-```
+```shell
 npm install
 ```
 
@@ -59,7 +60,7 @@ npm install
 Your project have to follow the node.js conventions. That is you need a package.json on top level.
 
 Now let's take a peek into index.js. That is our lambda. Very simple skill, 
-wired to fetch the quotes from a simple array.
+wired to fetch the quotes from a static array by default.
 
 We used Matt Kruse's [excellent SDK](https://github.com/matt-kruse/alexa-app).
 
@@ -110,7 +111,7 @@ exports.handler = skill.lambda();
 
 Start the BST proxy to expose the lambda for the BST tools.
 
-```
+```shell
 $ cd quote-skill/
 $ bst proxy lambda index.js 
 BST: v0.9.13  Node: v6.3.0
@@ -122,13 +123,14 @@ INFO  2016-11-04T01:32:01.139Z LambdaServer started on port: 10000
 INFO  2016-11-04T01:32:01.250Z Connected - proxy.bespoken.tools:5000
 ```
 
-Now let's "tell" something to our skill. From another shell session run the BST ``speak`` command!
-"Random Qoute" is one of the sample utterances. The command prints out the request and the response. 
-No need to go to the Amazon Alexa UI to test. 
+Now let's "tell" something to our skill. From another shell session run the BST `speak` command!
 
-You can read more about the `bst speak` [here](http://docs.bespoken.tools/en/latest/commands/speak/)
+"random qoute" is one of the sample utterances. The command prints out the matching request (intent) and the response. 
+No need to go to the Amazon Alexa UI to do basic tests. 
 
-```
+You can read more about the `bst speak` command [here](http://docs.bespoken.tools/en/latest/commands/speak/)
+
+```shell
 $ bst speak random quote
 BST: v0.9.13  Node: v6.3.0
 
@@ -207,10 +209,10 @@ to learn how easy that is.
 
 Everything meant to be easy with BST. The installation is no exception. BST has a "one line deployer" feature.
 
-All we have to do is running the following command. The last parameter is the path to the lambda project.
+All you have to do is running the following command. The last parameter is the path to the lambda project.
 It could be relative or absolute path.
 
-```
+```shell
 $ bst deploy lambda . 
 INFO  2016-11-04T00:22:31.654Z No configuration. Creating one: /Users/opendog/.bst/config
 BST: v0.9.13  Node: v6.3.0
@@ -223,16 +225,16 @@ Waiting for AWS to propagate the changes
 Zip file(s) done uploading.
 Enter this ARN(s) on the Configuration tab of your skill:
 
-	arn:aws:lambda:us-east-1:634840350876:function:quote-skill
+	arn:aws:lambda:us-east-1:6376:function:quote-skill
 
 $ 
 ```
 
 What happened? 
 
-- The tool created (or updated) a configuration file in `~/.bst` where you can tweak the install parameters later. 
+- The tool created (or updated if it existed) the BST configuration file in `~/.bst` where you can tweak the install parameters later. 
 - Created a role called `lambda-bst-execution` for your lambda with an associated basic policy.
-- Packaged and uploaded your lambda to the AWS.
+- Packaged and uploaded your lambda to AWS.
 
 You can ask BST to give a specific name to the function with the `--lambdaName` option.
 Otherwise the tool uses the folder name. 
@@ -264,14 +266,15 @@ Let's take a look at the BST config file I mentioned before. It looks like this:
 }
 ```
 
-You can tailor these parameters as you wish. They follow the AWS API parameters. 
-
+You can tailor these parameters as you wish. They follow the AWS API parameters except the `excludeGlobs` parameter.
 The `excludeGlobs` is a comma delimited list of files and folders that you can exclude from the packaged lambda.
 Things you don't need at runtime.
 
+The `nodeID` is used by the BST proxy to expose your lambda or custom http endpoint on the public internet.
+
 ### Lambda role
 
-The `lambda-bst-execution` role only has the basics. Access rights to logging, S3 (put, get) and dynamo (persistent storage).
+The `lambda-bst-execution` role only has the basics. Access rights to logging, S3 (put, get) and Dynamo (persistent storage).
 If you need more access rights, you will have to do it on the AWS console.
 
 This is the default policy:
@@ -322,15 +325,14 @@ This is the default policy:
 ## Use local resources within your VPC
 
 Lambdas are stateless. This means we cannot maintain a connection pool to a database.
-One solution is REST microservice that looks up the data for you.
+One solution is a REST microservice that looks up the data for you.
 
-This is what our little express application does. I have already installed it on an EC2 instance
+This is what our little Express application does. I have already installed it on an EC2 instance (no kidding)
 and it's eagerly listening on port 3000.
 
-### Modify the skill
+### Modify the skill code
 
-To pull the quotes from our REST service just change the data provider import line in the skill
-
+To pull the quotes from our REST service just change the data provider import line in the skill (`index.js`)
 from 
 ```javascript
 var dataProvider = require('./dataProviderStatic');
@@ -340,22 +342,26 @@ to
 var dataProvider = require('./dataProvider');
 ```
 
+Also change the REST server IP address and port in the data provider (`dataProvider.js`).
+
 ### Add VPC subnet and security group to you lambda function
 
-Before we can use the new lambda we need a few things.
+Before our lambda can access private VPC resources we need a few things.
 
-- We need to update the policy of on the lambda execution role 
+- We need to update the policy on the lambda execution role 
 
 By default BST does not grant access to ENI (elastic network interface) functions. 
 Future will tell if this is a bug or a feature, but for now you have to add it manually.
+The reason is security. I'm open for a debate.
 
 **Important**
-You need to add it to the lambda execution role, not the role of the entity that installs the lambda!
+You need to add ENI access to the policy on the **lambda execution role**, 
+not to the role of the entity that installs the lambda!
 
-Go to the IAM > Roles on the AWS console, select ``lambda-bst-execution``,
+Go to the `IAM > Roles` menu on the AWS console and select ``lambda-bst-execution``,
 and edit the policy. It's called ``lambda-bst-execution-access`` by default. 
 
-Add this to the JSON array:
+Add this to the JSON array and save:
 
 ```json
         {
@@ -377,7 +383,7 @@ We need the ids not the names!
 The vpc subnet id is the `Subnet ID` field on the EC2 instance detail page. It starts with `subnet-`
 
 To find the security group id, click on the security group on the EC2 instance detail page (on the right). 
-If you used the wizard to spin up the instance, the name will be something like `launch-wizard-1`.
+If you used the AWS wizard to spin up the instance, the name will be something like `launch-wizard-1`.
 You can use that group. The id starts with `sg-`. 
 
 It probably already has the ssh (22) port open. Let's add our server port, the 3000.
@@ -388,7 +394,7 @@ Add the ids to BST config file in `~/.bst/config` like this:
 
 ```json
 {
-    "nodeID": "fdd376c8-3d3e-4a48-8b74-4d80a11924af",
+    "nodeID": "fdd376c8-3d3e-74-41924af",
     "lambdaDeploy": {
         "runtime": "nodejs4.3",
         "role": "lambda-bst-execution",
@@ -396,8 +402,8 @@ Add the ids to BST config file in `~/.bst/config` like this:
         "description": "My BST lambda skill",
         "timeout": 3,
         "memorySize": 128,
-        "vpcSubnets": "subnet-e6da0fcb",
-        "vpcSecurityGroups": "sg-caa466b7",
+        "vpcSubnets": "subnet-e6dcb",
+        "vpcSecurityGroups": "sg-c66b7",
         "excludeGlobs": "event.json"
     }
 }
@@ -409,7 +415,7 @@ Add the ids to BST config file in `~/.bst/config` like this:
 The lambda function code update is easy with BST. The same command will update the lambda. 
 From the lambda project folder, run this:
 
-```bsh
+```shell
 $ bst deploy lambda . 
 BST: v0.9.13  Node: v6.3.0
 
@@ -418,7 +424,7 @@ Re-using existing BST lambda role.
 Zip file(s) done uploading.
 Enter this ARN(s) on the Configuration tab of your skill:
 
-	arn:aws:lambda:us-east-1:634840350876:function:quote-skill
+	arn:aws:lambda:us-east-1:876:function:quote-skill
 
 $ 
 ```
