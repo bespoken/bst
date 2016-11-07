@@ -323,7 +323,7 @@ This is the default policy:
 
 ## Use local resources within your VPC
 
-Lambdas are stateless. This means we cannot maintain a connection pool to a database.
+Lambdas should be written in a stateless manner. This means we cannot maintain a connection pool to a database.
 One solution is a REST microservice that looks up the data for you.
 
 This is what our little Express application does. I have already installed it on an EC2 instance (no kidding)
