@@ -107,7 +107,7 @@ skill.intent('RandomQuote',
 exports.handler = skill.lambda();
 ```
 
-## Let's kick the tires with BST
+## Kick the tires with BST
 
 Start the BST proxy to expose the lambda for the BST tools.
 
@@ -321,7 +321,7 @@ This is the default policy:
 }
 ```
 
-## Use local resources within your VPC
+## Local resources within your VPC
 
 Lambdas should be written in a stateless manner. This means we cannot maintain a connection pool to a database.
 One solution is a REST microservice that looks up the data for you.
@@ -409,7 +409,7 @@ Add the ids to the BST config file in `~/.bst/config` like this:
 ```
 
 
-### Update the lambda
+## Update the lambda
 
 The lambda function code update is easy with BST. The same command will update the lambda. 
 From the lambda project folder run this:
