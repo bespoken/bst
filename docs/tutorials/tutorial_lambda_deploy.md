@@ -205,7 +205,7 @@ If something isn't right, you can debug the skill locally with BST.
 You can step through your code using your favorite IDE. [Follow this tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger) 
 to learn how easy that is.
 
-## Install the lambda
+## Install the Lambda
 
 Everything meant to be easy with BST. The installation is no exception. BST has a "one line deployer" feature.
 
@@ -409,7 +409,7 @@ Add the ids to the BST config file in `~/.bst/config` like this:
 ```
 
 
-## Update the lambda
+## Update the Lambda
 
 The lambda function code update is easy with BST. The same command will update the lambda. 
 From the lambda project folder run this:
