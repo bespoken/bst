@@ -74,6 +74,7 @@ For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/
 ## Tutorials For General Lambdas
 * [Running Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_local)
 * [Debugging Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger)
+* [Deploying Lambdas](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_deploy)
 
 ## Questions/Feedback?
 
