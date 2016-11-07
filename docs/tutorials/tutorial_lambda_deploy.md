@@ -57,7 +57,7 @@ npm install
 ```
 
 **Important**
-Your project have to follow the node.js conventions. That is you need a package.json on top level.
+Your project have to follow the node.js conventions. That is you need a package.json in top the level folder.
 
 Now let's take a peek into index.js. That is our lambda. Very simple skill, 
 wired to fetch the quotes from a static array by default.
@@ -347,7 +347,7 @@ Also change the REST server IP address and port in the data provider (`dataProvi
 
 Before our lambda can access private VPC resources we need a few things.
 
-- We need to update the policy on the lambda execution role 
+#### We need to update the policy on the lambda execution role 
 
 By default BST does not grant access to ENI (elastic network interface) functions. 
 Future will tell if this is a bug or a feature, but for now you have to add it manually.
@@ -355,7 +355,7 @@ The reason is security. I'm open for a debate.
 
 **Important**
 You need to add ENI access to the policy on the **lambda execution role**, 
-not to the role of the entity that installs the lambda!
+not on the role of the entity that installs the lambda!
 
 Go to the `IAM > Roles` menu on the AWS console and select `lambda-bst-execution`,
 and edit the policy. It's called `lambda-bst-execution-access` by default. 
@@ -374,7 +374,7 @@ Add this to the JSON array and save:
         }
 ```
 
-- We also need the subnet id of our server's EC2 instance and a security group id
+#### We also need the subnet id of our server's EC2 instance and a security group id
 
 **Important**
 We need the ids not the names!
