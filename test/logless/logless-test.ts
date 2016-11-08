@@ -50,7 +50,7 @@ describe("Logless", function() {
 
                 verifyLogger(context.logger, function (json: any) {
                     assert.equal(json.source, "JPK");
-                    assert.equal(json.transaction_id, "FakeAWSRequestId");
+                    assert.equal(json.transaction_id.length, 36);
                     assert.equal(json.logs.length, 7);
                     assert(json.logs[0].payload.request);
                     assert.equal(json.logs[0].log_type, "INFO");

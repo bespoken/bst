@@ -40,11 +40,7 @@ export class LoglessContext {
 
     public onLambdaEvent(event: any, context: any, wrappedCallback: Function): void {
         const self = this;
-        if (context.awsRequestId !== undefined && context.awsRequestId !== null) {
-            this._transactionID = context.awsRequestId;
-        } else {
-            this._transactionID = uuid.v4();
-        }
+        this._transactionID = uuid.v4();
 
         this.wrapCall(console, "error", LogType.ERROR);
         this.wrapCall(console, "info", LogType.INFO);
