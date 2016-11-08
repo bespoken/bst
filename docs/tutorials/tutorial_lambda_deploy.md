@@ -1,6 +1,6 @@
 
-This tutorial shows you how to use the Bespoken Tools to test and deploy your Node.js AWS lambdas. 
-It will also show you how to install a lambda that will access resources inside your private VPC.
+This tutorial shows you how to use the Bespoken Tools to test and deploy your Node.js AWS Lambdas. 
+It will also show you how to install a Lambda that will access resources inside your private VPC.
 
 ## Use case
 We would like to create an Alexa skill that tells random quotes from famous people.
@@ -22,7 +22,7 @@ $ npm install bespoken-tools -g
 
 ### AWS Privileges 
 
-Make sure you have the privileges to manage lambdas on AWS. Ok, it's obvious, I know...
+Make sure you have the privileges to manage Lambdas on AWS. Ok, it's obvious, I know...
 
 You will need AWS access keys - the secret access key and the access key id.
 If you have the AWS command line tools installed, you probably already have these keys in the ~/.aws/credentials file.
@@ -40,7 +40,7 @@ It's not the scope of this tutorial to pontificate about security, but please do
 
 ### Zip
 
-You may need to install `zip` depending on your operating system. It's needed for packaging the lambdas.
+You may need to install `zip` depending on your operating system. It's needed for packaging the Lambdas.
 
 ## Creating The Lambda Skill
 
@@ -50,7 +50,7 @@ There are two folders. The `quote-server-mongo` is a simple express REST service
 We will use that for the backend later. If you want to try the demo end-to-end, then copy the code to your
 EC2 instance. Simple instructions to run the service are in the README.md file.
 
-The actual skill lambda is in the `quote-skill` folder. Navigate to the folder and run
+The actual skill Lambda is in the `quote-skill` folder. Navigate to the folder and run
 
 ```shell
 npm install
@@ -59,7 +59,7 @@ npm install
 **Important**
 Your project have to follow the node.js conventions. That is you need a package.json in top the level folder.
 
-Now let's take a peek into index.js. That is our lambda. Very simple skill, 
+Now let's take a peek into index.js. That is our Lambda. Very simple skill, 
 wired to fetch the quotes from a static array by default.
 
 We used Matt Kruse's [excellent SDK](https://github.com/matt-kruse/alexa-app).
@@ -109,7 +109,7 @@ exports.handler = skill.lambda();
 
 ## Kick the tires with BST
 
-Start the BST proxy to expose the lambda for the BST tools.
+Start the BST proxy to expose the Lambda for the BST tools.
 
 ```shell
 $ cd quote-skill/
@@ -209,7 +209,7 @@ to learn how easy that is.
 
 Everything meant to be easy with BST. The installation is no exception. BST has a "one line deployer" feature.
 
-All you have to do is running the following command. The last parameter is the path to the lambda project.
+All you have to do is running the following command. The last parameter is the path to the Lambda project.
 It could be relative or absolute path.
 
 ```shell
@@ -233,15 +233,15 @@ $
 What happened? 
 
 - The tool created (or updated if it existed) the BST configuration file in `~/.bst` where you can tweak the install parameters later
-- Created a role called `lambda-bst-execution` for your lambda with an associated basic policy
-- Packaged and uploaded your lambda to AWS
+- Created a role called `lambda-bst-execution` for your Lambda with an associated basic policy
+- Packaged and uploaded your Lambda to AWS
 
 You can ask BST to give a specific name to the function with the `--lambdaName` option.
 Otherwise the tool uses the folder name. 
 
-At the end BST handed you over the `arn` to setup your lambda skill on the Alexa setup UI.
+At the end BST handed you over the `arn` to setup your Lambda skill on the Alexa setup UI.
 
-That was it! You can now modify your code and call the `bst deploy` command again the same way. BST will update your lambda.
+That was it! You can now modify your code and call the `bst deploy` command again the same way. BST will update your Lambda.
 
 ## Customization
 
@@ -270,7 +270,7 @@ You can tailor these parameters as you wish. They are similar to the AWS API par
 The `excludeGlobs` is a comma delimited list of files and folders that you can exclude from the packaged lambda.
 Things you don't need at runtime.
 
-The `nodeID` is used by the BST proxy to expose your lambda or local http endpoint on the public internet.
+The `nodeID` is used by the BST proxy to expose your Lambda or local http endpoint on the public internet.
 
 ### Lambda role
 
@@ -343,19 +343,19 @@ var dataProvider = require('./dataProvider');
 
 Also change the REST server IP address and port in the data provider (`dataProvider.js`).
 
-### Add VPC subnet and security group to you lambda function
+### Add VPC subnet and security group to you Lambda function
 
-Before our lambda can access private VPC resources we need a few things.
+Before our Lambda can access private VPC resources we need a few things.
 
-#### We need to update the policy on the lambda execution role 
+#### We need to update the policy on the Lambda execution role 
 
 By default BST does not grant access to ENI (elastic network interface) functions. 
 Future will tell if this is a bug or a feature, but for now you have to add it manually.
 The reason is security. I'm open for a debate.
 
 **Important**
-You need to add ENI access to the policy on the **lambda execution role**, 
-not on the role of the entity that installs the lambda!
+You need to add ENI access to the policy on the **Lambda execution role**, 
+not on the role of the entity that installs the Lambda!
 
 Go to the `IAM > Roles` menu on the AWS console and select `lambda-bst-execution`,
 and edit the policy. It's called `lambda-bst-execution-access` by default. 
@@ -411,8 +411,8 @@ Add the ids to the BST config file in `~/.bst/config` like this:
 
 ## Update the Lambda
 
-The lambda function code update is easy with BST. The same command will update the lambda. 
-From the lambda project folder run this:
+The Lambda function code update is easy with BST. The same command will update the Lambda. 
+From the Lambda project folder run this:
 
 ```shell
 $ bst deploy lambda . 
