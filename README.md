@@ -13,7 +13,7 @@
     <a href="https://travis-ci.org/bespoken/bst">
         <img alt="Build Status" class="badge" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
     </a>
-    <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
+    <a href="https://coveralls.io/github/bespoken/bst?branch=master">
         <img alt="Coverage Status" class="badge" src="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
     </a>
     <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
