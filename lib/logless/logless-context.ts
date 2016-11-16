@@ -17,7 +17,6 @@ export class LoglessContext {
         const self = this;
         let originalCall = (<any> console)[name];
         if (originalCall.logless !== undefined) {
-            console.log("Already Wrapped");
             return originalCall;
         }
 
@@ -213,7 +212,6 @@ export enum LogType {
     DEBUG,
     ERROR,
     INFO,
-    TRACE,
     WARN,
 }
 
