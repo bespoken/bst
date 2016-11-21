@@ -148,11 +148,11 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
 				add a listener on the <a href="classes/bstalexaevents.html#audioplayerplaybackstarted">AudioPlayer.PlaybackStarted</a> event.</p>
 				<p>This works well in concert with the <a href="classes/bstalexa.html#audioitemfinished">audioItemFinished</a> call.<br>This call acts as if the current track had finished playing on the device.<br>The next audio item queued from your skill should then be started.</p>
 				<p>Sample code:</p>
-				<pre><code>alexa.on(<span class="hljs-string">'AudioPlayer.PlaybackStarted'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(audioItem)</span></span> {
-    <span class="hljs-built_in">assert</span>.equal(audioItem.stream.token, <span class="hljs-string">'2'</span>);
+				<pre><code><span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.on</span>(<span class="hljs-string">'AudioPlayer.PlaybackStarted'</span>, function(audioItem) {
+    assert<span class="hljs-selector-class">.equal</span>(audioItem.stream.token, <span class="hljs-string">'2'</span>);
 });
 
-alexa.audioItemFinished();
+<span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.audioItemFinished</span>();
 </code></pre>
 			</div>
 		</div>
