@@ -1,5 +1,6 @@
 {
   "name": "bespoken-tools",
+  "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
   "version": "0.9.15",
