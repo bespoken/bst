@@ -66,9 +66,9 @@ export class LambdaServer {
         this.server.on("request", function(request: IncomingMessage, response: ServerResponse) {
             self.requests.push(request);
 
-            let requestBody: string = "";
+            let requestBody = new Buffer("");
             request.on("data", function(chunk: Buffer) {
-                requestBody += chunk.toString();
+                requestBody = Buffer.concat([requestBody, chunk]);
             });
 
             request.on("end", function () {
@@ -112,7 +112,7 @@ export class LambdaServer {
         });
     }
 
-    private invoke (request: IncomingMessage, body: string, response: ServerResponse): void {
+    private invoke (request: IncomingMessage, body: Buffer, response: ServerResponse): void {
         let path: string = this.file;
         if (!path.startsWith("/")) {
             path = [process.cwd(), this.file].join("/");
@@ -125,9 +125,9 @@ export class LambdaServer {
         }
 
         // let lambda = System.import("./" + file);
-        const context: LambdaContext = new LambdaContext(request, response, this.verbose);
+        const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
         try {
-            const bodyJSON: any = JSON.parse(body);
+            const bodyJSON: any = JSON.parse(body.toString());
             if (this.verbose) {
                 console.log("Request:");
                 console.log(JSON.stringify(bodyJSON, null, 2));
@@ -153,7 +153,7 @@ class LambdaContext {
     public identity: any = null;
     public clientContext: any = null;
 
-    public constructor(public request: IncomingMessage, public response: ServerResponse, public verbose: boolean) {}
+    public constructor(public request: IncomingMessage, public body: Buffer, public response: ServerResponse, public verbose: boolean) {}
 
     public fail(error: Error) {
         this.done(error, null);
