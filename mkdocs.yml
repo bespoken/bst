@@ -20,6 +20,7 @@ pages:
 - Tutorials for General Lambdas:
     - Running Lambdas Locally: tutorials/tutorial_lambda_local.md
     - Debugging Lambdas Locally: tutorials/tutorial_lambda_debugger.md
+    - Deploying Lambdas: tutorials/tutorial_lambda_deploy.md
 
 theme: readthedocs
 markdown_extensions:
