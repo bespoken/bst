@@ -1,4 +1,4 @@
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 
 export class AlexaSession {
     private _attributes: {[id: string]: any};
