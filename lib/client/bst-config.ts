@@ -3,7 +3,7 @@ import {ProxyType} from "./bst-proxy";
 import {LoggingHelper} from "../core/logging-helper";
 import {LambdaConfig} from "./lambda-config";
 
-let uuid = require("node-uuid");
+let uuid = require("uuid");
 
 const Logger = "CONFIG";
 const BSTDirectoryName = ".bst";
