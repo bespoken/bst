@@ -1,7 +1,7 @@
 import * as https from "https";
 import * as util from "util";
 import {Logless} from "./logless";
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 
 export class LoglessContext {
     private _callback: Function;
