@@ -1,6 +1,6 @@
 import {AlexaContext} from "./alexa-context";
 import {AudioPlayerActivity} from "./audio-player";
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 
 export class RequestType {
     public static IntentRequest = "IntentRequest";
