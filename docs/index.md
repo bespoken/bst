@@ -13,7 +13,7 @@
     <a href="https://travis-ci.org/bespoken/bst">
         <img alt="Build Status" class="badge" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
     </a>
-    <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
+    <a href="https://coveralls.io/github/bespoken/bst?branch=master">
         <img alt="Coverage Status" class="badge" src="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
     </a>
     <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
@@ -74,6 +74,7 @@ For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/
 ## Tutorials For General Lambdas
 * [Running Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_local)
 * [Debugging Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger)
+* [Deploying Lambdas](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_deploy)
 
 ## Questions/Feedback?
 

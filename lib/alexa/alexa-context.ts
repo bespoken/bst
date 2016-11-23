@@ -1,7 +1,7 @@
 import {AudioPlayer} from "./audio-player";
 import {InteractionModel} from "./interaction-model";
 import {AlexaSession} from "./alexa-session";
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 
 export class AlexaContext {
     private _userID: string;
