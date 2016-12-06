@@ -30,6 +30,36 @@ describe("StatisticsTest", function() {
                 });
             });
         });
+
+        it("Captures No Node stats", function(done) {
+            Statistics.Table = "bst-stats-test";
+
+            if (doNotRun(this, done)) return;
+
+            this.timeout(10000);
+            const stats = new Statistics();
+
+            // const nodeID = uuid.v4();
+            stats.record("", AccessType.REQUEST_DROPPED, function (error: Error) {
+                assert(!error);
+                done();
+            });
+        });
+
+        it("Handles Error", function(done) {
+            Statistics.Table = "bst-stats-test";
+
+            if (doNotRun(this, done)) return;
+
+            this.timeout(10000);
+            const stats = new Statistics();
+
+            // const nodeID = uuid.v4();
+            stats.record(undefined, AccessType.REQUEST_DROPPED, function (error: Error) {
+                assert(error);
+                done();
+            });
+        });
     });
 
     describe("#delete()", function() {
