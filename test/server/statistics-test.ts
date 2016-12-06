@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import {Statistics, AccessType} from "../../lib/server/statistics";
-const uuid = require("node-uuid");
+const uuid = require("uuid");
 
 const awsAccessKeyId = process.env["AWS_ACCESS_KEY_ID"];
 const awsSecretAccessKey = process.env["AWS_SECRET_ACCESS_KEY"];
