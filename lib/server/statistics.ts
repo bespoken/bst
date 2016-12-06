@@ -78,6 +78,10 @@ export class Statistics {
         const timestamp = new Date().toISOString();
         const docClient = this.docClient();
 
+        if (nodeID === null || nodeID === "") {
+            nodeID = "N/A";
+        }
+
         const dynamoParams = {
             TableName: Statistics.Table,
             Item: {
@@ -91,10 +95,13 @@ export class Statistics {
         docClient.put(dynamoParams, function(error: any) {
             if (error) {
                 console.error("DynamoPutError: " + error);
-                console.assert(error.code, "ResourceNotFoundException");
-                self.createTable(function () {
-                    self.record(nodeID, accessType, confirmation);
-                });
+                if (error.code === "ResourceNotFoundException") {
+                    self.createTable(function () {
+                        self.record(nodeID, accessType, confirmation);
+                    });
+                } else {
+                    confirmation(error);
+                }
             } else {
                 if (confirmation !== undefined) {
                     confirmation();
