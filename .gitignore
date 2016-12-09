@@ -5,6 +5,7 @@ node_modules/
 target/
 coverage/
 index.js.map
+.env
 
 codeship.aes
 docker/aws.env

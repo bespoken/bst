@@ -114,7 +114,7 @@ export class ServiceRequest {
         const timestamp = ServiceRequest.timestamp();
 
         // First create the header part of the request
-        return {
+        const baseRequest: any = {
             request: {
                 type: requestType,
                 locale: "en-US",
@@ -138,6 +138,11 @@ export class ServiceRequest {
             },
             version: "1.0"
         };
+
+        if (this.context.accessToken() !== null) {
+            baseRequest.context.System.user["accessToken"] = this.context.accessToken();
+        }
+        return baseRequest;
     }
 
     /**
@@ -191,6 +196,10 @@ export class ServiceRequest {
 
             if (this.requestType !== RequestType.LaunchRequest) {
                 this.requestJSON.session.attributes = attributes;
+            }
+
+            if (this.context.accessToken() !== null) {
+                this.requestJSON.session.user["accessToken"] = this.context.accessToken();
             }
         }
 

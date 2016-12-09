@@ -24,7 +24,6 @@ export class Alexa {
     // Until we have a better approach, we sequence the calls
     private _actionQueue: ActionQueue = new ActionQueue();
     private _context: AlexaContext = null;
-    private _session: AlexaSession = null;
     private _emitter: EventEmitter = null;
 
     public constructor() {
@@ -114,7 +113,7 @@ export class Alexa {
                 this._context.audioPlayer().suspend();
             }
 
-            console.log("Intent: " + intentName + " Session: " + this._session);
+            console.log("Intent: " + intentName + " Session: " + this._context.session());
             // Now we generate the service request
             //  The request is built based on the state from the previous step, so important that it is suspended first
             let serviceRequest = new ServiceRequest(this._context).intentRequest(intentName);

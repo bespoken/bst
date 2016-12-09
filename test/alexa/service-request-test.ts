@@ -67,8 +67,22 @@ describe("ServiceRequest", function() {
             assert(request.context.System.application.applicationId);
             assert(request.context.System.device.supportedInterfaces.AudioPlayer);
             assert.equal(request.context.AudioPlayer.playerActivity, "IDLE");
+            assert(!request.context.System.user.accessToken);
+            assert(!request.session.user.accessToken);
             assert(!request.context.AudioPlayer.token);
             assert(!request.context.AudioPlayer.offsetInMilliseconds);
+
+            done();
+        });
+
+        it("Correctly parses intent with accessToken", function(done) {
+            let linkedContext = new AlexaContext("https://skill.com/skillPath", model, mockAudioPlayer, "MyApp");
+            linkedContext.setAccessToken("JPK");
+            linkedContext.newSession();
+            let requester: ServiceRequest = new ServiceRequest(linkedContext);
+            let request: any = requester.intentRequest("Test").toJSON();
+            assert(request.context.System.user.accessToken);
+            assert(request.session.user.accessToken);
 
             done();
         });

@@ -4,6 +4,7 @@ import {AlexaSession} from "./alexa-session";
 const uuid = require("uuid");
 
 export class AlexaContext {
+    private _accessToken: string = null;
     private _userID: string;
     private _session: AlexaSession;
 
@@ -33,6 +34,14 @@ export class AlexaContext {
             this._userID = "amzn1.ask.account." + uuid.v4();
         }
         return this._userID;
+    }
+
+    public accessToken(): string {
+        return this._accessToken;
+    }
+
+    public setAccessToken(token: string): void {
+        this._accessToken = token;
     }
 
     public audioPlayer(): AudioPlayer {
