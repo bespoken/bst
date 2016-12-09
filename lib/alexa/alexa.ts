@@ -1,7 +1,6 @@
 import {AudioPlayer} from "./audio-player";
 import {LoggingHelper} from "../core/logging-helper";
 import {ServiceRequest, SessionEndedReason} from "./service-request";
-import {AlexaSession} from "./alexa-session";
 import request = require("request");
 import http = require("http");
 import {InteractionModel} from "./interaction-model";
