@@ -2,6 +2,7 @@ import {InteractionModel} from "../alexa/interaction-model";
 import {Alexa, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
 import {SessionEndedReason} from "../alexa/service-request";
+import {AlexaContext} from "../alexa/alexa-context";
 
 export class BSTAlexaEvents {
     /**
@@ -95,6 +96,10 @@ export class BSTAlexa {
                 ready();
             }
         });
+    }
+
+    public context(): AlexaContext {
+        return this._alexa.context();
     }
 
     /**
