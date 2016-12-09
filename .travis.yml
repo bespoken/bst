@@ -3,7 +3,8 @@ node_js:
   - "6"
   - "5"
   - "4"
-script: npm run coveralls
+script: npm run coverage
+after_success: npm run coveralls
 branches:
   only:
     - "master"
