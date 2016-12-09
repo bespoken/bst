@@ -4,7 +4,7 @@ node_js:
   - "5"
   - "4"
 script: npm run coverage
-after_sucess: npm run coveralls
+after_success: npm run coveralls
 branches:
   only:
     - "master"
