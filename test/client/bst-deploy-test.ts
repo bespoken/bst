@@ -6,6 +6,7 @@ import {LambdaDeploy} from "../../lib/client/lambda-deploy";
 import {LambdaConfig} from "../../lib/client/lambda-config";
 
 const exec = require("child_process").exec;
+const dotenv = require("dotenv");
 
 import * as fs from "fs";
 import {LambdaAws} from "../../lib/client/lambda-aws";
@@ -41,13 +42,16 @@ const testPayload: any = {
     "version": "1.0"
 };
 
+// Sets up environment variables from .env file
+dotenv.config();
+
 let lambdaConfig = LambdaConfig.create();
 lambdaConfig.initialize();
 
 let skip: boolean = false;
 
 if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-    console.log("Skipping deployer tests. No AWS credentials.");
+    console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
     skip = true;
 }
 

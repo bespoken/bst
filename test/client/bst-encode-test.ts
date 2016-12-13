@@ -3,10 +3,19 @@
 import * as assert from "assert";
 import {BSTEncode} from "../../lib/client/bst-encode";
 
-const awsAccessKeyId = process.env["AWS_ACCESS_KEY_ID"];
-const awsSecretAccessKey = process.env["AWS_SECRET_ACCESS_KEY"];
+const dotenv = require("dotenv");
+
+let awsAccessKeyId: string;
+let awsSecretAccessKey: string;
 
 describe("BSTEncode", function() {
+    before(function () {
+        // Sets up environment variables from .env file
+        dotenv.config();
+
+        awsAccessKeyId = process.env["AWS_ACCESS_KEY_ID"];
+        awsSecretAccessKey = process.env["AWS_SECRET_ACCESS_KEY"];
+    });
 
     describe("#encodeAndPublishURL()", function() {
         it("Encodes and Publishes a URL", function (done) {
@@ -23,6 +32,25 @@ describe("BSTEncode", function() {
             encoder.encodeURLAndPublish("https://s3.amazonaws.com/xapp-alexa/UnitTestOutput.mp3", function(error: Error, url: string) {
                 assert(!error);
                 assert(url, "https://s3.amazonaws.com/bespoken-encoding-test/UnitTestOutput-encoded.mp3");
+                done();
+            });
+        });
+
+        it("Encodes and Publishes a URL With Volume Modified", function (done) {
+            if (doNotRun(this, done)) return;
+            this.timeout(10000);
+
+            const config = {
+                bucket: "bespoken-encoding-test",
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey,
+                filterVolume: 5.0
+            };
+
+            let encoder = new BSTEncode(config);
+            encoder.encodeURLAndPublishAs("https://s3.amazonaws.com/xapp-alexa/UnitTestOutput.mp3", "UnitTest-VolumeModified.mp3", function(error: Error, url: string) {
+                assert(!error);
+                assert(url, "https://s3.amazonaws.com/bespoken-encoding-test/UnitTest-VolumeModified.mp3");
                 done();
             });
         });
@@ -104,7 +132,7 @@ describe("BSTEncode", function() {
 
 function doNotRun(test: any, done: Function): boolean {
     if (awsAccessKeyId === undefined || awsSecretAccessKey === undefined) {
-        console.warn("AWS dependent test skipped. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables must be set for these tests");
+        console.warn("AWS dependent test skipped. AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables must be set in the .env file for these tests");
         done();
         return true;
     }

@@ -7,11 +7,16 @@ import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
 import {LambdaConfig} from "../../lib/client/lambda-config";
 
+const dotenv = require("dotenv");
+
 // The test project
 const deployProject: string = "./deployProject";
 
 // Test lambda name
 const testLambdaName: string = "test-lamda-name";
+
+// Sets up environment variables from .env file
+dotenv.config();
 
 let lambdaConfig = LambdaConfig.create();
 lambdaConfig.initialize();
