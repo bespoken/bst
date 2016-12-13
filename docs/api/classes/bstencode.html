@@ -110,24 +110,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new BSTEncode<span class="tsd-signature-symbol">(</span>awsConfiguration<span class="tsd-signature-symbol">: </span><a href="../interfaces/awsencoderconfig.html" class="tsd-signature-type">AWSEncoderConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstencode.html" class="tsd-signature-type">BSTEncode</a></li>
+						<li class="tsd-signature tsd-kind-icon">new BSTEncode<span class="tsd-signature-symbol">(</span>configuration<span class="tsd-signature-symbol">: </span><a href="../interfaces/iencoderconfig.html" class="tsd-signature-type">IEncoderConfig</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bstencode.html" class="tsd-signature-type">BSTEncode</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2366aec/lib/client/bst-encode.ts#L31">client/bst-encode.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/75d324e/lib/client/bst-encode.ts#L43">client/bst-encode.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>The <a href="../interfaces/awsencoderconfig.html">awsConfiguration</a> contains AWS credentials and S3 bucket to upload to</p>
+									<p>The <a href="../interfaces/iencoderconfig.html">configuration</a> contains AWS credentials and S3 bucket to upload to
+									It also contains the volume parameter - for manipulating the volume of the encoded file</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>awsConfiguration: <a href="../interfaces/awsencoderconfig.html" class="tsd-signature-type">AWSEncoderConfig</a></h5>
+									<h5>configuration: <a href="../interfaces/iencoderconfig.html" class="tsd-signature-type">IEncoderConfig</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
 										</div>
@@ -151,7 +152,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2366aec/lib/client/bst-encode.ts#L50">client/bst-encode.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/75d324e/lib/client/bst-encode.ts#L63">client/bst-encode.ts:63</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -206,7 +207,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2366aec/lib/client/bst-encode.ts#L60">client/bst-encode.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/75d324e/lib/client/bst-encode.ts#L73">client/bst-encode.ts:73</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -267,7 +268,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2366aec/lib/client/bst-encode.ts#L78">client/bst-encode.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/75d324e/lib/client/bst-encode.ts#L91">client/bst-encode.ts:91</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -325,7 +326,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2366aec/lib/client/bst-encode.ts#L88">client/bst-encode.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/75d324e/lib/client/bst-encode.ts#L101">client/bst-encode.ts:101</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -434,7 +435,7 @@
 						<a href="logless.html" class="tsd-kind-icon">Logless</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/awsencoderconfig.html" class="tsd-kind-icon">AWSEncoder<wbr>Config</a>
+						<a href="../interfaces/iencoderconfig.html" class="tsd-kind-icon">IEncoder<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/lambdafunction.html" class="tsd-kind-icon">Lambda<wbr>Function</a>

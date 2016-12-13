@@ -8,10 +8,22 @@ import * as http from "http";
 import {IncomingMessage} from "http";
 const AWS = require("aws-sdk");
 
-export interface AWSEncoderConfig {
+export interface IEncoderConfig {
+    /** AWS Bucket to which the encoded file will be uploaded. */
     bucket: string;
+
+    /** Access key with permissions for the AWS bucket. Default AWS SDK configuration is used if not set. */
     accessKeyId: string;
+
+    /** Secret access key with permissions for the AWS bucket. Default AWS SDK configuration is used if not set. */
     secretAccessKey: string;
+
+    /**
+     * Volume multiplier: 2.0 means double the volume, 0.5 means to cut it in half.
+     *
+     * By default, the volume is not modified.
+     */
+    filterVolume?: number;
 }
 
 /**
@@ -28,17 +40,18 @@ export class BSTEncode {
     private static EncoderHost = "elb-ecs-bespokenencoder-dev-299768275.us-east-1.elb.amazonaws.com";
     private static EncoderPath = "/encode";
 
-    private _awsConfiguration: AWSEncoderConfig;
+    private _configuration: IEncoderConfig;
 
     /**
-     * The [awsConfiguration]{@link AWSEncoderConfig} contains AWS credentials and S3 bucket to upload to
-     * @param awsConfiguration
+     * The [configuration]{@link IEncoderConfig} contains AWS credentials and S3 bucket to upload to
+     * It also contains the volume parameter - for manipulating the volume of the encoded file
+     * @param configuration
      */
-    public constructor(awsConfiguration: AWSEncoderConfig) {
-        this._awsConfiguration = awsConfiguration;
-        if (awsConfiguration.accessKeyId === undefined) {
-            awsConfiguration.accessKeyId = AWS.config.credentials.accessKeyId;
-            awsConfiguration.secretAccessKey = AWS.config.credentials.secretAccessKey;
+    public constructor(configuration: IEncoderConfig) {
+        this._configuration = configuration;
+        if (configuration.accessKeyId === undefined) {
+            configuration.accessKeyId = AWS.config.credentials.accessKeyId;
+            configuration.secretAccessKey = AWS.config.credentials.secretAccessKey;
         }
     }
 
@@ -62,7 +75,7 @@ export class BSTEncode {
         FileUtil.readFile(filePath, function(data: Buffer) {
             const fp = path.parse(filePath);
             const filename = fp.name + fp.ext;
-            self.uploadFile(self._awsConfiguration.bucket, filename, data, function (url: string) {
+            self.uploadFile(self._configuration.bucket, filename, data, function (url: string) {
                 self.callEncode(url, outputKey, function(error: Error, encodedURL: string) {
                     callback(error, encodedURL);
                 });
@@ -93,14 +106,14 @@ export class BSTEncode {
     }
 
     private uploadFile(bucket: string, name: string, data: Buffer, callback: (uploadedURL: string) => void) {
-        if (this._awsConfiguration === undefined) {
+        if (this._configuration === undefined) {
             throw new Error("No AWS Configuration parameters defined");
         }
 
         const config = {
             credentials: {
-                accessKeyId: this._awsConfiguration.accessKeyId,
-                secretAccessKey: this._awsConfiguration.secretAccessKey
+                accessKeyId: this._configuration.accessKeyId,
+                secretAccessKey: this._configuration.secretAccessKey
             }
         };
 
@@ -130,13 +143,17 @@ export class BSTEncode {
             path: BSTEncode.EncoderPath,
             method: "POST",
             headers: {
-                accessKeyId: this._awsConfiguration.accessKeyId,
-                accessSecretKey: this._awsConfiguration.secretAccessKey,
+                accessKeyId: this._configuration.accessKeyId,
+                accessSecretKey: this._configuration.secretAccessKey,
                 sourceURL: sourceURL,
                 targetBucket: this.bucket(),
                 targetKey: bucketKey
             }
         };
+
+        if (this._configuration.filterVolume !== undefined) {
+            (<any> options.headers).filterVolume = this._configuration.filterVolume + "";
+        }
 
         let responseData = "";
         const request = http.request(options, function (response: IncomingMessage) {
@@ -158,7 +175,7 @@ export class BSTEncode {
     }
 
     private bucket(): string {
-        return this._awsConfiguration.bucket;
+        return this._configuration.bucket;
     }
 
     private static urlForS3(bucket: string, key: string) {

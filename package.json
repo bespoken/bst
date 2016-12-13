@@ -25,6 +25,7 @@
   "devDependencies": {
     "bst-typedoc": "^0.4.6",
     "coveralls": "^2.11.11",
+    "dotenv": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-bst-typedoc": "^2.0.1",
     "gulp-mocha": "^3.0.1",
