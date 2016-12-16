@@ -49,6 +49,7 @@
   },
   "files": [
     "index.d.ts",
+    "bin/**/*.js",
     "lib/**/*.js",
     "lib/**/*.d.ts",
     "NOTICE"
