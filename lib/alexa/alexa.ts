@@ -6,7 +6,6 @@ import http = require("http");
 import {InteractionModel} from "./interaction-model";
 import {AlexaContext} from "./alexa-context";
 import {EventEmitter} from "events";
-import {RequestCallback} from "request";
 
 const Logger = "ALEXA";
 
@@ -207,7 +206,7 @@ export class Alexa {
      * @param options
      * @param responseHandler
      */
-    protected post(options: any, responseHandler: RequestCallback) {
+    protected post(options: any, responseHandler: (error: any, response: http.IncomingMessage, body: any) => void) {
         request.post(options, responseHandler);
     }
 
