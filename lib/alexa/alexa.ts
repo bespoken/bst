@@ -7,6 +7,7 @@ import {InteractionModel} from "./interaction-model";
 import {AlexaContext} from "./alexa-context";
 import {EventEmitter} from "events";
 import {RequestCallback} from "request";
+
 const Logger = "ALEXA";
 
 export interface AlexaResponseCallback {
