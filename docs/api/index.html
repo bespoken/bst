@@ -7,7 +7,6 @@
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
-	<script src="assets/js/modernizr.js"></script>
 </head>
 <body>
 <header>
@@ -148,11 +147,11 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
 				add a listener on the <a href="classes/bstalexaevents.html#audioplayerplaybackstarted">AudioPlayer.PlaybackStarted</a> event.</p>
 				<p>This works well in concert with the <a href="classes/bstalexa.html#audioitemfinished">audioItemFinished</a> call.<br>This call acts as if the current track had finished playing on the device.<br>The next audio item queued from your skill should then be started.</p>
 				<p>Sample code:</p>
-				<pre><code><span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.on</span>(<span class="hljs-string">'AudioPlayer.PlaybackStarted'</span>, function(audioItem) {
-    assert<span class="hljs-selector-class">.equal</span>(audioItem.stream.token, <span class="hljs-string">'2'</span>);
+				<pre><code>alexa.on(<span class="hljs-string">'AudioPlayer.PlaybackStarted'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(audioItem)</span></span> {
+    <span class="hljs-built_in">assert</span>.equal(audioItem.stream.token, <span class="hljs-string">'2'</span>);
 });
 
-<span class="hljs-selector-tag">alexa</span><span class="hljs-selector-class">.audioItemFinished</span>();
+alexa.audioItemFinished();
 </code></pre>
 			</div>
 		</div>
@@ -258,7 +257,7 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.io" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>

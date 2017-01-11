@@ -6,6 +6,8 @@ target/
 coverage/
 index.js.map
 .env
+*.tgz
+**/*.d.ts
 
 codeship.aes
 docker/aws.env
