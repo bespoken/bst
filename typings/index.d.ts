@@ -9,3 +9,4 @@
 /// <reference path="globals/sinon/index.d.ts" />
 /// <reference path="globals/winston/index.d.ts" />
 /// <reference path="globals/wrench/index.d.ts" />
+/// <reference path="modules/express/index.d.ts" />

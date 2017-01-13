@@ -1,4 +1,7 @@
 import {LoglessContext} from "../logless/logless-context";
+import {Response} from "~express/lib/response";
+import {LogType} from "./logless-context";
+import {RequestHandler} from "~express/lib/router/index";
 
 /**
  * Logless will automatically capture logs and diagnostics for your Node.js Lambda.
@@ -33,6 +36,38 @@ export class Logless {
         }
 
         return new LambdaWrapper(source, handler).lambdaFunction();
+    }
+
+    public static captureExpress(source: string): RequestHandler {
+        const context = new LoglessContext(source);
+        const captured = function (request: any, response: Response, next: Function) {
+            context.log(LogType.INFO, request.body, null, ["request"]);
+
+            Logless.wrapResponse(context, response);
+            next();
+        };
+
+        // Set the logger on the request handler for testability
+        (<any> captured).logger = context;
+        return captured;
+    }
+
+    private static wrapResponse(context: LoglessContext, response: Response, onFlushed?: Function): void {
+        const originalEnd = response.end;
+        (<any> response).end = (data: any, encoding?: string, callback?: Function): void => {
+            let payload = data.toString();
+            if (response.getHeader("content-type").startsWith("application/json")) {
+                try {
+                    payload = JSON.parse(payload);
+                } catch (e) {
+                    console.error("Could not parse JSON: " + payload);
+                }
+            }
+
+            context.log(LogType.INFO, payload, null, ["response"]);
+            originalEnd.call(response, data, encoding, callback);
+            context.flush();
+        };
     }
 }
 

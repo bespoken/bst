@@ -139,6 +139,10 @@ export class LoglessContext {
     }
 
     public flush(flushed?: () => void) {
+        if (!this._transactionID) {
+            this._transactionID = uuid.v4();
+        }
+
         const logBatch = {
             source: this._source,
             transaction_id: this.transactionID(),
