@@ -16,7 +16,7 @@ export class LoglessContext {
     private wrapCall(console: any, name: string, type: LogType): void {
         const self = this;
         let originalCall = (<any> console)[name];
-        if (originalCall.logless !== undefined) {
+        if (!this.usesContinuationLocalStorage() && originalCall.logless !== undefined) {
             return originalCall;
         }
 
@@ -27,14 +27,59 @@ export class LoglessContext {
             } else {
                 args = null;
             }
-            self.log(type, data, args);
+
+            let context = self;
+            // If we are using continuation local storage, need to get logging context from there
+            if (self.usesContinuationLocalStorage()) {
+                context = require("continuation-local-storage").getNamespace("Logless").get("context");
+                if (context) {
+                    context.log(type, data, args);
+                }
+            } else {
+                context.log(type, data, args);
+            }
+
 
             // Need to put it all into one array and call the function or the params are not processed correctly
             originalCall.apply(this, arguments);
         };
 
-        newCall.logless = true;
+        // Add a property to the call if this is not using continuation local storage
+        //  i.e., if this is a Lambda
+        if (!this.usesContinuationLocalStorage()) {
+            newCall.logless = true;
+        }
         console[name] = newCall;
+    }
+
+    /**
+     * Uses continuation local storage module to do a ThreadLocal like deal on the console
+     * That way we can associate the logs with the particular transaction
+     *
+     * @param routine
+     */
+    public wrapConsole(): void {
+        require("continuation-local-storage").createNamespace("Logless");
+
+        this.wrapCall(console, "error", LogType.ERROR);
+        this.wrapCall(console, "info", LogType.INFO);
+        this.wrapCall(console, "log", LogType.DEBUG);
+        this.wrapCall(console, "warn", LogType.WARN);
+    }
+
+    /**
+     *
+     * @param routine For wrapped consoles, needs to start at the top of the callback tree, so it is passed in
+     * @returns {any}
+     */
+    public captureConsole(routine: Function): any {
+        let namespace = require("continuation-local-storage").getNamespace("Logless");
+
+        let self = this;
+        namespace.run(function () {
+            namespace.set("context", self);
+            routine();
+        });
     }
 
     public onLambdaEvent(event: any, context: any, wrappedCallback: Function): void {
@@ -209,6 +254,10 @@ export class LoglessContext {
                 flushed();
             }
         });
+    }
+
+    private usesContinuationLocalStorage (): boolean {
+        return (<any> process).namespaces !== undefined;
     }
 }
 

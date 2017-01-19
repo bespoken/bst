@@ -494,6 +494,57 @@ describe("Logless Express Tests", function () {
             console.log("Response: " + data.toString());
         });
     });
+
+    it("Captures console", function(done) {
+        const client = new HTTPClient();
+        Logless.enableConsole();
+        const handler = Logless.captureExpress("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
+
+        app = express();
+        app.use(bodyParser.json());
+        app.use(handler);
+
+        app.post("/", function (request: Request, response: Response) {
+            console.log("LogTest");
+            console.error("ErrorTest");
+
+            response.contentType("application/json");
+            response.send(JSON.stringify({ test: { a: "b" }}));
+        });
+
+        server = app.listen(3000, function () {
+            console.log("Example app listening on port 3000!");
+        });
+
+        // We use a counter because we do two simultaneous requests
+        // Each request should go to the correct transaction
+        let count = 0;
+        // logger variable gets set on the handler so we can write tests like this
+        verifyLogger((<any> handler).logger, function(data: any) {
+            assert.equal(data.logs.length, 4);
+            assert.equal(data.logs[0].tags.length, 1);
+            assert.equal(data.logs[0].tags[0], "request");
+            assert.equal(data.logs[1].payload, "LogTest");
+            assert.equal(data.logs[1].log_type, "DEBUG");
+            assert.equal(data.logs[2].payload, "ErrorTest");
+            assert.equal(data.logs[2].log_type, "ERROR");
+            assert.equal(data.logs[3].payload.test.a, "b");
+            assert.equal(data.logs[3].tags[0], "response");
+
+            count++;
+            if (count === 2) {
+                done();
+            }
+        });
+
+        client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
+            console.log("Response: " + data.toString());
+        });
+
+        client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
+            console.log("Response: " + data.toString());
+        });
+    });
 });
 
 class MockContext {

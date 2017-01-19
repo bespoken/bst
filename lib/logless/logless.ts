@@ -29,6 +29,7 @@ import {RequestHandler} from "~express/lib/router/index";
  */
 export class Logless {
     public static Domain: string = "logless.bespoken.tools";
+    private static captureConsole: boolean = false;
 
     public static capture(source: string, handler: LambdaFunction): LambdaFunction {
         if (handler === undefined || handler === null) {
@@ -40,16 +41,31 @@ export class Logless {
 
     public static captureExpress(source: string): RequestHandler {
         const context = new LoglessContext(source);
+        if (Logless.captureConsole) {
+            context.wrapConsole();
+        }
+
         const captured = function (request: any, response: Response, next: Function) {
             context.log(LogType.INFO, request.body, null, ["request"]);
 
             Logless.wrapResponse(context, response);
-            next();
+            if (Logless.captureConsole) {
+                context.captureConsole(function () {
+                    next();
+                });
+            } else {
+                next();
+            }
         };
 
         // Set the logger on the request handler for testability
         (<any> captured).logger = context;
         return captured;
+    }
+
+    public static enableConsole() {
+        // Enables capture of console output
+        Logless.captureConsole = true;
     }
 
     private static wrapResponse(context: LoglessContext, response: Response, onFlushed?: Function): void {
