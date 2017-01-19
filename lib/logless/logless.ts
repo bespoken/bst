@@ -2,6 +2,7 @@ import {LoglessContext} from "../logless/logless-context";
 import {Response} from "~express/lib/response";
 import {LogType} from "./logless-context";
 import {RequestHandler} from "~express/lib/router/index";
+import {ErrorHandler} from "~express/lib/express";
 
 /**
  * Logless will automatically capture logs and diagnostics for your Node.js Lambda.
@@ -39,13 +40,13 @@ export class Logless {
         return new LambdaWrapper(source, handler).lambdaFunction();
     }
 
-    public static captureExpress(source: string): RequestHandler {
+    public static middleware(source: string): LoglessMiddleware {
         const context = new LoglessContext(source);
         if (Logless.captureConsole) {
             context.wrapConsole();
         }
 
-        const captured = function (request: any, response: Response, next: Function) {
+        const capturePayloads = function (request: any, response: Response, next: Function) {
             context.log(LogType.INFO, request.body, null, ["request"]);
 
             Logless.wrapResponse(context, response);
@@ -58,9 +59,15 @@ export class Logless {
             }
         };
 
+        const captureError = function(error: Error, request: any, response: Response, next: Function) {
+            context.logError(LogType.ERROR, error, null);
+            next();
+        };
+
         // Set the logger on the request handler for testability
-        (<any> captured).logger = context;
-        return captured;
+        (<any> capturePayloads).logger = context;
+        (<any> captureError).logger = context;
+        return new LoglessMiddleware(capturePayloads, captureError);
     }
 
     public static enableConsole() {
@@ -87,6 +94,11 @@ export class Logless {
     }
 }
 
+export class LoglessMiddleware {
+    public constructor (public requestHandler: RequestHandler, public errorHandler: ErrorHandler) {}
+
+
+}
 /**
  * Interface for AWS Node.js Lambda signature
  */

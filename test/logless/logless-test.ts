@@ -436,11 +436,11 @@ describe("Logless Express Tests", function () {
 
     it("Captures request and response", function(done) {
         const client = new HTTPClient();
-        const handler = Logless.captureExpress("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
+        const handler = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
 
         app = express();
 
-        app.use(bodyParser.json(), handler);
+        app.use(bodyParser.json(), handler.requestHandler);
 
         app.post("/", function (request: Request, response: Response) {
             response.send("Hello World!");
@@ -451,7 +451,7 @@ describe("Logless Express Tests", function () {
         });
 
         // logger variable gets set on the handler so we can write tests like this
-        verifyLogger((<any> handler).logger, function(data: any) {
+        verifyLogger((<any> handler.requestHandler).logger, function(data: any) {
             assert.equal(data.logs.length, 2);
             assert.equal(data.logs[0].tags.length, 1);
             assert.equal(data.logs[0].tags[0], "request");
@@ -465,11 +465,11 @@ describe("Logless Express Tests", function () {
 
     it("Captures request and response JSON", function(done) {
         const client = new HTTPClient();
-        const handler = Logless.captureExpress("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
+        const handler = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
 
         app = express();
 
-        app.use(bodyParser.json(), handler);
+        app.use(bodyParser.json(), handler.requestHandler);
 
         app.post("/", function (request: Request, response: Response) {
             response.contentType("application/json");
@@ -481,7 +481,7 @@ describe("Logless Express Tests", function () {
         });
 
         // logger variable gets set on the handler so we can write tests like this
-        verifyLogger((<any> handler).logger, function(data: any) {
+        verifyLogger((<any> handler.requestHandler).logger, function(data: any) {
             assert.equal(data.logs.length, 2);
             assert.equal(data.logs[0].tags.length, 1);
             assert.equal(data.logs[0].tags[0], "request");
@@ -498,11 +498,11 @@ describe("Logless Express Tests", function () {
     it("Captures console", function(done) {
         const client = new HTTPClient();
         Logless.enableConsole();
-        const handler = Logless.captureExpress("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
+        const handlers = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
 
         app = express();
         app.use(bodyParser.json());
-        app.use(handler);
+        app.use(handlers.requestHandler);
 
         app.post("/", function (request: Request, response: Response) {
             console.log("LogTest");
@@ -520,7 +520,7 @@ describe("Logless Express Tests", function () {
         // Each request should go to the correct transaction
         let count = 0;
         // logger variable gets set on the handler so we can write tests like this
-        verifyLogger((<any> handler).logger, function(data: any) {
+        verifyLogger((<any> handlers.requestHandler).logger, function(data: any) {
             assert.equal(data.logs.length, 4);
             assert.equal(data.logs[0].tags.length, 1);
             assert.equal(data.logs[0].tags[0], "request");
@@ -539,6 +539,45 @@ describe("Logless Express Tests", function () {
 
         client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
             console.log("Response: " + data.toString());
+        });
+
+        client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
+            console.log("Response: " + data.toString());
+        });
+    });
+
+    it("Captures errors", function(done) {
+        const client = new HTTPClient();
+        Logless.enableConsole();
+        const middleware = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
+
+        app = express();
+        app.use(bodyParser.json());
+        app.use(middleware.requestHandler);
+
+        app.post("/", function (request: Request, response: Response) {
+            throw new Error("Exception");
+        });
+
+        app.use(middleware.errorHandler);
+
+        server = app.listen(3000, function () {
+            console.log("Example app listening on port 3000!");
+        });
+
+
+        // logger variable gets set on the handler so we can write tests like this
+        verifyLogger((<any> middleware.requestHandler).logger, function(data: any) {
+            assert.equal(data.logs.length, 3);
+            assert.equal(data.logs[0].tags.length, 1);
+            assert.equal(data.logs[0].tags[0], "request");
+            assert.equal(data.logs[1].payload, "Error: Exception");
+            assert.equal(data.logs[1].log_type, "ERROR");
+            assert(data.logs[1].stack);
+            assert.equal(data.logs[2].tags.length, 1);
+            assert.equal(data.logs[2].payload.trim(), "Cannot POST /");
+            assert.equal(data.logs[2].tags[0], "response");
+            done();
         });
 
         client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
