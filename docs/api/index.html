@@ -103,13 +103,13 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
     alexa = <span class="hljs-keyword">new</span> bst.BSTAlexa(<span class="hljs-string">'http://localhost:10000'</span>,
                              <span class="hljs-string">'./speechAssets/IntentSchema.json'</span>,
                              <span class="hljs-string">'./speechAssets/Utterances.txt'</span>);
-    alexa.initialize(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    alexa.start(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         done();
     });
 });
 </code></pre><p>And we cleanup:</p>
 				<pre><code>afterEach(<span class="hljs-name">function</span> (<span class="hljs-name">done</span>) {
-    alexa.shutdown(<span class="hljs-name">function</span> () {
+    alexa.stop(<span class="hljs-name">function</span> () {
         done()<span class="hljs-comment">;</span>
     })<span class="hljs-comment">;</span>
 })<span class="hljs-comment">;</span>
@@ -166,6 +166,12 @@ alexa.audioItemFinished();
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
+						<a href="classes/alexacontext.html" class="tsd-kind-icon">Alexa<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/alexasession.html" class="tsd-kind-icon">Alexa<wbr>Session</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -185,6 +191,9 @@ alexa.audioItemFinished();
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/logless.html" class="tsd-kind-icon">Logless</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/loglessmiddleware.html" class="tsd-kind-icon">Logless<wbr>Middleware</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/iencoderconfig.html" class="tsd-kind-icon">IEncoder<wbr>Config</a>

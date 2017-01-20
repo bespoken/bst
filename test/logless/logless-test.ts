@@ -497,7 +497,7 @@ describe("Logless Express Tests", function () {
 
     it("Captures console", function(done) {
         const client = new HTTPClient();
-        Logless.enableConsole();
+        Logless.enableConsoleLogging();
         const handlers = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
 
         app = express();
@@ -548,7 +548,7 @@ describe("Logless Express Tests", function () {
 
     it("Captures errors", function(done) {
         const client = new HTTPClient();
-        Logless.enableConsole();
+        Logless.enableConsoleLogging();
         const middleware = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
 
         app = express();

@@ -3,6 +3,13 @@ import {InteractionModel} from "./interaction-model";
 import {AlexaSession} from "./alexa-session";
 const uuid = require("uuid");
 
+/**
+ * Manages state of the Alexa device interaction across sessions.
+ *
+ * Holds information about the user, the current session, as well as the AudioPlayer, if in use.
+ *
+ * To emulate a user with a linked account, set the access token property.
+ */
 export class AlexaContext {
     private _accessToken: string = null;
     private _userID: string;

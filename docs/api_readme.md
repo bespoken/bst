@@ -51,7 +51,7 @@ beforeEach(function (done) {
     alexa = new bst.BSTAlexa('http://localhost:10000',
                              './speechAssets/IntentSchema.json',
                              './speechAssets/Utterances.txt');
-    alexa.initialize(function () {
+    alexa.start(function () {
         done();
     });
 });
@@ -61,7 +61,7 @@ And we cleanup:
 
 ```
 afterEach(function (done) {
-    alexa.shutdown(function () {
+    alexa.stop(function () {
         done();
     });
 });

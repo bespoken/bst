@@ -5,16 +5,36 @@ import {RequestHandler} from "~express/lib/router/index";
 import {ErrorHandler} from "~express/lib/express";
 
 /**
- * Logless will automatically capture logs and diagnostics for your Node.js Lambda.
+ * Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.
  *
- * To use it, simply wrap your function handler, like so:
+ * To use it with Lambdas, simply wrap your function handler, like so:
  * <pre><code>
  *     var bst = require('bespoken-tools');
  *
- *     exports.handler = bst.Logless.capture("&lt;SOURCE_ID&gt;", function (event, context) {
+ *     exports.handler = bst.Logless.capture("&lt;SECRET_KEY&gt;", function (event, context) {
  *         // Lambda code goes here
  *         context.done(null, "Hello World");
  *     });
+ *
+ * </code></pre>
+ *
+ * To use it with Express.js, simply wrap configure it with your routes.
+ * <pre><code>
+ *     var bst = require('bespoken-tools');
+ *
+ *     var logless = bst.Logless.middleware("&lt;SECRET_KEY&gt;");
+ *     app = express();
+ *
+ *     app.use(bodyParser.json());
+ *     app.use(logless.requestHandler);
+ *
+ *     // Application handlers and routers registered here
+ *     app.post("/", function {
+ *         ...
+ *     });
+ *
+ *     // The Logless error handler must be registered last
+ *     app.use(logless.errorHandler);
  *
  * </code></pre>
  *
@@ -32,6 +52,12 @@ export class Logless {
     public static Domain: string = "logless.bespoken.tools";
     private static captureConsole: boolean = false;
 
+    /**
+     * Wraps an AWS Lambda function to capture logs and diagnostics
+     * @param source The secret key for your Logless app
+     * @param handler
+     * @returns {LambdaFunction}
+     */
     public static capture(source: string, handler: LambdaFunction): LambdaFunction {
         if (handler === undefined || handler === null) {
             throw new Error("Handler is null or undefined! This must be passed.");
@@ -40,6 +66,11 @@ export class Logless {
         return new LambdaWrapper(source, handler).lambdaFunction();
     }
 
+    /**
+     * Returns an object to hold handlers for use in capturing logs and diagnostics with Express.js
+     * @param source The secret key for your Logless app
+     * @returns {LoglessMiddleware}
+     */
     public static middleware(source: string): LoglessMiddleware {
         const context = new LoglessContext(source);
         if (Logless.captureConsole) {
@@ -70,9 +101,20 @@ export class Logless {
         return new LoglessMiddleware(capturePayloads, captureError);
     }
 
-    public static enableConsole() {
+    /**
+     * Experimental - this uses monkey-patching to trace console output associated with a transaction on ExpressJS
+     * The logs that come back associated with a particular log conversation should not be considered completely reliable
+     *  at this point.
+     * ONLY necessary for ExpressJS.
+     */
+    public static enableConsoleLogging() {
         // Enables capture of console output
         Logless.captureConsole = true;
+    }
+
+    public static disableConsoleLogging() {
+        // Enables capture of console output
+        Logless.captureConsole = false;
     }
 
     private static wrapResponse(context: LoglessContext, response: Response, onFlushed?: Function): void {
@@ -96,9 +138,8 @@ export class Logless {
 
 export class LoglessMiddleware {
     public constructor (public requestHandler: RequestHandler, public errorHandler: ErrorHandler) {}
-
-
 }
+
 /**
  * Interface for AWS Node.js Lambda signature
  */

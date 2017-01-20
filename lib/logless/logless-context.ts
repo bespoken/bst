@@ -55,8 +55,6 @@ export class LoglessContext {
     /**
      * Uses continuation local storage module to do a ThreadLocal like deal on the console
      * That way we can associate the logs with the particular transaction
-     *
-     * @param routine
      */
     public wrapConsole(): void {
         require("continuation-local-storage").createNamespace("Logless");

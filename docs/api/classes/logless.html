@@ -65,16 +65,35 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Logless will automatically capture logs and diagnostics for your Node.js Lambda.</p>
+						<p>Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.</p>
 					</div>
-					<p>To use it, simply wrap your function handler, like so:</p>
+					<p>To use it with Lambdas, simply wrap your function handler, like so:</p>
 					<pre><code>
     var bst = require('bespoken-tools');
 
-    exports.handler = bst.Logless.capture("&lt;SOURCE_ID&gt;", function (event, context) {
+    exports.handler = bst.Logless.capture("&lt;SECRET_KEY&gt;", function (event, context) {
         // Lambda code goes here
         context.done(null, "Hello World");
     });
+
+</code></pre>
+					<p>To use it with Express.js, simply wrap configure it with your routes.</p>
+					<pre><code>
+    var bst = require('bespoken-tools');
+
+    var logless = bst.Logless.middleware("&lt;SECRET_KEY&gt;");
+    app = express();
+
+    app.use(bodyParser.json());
+    app.use(logless.requestHandler);
+
+    // Application handlers and routers registered here
+    app.post("/", function {
+        ...
+    });
+
+    // The Logless error handler must be registered last
+    app.use(logless.errorHandler);
 
 </code></pre>
 					<p>That&#39;s all there is to it. Then you can see all your logs through our handy dashboard!</p>
@@ -108,6 +127,9 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#capture" class="tsd-kind-icon">capture</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#disableconsolelogging" class="tsd-kind-icon">disable<wbr>Console<wbr>Logging</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#enableconsolelogging" class="tsd-kind-icon">enable<wbr>Console<wbr>Logging</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#middleware" class="tsd-kind-icon">middleware</a></li>
 							</ul>
 						</section>
 					</div>
@@ -121,7 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;logless.bespoken.tools&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/67d642f/lib/logless/logless.ts#L28">logless/logless.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/a2de9b0/lib/logless/logless.ts#L52">logless/logless.ts:52</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -138,19 +160,100 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/67d642f/lib/logless/logless.ts#L30">logless/logless.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/a2de9b0/lib/logless/logless.ts#L61">logless/logless.ts:61</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Wraps an AWS Lambda function to capture logs and diagnostics</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>source: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The secret key for your Logless app</p>
+									</div>
 								</li>
 								<li>
 									<h5>handler: <a href="../interfaces/lambdafunction.html" class="tsd-signature-type">LambdaFunction</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/lambdafunction.html" class="tsd-signature-type">LambdaFunction</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="disableconsolelogging" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> disable<wbr>Console<wbr>Logging</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">disable<wbr>Console<wbr>Logging<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/a2de9b0/lib/logless/logless.ts#L115">logless/logless.ts:115</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="enableconsolelogging" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> enable<wbr>Console<wbr>Logging</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">enable<wbr>Console<wbr>Logging<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/a2de9b0/lib/logless/logless.ts#L110">logless/logless.ts:110</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Experimental - this uses monkey-patching to trace console output associated with a transaction on ExpressJS
+										The logs that come back associated with a particular log conversation should not be considered completely reliable
+										at this point.
+									ONLY necessary for ExpressJS.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="middleware" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> middleware</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">middleware<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="loglessmiddleware.html" class="tsd-signature-type">LoglessMiddleware</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/a2de9b0/lib/logless/logless.ts#L74">logless/logless.ts:74</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns an object to hold handlers for use in capturing logs and diagnostics with Express.js</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>source: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The secret key for your Logless app</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="loglessmiddleware.html" class="tsd-signature-type">LoglessMiddleware</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -166,6 +269,12 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="alexacontext.html" class="tsd-kind-icon">Alexa<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="alexasession.html" class="tsd-kind-icon">Alexa<wbr>Session</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
 					</li>
@@ -195,10 +304,22 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="logless.html#capture" class="tsd-kind-icon">capture</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="logless.html#disableconsolelogging" class="tsd-kind-icon">disable<wbr>Console<wbr>Logging</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="logless.html#enableconsolelogging" class="tsd-kind-icon">enable<wbr>Console<wbr>Logging</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="logless.html#middleware" class="tsd-kind-icon">middleware</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="loglessmiddleware.html" class="tsd-kind-icon">Logless<wbr>Middleware</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/iencoderconfig.html" class="tsd-kind-icon">IEncoder<wbr>Config</a>
 					</li>
