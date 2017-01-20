@@ -44,6 +44,8 @@ gulp.task('mkdocs', function() {
 
 gulp.task('typedoc', function () {
     gulp.src(['lib/alexa/audio-item.ts',
+            'lib/alexa/alexa-context.ts',
+            'lib/alexa/alexa-session.ts',
             'lib/client/bst-alexa.ts',
             'lib/client/bst-encode.ts',
             'lib/client/lambda-server.ts',

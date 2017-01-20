@@ -1,5 +1,8 @@
 const uuid = require("uuid");
 
+/**
+ * Information about the current open session on the Alexa emulator
+ */
 export class AlexaSession {
     private _attributes: {[id: string]: any};
     private _new: boolean;

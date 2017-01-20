@@ -163,7 +163,20 @@ export class BSTAlexa {
     }
 
     /**
-     * Emulates the specified phrase being said to an Alexa device
+     * Emulates the specified phrase being said to an Alexa device.
+     *
+     * To send an utterance that uses slots, surround the slot variables like so: {MySlotValue}
+     *
+     * For example, if the sample utterance was defined as:<br>
+     * ```text
+     * HelloWorld Hello world, my name is {Name}
+     * ```
+     *
+     * Then the call would be:
+     * ```javascript
+     * alexa.spoken("Hello World, my name is {John}");
+     * ```
+     *
      * @param phrase
      * @param callback Returns any error, along the response and request JSON associated with this call
      * @returns Itself

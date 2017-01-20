@@ -27,9 +27,13 @@ export class Node {
         if (request === null) {
             LoggingHelper.info(Logger, "No matching messageID for reply: " + messageID);
         } else {
-            request.sourceSocket.write(message, function () {
-                delete self.requests[messageID];
-            });
+            delete self.requests[messageID];
+            try {
+                request.sourceSocket.write(message);
+            } catch (e) {
+                LoggingHelper.error(Logger, "Error writing: " + e);
+            }
+
         }
 
     }
