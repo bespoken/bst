@@ -25,6 +25,7 @@ export class BespokeClient {
     constructor(public nodeID: string,
                 private host: string,
                 private port: number,
+                private targetDomain: string,
                 private targetPort: number) {}
 
     public connect(onConnect?: (error?: any) => void): void {
@@ -78,7 +79,7 @@ export class BespokeClient {
 
         let tcpClient = new TCPClient(request.id() + "");
         let httpBuffer = new HTTPBuffer();
-        tcpClient.transmit("localhost", self.targetPort, request.toTCP(), function(data: Buffer, error: NetworkErrorType, message: string) {
+        tcpClient.transmit(self.targetDomain, self.targetPort, request.toTCP(), function(data: Buffer, error: NetworkErrorType, message: string) {
 
             if (data != null) {
                 // Grab the body of the response payload

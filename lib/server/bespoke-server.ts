@@ -11,6 +11,7 @@ const Logger = "BSPKD";
 export class BespokeServer {
     private nodeManager: NodeManager;
     private webhookManager: WebhookManager;
+    private uncaughtExceptionHandler: Function;
 
     public constructor (private webhookPort: number, private nodePort: number) {}
 
@@ -65,9 +66,11 @@ export class BespokeServer {
             }
         };
 
-        process.on("uncaughtException", function(error: Error) {
+        this.uncaughtExceptionHandler = function(error: Error) {
             console.error("UncaughtException: " + error.stack);
-        });
+        };
+
+        process.on("uncaughtException", this.uncaughtExceptionHandler);
     }
 
     public stop(callback: () => void): void {
@@ -80,6 +83,8 @@ export class BespokeServer {
                 callback();
             }
         };
+
+        process.removeListener("uncaughtException", this.uncaughtExceptionHandler);
         this.nodeManager.stop(callbackFunction);
         this.webhookManager.stop(callbackFunction);
     }

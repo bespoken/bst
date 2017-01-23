@@ -21,7 +21,7 @@ describe("BespokeServerTest", function() {
             server.start();
 
             // Connect a client
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 9011);
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, "localhost", 9011);
             (<any> bespokeClient).onWebhookReceived = function(webhookRequest: WebhookRequest) {
                 assert.equal("Test", webhookRequest.body);
 
@@ -54,7 +54,7 @@ describe("BespokeServerTest", function() {
             // Start all the stuff
             let server = new BespokeServer(8010, 9010);
             let lambdaServer = new LambdaServer("./test/resources/DelayedLambda.js", 10000);
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, "localhost", 10000);
 
             server.start(function () {
                 lambdaServer.start(function () {
@@ -120,7 +120,7 @@ describe("BespokeServerTest", function() {
             }, 100);
 
             // Connect a client
-            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, 10000);
+            let bespokeClient = new BespokeClient("JPK", "localhost", 9010, "localhost", 10000);
             bespokeClient.connect(function () {
                 let webhookCaller = new HTTPClient();
                 webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": true}", function (data: Buffer, status: number, success: boolean) {
@@ -144,7 +144,7 @@ describe("BespokeServerTest", function() {
             let server = new BespokeServer(8000, 9000);
             server.start(function () {
                 // Connect a client
-                let bespokeClient = new BespokeClient("JPK", "localhost", 9000, 9001);
+                let bespokeClient = new BespokeClient("JPK", "localhost", 9000, "localhost", 9001);
                 bespokeClient.onConnect = function () {
                     let webhookCaller = new HTTPClient();
                     webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
@@ -209,7 +209,7 @@ describe("BespokeServerTest", function() {
 
             setTimeout(function () {
                 server.stop(function () {
-                    process.on("uncaughtException", mochaHandler);
+                    process.addListener("uncaughtException", mochaHandler);
                     done();
                 });
             }, 10);

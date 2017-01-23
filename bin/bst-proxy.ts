@@ -12,6 +12,10 @@ let handleOptions = function(proxy: BSTProxy, options: any) {
         proxy.bespokenServer(options.bstHost, options.bstPort);
     }
 
+    if (options.targetDomain !== undefined) {
+        proxy.targetDomain(options.targetDomain);
+    }
+
     if (options.verbose !== undefined && options.verbose) {
         console.log("Enabling verbose logging");
         LoggingHelper.setVerbose(true);
@@ -22,6 +26,7 @@ program
     .command("http <http-port>")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
+    .option("--targetDomain <targetDomain>", "Set this to forward requests to something other than localhost")
     .option("--verbose", "Print out verbose diagnostics")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
