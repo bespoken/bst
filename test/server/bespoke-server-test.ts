@@ -195,6 +195,25 @@ describe("BespokeServerTest", function() {
                 });
             });
         });
+
+        it("Handles Uncaught Exception", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8000, 9000);
+            let mochaHandler = process.listeners("uncaughtException").pop();
+            process.removeListener("uncaughtException", mochaHandler);
+
+            server.start(function () {
+                throw new Error("Test");
+            });
+
+            setTimeout(function () {
+                server.stop(function () {
+                    process.on("uncaughtException", mochaHandler);
+                    done();
+                });
+            }, 10);
+        });
     });
 
     describe("Receive Ping", function() {

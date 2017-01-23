@@ -64,6 +64,10 @@ export class BespokeServer {
                 }
             }
         };
+
+        process.on("uncaughtException", function(error: Error) {
+            console.error("UncaughtException: " + error.stack);
+        });
     }
 
     public stop(callback: () => void): void {
