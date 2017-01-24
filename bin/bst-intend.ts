@@ -13,6 +13,7 @@ program
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")
+    .option("-t, --accessToken <accessToken>", "Sets the access token for emulating a user with a linked account")
     .description("Creates an intent request based on the specified intent and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
@@ -63,6 +64,10 @@ program
             if (error !== undefined) {
                 process.exit(0);
                 return;
+            }
+
+            if (options.accessToken) {
+                speaker.context().setAccessToken(options.accessToken);
             }
 
             try {

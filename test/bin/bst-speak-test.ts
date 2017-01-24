@@ -78,7 +78,7 @@ describe("bst-speak", function() {
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
-        it("Speaks With Application ID", function(done) {
+        it("Speaks With Application ID Succinct Syntax", function(done) {
             process.argv = command("node bst-speak.js Hello -a 1234567890");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
@@ -87,6 +87,21 @@ describe("bst-speak", function() {
                     done();
                 }
             });
+
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
+        it("Speaks With access token", function(done) {
+            process.argv = command("node bst-speak.js Hello -a 1234567890 -t AccessToken -i test/alexa/resources/IntentSchema.json -s test/alexa/resources/SampleUtterances.txt");
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    const commander = require("commander");
+                    assert.equal(commander.accessToken, "AccessToken");
+                    this.start = function () {};
+                    done();
+                }
+            });
+
 
             NodeUtil.load("../../bin/bst-speak.js");
         });
