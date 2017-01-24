@@ -40,15 +40,19 @@ describe("BespokeClient", function() {
             let client = new BespokeClient("JPK", "proxy.bespoken.tools", 5000, "0.0.0.0", 9001);
             client.onConnect = function (error: any) {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("proxy.bespoken.tools", 80, "/test?node-id=JPK", "Test");
+                webhookCaller.post("proxy.bespoken.tools", 80, "/test?node-id=JPK", "Test", function (data: Buffer, statusCode: number, success: boolean) {
+                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:9001");
+                    assert.equal(statusCode, 500);
+
+                    client.shutdown(function () {
+                        done();
+                    });
+                });
             };
 
             client.onError = function (errorType, message) {
                 // We expect an error - make sure it contains the correct domain name
                 assert(message.indexOf("0.0.0.0") !== -1);
-                client.shutdown(function () {
-                    done();
-                });
             };
 
             client.connect();

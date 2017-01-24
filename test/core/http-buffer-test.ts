@@ -148,7 +148,18 @@ describe("HTTPBuffer", function() {
             done();
         });
 
+        it("Error response payload", function (done) {
+            // I would not expect this test to be necessary, but this happened
+            //  A payload came in two parts, exactly split between header and body
+            //  In this case, the header is defined, but no body yet, and that ends up in an undefined error!
+            let message = "This is an error that occurred";
 
+            let buffer = HTTPBuffer.errorResponse("This is an error that occurred");
+            assert.equal(buffer.raw().toString(), "HTTP/1.1 500 Error\r\nContent-Type: text/plain" +
+                "\r\nContent-Length: " + message.length + "\r\n\r\n" +
+                "This is an error that occurred");
+            done();
+        });
     });
 });
 

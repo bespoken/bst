@@ -102,6 +102,9 @@ export class BespokeClient {
                     LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
                 }
 
+                const errorMessage = "BST Proxy - Local Forwarding Error\n" + message;
+                self.socketHandler.send(HTTPBuffer.errorResponse(errorMessage).raw().toString(), request.id());
+
                 if (self.onError != null) {
                     self.onError(error, message);
                 }

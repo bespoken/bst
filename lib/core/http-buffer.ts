@@ -20,6 +20,15 @@ export class HTTPBuffer {
     private _statusLine: string; // Only set for HTTP responses
     private _uri: string;
 
+    public static errorResponse(message: string): HTTPBuffer {
+        const buffer = new HTTPBuffer();
+        const payload = "HTTP/1.1 500 Error\r\nContent-Type: text/plain\r\n"
+            + "Content-Length: " + message.length + "\r\n\r\n"
+            + message;
+        buffer.append(new Buffer(payload));
+        return buffer;
+    }
+
     public append(data: Buffer): void {
         this._rawContent = Buffer.concat([this._rawContent, data]);
 
