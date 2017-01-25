@@ -74,7 +74,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --verbose --bstHost localhost --bstPort 9000 http 9000");
+            process.argv = command("node bst-proxy.js --verbose --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
 
             let verboseCalled = false;
             sandbox.stub(console, "log", function (log: string) {
@@ -84,8 +84,10 @@ describe("bst-proxy", function() {
             });
 
             let optionsSet = false;
+            let domainSet = false;
             mockProxy.start = function () {
                 assert(optionsSet, "Options not set");
+                assert(domainSet, "Domain not set");
                 assert(verboseCalled, "Verbose must be set");
                 done();
             };
@@ -94,6 +96,11 @@ describe("bst-proxy", function() {
                 assert.equal(host, "localhost");
                 assert.equal(port, "9000");
                 optionsSet = true;
+            };
+
+            mockProxy.targetDomain = function (domain: string) {
+                assert.equal(domain, "0.0.0.0");
+                domainSet = true;
             };
 
 
