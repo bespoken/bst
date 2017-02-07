@@ -13,4 +13,7 @@ var lambda_server_1 = require("./lib/client/lambda-server");
 exports.LambdaServer = lambda_server_1.LambdaServer;
 var logless_1 = require("./lib/logless/logless");
 exports.Logless = logless_1.Logless;
+var logless_context_1 = require("./lib/logless/logless-context");
+exports.LogType = logless_context_1.LogType;
+exports.LoglessContext = logless_context_1.LoglessContext;
 //# sourceMappingURL=index.js.map

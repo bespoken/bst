@@ -7,3 +7,4 @@ export {IEncoderConfig} from "./lib/client/bst-encode";
 export {LambdaFunction} from "./lib/logless/logless";
 export {LambdaServer} from "./lib/client/lambda-server";
 export {Logless} from "./lib/logless/logless";
+export {LogType, LoglessContext} from "./lib/logless/logless-context";

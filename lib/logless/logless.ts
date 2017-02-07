@@ -1,8 +1,6 @@
 import {LoglessContext} from "../logless/logless-context";
-import {Response} from "~express/lib/response";
 import {LogType} from "./logless-context";
-import {RequestHandler} from "~express/lib/router/index";
-import {ErrorHandler} from "~express/lib/express";
+import {Response} from "~express/lib/response";
 
 /**
  * Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.
@@ -64,6 +62,16 @@ export class Logless {
         }
 
         return new LambdaWrapper(source, handler).lambdaFunction();
+    }
+
+    /**
+     * Returns a raw logger, for working directly with Logless
+     * For advanced use-cases
+     * @param source
+     * @returns {LoglessContext}
+     */
+    public static logger(source: string): LoglessContext {
+        return new LoglessContext(source);
     }
 
     /**
@@ -137,7 +145,7 @@ export class Logless {
 }
 
 export class LoglessMiddleware {
-    public constructor (public requestHandler: RequestHandler, public errorHandler: ErrorHandler) {}
+    public constructor (public requestHandler: ExpressRequestHandler, public errorHandler: ExpressErrorHandler) {}
 }
 
 /**
@@ -174,3 +182,13 @@ class LambdaWrapper {
         return lambda;
     }
 }
+
+export interface ExpressRequestHandler {
+    (req: any, res: any, next: Function): any;
+}
+
+export interface ExpressErrorHandler {
+    (err: any, req: any, res: Response, next: Function): any;
+}
+
+

@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "declaration": true,
+    "declaration": false,
     "module": "commonjs",
     "noImplicitAny": true,
     "removeComments": true,

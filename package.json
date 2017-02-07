@@ -26,6 +26,7 @@
     "bst-typedoc": "^0.4.6",
     "coveralls": "^2.11.11",
     "dotenv": "^2.0.0",
+    "dts-generator": "^2.1.0",
     "express": "^4.14.0",
     "gulp": "^3.9.1",
     "gulp-bst-typedoc": "^2.0.1",
@@ -55,7 +56,6 @@
     "index.d.ts",
     "bin/**/*.js",
     "lib/**/*.js",
-    "lib/**/*.d.ts",
     "NOTICE"
   ],
   "repository": {
@@ -69,5 +69,6 @@
     "coveralls": "coveralls < coverage/lcov-ts.info",
     "preversion": "gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
-  }
+  },
+  "types": "index.d.ts"
 }
