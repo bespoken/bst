@@ -129,6 +129,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#capture" class="tsd-kind-icon">capture</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#disableconsolelogging" class="tsd-kind-icon">disable<wbr>Console<wbr>Logging</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#enableconsolelogging" class="tsd-kind-icon">enable<wbr>Console<wbr>Logging</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#logger" class="tsd-kind-icon">logger</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="logless.html#middleware" class="tsd-kind-icon">middleware</a></li>
 							</ul>
 						</section>
@@ -143,7 +144,7 @@
 					<div class="tsd-signature tsd-kind-icon">Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;logless.bespoken.tools&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/87680ff/lib/logless/logless.ts#L52">logless/logless.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L49">logless/logless.ts:49</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,7 +161,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/87680ff/lib/logless/logless.ts#L61">logless/logless.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L58">logless/logless.ts:58</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -194,7 +195,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/87680ff/lib/logless/logless.ts#L115">logless/logless.ts:115</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L122">logless/logless.ts:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -211,7 +212,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/87680ff/lib/logless/logless.ts#L110">logless/logless.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L117">logless/logless.ts:117</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -227,6 +228,35 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="logger" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> logger</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="loglesscontext.html" class="tsd-signature-type">LoglessContext</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L72">logless/logless.ts:72</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a raw logger, for working directly with Logless
+									For advanced use-cases</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>source: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="loglesscontext.html" class="tsd-signature-type">LoglessContext</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
 					<a name="middleware" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> middleware</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
@@ -236,7 +266,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/87680ff/lib/logless/logless.ts#L74">logless/logless.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L81">logless/logless.ts:81</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -269,6 +299,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="../enums/logtype.html" class="tsd-kind-icon">Log<wbr>Type</a>
+					</li>
 					<li class=" tsd-kind-class">
 						<a href="alexacontext.html" class="tsd-kind-icon">Alexa<wbr>Context</a>
 					</li>
@@ -293,6 +326,9 @@
 					<li class=" tsd-kind-class">
 						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="log.html" class="tsd-kind-icon">Log</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
@@ -311,6 +347,9 @@
 								<a href="logless.html#enableconsolelogging" class="tsd-kind-icon">enable<wbr>Console<wbr>Logging</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="logless.html#logger" class="tsd-kind-icon">logger</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="logless.html#middleware" class="tsd-kind-icon">middleware</a>
 							</li>
 						</ul>
@@ -318,7 +357,16 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class">
+						<a href="loglesscontext.html" class="tsd-kind-icon">Logless<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="loglessmiddleware.html" class="tsd-kind-icon">Logless<wbr>Middleware</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/expresserrorhandler.html" class="tsd-kind-icon">Express<wbr>Error<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/expressrequesthandler.html" class="tsd-kind-icon">Express<wbr>Request<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/iencoderconfig.html" class="tsd-kind-icon">IEncoder<wbr>Config</a>

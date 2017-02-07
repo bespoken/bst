@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AudioItemStream | Bespoken Tools</title>
+	<title>ExpressRequestHandler | Bespoken Tools</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="audioitemstream.html">AudioItemStream</a>
+					<a href="expressrequesthandler.html">ExpressRequestHandler</a>
 				</li>
 			</ul>
-			<h1>Class AudioItemStream</h1>
+			<h1>Interface ExpressRequestHandler</h1>
 		</div>
 	</div>
 </header>
@@ -66,68 +66,37 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">AudioItemStream</span>
+						<span class="target">ExpressRequestHandler</span>
 					</li>
 				</ul>
 			</section>
-			<section class="tsd-panel-group tsd-index-group">
-				<h2>Index</h2>
-				<section class="tsd-panel tsd-index-panel">
-					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#expectedprevioustoken" class="tsd-kind-icon">expected<wbr>Previous<wbr>Token</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#offsetinmilliseconds" class="tsd-kind-icon">offset<wbr>InMilliseconds</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#token" class="tsd-kind-icon">token</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="audioitemstream.html#url" class="tsd-kind-icon">url</a></li>
+			<section class="tsd-panel">
+				<h3 class="tsd-before-signature">Callable</h3>
+				<ul class="tsd-signatures tsd-kind-interface">
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/logless/logless.ts#L188">logless/logless.ts:188</a></li>
 							</ul>
-						</section>
-					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="expectedprevioustoken" class="tsd-anchor"></a>
-					<h3>expected<wbr>Previous<wbr>Token</h3>
-					<div class="tsd-signature tsd-kind-icon">expected<wbr>Previous<wbr>Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/alexa/audio-item.ts#L28">alexa/audio-item.ts:28</a></li>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>req: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>res: <span class="tsd-signature-type">any</span></h5>
+							</li>
+							<li>
+								<h5>next: <span class="tsd-signature-type">Function</span></h5>
+							</li>
 						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="offsetinmilliseconds" class="tsd-anchor"></a>
-					<h3>offset<wbr>InMilliseconds</h3>
-					<div class="tsd-signature tsd-kind-icon">offset<wbr>InMilliseconds<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/alexa/audio-item.ts#L29">alexa/audio-item.ts:29</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="token" class="tsd-anchor"></a>
-					<h3>token</h3>
-					<div class="tsd-signature tsd-kind-icon">token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/alexa/audio-item.ts#L27">alexa/audio-item.ts:27</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="url" class="tsd-anchor"></a>
-					<h3>url</h3>
-					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/5691447/lib/alexa/audio-item.ts#L26">alexa/audio-item.ts:26</a></li>
-						</ul>
-					</aside>
-				</section>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+					</li>
+				</ul>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -144,70 +113,56 @@
 						<a href="../enums/logtype.html" class="tsd-kind-icon">Log<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="alexacontext.html" class="tsd-kind-icon">Alexa<wbr>Context</a>
+						<a href="../classes/alexacontext.html" class="tsd-kind-icon">Alexa<wbr>Context</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="alexasession.html" class="tsd-kind-icon">Alexa<wbr>Session</a>
+						<a href="../classes/alexasession.html" class="tsd-kind-icon">Alexa<wbr>Session</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
+						<a href="../classes/audioitem.html" class="tsd-kind-icon">Audio<wbr>Item</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/audioitemstream.html" class="tsd-kind-icon">Audio<wbr>Item<wbr>Stream</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/bstalexa.html" class="tsd-kind-icon">BSTAlexa</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/bstencode.html" class="tsd-kind-icon">BSTEncode</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/log.html" class="tsd-kind-icon">Log</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/logless.html" class="tsd-kind-icon">Logless</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/loglesscontext.html" class="tsd-kind-icon">Logless<wbr>Context</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="../classes/loglessmiddleware.html" class="tsd-kind-icon">Logless<wbr>Middleware</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="expresserrorhandler.html" class="tsd-kind-icon">Express<wbr>Error<wbr>Handler</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class">
-						<a href="audioitemstream.html" class="tsd-kind-icon">Audio<wbr>Item<wbr>Stream</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="audioitemstream.html#expectedprevioustoken" class="tsd-kind-icon">expected<wbr>Previous<wbr>Token</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="audioitemstream.html#offsetinmilliseconds" class="tsd-kind-icon">offset<wbr>InMilliseconds</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="audioitemstream.html#token" class="tsd-kind-icon">token</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="audioitemstream.html#url" class="tsd-kind-icon">url</a>
-							</li>
-						</ul>
+					<li class="current tsd-kind-interface">
+						<a href="expressrequesthandler.html" class="tsd-kind-icon">Express<wbr>Request<wbr>Handler</a>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class">
-						<a href="bstalexa.html" class="tsd-kind-icon">BSTAlexa</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="bstalexaevents.html" class="tsd-kind-icon">BSTAlexa<wbr>Events</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="bstencode.html" class="tsd-kind-icon">BSTEncode</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="log.html" class="tsd-kind-icon">Log</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="logless.html" class="tsd-kind-icon">Logless</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="loglesscontext.html" class="tsd-kind-icon">Logless<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="loglessmiddleware.html" class="tsd-kind-icon">Logless<wbr>Middleware</a>
+					<li class=" tsd-kind-interface">
+						<a href="iencoderconfig.html" class="tsd-kind-icon">IEncoder<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/expresserrorhandler.html" class="tsd-kind-icon">Express<wbr>Error<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/expressrequesthandler.html" class="tsd-kind-icon">Express<wbr>Request<wbr>Handler</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/iencoderconfig.html" class="tsd-kind-icon">IEncoder<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/lambdafunction.html" class="tsd-kind-icon">Lambda<wbr>Function</a>
+						<a href="lambdafunction.html" class="tsd-kind-icon">Lambda<wbr>Function</a>
 					</li>
 				</ul>
 			</nav>
