@@ -1,12 +1,13 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "declaration": false,
+    "declaration": true,
     "module": "commonjs",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
+    "stripInternal": true,
     "target": "ES6"
   },
   "include": [

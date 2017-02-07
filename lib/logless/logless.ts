@@ -1,6 +1,5 @@
 import {LoglessContext} from "../logless/logless-context";
 import {LogType} from "./logless-context";
-import {Response} from "~express/lib/response";
 
 /**
  * Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.
@@ -85,7 +84,7 @@ export class Logless {
             context.wrapConsole();
         }
 
-        const capturePayloads = function (request: any, response: Response, next: Function) {
+        const capturePayloads = function (request: any, response: any, next: Function) {
             context.log(LogType.INFO, request.body, null, ["request"]);
 
             Logless.wrapResponse(context, response);
@@ -98,7 +97,7 @@ export class Logless {
             }
         };
 
-        const captureError = function(error: Error, request: any, response: Response, next: Function) {
+        const captureError = function(error: Error, request: any, response: any, next: Function) {
             context.logError(LogType.ERROR, error, null);
             next();
         };
@@ -125,7 +124,10 @@ export class Logless {
         Logless.captureConsole = false;
     }
 
-    private static wrapResponse(context: LoglessContext, response: Response, onFlushed?: Function): void {
+    /**
+     * @internal
+     */
+    private static wrapResponse(context: LoglessContext, response: any, onFlushed?: Function): void {
         const originalEnd = response.end;
         (<any> response).end = (data: any, encoding?: string, callback?: Function): void => {
             let payload = data.toString();
@@ -188,7 +190,6 @@ export interface ExpressRequestHandler {
 }
 
 export interface ExpressErrorHandler {
-    (err: any, req: any, res: Response, next: Function): any;
+    (err: any, req: any, res: any, next: Function): any;
 }
-
 

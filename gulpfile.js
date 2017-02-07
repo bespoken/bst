@@ -33,17 +33,6 @@ gulp.task('lint', function() {
         .pipe(tslint.report())
 });
 
-gulp.task('definitions', function(done) {
-    const dts_gen = require("dts-generator");
-    dts_gen.default({
-        baseDir: 'lib/',
-        file: [""]
-        name: 'bespoken-tools',
-        out: 'index.d.ts',
-        project: './',
-    });
-});
-
 gulp.task('docs', ['mkdocs', 'typedoc']);
 
 gulp.task('mkdocs', function() {
@@ -60,7 +49,8 @@ gulp.task('typedoc', function () {
             'lib/client/bst-alexa.ts',
             'lib/client/bst-encode.ts',
             'lib/client/lambda-server.ts',
-            'lib/logless/logless.ts']
+            'lib/logless/logless.ts',
+            'lib/logless/logless-context.ts']
         ).pipe(typedoc({
             // TypeScript options (see typescript docs)
             excludePrivate: true,

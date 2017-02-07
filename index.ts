@@ -1,3 +1,5 @@
+export {AlexaContext} from "./lib/alexa/alexa-context";
+export {AlexaSession} from "./lib/alexa/alexa-session";
 export {AudioItem} from "./lib/alexa/audio-item";
 export {AudioItemStream} from "./lib/alexa/audio-item";
 export {BSTAlexa} from "./lib/client/bst-alexa";

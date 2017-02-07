@@ -1,4 +1,8 @@
 "use strict";
+var alexa_context_1 = require("./lib/alexa/alexa-context");
+exports.AlexaContext = alexa_context_1.AlexaContext;
+var alexa_session_1 = require("./lib/alexa/alexa-session");
+exports.AlexaSession = alexa_session_1.AlexaSession;
 var audio_item_1 = require("./lib/alexa/audio-item");
 exports.AudioItem = audio_item_1.AudioItem;
 var audio_item_2 = require("./lib/alexa/audio-item");
