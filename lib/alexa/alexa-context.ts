@@ -12,7 +12,7 @@ const uuid = require("uuid");
  */
 export class AlexaContext {
     private _accessToken: string = null;
-    private _userID: string;
+    private _userID: string = null;
     private _session: AlexaSession;
 
     public constructor(private _skillURL: string,
@@ -41,6 +41,10 @@ export class AlexaContext {
             this._userID = "amzn1.ask.account." + uuid.v4();
         }
         return this._userID;
+    }
+
+    public setUserID(id: string): void {
+        this._userID = id;
     }
 
     public accessToken(): string {
