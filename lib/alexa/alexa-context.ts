@@ -43,6 +43,10 @@ export class AlexaContext {
         return this._userID;
     }
 
+    public setUserID(userID: string) {
+        this._userID = userID;
+    }
+
     public accessToken(): string {
         return this._accessToken;
     }

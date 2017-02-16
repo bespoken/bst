@@ -29,6 +29,10 @@ export class AlexaSession {
         return this._id;
     }
 
+    public setID(id: string): void {
+        this._id = id;
+    }
+
     public isNew(): boolean {
         return this._new;
     }
