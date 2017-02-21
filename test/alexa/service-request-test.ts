@@ -78,12 +78,16 @@ describe("ServiceRequest", function() {
         it("Correctly parses intent with accessToken", function(done) {
             let linkedContext = new AlexaContext("https://skill.com/skillPath", model, mockAudioPlayer, "MyApp");
             linkedContext.setAccessToken("JPK");
+            linkedContext.setUserID("CustomUserId");
             linkedContext.newSession();
+            linkedContext.session().setID("CustomSessionId");
             let requester: ServiceRequest = new ServiceRequest(linkedContext);
             let request: any = requester.intentRequest("Test").toJSON();
             assert(request.context.System.user.accessToken);
             assert(request.session.user.accessToken);
-
+            assert.equal(request.session.user.accessToken, "JPK");
+            assert.equal(request.session.user.userId, "CustomUserId");
+            assert.equal(request.session.sessionId, "CustomSessionId");
             done();
         });
 
