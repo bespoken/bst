@@ -1,3 +1,5 @@
+export {AlexaContext} from "./lib/alexa/alexa-context";
+export {AlexaSession} from "./lib/alexa/alexa-session";
 export {AudioItem} from "./lib/alexa/audio-item";
 export {AudioItemStream} from "./lib/alexa/audio-item";
 export {BSTAlexa} from "./lib/client/bst-alexa";
@@ -7,3 +9,4 @@ export {IEncoderConfig} from "./lib/client/bst-encode";
 export {LambdaFunction} from "./lib/logless/logless";
 export {LambdaServer} from "./lib/client/lambda-server";
 export {Logless} from "./lib/logless/logless";
+export {LogType, LoglessContext} from "./lib/logless/logless-context";

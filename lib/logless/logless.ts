@@ -1,8 +1,5 @@
 import {LoglessContext} from "../logless/logless-context";
-import {Response} from "~express/lib/response";
 import {LogType} from "./logless-context";
-import {RequestHandler} from "~express/lib/router/index";
-import {ErrorHandler} from "~express/lib/express";
 
 /**
  * Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.
@@ -67,6 +64,16 @@ export class Logless {
     }
 
     /**
+     * Returns a raw logger, for working directly with Logless
+     * For advanced use-cases
+     * @param source
+     * @returns {LoglessContext}
+     */
+    public static logger(source: string): LoglessContext {
+        return new LoglessContext(source);
+    }
+
+    /**
      * Returns an object to hold handlers for use in capturing logs and diagnostics with Express.js
      * @param source The secret key for your Logless app
      * @returns {LoglessMiddleware}
@@ -77,7 +84,7 @@ export class Logless {
             context.wrapConsole();
         }
 
-        const capturePayloads = function (request: any, response: Response, next: Function) {
+        const capturePayloads = function (request: any, response: any, next: Function) {
             context.log(LogType.INFO, request.body, null, ["request"]);
 
             Logless.wrapResponse(context, response);
@@ -90,7 +97,7 @@ export class Logless {
             }
         };
 
-        const captureError = function(error: Error, request: any, response: Response, next: Function) {
+        const captureError = function(error: Error, request: any, response: any, next: Function) {
             context.logError(LogType.ERROR, error, null);
             next();
         };
@@ -117,7 +124,10 @@ export class Logless {
         Logless.captureConsole = false;
     }
 
-    private static wrapResponse(context: LoglessContext, response: Response, onFlushed?: Function): void {
+    /**
+     * @internal
+     */
+    private static wrapResponse(context: LoglessContext, response: any, onFlushed?: Function): void {
         const originalEnd = response.end;
         (<any> response).end = (data: any, encoding?: string, callback?: Function): void => {
             let payload = data.toString();
@@ -137,7 +147,7 @@ export class Logless {
 }
 
 export class LoglessMiddleware {
-    public constructor (public requestHandler: RequestHandler, public errorHandler: ErrorHandler) {}
+    public constructor (public requestHandler: ExpressRequestHandler, public errorHandler: ExpressErrorHandler) {}
 }
 
 /**
@@ -174,3 +184,12 @@ class LambdaWrapper {
         return lambda;
     }
 }
+
+export interface ExpressRequestHandler {
+    (req: any, res: any, next: Function): any;
+}
+
+export interface ExpressErrorHandler {
+    (err: any, req: any, res: any, next: Function): any;
+}
+

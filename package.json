@@ -3,7 +3,7 @@
   "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "0.9.27",
+  "version": "0.9.29",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js"
@@ -69,5 +69,6 @@
     "coveralls": "coveralls < coverage/lcov-ts.info",
     "preversion": "gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
-  }
+  },
+  "types": "index.d.ts"
 }
