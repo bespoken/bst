@@ -67,7 +67,7 @@
     "precoverage": "node_modules/gulp/bin/gulp.js build",
     "coverage": "istanbul cover _mocha test/**/*-test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "coveralls < coverage/lcov-ts.info",
-    "preversion": "gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
+    "preversion": "gulp build && gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
   },
   "types": "index.d.ts"
