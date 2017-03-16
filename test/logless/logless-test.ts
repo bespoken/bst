@@ -495,6 +495,43 @@ describe("Logless Express Tests", function () {
         });
     });
 
+    it("Captures two requests and responses", function(done) {
+        const client = new HTTPClient();
+        const handler = Logless.middleware("1b7d6d1d-d214-4770-a3fd-4ee6c7ffab3b");
+
+        app = express();
+
+        app.use(bodyParser.json(), handler.requestHandler);
+
+        app.post("/", function (request: Request, response: Response) {
+            response.contentType("application/json");
+            response.send(JSON.stringify({ test: { a: "b" }}));
+        });
+
+        server = app.listen(3000, function () {
+            console.log("Example app listening on port 3000!");
+        });
+
+        let uuid = null;
+        // Make sure transaction ID changes between calls
+        verifyLogger((<any> handler.requestHandler).logger, function(data: any) {
+            if (uuid === null) {
+                uuid = data.transaction_id;
+            } else {
+                console.log("UUID: " + uuid + " NEW: " + data.transaction_id);
+                assert.notEqual(uuid, data.transacton_id);
+                done();
+            }
+        });
+
+        client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
+            client.post("localhost", 3000, "/", JSON.stringify({ test: "value" }), function(data, statusCode) {
+                console.log("Response: " + data.toString());
+            });
+        });
+
+    });
+
     it("Captures console", function(done) {
         const client = new HTTPClient();
         Logless.enableConsoleLogging();

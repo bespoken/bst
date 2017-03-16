@@ -85,6 +85,7 @@ export class Logless {
         }
 
         const capturePayloads = function (request: any, response: any, next: Function) {
+            context.newTransactionID();
             context.log(LogType.INFO, request.body, null, ["request"]);
 
             Logless.wrapResponse(context, response);

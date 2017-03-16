@@ -82,7 +82,7 @@ export class LoglessContext {
 
     public onLambdaEvent(event: any, context: any, wrappedCallback: Function): void {
         const self = this;
-        this._transactionID = uuid.v4();
+        this.newTransactionID();
 
         this.wrapCall(console, "error", LogType.ERROR);
         this.wrapCall(console, "info", LogType.INFO);
@@ -177,13 +177,17 @@ export class LoglessContext {
         return this._transactionID;
     }
 
+    public newTransactionID(): void {
+        this._transactionID = uuid.v4();
+    }
+
     public cleanup(): void {
         process.removeListener("uncaughtException", this._uncaughtExceptionHandler);
     }
 
     public flush(flushed?: () => void) {
         if (!this._transactionID) {
-            this._transactionID = uuid.v4();
+            this.newTransactionID();
         }
 
         const logBatch = {
