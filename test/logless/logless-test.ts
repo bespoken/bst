@@ -512,11 +512,9 @@ describe("Logless Express Tests", function () {
             console.log("Example app listening on port 3000!");
         });
 
-        let count = 0;
         let uuid = null;
         // Make sure transaction ID changes between calls
         verifyLogger((<any> handler.requestHandler).logger, function(data: any) {
-            count++;
             if (uuid === null) {
                 uuid = data.transaction_id;
             } else {
