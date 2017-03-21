@@ -125,7 +125,7 @@ describe("bst-intend", function() {
             NodeUtil.load("../../bin/bst-intend.js");
         });
 
-        it("Speaks With Application ID", function(done) {
+        it("Intends With Application ID", function(done) {
             process.argv = command("node bst-intend.js HelloIntent --appId 1234567890");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
@@ -157,6 +157,21 @@ describe("bst-intend", function() {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
                     assert.equal(commander.accessToken, "AccessToken");
+                    this.start = function () {};
+                    done();
+                }
+            });
+
+
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
+        it("Intends With user id", function(done) {
+            process.argv = command("node bst-intend.js Hello --userId 1234");
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    const commander = require("commander");
+                    assert.equal(commander.userId, "1234");
                     this.start = function () {};
                     done();
                 }

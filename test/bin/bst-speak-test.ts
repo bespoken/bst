@@ -106,6 +106,36 @@ describe("bst-speak", function() {
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
+        it("Speaks With user id", function(done) {
+            process.argv = command("node bst-speak.js Hello --userId 123456");
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    const commander = require("commander");
+                    assert.equal(commander.userId, "123456");
+                    this.start = function () {};
+                    done();
+                }
+            });
+
+
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
+        it("Speaks With user id abbreviated", function(done) {
+            process.argv = command("node bst-speak.js Hello -U 123456");
+            mockery.registerMock("../lib/client/bst-alexa", {
+                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                    const commander = require("commander");
+                    assert.equal(commander.userId, "123456");
+                    this.start = function () {};
+                    done();
+                }
+            });
+
+
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
+
         it("Speaks With Custom URL", function(done) {
             process.argv = command("node bst-speak.js Hello --url https://proxy.bespoken.tools");
             mockery.registerMock("../lib/client/bst-alexa", {
