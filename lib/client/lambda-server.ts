@@ -1,11 +1,9 @@
-import * as fs from "fs";
 import * as http from "http";
 import {IncomingMessage} from "http";
 import {ServerResponse} from "http";
 import {Server} from "http";
 import {LoggingHelper} from "../core/logging-helper";
-import {NodeUtil} from "../core/node-util";
-import {FSWatcher} from "fs";
+import {ModuleManager} from "./module-manager";
 
 let Logger = "BST-LAMBDA";
 
@@ -17,12 +15,10 @@ let Logger = "BST-LAMBDA";
  * To use it, simply provide the filename of the Lambda function along with the port the HTTP server should listen on.
  */
 export class LambdaServer {
-    private server: Server = null;
-    private dirty: boolean = false;
-    private lambda: any = null;
-    private watcher: FSWatcher = null;
+    private moduleManager: ModuleManager;
     private requests: Array<IncomingMessage> = [];
-    private onDirty: (filename: string) => void = null; // Callback for test-ability
+    private server: Server = null;
+
 
     /**
      * Creates a server that exposes a Lambda as an HTTP service
@@ -40,26 +36,8 @@ export class LambdaServer {
     public start (callback?: () => void): void {
         let self = this;
 
-        // Add a watch to the current directory
-        let watchOptions = {"persistent": false, "recursive": true};
-        this.watcher = fs.watch(process.cwd(), watchOptions, function(event: string, filename: string) {
-            let exclude = false;
-            if (filename.indexOf("node_modules") !== -1) {
-                exclude = true;
-            } else if (filename.endsWith("___")) {
-                exclude = true;
-            } else if (filename.startsWith(".")) {
-                exclude = true;
-            }
-
-            if (!exclude) {
-                LoggingHelper.info(Logger, "FS.Watch Event: " + event + ". File: " + filename + ". Reloading.");
-                self.dirty = true;
-                if (self.onDirty !== undefined && self.onDirty !== null) {
-                    self.onDirty(filename);
-                }
-            }
-        });
+        this.moduleManager = new ModuleManager(process.cwd());
+        this.moduleManager.start();
 
         this.server = http.createServer();
         this.server.listen(this.port);
@@ -94,7 +72,7 @@ export class LambdaServer {
      * @param onStop Callback when all sockets related to the LambdaServer have been cleaned up
      */
     public stop (onStop?: () => void): void {
-        this.watcher.close();
+        this.moduleManager.stop();
 
         let request: IncomingMessage = null;
         for (request of this.requests) {
@@ -114,16 +92,9 @@ export class LambdaServer {
 
     private invoke (request: IncomingMessage, body: Buffer, response: ServerResponse): void {
         let path: string = this.file;
-        if (!path.startsWith("/")) {
-            path = [process.cwd(), this.file].join("/");
-        }
+        LoggingHelper.debug(Logger, "Invoking Lambda: " + path);
 
-        LoggingHelper.debug(Logger, "Invoking Lambda: " + this.file);
-        if (this.lambda === null || this.dirty) {
-            this.lambda = NodeUtil.load(path);
-            this.dirty = false;
-        }
-
+        const lambda = this.moduleManager.module(path);
         // let lambda = System.import("./" + file);
         const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
         try {
@@ -132,7 +103,8 @@ export class LambdaServer {
                 console.log("Request:");
                 console.log(JSON.stringify(bodyJSON, null, 2));
             }
-            this.lambda.handler(bodyJSON, context, function(error: Error, result: any) {
+
+            lambda.handler(bodyJSON, context, function(error: Error, result: any) {
                 context.done(error, result);
             });
         } catch (e) {
