@@ -1,6 +1,6 @@
 // Create the handler that responds to the Alexa Request.
 exports.handler = function (request, response) {
-    let event = request.body;
+    var event = request.body;
 
     if (event.doException) {
         throw "What the heck happened!";
