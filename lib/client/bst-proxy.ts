@@ -5,8 +5,10 @@ import {LambdaServer} from "./lambda-server";
 import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
+import {FunctionServer} from "./function-server";
 
 export enum ProxyType {
+    GOOGLE_CLOUD_FUNCTION,
     HTTP,
     LAMBDA
 }
@@ -18,13 +20,14 @@ const DefaultLambdaPort = 10000;
  */
 export class BSTProxy {
     private bespokenClient: BespokeClient = null;
+    private functionServer: FunctionServer = null;
     private lambdaServer: LambdaServer = null;
 
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
+    private functionFile: string;
     private httpPort: number;
     private httpDomain: string = "localhost";
-    private lambdaFile: string;
 
     public constructor(public proxyType: ProxyType) {}
 
@@ -46,7 +49,19 @@ export class BSTProxy {
      */
     public static lambda(lambdaFile: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA);
-        tool.lambdaFile = lambdaFile;
+        tool.functionFile = lambdaFile;
+        tool.httpPort = DefaultLambdaPort;
+        return tool;
+    }
+
+    /**
+     * Starts a function proxy with the specified node and cloud function file
+     * @param functionFile
+     * @returns {BSTProxy}
+     */
+    public static cloudFunction(functionFile: string): BSTProxy {
+        let tool: BSTProxy = new BSTProxy(ProxyType.GOOGLE_CLOUD_FUNCTION);
+        tool.functionFile = functionFile;
         tool.httpPort = DefaultLambdaPort;
         return tool;
     }
@@ -78,10 +93,10 @@ export class BSTProxy {
     }
 
     /**
-     * Specifies the port the Lambda runner should listen on. Only for lambda proxies.
+     * Specifies the port the Lambda/Function Server should listen on. Only for proxies with built-in servers.
      * @param port
      */
-    public lambdaPort(port: number): BSTProxy {
+    public port(port: number): BSTProxy {
         this.httpPort = port;
         return this;
     }
@@ -108,8 +123,14 @@ export class BSTProxy {
 
         if (this.proxyType === ProxyType.LAMBDA) {
             callbackCountDown++;
-            this.lambdaServer = new LambdaServer(this.lambdaFile, this.httpPort);
+            this.lambdaServer = new LambdaServer(this.functionFile, this.httpPort);
             this.lambdaServer.start(callback);
+        }
+
+        if (this.proxyType === ProxyType.GOOGLE_CLOUD_FUNCTION) {
+            callbackCountDown++;
+            this.functionServer = new FunctionServer(this.functionFile, this.httpPort);
+            this.functionServer.start(callback);
         }
     }
 
@@ -120,6 +141,8 @@ export class BSTProxy {
 
         if (this.lambdaServer !== null) {
             this.lambdaServer.stop(onStopped);
+        } else if (this.functionServer !== null) {
+            this.functionServer.stop(onStopped);
         } else {
             if (onStopped !== undefined && onStopped !== null) {
                 onStopped();
