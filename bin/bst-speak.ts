@@ -80,6 +80,8 @@ program
                 console.log("Response:");
                 console.log(jsonPretty);
                 console.log("");
+
+                speaker.stop(function () {});
             });
         });
     });
