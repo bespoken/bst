@@ -16,8 +16,10 @@ export class LoglessContext {
     private wrapCall(console: any, name: string, type: LogType): void {
         const self = this;
         let originalCall = (<any> console)[name];
-        if (!this.usesContinuationLocalStorage() && originalCall.logless !== undefined) {
-            return originalCall;
+        // Re-wrap the call everytime, but we do not want to nest it
+        // We check to see if this is already wrapped, and then re-wrap it
+        if (originalCall.original !== undefined) {
+            originalCall = originalCall.original;
         }
 
         let newCall: any = function (data: any) {
@@ -47,7 +49,7 @@ export class LoglessContext {
         // Add a property to the call if this is not using continuation local storage
         //  i.e., if this is a Lambda
         if (!this.usesContinuationLocalStorage()) {
-            newCall.logless = true;
+            newCall.original = originalCall;
         }
         console[name] = newCall;
     }
@@ -80,7 +82,8 @@ export class LoglessContext {
         });
     }
 
-    public onLambdaEvent(event: any, context: any, wrappedCallback: Function): void {
+    // Common logic for Lambda and Cloud Function Handling
+    private onFunctionEvent() {
         const self = this;
         this.newTransactionID();
 
@@ -98,6 +101,11 @@ export class LoglessContext {
         };
 
         process.on("uncaughtException", this._uncaughtExceptionHandler);
+    }
+
+    public onLambdaEvent(event: any, context: any, wrappedCallback: Function): void {
+        const self = this;
+        this.onFunctionEvent();
 
         const done = context.done;
         context.done = function(error: any, result: any) {
@@ -120,6 +128,28 @@ export class LoglessContext {
                 });
             };
         }
+    }
+
+    public onCloudFunctionEvent(request: any, response: any): void {
+        const self = this;
+        this.onFunctionEvent();
+
+        const end = response.end;
+        response.end = function(data?: (string | Buffer), encoding?: string, callback?: Function) {
+            let result = data;
+            if (response.get("Content-Type").startsWith("application/json")) {
+                result = JSON.parse(data.toString());
+            }
+
+            self.captureResponse(null, result);
+            self.flush(function () {
+                self.cleanup();
+                end.call(response, data, encoding, callback);
+            });
+        };
+
+        // Capture the request event
+        this.log(LogType.INFO, request.body, null, ["request"]);
     }
 
     public callback(): Function {

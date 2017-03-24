@@ -19,6 +19,8 @@ let handleOptions = function(proxy: BSTProxy, options: any) {
     if (options.pithy !== undefined && options.pithy) {
         console.log("Disabling verbose logging");
         LoggingHelper.setVerbose(false);
+    } else {
+        LoggingHelper.setVerbose(true);
     }
 };
 

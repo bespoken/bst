@@ -49,7 +49,6 @@ export class ModuleManager {
 
     public module(filePath: string): any {
         const fullPath = [this.directory, filePath].join("/");
-        console.log("Loading: " + fullPath);
         let module: any = null;
         if (fullPath in this.modules && !this.dirty) {
             module = this.modules[fullPath];
