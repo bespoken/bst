@@ -60,7 +60,7 @@ export class LambdaServer {
         });
 
         this.server.on("listening", function () {
-            LoggingHelper.info(Logger, "LambdaServer started on port: " + self.server.address().port.toString());
+            LoggingHelper.debug(Logger, "LambdaServer started on port: " + self.server.address().port.toString());
             if (callback !== undefined && callback !== null) {
                 callback();
             }
