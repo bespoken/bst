@@ -77,6 +77,12 @@ program
 
             try {
                 speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
+                    if (error !== undefined && error !== null) {
+                        console.log("Intended: " + intentName);
+                        console.log("");
+                        console.log("Error: " + error.message);
+                        return;
+                    }
                     let jsonPretty = JSON.stringify(response, null, 4);
                     console.log("Intended: " + intentName);
                     console.log("");
