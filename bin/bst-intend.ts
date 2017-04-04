@@ -77,7 +77,7 @@ program
 
             try {
                 speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
-                    if (error !== undefined && error !== null) {
+                    if (error) {
                         console.log("Intended: " + intentName);
                         console.log("");
                         console.log("Error: " + error.message);

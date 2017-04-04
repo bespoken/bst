@@ -71,7 +71,7 @@ program
             }
 
             speaker.spoken(utterance, function(error: any, response: any, request: any) {
-                if (error !== undefined && error !== null) {
+                if (error) {
                     console.log("Spoke: " + utterance);
                     console.log("");
                     console.log("Error: " + error.message);
