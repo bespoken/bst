@@ -236,14 +236,11 @@ export class LoglessContext {
             }
         };
 
-        console.time("Logless.FlushTime");
         const httpRequest = https.request(options);
 
         httpRequest.on("error", function(error: Error) {
             console.error(error.toString());
             if (flushed !== undefined) {
-                console.timeEnd("Logless.FlushTime");
-                console.log("Flushed Logs: " + logBatch.logs.length);
                 flushed();
             }
         });
@@ -251,8 +248,6 @@ export class LoglessContext {
         httpRequest.setNoDelay(true);
         httpRequest.end(dataAsString, null, function () {
             if (flushed !== undefined) {
-                console.timeEnd("Logless.FlushTime");
-                console.log("Flushed Logs: " + logBatch.logs.length);
                 flushed();
             }
         });
