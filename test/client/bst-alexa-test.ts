@@ -59,6 +59,7 @@ describe("BSTAlexa", function() {
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function () {
                 assert(Global.config().applicationID(), "1234567890J");
+                assert(speak.context().applicationID(), "1234567890J");
                 done();
             });
         });
