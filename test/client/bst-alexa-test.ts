@@ -52,6 +52,17 @@ describe("BSTAlexa", function() {
             });
         });
 
+        it("Initializing after setting the application ID initialize with application ID", function (done) {
+            this.timeout(5000);
+            let speak = new BSTAlexa("http://localhost:9000",
+                "test/resources/speechAssets/IntentSchema.json",
+                "test/resources/speechAssets/SampleUtterances.txt");
+            speak.start(function () {
+                assert(Global.config().applicationID(), "1234567890J");
+                done();
+            });
+        });
+
         it("Initializes with error", function (done) {
             let errorReceived = false;
             sandbox.stub(console, "error", function(data: Buffer) {
