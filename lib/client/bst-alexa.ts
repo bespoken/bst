@@ -79,6 +79,8 @@ export class BSTAlexa {
         this._alexa = new Alexa();
         if (this.applicationID) {
             Global.config().updateApplicationID(this.applicationID);
+        } else {
+            this.applicationID = Global.config().applicationID();
         }
     }
 
