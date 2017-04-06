@@ -68,16 +68,16 @@ export class BSTAlexa {
                        private intentSchemaFile?: string,
                        private sampleUtterancesFile?: string,
                        private applicationID?: string) {
-        if (this.intentSchemaFile === undefined || this.intentSchemaFile === null) {
+        if (!this.intentSchemaFile) {
             this.intentSchemaFile = BSTAlexa.DefaultIntentSchemaLocation;
         }
 
-        if (this.sampleUtterancesFile === undefined || this.sampleUtterancesFile === null) {
+        if (!this.sampleUtterancesFile) {
             this.sampleUtterancesFile =  BSTAlexa.DefaultSampleUtterancesLocation;
         }
 
         this._alexa = new Alexa();
-        if (this.applicationID !== undefined && this.applicationID !== null) {
+        if (this.applicationID) {
             Global.config().updateApplicationID(this.applicationID);
         }
     }
