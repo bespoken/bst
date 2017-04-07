@@ -112,7 +112,6 @@ export class Alexa {
                 this._context.audioPlayer().suspend();
             }
 
-            console.log("Intent: " + intentName + " Session: " + this._context.session());
             // Now we generate the service request
             //  The request is built based on the state from the previous step, so important that it is suspended first
             let serviceRequest = new ServiceRequest(this._context).intentRequest(intentName);
@@ -159,7 +158,7 @@ export class Alexa {
         }
 
         let requestJSON = serviceRequest.toJSON();
-        LoggingHelper.info(Logger, "CALLING: " + requestJSON.request.type);
+        LoggingHelper.debug(Logger, "CALLING: " + requestJSON.request.type);
 
         let responseHandler = function(error: any, response: http.IncomingMessage, body: any) {
             // After a call, set the session to used (no longer new)
