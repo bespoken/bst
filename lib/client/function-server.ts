@@ -25,7 +25,7 @@ export class FunctionServer {
      * @param port The port the service should listen on
      * @param verbose Prints out verbose information about requests and responses
      */
-    public constructor(private file: string, private port: number, private verbose?: boolean) {}
+    public constructor(private file: string, private functionName: string, private port: number, private verbose?: boolean) {}
 
     /**
      * Starts the FunctionServer listening on the port specified in the constructor.
@@ -85,8 +85,16 @@ export class FunctionServer {
         LoggingHelper.debug(Logger, "Invoking Function: " + this.file);
         const cloudFunction = this.moduleManager.module(path);
 
+        if (!(this.functionName in cloudFunction)) {
+            const message = "Function: " + this.functionName
+                + " does not exist or has not been exported from module: " + this.file;
+            LoggingHelper.error(Logger, message);
+            response.status(500).send(message);
+            return;
+        }
+
         try {
-            cloudFunction.handler(request, response);
+            cloudFunction[this.functionName].call(cloudFunction, request, response);
         } catch (e) {
             const message = "Unhandled Exception from Cloud Function: " + e;
             LoggingHelper.error(Logger, message);

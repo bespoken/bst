@@ -26,6 +26,7 @@ export class BSTProxy {
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
     private functionFile: string;
+    private functionName: string;
     private httpPort: number;
     private httpDomain: string = "localhost";
 
@@ -59,9 +60,11 @@ export class BSTProxy {
      * @param functionFile
      * @returns {BSTProxy}
      */
-    public static cloudFunction(functionFile: string): BSTProxy {
+    public static cloudFunction(functionFile: string, functionName?: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.GOOGLE_CLOUD_FUNCTION);
         tool.functionFile = functionFile;
+        tool.functionName = functionName;
+
         tool.httpPort = DefaultLambdaPort;
         return tool;
     }
@@ -129,7 +132,7 @@ export class BSTProxy {
 
         if (this.proxyType === ProxyType.GOOGLE_CLOUD_FUNCTION) {
             callbackCountDown++;
-            this.functionServer = new FunctionServer(this.functionFile, this.httpPort);
+            this.functionServer = new FunctionServer(this.functionFile, this.functionName, this.httpPort);
             this.functionServer.start(callback);
         }
     }

@@ -22,8 +22,9 @@ describe("bst-proxy", function() {
                 return this;
             },
 
-            cloudFunction: function (functionFile: string) {
+            cloudFunction: function (functionFile: string, functionName: string) {
                 assert.equal(functionFile, "function.js");
+                assert.equal(functionName, "handler");
                 return this;
             }
         }
@@ -116,7 +117,7 @@ describe("bst-proxy", function() {
 
     describe("function command", function() {
         it("Calls Function proxy", function(done) {
-            process.argv = command("node bst-proxy.js function function.js");
+            process.argv = command("node bst-proxy.js function function.js handler");
             mockProxy.start = function () {
                 done();
             };
@@ -124,8 +125,8 @@ describe("bst-proxy", function() {
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
-        it("Calls Lambda proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 lambda lambda.js");
+        it("Calls function proxy with options", function(done) {
+            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 function function.js handler");
             let optionsSet = false;
             mockProxy.start = function () {
                 if (!optionsSet) {

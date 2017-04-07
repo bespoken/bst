@@ -59,17 +59,17 @@ program
     });
 
 program
-    .command("function <http-function-file>")
+    .command("function <http-function-file> <function-name>")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
-    .description("Proxies a Google HTTP Cloud Function defined in the specified file")
-    .action(function (functionFile: string, options: any) {
+    .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
+    .action(function (functionFile: string, functionName: string, options: any) {
         console.log("Your URL for Fulfillment configuration:");
         console.log(URLMangler.mangleNoPath(Global.config().nodeID()));
         console.log("");
 
-        let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile);
+        let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
         handleOptions(proxy, options);
         proxy.start();
     });
