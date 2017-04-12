@@ -5,6 +5,8 @@ import {LambdaServer} from "./lambda-server";
 import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
+import {SourceNameGenerator} from "../external/source-name-generator";
+import {SpokesClient} from "../external/spokes";
 
 export enum ProxyType {
     HTTP,
@@ -19,6 +21,8 @@ const DefaultLambdaPort = 10000;
 export class BSTProxy {
     private bespokenClient: BespokeClient = null;
     private lambdaServer: LambdaServer = null;
+    private spokesClient: SpokesClient = null;
+    private sourceNameGenerator: SourceNameGenerator = null;
 
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
@@ -86,6 +90,16 @@ export class BSTProxy {
         return this;
     }
 
+    public async createSpokesPipe() {
+        this.sourceNameGenerator = new SourceNameGenerator();
+        const generatedKey = await this.sourceNameGenerator.callService();
+        this.spokesClient = new SpokesClient(generatedKey.id, generatedKey.secretKey);
+        const isUUIDUnassigned = await this.spokesClient.verifyUUIDisNew();
+        if (isUUIDUnassigned) {
+            await this.spokesClient.createPipe();
+        }
+    }
+
     public start(onStarted?: (error?: any) => void): void {
         // Every proxy has a process file associated with it
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
@@ -111,6 +125,8 @@ export class BSTProxy {
             this.lambdaServer = new LambdaServer(this.lambdaFile, this.httpPort);
             this.lambdaServer.start(callback);
         }
+
+        this.createSpokesPipe();
     }
 
     public stop(onStopped?: () => void): void {
