@@ -1,5 +1,5 @@
 
-This tutorial shows you how to get started developing for Alexa Skills Kit using a Nodejs Lambda.  
+This tutorial shows you how to get started developing for Google Home using a Google Cloud Function.  
 
 ## Prerequisites
 
@@ -7,39 +7,46 @@ This tutorial shows you how to get started developing for Alexa Skills Kit using
     * `$ npm install bespoken-tools -g`
     * [Installation Instructions](/getting_started/)
 * Google Cloud account
-    * [Google Cloud]()
-* API.ai account
-    * [API.ai]()
+    * [Google Cloud](https://cloud.google.com/)
+* api.ai account
+    * [api.ai](https://api.ai/)
 
 ## Getting Started
 
-Clone the Amazon Alexa Skills Kit for JavaScript repo:  
+Clone the Super Simple Google Action repo:
 
 ```bash
-$ git clone https://github.com/bespoken/super-simple-google-home
+$ git clone https://github.com/bespoken/super-simple-google-action
 ```
 
 Go to the root level of the sample:
 ```bash
-$ cd super-simple-google-home/
+$ cd super-simple-google-action/
 ```
+
+## Configure your api.ai Action
+For a detail walkthrough on setting up a Google Action with api.ai, go [here](tutorial_cloud_function).
 
 ## Start bst proxy
 
-For Google Cloud Functions, bst proxy command, in addition to setting up the proxy, will run your function for you and even reload it on changes.
+For Google Cloud Functions, the `bst proxy` command, in addition to setting up the proxy, will run your function for you and even reload it on changes.
 
 This will start the function:
 
 ```
-$ bst proxy function index.js
+$ bst proxy function index.js simpleFunction
 ```
 
-## Configure your API.ai Action
+## Try it out
+You can test things out right inside api.ai - just enter "Hello" into the "Try it now" field on the top-right.
 
+You should see the request and response come across the console where the `bst proxy` is running, like so:
+<img src='../assets/images/api-ai-try-it-bst.png' />
 
+Or you can try it in the [Google Actions Web Simulator](https://developers.google.com/actions/tools/web-simulator).
 
 ## Next Steps
-You can now start adding functionality to your action. To learn more about working with Google Actions, see the official [documentation](https://github.com/amzn/alexa-skills-kit-js)
+You can now start adding functionality to your action. To learn more about working with Google Actions, see the official [documentation](https://developers.google.com/actions/)
 
 You can also try it out on a Google Home, as long as it is registered with your account.
 Just say "Talk To \<Your Invocation Name>" to use it.
