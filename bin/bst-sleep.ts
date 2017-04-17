@@ -2,8 +2,6 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 
-Global.initializeCLI();
-
 program.version(Global.version());
 
 program
@@ -27,5 +25,7 @@ if (process.argv.slice(2).length === 0) {
     program.outputHelp();
 }
 
-program.parse(process.argv);
+Global.initializeCLI().then(
+    () => program.parse(process.argv)
+);
 

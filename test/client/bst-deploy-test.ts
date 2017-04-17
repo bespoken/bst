@@ -15,8 +15,6 @@ import {LoggingHelper} from "../../lib/core/logging-helper";
 const testAwsRole = "bst-unit-test-role-" + process.version.replace(/\./g, "-");
 const testAwsLambda = "bstUnittestLambda-" + process.version.replace(/\./g, "-");
 
-Global.initializeCLI();
-
 const testPayload: any = {
     "session": {
         "sessionId": "SessionId.11afee96-771f-4ff1-a35c-54187de3be8c",
@@ -45,17 +43,19 @@ const testPayload: any = {
 // Sets up environment variables from .env file
 dotenv.config();
 
-let lambdaConfig = LambdaConfig.create();
-lambdaConfig.initialize();
+describe("LambdaDeploy", async function() {
+    await Global.initializeCLI();
 
-let skip: boolean = false;
+    let lambdaConfig = LambdaConfig.create();
+    lambdaConfig.initialize();
 
-if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-    console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
-    skip = true;
-}
+    let skip: boolean = false;
 
-describe("LambdaDeploy", function() {
+    if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+        console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
+        skip = true;
+    }
+
     let deployProject: string = "./deployProject";
     let destinationFolder: string  = os.tmpdir() + "/.bst-deploy-test";
 
@@ -241,7 +241,7 @@ describe("LambdaDeploy", function() {
                         console.error("Error finding AWS role: " + err);
                         done(err);
                     });
-                }, 2000);
+            }, 2000);
         });
 
         it("finds nonexistent role", function(done) {

@@ -25,31 +25,31 @@ describe("BSTConfig", function() {
 
         });
 
-        it("Test new config created correctly", function (done) {
-            (<any> BSTConfig).bootstrapIfNeeded();
+        it("Test new config created correctly", async function (done) {
+            await (<any> BSTConfig).bootstrapIfNeeded();
             assert(fs.existsSync((<any> BSTConfig).configPath()));
             done();
         });
 
-        it("Loads existing config", function (done) {
+        it("Loads existing config", async function (done) {
             // Make sure we have a new one
-            let config = BSTConfig.load();
+            let config = await BSTConfig.load();
             let nodeID = config.nodeID();
 
             // Make sure it does not get created again
-            let config2 = BSTConfig.load();
+            let config2 = await BSTConfig.load();
             assert(config2.nodeID(), nodeID);
             done();
         });
 
-        it("Updates existing config", function (done) {
+        it("Updates existing config", async function (done) {
             // Make sure we have a new one
-            let config = BSTConfig.load();
+            let config = await BSTConfig.load();
             let nodeID = config.nodeID();
             config.updateApplicationID("12345678");
 
             // Make sure it does not get created again
-            let config2 = BSTConfig.load();
+            let config2 = await BSTConfig.load();
             assert(config2.nodeID(), nodeID);
             assert(config2.applicationID(), "12345678");
             done();
@@ -73,8 +73,8 @@ describe("BSTProcess", function() {
             sandbox.restore();
         });
 
-        it("Test new process written", function (done) {
-            BSTConfig.load();
+        it("Test new process written", async function (done) {
+            await BSTConfig.load();
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             let data = fs.readFileSync((<any> BSTProcess).processPath());
@@ -84,8 +84,8 @@ describe("BSTProcess", function() {
             done();
         });
 
-        it("Test existing process loaded", function (done) {
-            BSTConfig.load();
+        it("Test existing process loaded", async function (done) {
+            await BSTConfig.load();
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             // We stub is running because that is tricky to test
@@ -99,8 +99,8 @@ describe("BSTProcess", function() {
             done();
         });
 
-        it("Test existing process not running", function (done) {
-            BSTConfig.load();
+        it("Test existing process not running", async function (done) {
+            await BSTConfig.load();
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             // We stub is running because that is tricky to test
@@ -164,8 +164,8 @@ describe("BSTProcess", function() {
             });
 
 
-            proxy.start(function () {
-                BSTConfig.load();
+            proxy.start(async function () {
+                await BSTConfig.load();
                 let lambdaProcess = BSTProcess.running();
                 runningPid = lambdaProcess.pid;
                 lambdaProcess.kill();

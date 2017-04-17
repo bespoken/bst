@@ -5,8 +5,8 @@ import {Global} from "../../lib/core/global";
 import {BespokeServer} from "../../lib/server/bespoke-server";
 import {BSTProxy} from "../../lib/client/bst-proxy";
 
-describe("BSTProxy", function() {
-    Global.initializeCLI();
+describe("BSTProxy", async function() {
+    await Global.initializeCLI();
     describe("#http()", function() {
         it("Starts and Stops Correctly", function (done) {
             let server = new BespokeServer(4000, 5000);

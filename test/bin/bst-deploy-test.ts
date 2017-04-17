@@ -5,6 +5,7 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
+import {Global} from "../../lib/core/global";
 import {LambdaConfig} from "../../lib/client/lambda-config";
 
 const dotenv = require("dotenv");
@@ -13,22 +14,26 @@ const dotenv = require("dotenv");
 const deployProject: string = "./deployProject";
 
 // Test lambda name
-const testLambdaName: string = "test-lamda-name";
+const testLambdaName: string = "test-lambda-name";
 
 // Sets up environment variables from .env file
 dotenv.config();
 
-let lambdaConfig = LambdaConfig.create();
-lambdaConfig.initialize();
 
-let skip: boolean = false;
+describe("bst-deploy", async function() {
+    Global.initialize(false);
+    await Global.loadConfig();
 
-if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-    console.log("Skipping deployer tests. No AWS credentials.");
-    skip = true;
-}
+    let lambdaConfig = LambdaConfig.create();
+    lambdaConfig.initialize();
 
-describe("bst-deploy", function() {
+    let skip: boolean = false;
+
+    if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+        console.log("Skipping deployer tests. No AWS credentials.");
+        skip = true;
+    }
+
     let sandbox: SinonSandbox = null;
 
     let mockDeployModule: any = {

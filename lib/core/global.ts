@@ -14,7 +14,7 @@ export class Global {
     private static _configuration: BSTConfig = null;
     private static _cli: boolean = false;
 
-    public static initializeCLI(): void {
+    public static async initializeCLI(): Promise<void> {
         // Replace console.error so it prints in a different color
         let originalError = console.error;
         console.error = function(message) {
@@ -26,7 +26,12 @@ export class Global {
         };
 
         Global.initialize(true);
-        Global._configuration = BSTConfig.load();
+        await Global.loadConfig();
+    }
+
+    public static async loadConfig(): Promise<void> {
+        const config = await BSTConfig.load();
+        Global._configuration = config;
     }
 
     public static cli(): boolean {
@@ -34,11 +39,6 @@ export class Global {
     }
 
     public static config(): BSTConfig {
-        // If nothing has been configured yet, configure it
-        if (Global._configuration === null) {
-            Global.initialize(false);
-            Global._configuration = BSTConfig.load();
-        }
         return Global._configuration;
     }
 

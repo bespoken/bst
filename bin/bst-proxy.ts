@@ -5,8 +5,6 @@ import {LoggingHelper} from "../lib/core/logging-helper";
 import {BSTProxy} from "../lib/client/bst-proxy";
 import {URLMangler} from "../lib/client/url-mangler";
 
-Global.initializeCLI();
-
 let handleOptions = function(proxy: BSTProxy, options: any) {
     if (options.bstHost !== undefined) {
         proxy.bespokenServer(options.bstHost, options.bstPort);
@@ -104,5 +102,8 @@ program.Command.prototype.missingArgument = function(name: string): void {
     process.exit(1);
 };
 
-program.parse(process.argv);
+Global.initializeCLI().then(
+    () => program.parse(process.argv)
+);
+
 

@@ -10,10 +10,9 @@ describe("Global", function() {
     });
 
     describe("#initialize", function() {
-        it("Starts as CLI", function(done) {
-            Global.initializeCLI();
+        it("Starts as CLI", async function() {
+            await Global.initializeCLI();
             assert(Global.cli());
-            done();
         });
 
         it("Lazy Loads Config", function(done) {
