@@ -17,6 +17,9 @@ pages:
     - Local Java Server: tutorials/tutorial_local_server_java.md
     - Python & Flask-Ask: tutorials/tutorial_flask_ask_python.md
     - Alexa Emulator & Node.js: tutorials/tutorial_bst_emulator_nodejs.md
+- Tutorials for Google Actions:
+    - With Cloud Functions: tutorials/tutorial_cloud_function.md
+    - With api.ai: tutorials/tutorial_configuring_api_ai.md
 - Tutorials for General Lambdas:
     - Running Lambdas Locally: tutorials/tutorial_lambda_local.md
     - Debugging Lambdas Locally: tutorials/tutorial_lambda_debugger.md
