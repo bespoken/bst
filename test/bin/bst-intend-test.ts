@@ -10,10 +10,9 @@ import SinonSandbox = Sinon.SinonSandbox;
 describe("bst-intend", function() {
     let globalModule = {
         Global: {
-            initializeCLI: function () {
+            initializeCLI: async function () {
 
             },
-
             running : function() {
                 let p = new BSTProcess();
                 p.port = 9999;
@@ -53,19 +52,14 @@ describe("bst-intend", function() {
         it("Intend Simple", function(done) {
             process.argv = command("node bst-intend.js HelloIntent");
 
-            BSTAlexa.prototype.intended = function (intentName: string, slots: any, callback: Function) {
-                assert.equal(intentName, "HelloIntent");
+            BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
+                assert.equal(intent, "HelloIntent");
                 callback("Response: Here is a response");
             };
 
-            // Done gets called twice for some reason
-            let doneCalled = false;
             sandbox.stub(console, "log", function(data: Buffer) {
                 if (data !== undefined && data.indexOf("Response:") !== -1) {
-                    if (!doneCalled) {
-                        done();
-                    }
-                    doneCalled = true;
+                    done();
                 }
             });
 

@@ -10,7 +10,7 @@ import SinonSandbox = Sinon.SinonSandbox;
 describe("bst-speak", function() {
     let globalModule = {
         Global: {
-            initializeCLI: function () {
+            initializeCLI: async function () {
 
             },
 

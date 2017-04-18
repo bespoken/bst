@@ -5,6 +5,7 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
+import {Global} from "../../lib/core/global";
 
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
@@ -18,7 +19,9 @@ describe("bst", function() {
         sandbox.restore();
     });
 
-    describe("proxy command", function() {
+    describe("proxy command", async function() {
+        Global.initialize(false);
+        await Global.loadConfig();
 
         it("Calls proxy for http", function(done) {
             process.argv = command("node bst.js proxy http 9000");
