@@ -79,7 +79,7 @@ export class BSTConfig {
            // Create the config file if it does not yet exist
             let configJSON = await BSTConfig.createConfig();
 
-           BSTConfig.saveConfig(configJSON);
+            BSTConfig.saveConfig(configJSON);
         }
     }
 

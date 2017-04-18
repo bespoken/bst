@@ -7,25 +7,26 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 
-describe("bst-intend", function() {
-    let globalModule = {
-        Global: {
-            initializeCLI: async function () {
+let globalModule = {
+    Global: {
+        initializeCLI: async function () {
 
-            },
-            running : function() {
-                let p = new BSTProcess();
-                p.port = 9999;
-                return p;
-            },
+        },
+        running : function() {
+            let p = new BSTProcess();
+            p.port = 9999;
+            return p;
+        },
 
-            version: function () {
-                return "0.0.0";
-            }
+        version: function () {
+            return "0.0.0";
         }
-    };
-    let BSTAlexa: any;
-    let sandbox: SinonSandbox = null;
+    }
+};
+let BSTAlexa: any;
+let sandbox: SinonSandbox = null;
+
+describe("bst-intend", function() {
     beforeEach(function () {
          BSTAlexa = function () {
             this.start = function (ready: Function) {
@@ -54,11 +55,12 @@ describe("bst-intend", function() {
 
             BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
                 assert.equal(intent, "HelloIntent");
-                callback("Response: Here is a response");
+                // callback simulating request (error, request)
+                callback(null, "Response: Here is a response");
             };
 
             sandbox.stub(console, "log", function(data: Buffer) {
-                if (data !== undefined && data.indexOf("Response:") !== -1) {
+                if (data !== undefined && data.indexOf("Response: ") !== -1) {
                     done();
                 }
             });

@@ -20,19 +20,29 @@ const testLambdaName: string = "test-lambda-name";
 dotenv.config();
 
 
-describe("bst-deploy", async function() {
-    Global.initialize(false);
-    await Global.loadConfig();
-
-    let lambdaConfig = LambdaConfig.create();
-    lambdaConfig.initialize();
-
+describe("bst-deploy", function() {
+    let lambdaConfig = null;
     let skip: boolean = false;
 
-    if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-        console.log("Skipping deployer tests. No AWS credentials.");
-        skip = true;
-    }
+    before(async function (): Promise<void> {
+        this.timeout(20000);
+        try {
+            Global.initialize(false);
+            await Global.loadConfig();
+
+            lambdaConfig = LambdaConfig.create();
+            lambdaConfig.initialize();
+
+            if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+                console.log("Skipping deployer tests. No AWS credentials.");
+                skip = true;
+            }
+        }  catch (error) {
+            console.log("Error: ", error);
+            throw error;
+        }
+
+    });
 
     let sandbox: SinonSandbox = null;
 
