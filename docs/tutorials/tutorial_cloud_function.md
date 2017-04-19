@@ -40,7 +40,7 @@ $ bst proxy function index.js simpleFunction
 ## Try it out
 You can test things out right inside api.ai - just enter "Hello" into the "Try it now" field on the top-right.
 
-You should see the request and response come across the console where the `bst proxy` is running, like so:
+You should see the request and response come across the console where the `bst proxy` is running, like so:  
 <img src='../assets/images/api-ai-try-it-bst.png' />
 
 Or you can try it in the [Google Actions Web Simulator](https://developers.google.com/actions/tools/web-simulator).

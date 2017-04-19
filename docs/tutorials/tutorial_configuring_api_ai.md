@@ -14,7 +14,7 @@ git clone https://github.com/bespoken/super-simple-google-action
 
 # Walk-through
 ## Register/login to api.ai account
-Go to the [api.ai website](https://api.ai).
+Go to the [api.ai website](https://api.ai):
 
 <img src='../assets/images/api-ai-register.png' />
 
@@ -33,17 +33,17 @@ Give the agent a name, then click "Save".
 After clicking save, click the "Export and Import" tab.
 
 ## Restore sample action
-Select "Restore From Zip":
+Select "Restore From Zip":  
 <img src='../assets/images/api-ai-restore.png' />
 
 Click "Select File".
 
-Browse to the directory where you cloned the [Super Simple Google Action repository](https://github.com/bespoken/super-simple-google-action):
+Browse to the directory where you cloned the [Super Simple Google Action repository](https://github.com/bespoken/super-simple-google-action):  
 <img src='../assets/images/api-ai-restore-file.png' />
 
 Choose "SuperSimpleGoogleAction.zip" from the file picker and click "Open".
 
-If you the click on "Intents" on the left-hand side menu, you should now see the following:
+If you the click on "Intents" on the left-hand side menu, you should now see the following:  
 <img src='../assets/images/api-ai-intents.png' />
 
 Those intents will be available if the agent was properly restored.
@@ -51,7 +51,7 @@ Those intents will be available if the agent was properly restored.
 ## Enable Webhook Fulfillment
 Click on Fulfillment from the left-hand menu.
 
-Toggle "Enabled" so that Webhook fulfillment is enabled:
+Toggle "Enabled" so that Webhook fulfillment is enabled:  
 <img src='../assets/images/api-ai-fulfillment.png' />
 
 This will cause the configured Intents to call out the specified URL for handling user requests.
@@ -61,7 +61,7 @@ The URL should be your `bst proxy` endpoint. To find it, just type at the comman
 bst proxy function index.js simpleFunction
 ```
 
-Grab the URL from the console output, which should look like this:
+Grab the URL from the console output, which should look like this:  
 <img src='../assets/images/api-ai-bst-proxy.png' />
 
 After entering this, click "Save" at the top.
