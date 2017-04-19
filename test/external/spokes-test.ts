@@ -80,7 +80,7 @@ describe("Spokes", function() {
                body: {
                    uuid: "secretKey",
                    diagnosticsKey: "secretKey",
-                   endPoint: {
+                   endpoint: {
                        name: "id"
                    },
                    path: "/",

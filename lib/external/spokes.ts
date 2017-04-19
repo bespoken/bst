@@ -50,7 +50,7 @@ export class SpokesClient {
                 uuid: this._secretKey,
                 // Should be the same as the UUID - also the secret key
                 diagnosticsKey: this._secretKey,
-                endPoint: {
+                endpoint: {
                     // The unique name/ID for the skill
                     name: this._id,
                 },

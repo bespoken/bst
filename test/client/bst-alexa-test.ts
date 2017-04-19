@@ -11,11 +11,13 @@ describe("BSTAlexa", async function() {
     let lambdaServer: LambdaServer = null;
 
     describe("#start()", async function () {
-
-        Global.initialize(false);
-        await Global.loadConfig();
-
         let sandbox: any = null;
+
+        before(async function () {
+            Global.initialize(false);
+            await Global.loadConfig();
+        });
+
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
         });
