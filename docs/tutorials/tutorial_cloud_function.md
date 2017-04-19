@@ -3,7 +3,7 @@ This tutorial shows you how to get started developing for Google Home using a Go
 
 ## Prerequisites
 
-* bespoken tools (bst)
+* Bespoken Tools (bst)
     * `$ npm install bespoken-tools -g`
     * [Installation Instructions](/getting_started/)
 * Google Cloud account
