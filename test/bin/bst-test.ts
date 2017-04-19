@@ -5,10 +5,10 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
-import {Global} from "../../lib/core/global";
 
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
+
     beforeEach(function () {
         // Program state gets messed up by repeatedly calling it - lets dump it every time
         delete require.cache[require.resolve("commander")];
@@ -19,10 +19,7 @@ describe("bst", function() {
         sandbox.restore();
     });
 
-    describe("proxy command", async function() {
-        Global.initialize(false);
-        await Global.loadConfig();
-
+    describe("proxy command", function() {
         it("Calls proxy for http", function(done) {
             process.argv = command("node bst.js proxy http 9000");
 

@@ -20,7 +20,11 @@ export class BSTConfig {
      * Done all synchronously as this is done first thing at startup and everything waits on it
      */
     public static async load(): Promise<BSTConfig> {
-        await BSTConfig.bootstrapIfNeeded();
+        try {
+            await BSTConfig.bootstrapIfNeeded();
+        } catch (error) {
+            throw error;
+        }
 
         let data = fs.readFileSync(BSTConfig.configPath());
         let config = JSON.parse(data.toString());
@@ -77,9 +81,13 @@ export class BSTConfig {
             LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
 
            // Create the config file if it does not yet exist
-            let configJSON = await BSTConfig.createConfig();
+            try {
+                let configJSON = await BSTConfig.createConfig();
 
-            BSTConfig.saveConfig(configJSON);
+                BSTConfig.saveConfig(configJSON);
+            } catch (error) {
+                throw error;
+            }
         }
     }
 
@@ -92,8 +100,9 @@ export class BSTConfig {
         let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
         try {
             const pipeInfo = await BSTConfig.createSpokesPipe();
+
             return {
-                "sourceID": pipeInfo.endPoint.name,
+                "sourceID": pipeInfo.endpoint.name,
                 "secretKey": pipeInfo.uuid,
                 "lambdaDeploy": lambdaConfig
             };
@@ -107,17 +116,20 @@ export class BSTConfig {
         let isUUIDUnassigned = false;
         let sourceNameGenerator = null;
         let spokesClient = null;
+        let spokesPipe = null;
         try {
             sourceNameGenerator = new SourceNameGenerator();
             const generatedKey = await sourceNameGenerator.callService();
             spokesClient = new SpokesClient(generatedKey.id, generatedKey.secretKey);
             isUUIDUnassigned = await spokesClient.verifyUUIDisNew();
             if (isUUIDUnassigned) {
-                return spokesClient.createPipe();
+                spokesPipe = await spokesClient.createPipe();
             }
         } catch (error) {
+            LoggingHelper.error(Logger, "Error : " + error.stack);
             throw Error("Unable to create spokes connection");
         }
+        return spokesPipe;
     }
 }
 
