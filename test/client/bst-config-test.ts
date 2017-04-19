@@ -8,6 +8,7 @@ import {exec} from "child_process";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
+import {Global} from "../../lib/core/global";
 
 describe("BSTConfig", function() {
     describe("#bootstrap()", function() {
@@ -25,33 +26,37 @@ describe("BSTConfig", function() {
 
         });
 
-        it("Test new config created correctly", async function (done) {
+        it("Test new config created correctly", async function () {
+            this.timeout(5000);
             await (<any> BSTConfig).bootstrapIfNeeded();
             assert(fs.existsSync((<any> BSTConfig).configPath()));
-            done();
         });
 
         it("Loads existing config", async function (done) {
+            this.timeout(5000);
+
             // Make sure we have a new one
             let config = await BSTConfig.load();
-            let nodeID = config.nodeID();
+            let secretKey = config.secretKey();
 
             // Make sure it does not get created again
             let config2 = await BSTConfig.load();
-            assert(config2.nodeID(), nodeID);
+            assert.equal(config2.secretKey(), secretKey);
             done();
         });
 
         it("Updates existing config", async function (done) {
+            this.timeout(5000);
+
             // Make sure we have a new one
             let config = await BSTConfig.load();
-            let nodeID = config.nodeID();
+            let secretKey = config.secretKey();
             config.updateApplicationID("12345678");
 
             // Make sure it does not get created again
             let config2 = await BSTConfig.load();
-            assert(config2.nodeID(), nodeID);
-            assert(config2.applicationID(), "12345678");
+            assert.equal(config2.secretKey(), secretKey);
+            assert.equal(config2.applicationID(), "12345678");
             done();
         });
 
@@ -145,7 +150,10 @@ describe("BSTProcess", function() {
             sandbox.restore();
         });
 
-        it("Test new process written", function (done) {
+        it("Test new process written", async function (done) {
+            this.timeout(5000);
+            await Global.loadConfig();
+
             let runningPid: number = null;
             let proxy = new BSTProxy(ProxyType.LAMBDA).lambdaPort(10000);
 

@@ -44,24 +44,27 @@ const testPayload: any = {
 dotenv.config();
 
 describe("LambdaDeploy", async function() {
-    await Global.initializeCLI();
-
-    let lambdaConfig = LambdaConfig.create();
-    lambdaConfig.initialize();
-
+    let lambdaConfig = null;
     let skip: boolean = false;
+    let awsHelper = null;
 
-    if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-        console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
-        skip = true;
-    }
+    before(async function() {
+        await Global.initializeCLI();
+        lambdaConfig = LambdaConfig.create();
+        lambdaConfig.initialize();
+        if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+            console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
+            skip = true;
+        }
+
+        awsHelper = LambdaAws.create(lambdaConfig);
+    });
 
     let deployProject: string = "./deployProject";
     let destinationFolder: string  = os.tmpdir() + "/.bst-deploy-test";
 
     let testRoleArn: string = null;
 
-    let awsHelper = LambdaAws.create(lambdaConfig);
 
     describe("initializes the lambda configuration", function() {
         let oldHome: string = null;
