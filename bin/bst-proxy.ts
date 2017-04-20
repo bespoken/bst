@@ -8,16 +8,18 @@ import {URLMangler} from "../lib/client/url-mangler";
 Global.initializeCLI();
 
 let handleOptions = function(proxy: BSTProxy, options: any) {
-    if (options.bstHost !== undefined) {
+    if (options.bstHost) {
         proxy.bespokenServer(options.bstHost, options.bstPort);
     }
 
-    if (options.targetDomain !== undefined) {
+    if (options.targetDomain) {
         proxy.targetDomain(options.targetDomain);
     }
 
-    if (options.verbose !== undefined && options.verbose) {
-        console.log("Enabling verbose logging");
+    if (options.pithy) {
+        console.log("Disabling verbose logging");
+        LoggingHelper.setVerbose(false);
+    } else {
         LoggingHelper.setVerbose(true);
     }
 };
@@ -27,7 +29,7 @@ program
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--targetDomain <targetDomain>", "Set this to forward requests to something other than localhost")
-    .option("--verbose", "Print out verbose diagnostics")
+    .option("--pithy", "Disables verbose diagnostics")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
@@ -44,7 +46,7 @@ program
     .command("lambda <lambda-file>")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
-    .option("--verbose", "Print out verbose diagnostics")
+    .option("--pithy", "Disables verbose diagnostics")
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
@@ -52,6 +54,22 @@ program
         console.log("");
 
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile);
+        handleOptions(proxy, options);
+        proxy.start();
+    });
+
+program
+    .command("function <http-function-file> <function-name>")
+    .option("--bstHost <bstHost>", "The host name of the BST server")
+    .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
+    .option("--pithy", "Disables verbose diagnostics")
+    .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
+    .action(function (functionFile: string, functionName: string, options: any) {
+        console.log("Your URL for Fulfillment configuration:");
+        console.log(URLMangler.mangleNoPath(Global.config().nodeID()));
+        console.log("");
+
+        let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
         handleOptions(proxy, options);
         proxy.start();
     });
@@ -93,7 +111,7 @@ if (process.argv.length < 3) {
     process.exit();
 }
 
-if (["http", "lambda", "stop", "urlgen"].indexOf(process.argv[2]) < 0) {
+if (["function", "http", "lambda", "stop", "urlgen"].indexOf(process.argv[2]) < 0) {
     console.error("  error: unknown command: " + process.argv[2] + "\n");
     process.exit();
 }

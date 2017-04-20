@@ -20,6 +20,12 @@ describe("bst-proxy", function() {
             lambda: function (lambdaFile: string) {
                 assert.equal(lambdaFile, "lambda.js");
                 return this;
+            },
+
+            cloudFunction: function (functionFile: string, functionName: string) {
+                assert.equal(functionFile, "function.js");
+                assert.equal(functionName, "handler");
+                return this;
             }
         }
     };
@@ -74,12 +80,12 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --verbose --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
+            process.argv = command("node bst-proxy.js --pithy --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
 
-            let verboseCalled = false;
+            let pithyCalled = false;
             sandbox.stub(console, "log", function (log: string) {
-                if (log.indexOf("Enabling verbose logging") !== -1) {
-                    verboseCalled = true;
+                if (log.indexOf("Disabling verbose logging") !== -1) {
+                    pithyCalled = true;
                 }
             });
 
@@ -88,7 +94,7 @@ describe("bst-proxy", function() {
             mockProxy.start = function () {
                 assert(optionsSet, "Options not set");
                 assert(domainSet, "Domain not set");
-                assert(verboseCalled, "Verbose must be set");
+                assert(pithyCalled, "Pithy must be set");
                 done();
             };
 
@@ -107,6 +113,36 @@ describe("bst-proxy", function() {
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
+    });
+
+    describe("function command", function() {
+        it("Calls Function proxy", function(done) {
+            process.argv = command("node bst-proxy.js function function.js handler");
+            mockProxy.start = function () {
+                done();
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
+        it("Calls function proxy with options", function(done) {
+            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 function function.js handler");
+            let optionsSet = false;
+            mockProxy.start = function () {
+                if (!optionsSet) {
+                    assert.fail("Options not set");
+                }
+                done();
+            };
+
+            mockProxy.bespokenServer = function (host: string, port: number) {
+                assert.equal(host, "localhost2");
+                assert.equal(port, "9001");
+                optionsSet = true;
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
     });
 
     describe("lambda command", function() {

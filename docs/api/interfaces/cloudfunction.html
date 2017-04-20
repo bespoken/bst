@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ExpressErrorHandler | Bespoken Tools</title>
+	<title>CloudFunction | Bespoken Tools</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="expresserrorhandler.html">ExpressErrorHandler</a>
+					<a href="cloudfunction.html">CloudFunction</a>
 				</li>
 			</ul>
-			<h1>Interface ExpressErrorHandler</h1>
+			<h1>Interface CloudFunction</h1>
 		</div>
 	</div>
 </header>
@@ -66,38 +66,32 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ExpressErrorHandler</span>
+						<span class="target">CloudFunction</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3 class="tsd-before-signature">Callable</h3>
 				<ul class="tsd-signatures tsd-kind-interface">
-					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>err<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					<li class="tsd-signature tsd-kind-icon">__call<span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, response<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/bespoken/bst/blob/bc8510b/lib/logless/logless.ts#L226">logless/logless.ts:226</a></li>
+								<li>Defined in <a href="https://github.com/bespoken/bst/blob/bc8510b/lib/logless/logless.ts#L161">logless/logless.ts:161</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>err: <span class="tsd-signature-type">any</span></h5>
+								<h5>request: <span class="tsd-signature-type">any</span></h5>
 							</li>
 							<li>
-								<h5>req: <span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li>
-								<h5>res: <span class="tsd-signature-type">any</span></h5>
-							</li>
-							<li>
-								<h5>next: <span class="tsd-signature-type">Function</span></h5>
+								<h5>response: <span class="tsd-signature-type">any</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -151,16 +145,16 @@
 					<li class=" tsd-kind-class">
 						<a href="../classes/loglessmiddleware.html" class="tsd-kind-icon">Logless<wbr>Middleware</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="cloudfunction.html" class="tsd-kind-icon">Cloud<wbr>Function</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="expresserrorhandler.html" class="tsd-kind-icon">Express<wbr>Error<wbr>Handler</a>
+						<a href="cloudfunction.html" class="tsd-kind-icon">Cloud<wbr>Function</a>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="expresserrorhandler.html" class="tsd-kind-icon">Express<wbr>Error<wbr>Handler</a>
+					</li>
 					<li class=" tsd-kind-interface">
 						<a href="expressrequesthandler.html" class="tsd-kind-icon">Express<wbr>Request<wbr>Handler</a>
 					</li>

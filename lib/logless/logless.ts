@@ -55,12 +55,12 @@ export class Logless {
      * @param handler
      * @returns {LambdaFunction}
      */
-    public static capture(source: string, handler: LambdaFunction): LambdaFunction {
+    public static capture(source: string, handler: Function): Function {
         if (handler === undefined || handler === null) {
             throw new Error("Handler is null or undefined! This must be passed.");
         }
 
-        return new LambdaWrapper(source, handler).lambdaFunction();
+        return new FunctionWrapper(source, handler).wrappingFunction();
     }
 
     /**
@@ -158,21 +158,37 @@ export interface LambdaFunction {
     (event: any, context: any, callback?: (error?: Error, result?: any) => void): void;
 }
 
+export interface CloudFunction {
+    (request: any, response: any): void;
+}
+
 /**
  * Wraps the lambda function
  */
-class LambdaWrapper {
+class FunctionWrapper {
 
-    public constructor (private source: string, public wrappedLambda: LambdaFunction) {}
+    public constructor (private source: string, public wrappedFunction: Function) {}
 
-    public handle(event: any, context: any, callback?: Function): void {
+    public handle(arg1: any, arg2: any, arg3: any) {
+        // If the second argument is a context object, then this is a Lambda
+        //  Otherwise we assume it is a Google Cloud Function
+        if (arg2.awsRequestId !== undefined) {
+            this.handleLambda(arg1, arg2, arg3);
+        } else {
+            this.handleCloudFunction(arg1, arg2);
+        }
+    }
+
+    public handleLambda(event: any, context: any, callback?: Function): void {
         // Create a new logger for this context
         const logger = new LoglessContext(this.source);
-        context.logger = logger;
         logger.onLambdaEvent(event, context, callback);
 
+        // We put the logger on the context for testability
+        context.logger = logger;
+
         try {
-            this.wrappedLambda.call(this, event, context, logger.callback());
+            this.wrappedFunction.call(this, event, context, logger.callback());
         } catch (e) {
             console.error(e);
             logger.flush();
@@ -180,9 +196,26 @@ class LambdaWrapper {
         }
     }
 
-    public lambdaFunction(): LambdaFunction {
-        let lambda = this.handle.bind(this);
-        return lambda;
+    public handleCloudFunction(request, response): void {
+        // Create a new logger for this context
+        const logger = new LoglessContext(this.source);
+        logger.onCloudFunctionEvent(request, response);
+
+        // We put the logger on the request for testability
+        request.logger = logger;
+
+        try {
+            this.wrappedFunction.call(this, request, response);
+        } catch (e) {
+            console.error(e);
+            logger.flush();
+            logger.cleanup();
+        }
+    }
+
+    public wrappingFunction(): Function {
+        let wrapper = this.handle.bind(this);
+        return wrapper;
     }
 }
 
