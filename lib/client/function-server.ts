@@ -21,7 +21,8 @@ export class FunctionServer {
 
     /**
      * Creates a server that exposes a Google Cloud Function as an HTTP service
-     * @param file The file the defines the Lambda
+     * @param file The file that defines the cloud function
+     * @param functionName The name of the function (as it is exported)
      * @param port The port the service should listen on
      * @param verbose Prints out verbose information about requests and responses
      */

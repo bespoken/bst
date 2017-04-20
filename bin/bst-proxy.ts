@@ -8,15 +8,15 @@ import {URLMangler} from "../lib/client/url-mangler";
 Global.initializeCLI();
 
 let handleOptions = function(proxy: BSTProxy, options: any) {
-    if (options.bstHost !== undefined) {
+    if (options.bstHost) {
         proxy.bespokenServer(options.bstHost, options.bstPort);
     }
 
-    if (options.targetDomain !== undefined) {
+    if (options.targetDomain) {
         proxy.targetDomain(options.targetDomain);
     }
 
-    if (options.pithy !== undefined && options.pithy) {
+    if (options.pithy) {
         console.log("Disabling verbose logging");
         LoggingHelper.setVerbose(false);
     } else {
