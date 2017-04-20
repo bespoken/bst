@@ -81,4 +81,4 @@ You should get a valid JSON in reply:
 You can now start adding functionality to your skill. To learn more about coding Alexa Skills, see the official [documentation](https://github.com/amzn/alexa-skills-kit-js)
 
 You can also try it out on an Alexa device like an Echo, as long as it is registered with your account.
-Just say "Open \<Your Invocation Name>" to use it.
+Just say "Open {Your Invocation Name}" to use it.
