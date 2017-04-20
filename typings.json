@@ -12,6 +12,7 @@
     "wrench": "registry:dt/wrench#0.0.0+20160316155526"
   },
   "dependencies": {
-    "express": "registry:npm/express#4.14.0+20160925001530"
+    "express": "registry:npm/express#4.14.0+20160925001530",
+    "request-promise-native": "registry:dt/request-promise-native#1.0.3+20161105203411"
   }
 }
