@@ -15,9 +15,9 @@ describe("Global", function() {
             assert(Global.cli());
         });
 
-        it("Lazy Loads Config", function(done) {
+        it("Have Config once Initialized", async function() {
+            await Global.initializeCLI();
             assert(Global.config());
-            done();
         });
 
         it("Checks Running", function(done) {
