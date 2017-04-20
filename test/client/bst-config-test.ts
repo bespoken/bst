@@ -156,7 +156,7 @@ describe("BSTProcess", function() {
             await Global.loadConfig();
 
             let runningPid: number = null;
-            let proxy = new BSTProxy(ProxyType.LAMBDA).lambdaPort(10000);
+            let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
 
             sandbox.stub(process, "kill", function(pid: number, code: any) {
                 // Have to make sure to do the right thing when code is 0
