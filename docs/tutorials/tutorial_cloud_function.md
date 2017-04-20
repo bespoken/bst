@@ -25,7 +25,7 @@ $ cd super-simple-google-action/
 ```
 
 ## Configure your api.ai Action
-For a detail walkthrough on setting up a Google Action with api.ai, go [here](tutorial_cloud_function).
+For a detail walkthrough on setting up a Google Action with api.ai, go [here](tutorial_configuring_api_ai).
 
 ## Start bst proxy
 
