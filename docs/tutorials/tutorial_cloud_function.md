@@ -49,4 +49,4 @@ Or you can try it in the [Google Actions Web Simulator](https://developers.googl
 You can now start adding functionality to your action. To learn more about working with Google Actions, see the official [documentation](https://developers.google.com/actions/)
 
 You can also try it out on a Google Home, as long as it is registered with your account.
-Just say "Talk To \<Your Invocation Name>" to use it.
+Just say "Talk To \<Your Invocation Name\>" to use it.
