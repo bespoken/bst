@@ -12,9 +12,11 @@ import {Global} from "../../lib/core/global";
 
 describe("BSTConfig", function() {
     describe("#bootstrap()", function() {
-        (<any> BSTConfig).configDirectory = function () {
-            return "test/resources/.bst";
-        };
+        before(function () {
+            (<any> BSTConfig).configDirectory = function () {
+                return "test/resources/.bst";
+            };
+        });
 
         beforeEach(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
@@ -139,6 +141,7 @@ describe("BSTProcess", function() {
 
     describe("#kill()", function() {
         let sandbox: SinonSandbox = null;
+        let lambdaProcess: BSTProcess = null;
         beforeEach(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
                 done();
@@ -156,7 +159,7 @@ describe("BSTProcess", function() {
             await Global.loadConfig();
 
             let runningPid: number = null;
-            let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
+            let proxy = new BSTProxy(ProxyType.LAMBDA).port(11000);
 
             sandbox.stub(process, "kill", function(pid: number, code: any) {
                 // Have to make sure to do the right thing when code is 0
@@ -172,10 +175,9 @@ describe("BSTProcess", function() {
                 });
             });
 
-
             proxy.start(async function () {
                 await BSTConfig.load();
-                let lambdaProcess = BSTProcess.running();
+                lambdaProcess = BSTProcess.running();
                 runningPid = lambdaProcess.pid;
                 lambdaProcess.kill();
             });

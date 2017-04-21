@@ -202,7 +202,7 @@ describe("bst-speak", function() {
 
         // Skipping for now, it was using bst-alexa directly (which was not getting the intended result)
         // It should mock bst-alexa to send a Interaction Model missing error.
-        it.skip("Has no interaction model", function(done) {
+        /* it("Has no interaction model", function(done) {
             process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
 
             sandbox.stub(process, "exit", function(exitCode: number) {
@@ -219,7 +219,7 @@ describe("bst-speak", function() {
             });
 
             NodeUtil.load("../../bin/bst-speak.js");
-        });
+        }); */
 
         it("Has No Process", function(done) {
             sandbox.stub(process, "exit", function(exitCode: number) {

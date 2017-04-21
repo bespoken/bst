@@ -10,7 +10,12 @@ describe("BSTAlexa", async function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
 
-    describe("#start()", async function () {
+    before(async function () {
+        Global.initialize(false);
+        await Global.loadConfig();
+    });
+
+    describe("#start()", function () {
         let sandbox: any = null;
 
         before(async function () {

@@ -115,7 +115,8 @@ describe("LambdaDeploy", async function() {
     describe("prepares the lambda function code", function() {
         let deployer: LambdaDeploy = null;
 
-        before(function () {
+        before(async function () {
+            await Global.initializeCLI();
             lambdaConfig.initialize();
             deployer = LambdaDeploy.create(deployProject, lambdaConfig);
         });
