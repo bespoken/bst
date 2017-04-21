@@ -52,7 +52,7 @@ describe("bst-speak", function() {
 
                     this.spoken = function (utterance: string, callback: any) {
                         assert.equal(utterance, "Hello");
-                        callback({"request": "test"}, {"response": "test"});
+                        callback(null, {"request": "test"}, {"response": "test"});
                     };
                 }
             });

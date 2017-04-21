@@ -55,7 +55,7 @@ describe("bst-intend", function() {
 
             BSTAlexa.prototype.intended = function (intentName: string, slots: any, callback: Function) {
                 assert.equal(intentName, "HelloIntent");
-                callback("Response: Here is a response");
+                callback(null, "Response: Here is a response");
             };
 
             // Done gets called twice for some reason
