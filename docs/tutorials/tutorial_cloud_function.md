@@ -25,7 +25,7 @@ $ cd super-simple-google-action/
 ```
 
 ## Configure your api.ai Action
-For a detail walkthrough on setting up a Google Action with api.ai, go [here](tutorial_cloud_function).
+For a detail walkthrough on setting up a Google Action with api.ai, go [here](tutorial_configuring_api_ai).
 
 ## Start bst proxy
 
@@ -41,7 +41,7 @@ $ bst proxy function index.js simpleFunction
 You can test things out right inside api.ai - just enter "Hello" into the "Try it now" field on the top-right.
 
 You should see the request and response come across the console where the `bst proxy` is running, like so:  
-<img src='../assets/images/api-ai-try-it-bst.png' />
+<img src='../../assets/images/api-ai-try-it-bst.png' />
 
 Or you can try it in the [Google Actions Web Simulator](https://developers.google.com/actions/tools/web-simulator).
 
@@ -49,4 +49,4 @@ Or you can try it in the [Google Actions Web Simulator](https://developers.googl
 You can now start adding functionality to your action. To learn more about working with Google Actions, see the official [documentation](https://developers.google.com/actions/)
 
 You can also try it out on a Google Home, as long as it is registered with your account.
-Just say "Talk To \<Your Invocation Name>" to use it.
+Just say "Talk To {Your Invocation Name}" to use it.

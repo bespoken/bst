@@ -53,9 +53,8 @@ describe("bst-intend", function() {
         it("Intend Simple", function(done) {
             process.argv = command("node bst-intend.js HelloIntent");
 
-            BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
-                assert.equal(intent, "HelloIntent");
-                // callback simulating request (error, request)
+            BSTAlexa.prototype.intended = function (intentName: string, slots: any, callback: Function) {
+                assert.equal(intentName, "HelloIntent");
                 callback(null, "Response: Here is a response");
             };
 
