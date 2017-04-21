@@ -113,6 +113,13 @@ describe("LambdaDeploy", async function() {
     });
 
     describe("prepares the lambda function code", function() {
+        let deployer: LambdaDeploy = null;
+
+        before(function () {
+            lambdaConfig.initialize();
+            deployer = LambdaDeploy.create(deployProject, lambdaConfig);
+        });
+
         beforeEach(function () {
             if (skip) this.skip();
 
@@ -123,8 +130,6 @@ describe("LambdaDeploy", async function() {
             process.chdir("../..");
         });
 
-        lambdaConfig.initialize();
-        let deployer: LambdaDeploy = LambdaDeploy.create(deployProject, lambdaConfig);
 
         it("copies the project folder", function (done) {
             exec("rm -rf " + destinationFolder, function (err: string) {

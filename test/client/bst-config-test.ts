@@ -151,7 +151,7 @@ describe("BSTProcess", function() {
             sandbox.restore();
         });
 
-        it("Test new process written", async function (done) {
+        it("Test new process written", async function () {
             this.timeout(5000);
             await Global.loadConfig();
 
@@ -168,7 +168,7 @@ describe("BSTProcess", function() {
                 assert.equal(pid, runningPid);
                 assert.equal(code, "SIGKILL");
                 proxy.stop(function () {
-                    done();
+                    return Promise.resolve();
                 });
             });
 
