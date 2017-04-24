@@ -101,7 +101,8 @@ describe("BSTProxy", async function() {
     describe("#urlgen()", function() {
         it("Starts and Stops Correctly", function (done) {
             let url = BSTProxy.urlgen("http://jpk.com/test");
-            assert.equal(url, "https://proxy.bespoken.tools/test?node-id=" + Global.config().nodeID());
+            assert.equal(url, "https://bespoken.tools/dashboard/test?id="
+                + Global.config().sourceID() + "&key=" + Global.config().secretKey());
             done();
         });
     });

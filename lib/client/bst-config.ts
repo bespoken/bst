@@ -42,6 +42,10 @@ export class BSTConfig {
         return this.configuration.nodeID;
     }
 
+    public sourceID(): string {
+        return this.configuration.sourceID;
+    }
+
     public secretKey(): string {
         return this.configuration.secretKey;
     }

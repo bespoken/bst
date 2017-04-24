@@ -76,7 +76,7 @@ export class BSTProxy {
      * @returns
      */
     public static urlgen(url: string): string {
-        return URLMangler.mangle(url, Global.config().nodeID());
+        return URLMangler.mangle(url, Global.config().sourceID(), Global.config().secretKey());
     }
 
     /**

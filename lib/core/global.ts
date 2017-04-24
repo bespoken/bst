@@ -11,6 +11,9 @@ export class Global {
     public static MessageIDLength = 13;
     public static KeepAliveMessage = "KEEPALIVE";
     public static BespokeServerHost = "proxy.bespoken.tools";
+    public static SpokesPipeDomain = "bespoken.link";
+    public static SpokesDashboardHost = "bespoken.tools/dashboard";
+
     private static _configuration: BSTConfig = null;
     private static _cli: boolean = false;
 
