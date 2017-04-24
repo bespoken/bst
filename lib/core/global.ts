@@ -33,12 +33,8 @@ export class Global {
     }
 
     public static async loadConfig(): Promise<void> {
-        try {
-            const config = await BSTConfig.load();
-            Global._configuration = config;
-        } catch (error) {
-            throw error;
-        }
+        const config = await BSTConfig.load();
+        Global._configuration = config;
     }
 
     public static cli(): boolean {

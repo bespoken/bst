@@ -20,11 +20,7 @@ export class BSTConfig {
      * Done all synchronously as this is done first thing at startup and everything waits on it
      */
     public static async load(): Promise<BSTConfig> {
-        try {
-            await BSTConfig.bootstrapIfNeeded();
-        } catch (error) {
-            throw error;
-        }
+        await BSTConfig.bootstrapIfNeeded();
 
         let data = fs.readFileSync(BSTConfig.configPath());
         let config = JSON.parse(data.toString());
@@ -88,28 +84,20 @@ export class BSTConfig {
         if (!fs.existsSync(BSTConfig.configPath())) {
             LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
 
-           // Create the config file if it does not yet exist
-            try {
-                let configJSON = await BSTConfig.createConfig();
+            // Create the config file if it does not yet exist
+            let configJSON = await BSTConfig.createConfig();
 
-                BSTConfig.saveConfig(configJSON);
-            } catch (error) {
-                throw error;
-            }
+            BSTConfig.saveConfig(configJSON);
         } else {
             // If config exists but doesn't have sourceID update it
             let data = fs.readFileSync(BSTConfig.configPath());
             let config = JSON.parse(data.toString());
 
             if (!config.sourceID) {
-                try {
-                    const pipeConfig = await BSTConfig.createConfig();
-                    config.sourceID = pipeConfig.sourceID;
-                    config.secretKey = pipeConfig.secretKey;
-                    BSTConfig.saveConfig(config);
-                } catch (error) {
-                    throw error;
-                }
+                const pipeConfig = await BSTConfig.createConfig();
+                config.sourceID = pipeConfig.sourceID;
+                config.secretKey = pipeConfig.secretKey;
+                BSTConfig.saveConfig(config);
             }
         }
     }
@@ -121,18 +109,13 @@ export class BSTConfig {
 
     private static async createConfig(): Promise<any> {
         let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
-        try {
-            const pipeInfo = await BSTConfig.createSpokesPipe();
+        const pipeInfo = await BSTConfig.createSpokesPipe();
 
-            return {
-                "sourceID": pipeInfo.endpoint.name,
-                "secretKey": pipeInfo.uuid,
-                "lambdaDeploy": lambdaConfig
-            };
-        } catch (error) {
-            LoggingHelper.error(Logger, "Error : " + error.stack);
-            throw error;
-        }
+        return {
+            "sourceID": pipeInfo.endpoint.name,
+            "secretKey": pipeInfo.uuid,
+            "lambdaDeploy": lambdaConfig
+        };
     }
 
     private static async createSpokesPipe(): Promise<any> {
