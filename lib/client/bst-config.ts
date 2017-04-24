@@ -96,6 +96,21 @@ export class BSTConfig {
             } catch (error) {
                 throw error;
             }
+        } else {
+            // If config exists but doesn't have sourceID update it
+            let data = fs.readFileSync(BSTConfig.configPath());
+            let config = JSON.parse(data.toString());
+
+            if (!config.sourceID) {
+                try {
+                    const pipeConfig = await BSTConfig.createConfig();
+                    config.sourceID = pipeConfig.sourceID;
+                    config.secretKey = pipeConfig.secretKey;
+                    BSTConfig.saveConfig(config);
+                } catch (error) {
+                    throw error;
+                }
+            }
         }
     }
 

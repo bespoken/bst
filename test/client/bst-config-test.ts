@@ -60,6 +60,41 @@ describe("BSTConfig", function() {
             assert.equal(config2.applicationID(), "12345678");
         });
 
+        it("Updates old config version (nodeID)", async function () {
+            this.timeout(5000);
+
+            // we load in order to create the file
+            await BSTConfig.load();
+            const oldConfiguration = {
+                nodeID: "oldNodeID",
+                lambdaDeploy: {
+                    runtime: "nodejs4.3",
+                    role: "",
+                    handler: "index.handler",
+                    description: "My BST lambda skill",
+                    timeout: 3,
+                    memorySize: 128,
+                    vpcSubnets: "",
+                    vpcSecurityGroups: "",
+                    excludeGlobs: "event.json"
+                }
+            };
+
+            // We overwrite the file
+            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            fs.writeFileSync("test/resources/.bst/config", configBuffer);
+
+            let config = await BSTConfig.load();
+
+            // assert we have the new keys
+            assert.notEqual(typeof config.secretKey(), "undefined");
+            assert.notEqual(typeof config.sourceID(), "undefined");
+
+            // assert we still have the old values
+            assert.equal(config.nodeID(), "oldNodeID");
+        });
+
+
     });
 });
 
@@ -168,6 +203,12 @@ describe("BSTProcess", function() {
 
         afterEach(function () {
             sandbox.restore();
+        });
+
+        after(function (done) {
+            exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
+                done();
+            });
         });
 
         it("Test new process written", function (done) {
