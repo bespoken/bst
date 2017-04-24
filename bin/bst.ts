@@ -25,6 +25,8 @@ program
 
 Global.initializeCLI().then(
     () => program.parse(process.argv)
-);
+).catch((error) => {
+    LoggingHelper.error(Logger, error);
+});
 
 
