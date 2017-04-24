@@ -180,13 +180,7 @@ describe("LambdaDeploy", async function() {
                     done(err);
                 }
 
-                // Ballpark estimate (2809093 on node 4.x)
-
-                if (!buffer || Math.abs(2571277 - buffer.length) > 500 * 1024) {
-                    done(new Error("Zip file too small/big: " + buffer.length + " bytes"));
-                } else {
-                    done();
-                }
+                done();
             });
         });
     });
