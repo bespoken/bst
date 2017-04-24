@@ -100,10 +100,12 @@ export class Statistics {
                         self.record(nodeID, accessType, confirmation);
                     });
                 } else {
-                    confirmation(error);
+                    if (confirmation) {
+                        confirmation(error);
+                    }
                 }
             } else {
-                if (confirmation !== undefined) {
+                if (confirmation) {
                     confirmation();
                 }
             }
