@@ -66,12 +66,19 @@ describe("BSTConfig", function() {
 describe("BSTProcess", function() {
     describe("#run()", function() {
         let sandbox: SinonSandbox = null;
+
+        before(function () {
+            (<any> BSTProcess).processPath = function () {
+                return "test/resources/.bst/process";
+            };
+        });
+
         beforeEach(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
+                sandbox = sinon.sandbox.create();
                 done();
             });
 
-            sandbox = sinon.sandbox.create();
         });
 
         afterEach(function () {
@@ -142,46 +149,51 @@ describe("BSTProcess", function() {
     describe("#kill()", function() {
         let sandbox: SinonSandbox = null;
         let lambdaProcess: BSTProcess = null;
-        beforeEach(function (done) {
-            exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
-                done();
-            });
 
-            sandbox = sinon.sandbox.create();
+        before(function () {
+            (<any> BSTProcess).processPath = function () {
+                return "test/resources/.bst/process";
+            };
+        });
+
+        beforeEach(function (done) {
+            this.timeout(5000);
+            exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
+                sandbox = sinon.sandbox.create();
+                Global.loadConfig().then(() => {
+                    done();
+                });
+            });
         });
 
         afterEach(function () {
             sandbox.restore();
         });
 
-        it("Test new process written", async function () {
-            this.timeout(5000);
-            await Global.loadConfig();
+        it("Test new process written", function (done) {
+                this.timeout(5000);
+                let runningPid: number = null;
+                let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
 
-            let runningPid: number = null;
-            let proxy = new BSTProxy(ProxyType.LAMBDA).port(11000);
+                sandbox.stub(process, "kill", function (pid: number, code: any) {
+                    // Have to make sure to do the right thing when code is 0
+                    //  Otherwise, the initial check on whether the process is running does not work correctly
+                    //  FYI, calling kill with code 0 is what checks if a process is running
+                    if (code === 0) {
+                        return true;
+                    }
+                    assert.equal(pid, runningPid);
+                    assert.equal(code, "SIGKILL");
+                    proxy.stop(function () {
+                        done();
+                    });
+                });
 
-            sandbox.stub(process, "kill", function(pid: number, code: any) {
-                // Have to make sure to do the right thing when code is 0
-                //  Otherwise, the initial check on whether the process is running does not work correctly
-                //  FYI, calling kill with code 0 is what checks if a process is running
-                if (code === 0) {
-                    return true;
-                }
-                assert.equal(pid, runningPid);
-                assert.equal(code, "SIGKILL");
-                proxy.stop(function () {
-                    return Promise.resolve();
+                proxy.start(function () {
+                    lambdaProcess = BSTProcess.running();
+                    runningPid = lambdaProcess.pid;
+                    lambdaProcess.kill();
                 });
             });
-
-            proxy.start(async function () {
-                await BSTConfig.load();
-                lambdaProcess = BSTProcess.running();
-                runningPid = lambdaProcess.pid;
-                lambdaProcess.kill();
-            });
-        });
-
     });
 });
