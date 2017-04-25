@@ -11,8 +11,6 @@ import * as path from "path";
 
 const defaultLambdaRoleName = "lambda-bst-execution";
 
-Global.initializeCLI();
-
 program
     .command("lambda <lambda-folder>")
     .option("--lambdaName <lambdaName>", "The name of the lambda function")
@@ -142,5 +140,8 @@ program.Command.prototype.missingArgument = function(name: string): void {
     process.exit(1);
 };
 
-program.parse(process.argv);
-
+Global.initializeCLI().then(
+    () => program.parse(process.argv)
+).catch((error) => {
+    console.error(error);
+});

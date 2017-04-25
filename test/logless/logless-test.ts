@@ -728,7 +728,7 @@ describe("Logless Express Tests", function () {
             assert.equal(data.logs[1].log_type, "ERROR");
             assert(data.logs[1].stack);
             assert.equal(data.logs[2].tags.length, 1);
-            assert.equal(data.logs[2].payload.trim(), "Cannot POST /");
+            assert.equal(data.logs[2].payload.trim().includes( "Cannot POST /"), true);
             assert.equal(data.logs[2].tags[0], "response");
             done();
         });

@@ -6,8 +6,6 @@ import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
 import {FunctionServer} from "./function-server";
-import {SourceNameGenerator} from "../external/source-name-generator";
-import {SpokesClient} from "../external/spokes";
 
 export enum ProxyType {
     GOOGLE_CLOUD_FUNCTION,
@@ -24,8 +22,6 @@ export class BSTProxy {
     private bespokenClient: BespokeClient = null;
     private functionServer: FunctionServer = null;
     private lambdaServer: LambdaServer = null;
-    private spokesClient: SpokesClient = null;
-    private sourceNameGenerator: SourceNameGenerator = null;
 
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
@@ -80,7 +76,7 @@ export class BSTProxy {
      * @returns
      */
     public static urlgen(url: string): string {
-        return URLMangler.mangle(url, Global.config().nodeID());
+        return URLMangler.mangle(url, Global.config().sourceID(), Global.config().secretKey());
     }
 
     /**
@@ -107,16 +103,6 @@ export class BSTProxy {
     public port(port: number): BSTProxy {
         this.httpPort = port;
         return this;
-    }
-
-    public async createSpokesPipe() {
-        this.sourceNameGenerator = new SourceNameGenerator();
-        const generatedKey = await this.sourceNameGenerator.callService();
-        this.spokesClient = new SpokesClient(generatedKey.id, generatedKey.secretKey);
-        const isUUIDUnassigned = await this.spokesClient.verifyUUIDisNew();
-        if (isUUIDUnassigned) {
-            await this.spokesClient.createPipe();
-        }
     }
 
     public start(onStarted?: (error?: any) => void): void {
@@ -150,8 +136,6 @@ export class BSTProxy {
             this.functionServer = new FunctionServer(this.functionFile, this.functionName, this.httpPort);
             this.functionServer.start(callback);
         }
-
-        this.createSpokesPipe();
     }
 
     public stop(onStopped?: () => void): void {

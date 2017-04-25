@@ -5,8 +5,6 @@ import {BespokeServer} from "../lib/server/bespoke-server";
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 
-program.version(Global.version());
-
 program
     .command("start <webhookPort> <nodePort>")
     .description("Starts the BST server")
@@ -17,4 +15,8 @@ program
         bespokeServer.start();
     });
 
-program.parse(process.argv);
+Global.initializeCLI().then(
+    () => program.parse(process.argv)
+).catch((error) => {
+    console.log("Error", error);
+});

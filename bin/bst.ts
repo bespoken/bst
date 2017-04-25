@@ -5,7 +5,6 @@ import {LoggingHelper} from "../lib/core/logging-helper";
 
 let Logger = "BST";
 
-Global.initializeCLI();
 console.log("BST: v" + Global.version() + "  Node: " + process.version);
 console.log("");
 
@@ -24,5 +23,10 @@ program
     .command("sleep <location>", "Instructs bst to sleep using specified location")
     .command("deploy <lambda>", "Deploys a lambda");
 
-program.parse(process.argv);
+Global.initializeCLI().then(
+    () => program.parse(process.argv)
+).catch((error) => {
+    LoggingHelper.error(Logger, error);
+});
+
 
