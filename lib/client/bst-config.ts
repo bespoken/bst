@@ -112,7 +112,7 @@ export class BSTConfig {
         const pipeInfo = await BSTConfig.createSpokesPipe();
 
         return {
-            "sourceID": pipeInfo.endpoint.name,
+            "sourceID": pipeInfo.endPoint.name,
             "secretKey": pipeInfo.uuid,
             "lambdaDeploy": lambdaConfig
         };

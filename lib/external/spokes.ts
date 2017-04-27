@@ -6,7 +6,6 @@ const Logger = "SPOKES-CLIENT";
 export class SpokesClient {
     private _secretKey: string;
     private _id: string;
-
     public constructor(private id: string, private secretKey: string) {
         this._secretKey = secretKey;
         this._id = id;
@@ -48,19 +47,25 @@ export class SpokesClient {
             body: {
                 // The secret key for the Skill
                 uuid: this._secretKey,
-                // Should be the same as the UUID - also the secret key
-                diagnosticsKey: this._secretKey,
-                endpoint: {
+                diagnosticsKey: null,
+                endPoint: {
                     // The unique name/ID for the skill
                     name: this._id,
                 },
+                http: {
+                    url: `https://proxy.bespoken.tools?node-id=${this._secretKey}`,
+                },
                 path: "/",
-                pipeType: "string",
-                proxy: false,
+                pipeType: "HTTP",
+                proxy: true,
             },
             json: true // Automatically parses the JSON string in the response
         };
-
-        return post(options);
+        const response = await post(options);
+        // Spokes creates a endPointID but not return the endPoint name
+        response.endPoint = {
+            name: this._id,
+        };
+        return response;
     }
 }

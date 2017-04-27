@@ -79,13 +79,16 @@ describe("Spokes", function() {
                },
                body: {
                    uuid: "secretKey",
-                   diagnosticsKey: "secretKey",
-                   endpoint: {
+                   diagnosticsKey: null,
+                   endPoint: {
                        name: "id"
                    },
+                   http: {
+                       url: "https://proxy.bespoken.tools?node-id=secretKey",
+                   },
                    path: "/",
-                   pipeType: "string",
-                   proxy: false
+                   pipeType: "HTTP",
+                   proxy: true
                },
                json: true
            };
