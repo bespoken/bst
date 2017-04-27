@@ -84,13 +84,17 @@ describe("Spokes", function() {
                        name: "id"
                    },
                    http: {
-                       url: "https://proxy.bespoken.tools?node-id=secretKey",
+                       url: "https://proxy.bespoken.tools",
                    },
                    path: "/",
                    pipeType: "HTTP",
                    proxy: true
                },
-               json: true
+               json: true,
+               // We add the endpoint on actual call to createPipe
+               endPoint: {
+                   name: "id"
+               },
            };
 
            assert.deepEqual(response, expectedResponse);

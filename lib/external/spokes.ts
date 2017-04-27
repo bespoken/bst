@@ -53,7 +53,7 @@ export class SpokesClient {
                     name: this._id,
                 },
                 http: {
-                    url: `https://proxy.bespoken.tools?node-id=${this._secretKey}`,
+                    url: "https://proxy.bespoken.tools",
                 },
                 path: "/",
                 pipeType: "HTTP",
