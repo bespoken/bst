@@ -71,7 +71,7 @@ For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/
 * [Python & Flask-Ask](http://docs.bespoken.tools/en/latest/tutorials/tutorial_flask_ask_python)
 * [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.tools/en/latest/tutorials/tutorial_bst_emulator_nodejs)
 
-## Tutorials For Google Actions
+## Tutorials For Actions on Google
 * [With Cloud Functions](http://docs.bespoken.tools/en/latest/tutorials/tutorial_cloud_function)
 * [With api.ai](http://docs.bespoken.tools/en/latest/tutorials/tutorial_configuring_api_ai)
 

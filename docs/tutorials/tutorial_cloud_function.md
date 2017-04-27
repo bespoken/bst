@@ -8,8 +8,8 @@ This tutorial shows you how to get started developing for Google Home using a Go
     * [Installation Instructions](/getting_started/)
 * Google Cloud account
     * [Google Cloud](https://cloud.google.com/)
-* api.ai account
-    * [api.ai](https://api.ai/)
+* API.AI account
+    * [API.AI](https://api.ai/)
 
 ## Getting Started
 
@@ -24,8 +24,8 @@ Go to the root level of the sample:
 $ cd super-simple-google-action/
 ```
 
-## Configure your api.ai Action
-For a detail walkthrough on setting up a Google Action with api.ai, go [here](tutorial_configuring_api_ai).
+## Configure your API.AI Action
+For a detail walkthrough on setting up an Action on Google with API.AI, go [here](tutorial_configuring_api_ai).
 
 ## Start bst proxy
 
@@ -38,15 +38,15 @@ $ bst proxy function index.js simpleFunction
 ```
 
 ## Try it out
-You can test things out right inside api.ai - just enter "Hello" into the "Try it now" field on the top-right.
+You can test things out right inside API.AI - just enter "Hello" into the "Try it now" field on the top-right.
 
 You should see the request and response come across the console where the `bst proxy` is running, like so:  
 <img src='../../assets/images/api-ai-try-it-bst.png' />
 
-Or you can try it in the [Google Actions Web Simulator](https://developers.google.com/actions/tools/web-simulator).
+Or you can try it in the [Actions on Google Web Simulator](https://developers.google.com/actions/tools/web-simulator).
 
 ## Next Steps
-You can now start adding functionality to your action. To learn more about working with Google Actions, see the official [documentation](https://developers.google.com/actions/)
+You can now start adding functionality to your action. To learn more about working with Actions on Google, see the official [documentation](https://developers.google.com/actions/)
 
 You can also try it out on a Google Home, as long as it is registered with your account.
 Just say "Talk To {Your Invocation Name}" to use it.

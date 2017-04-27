@@ -13,7 +13,7 @@ git clone https://github.com/bespoken/super-simple-google-action
 ```
 
 # Walk-through
-## Register/login to api.ai account
+## Register/login to API.AI account
 Go to the [api.ai website](https://api.ai):
 
 <img src='../../assets/images/api-ai-register.png' />
@@ -66,7 +66,7 @@ Grab the URL from the console output, which should look like this:
 
 After entering this, click "Save" at the top.
 
-## Enable Google Action integration
+## Enable Actions on Google integration
 Select the "Integrations" tab on the left.
 
 <img src='../../assets/images/api-ai-integrations.png' />
@@ -80,4 +80,4 @@ Enter the "World" for the "Invocation Name". If you have a Google Cloud Project 
 If you want to use this Action on your Google Home device or in the [Web Simulator]((https://developers.google.com/actions/tools/web-simulator)), click "Preview".
 
 # Next Steps
-To use this api.ai Google Action, follow our [tutorial here](tutorial_cloud_function).
+To use this API.AI-based Action, follow our [tutorial here](tutorial_cloud_function).
