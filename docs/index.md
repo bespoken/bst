@@ -73,7 +73,7 @@ For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/
 
 ## Tutorials For Actions on Google
 * [With Cloud Functions](http://docs.bespoken.tools/en/latest/tutorials/tutorial_cloud_function)
-* [With api.ai](http://docs.bespoken.tools/en/latest/tutorials/tutorial_configuring_api_ai)
+* [With API.AI](http://docs.bespoken.tools/en/latest/tutorials/tutorial_configuring_api_ai)
 
 ## Tutorials For General Lambdas
 * [Running Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_local)
