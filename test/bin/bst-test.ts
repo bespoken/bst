@@ -8,6 +8,7 @@ import SinonSandbox = Sinon.SinonSandbox;
 
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
+
     beforeEach(function () {
         // Program state gets messed up by repeatedly calling it - lets dump it every time
         delete require.cache[require.resolve("commander")];
@@ -19,7 +20,6 @@ describe("bst", function() {
     });
 
     describe("proxy command", function() {
-
         it("Calls proxy for http", function(done) {
             process.argv = command("node bst.js proxy http 9000");
 
@@ -28,8 +28,10 @@ describe("bst", function() {
                 .withArgs(command("node bst.js proxy http 9000"), command("proxy http 9000"));
 
             NodeUtil.run("../../bin/bst.js");
-            mockProgram.verify();
-            setTimeout(done, 100);
+            setTimeout(function () {
+                mockProgram.verify();
+                done();
+            }, 100);
         });
 
         it("Calls proxy for lambda", function(done) {
@@ -40,8 +42,10 @@ describe("bst", function() {
 
             NodeUtil.run("../../bin/bst.js");
 
-            mockProgram.verify();
-            done();
+            setTimeout(function () {
+                mockProgram.verify();
+                done();
+            }, 100);
         });
 
         describe("speak command", function() {
@@ -53,8 +57,10 @@ describe("bst", function() {
                     .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
 
                 NodeUtil.run("../../bin/bst.js");
-                mockProgram.verify();
-                done();
+                setTimeout(function () {
+                    mockProgram.verify();
+                    done();
+                }, 100);
             });
         });
 
@@ -66,8 +72,10 @@ describe("bst", function() {
                     .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
 
                 NodeUtil.run("../../bin/bst.js");
-                mockProgram.verify();
-                done();
+                setTimeout(function () {
+                    mockProgram.verify();
+                    done();
+                }, 100);
             });
         });
     });

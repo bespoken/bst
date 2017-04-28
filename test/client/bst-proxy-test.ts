@@ -5,8 +5,11 @@ import {Global} from "../../lib/core/global";
 import {BespokeServer} from "../../lib/server/bespoke-server";
 import {BSTProxy} from "../../lib/client/bst-proxy";
 
-describe("BSTProxy", function() {
-    Global.initializeCLI();
+describe("BSTProxy", async function() {
+    before(async function() {
+        await Global.initializeCLI();
+    });
+
     describe("#http()", function() {
         it("Starts and Stops Correctly", function (done) {
             let server = new BespokeServer(4000, 5000);
@@ -98,7 +101,8 @@ describe("BSTProxy", function() {
     describe("#urlgen()", function() {
         it("Starts and Stops Correctly", function (done) {
             let url = BSTProxy.urlgen("http://jpk.com/test");
-            assert.equal(url, "https://proxy.bespoken.tools/test?node-id=" + Global.config().nodeID());
+            assert.equal(url, "https://bespoken.tools/dashboard/test?id="
+                + Global.config().sourceID() + "&key=" + Global.config().secretKey());
             done();
         });
     });

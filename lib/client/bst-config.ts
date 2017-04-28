@@ -2,8 +2,8 @@ import * as fs from "fs";
 import {ProxyType} from "./bst-proxy";
 import {LoggingHelper} from "../core/logging-helper";
 import {LambdaConfig} from "./lambda-config";
-
-let uuid = require("uuid");
+import {SourceNameGenerator} from "../external/source-name-generator";
+import {SpokesClient} from "../external/spokes";
 
 const Logger = "CONFIG";
 const BSTDirectoryName = ".bst";
@@ -19,8 +19,8 @@ export class BSTConfig {
      * Loads the configuration
      * Done all synchronously as this is done first thing at startup and everything waits on it
      */
-    public static load(): BSTConfig {
-        BSTConfig.bootstrapIfNeeded();
+    public static async load(): Promise<BSTConfig> {
+        await BSTConfig.bootstrapIfNeeded();
 
         let data = fs.readFileSync(BSTConfig.configPath());
         let config = JSON.parse(data.toString());
@@ -36,6 +36,14 @@ export class BSTConfig {
 
     public nodeID(): string {
         return this.configuration.nodeID;
+    }
+
+    public sourceID(): string {
+        return this.configuration.sourceID;
+    }
+
+    public secretKey(): string {
+        return this.configuration.secretKey;
     }
 
     public applicationID(): string {
@@ -67,7 +75,7 @@ export class BSTConfig {
     /**
      * Creates a new configuration file if one does not exist
      */
-    private static bootstrapIfNeeded(): void {
+    private static async bootstrapIfNeeded(): Promise<void> {
         let directory = BSTConfig.configDirectory();
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory);
@@ -76,10 +84,21 @@ export class BSTConfig {
         if (!fs.existsSync(BSTConfig.configPath())) {
             LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
 
-           // Create the config file if it does not yet exist
-            let configJSON = BSTConfig.createConfig();
+            // Create the config file if it does not yet exist
+            let configJSON = await BSTConfig.createConfig();
 
-           BSTConfig.saveConfig(configJSON);
+            BSTConfig.saveConfig(configJSON);
+        } else {
+            // If config exists but doesn't have sourceID update it
+            let data = fs.readFileSync(BSTConfig.configPath());
+            let config = JSON.parse(data.toString());
+
+            if (!config.sourceID) {
+                const pipeConfig = await BSTConfig.createConfig();
+                config.sourceID = pipeConfig.sourceID;
+                config.secretKey = pipeConfig.secretKey;
+                BSTConfig.saveConfig(config);
+            }
         }
     }
 
@@ -88,14 +107,35 @@ export class BSTConfig {
         fs.writeFileSync(BSTConfig.configPath(), configBuffer);
     }
 
-    private static createConfig(): any {
-        let nodeID = uuid.v4();
+    private static async createConfig(): Promise<any> {
         let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
+        const pipeInfo = await BSTConfig.createSpokesPipe();
 
         return {
-            "nodeID": nodeID,
+            "sourceID": pipeInfo.endpoint.name,
+            "secretKey": pipeInfo.uuid,
             "lambdaDeploy": lambdaConfig
         };
+    }
+
+    private static async createSpokesPipe(): Promise<any> {
+        let isUUIDUnassigned = false;
+        let sourceNameGenerator = null;
+        let spokesClient = null;
+        let spokesPipe = null;
+        try {
+            sourceNameGenerator = new SourceNameGenerator();
+            const generatedKey = await sourceNameGenerator.callService();
+            spokesClient = new SpokesClient(generatedKey.id, generatedKey.secretKey);
+            isUUIDUnassigned = await spokesClient.verifyUUIDisNew();
+            if (isUUIDUnassigned) {
+                spokesPipe = await spokesClient.createPipe();
+            }
+        } catch (error) {
+            LoggingHelper.error(Logger, "Error : " + error.stack);
+            throw Error("Unable to create spokes connection");
+        }
+        return spokesPipe;
     }
 }
 
