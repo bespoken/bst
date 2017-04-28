@@ -1,5 +1,5 @@
 
-This tutorial shows you how to get started developing for Google Home using a Google Cloud Function.  
+This tutorial shows you how to get started developing for Actions on Google using a Google Cloud Function.  
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@ $ cd super-simple-google-action/
 ```
 
 ## Configure your API.AI Action
-For a detail walkthrough on setting up an Action on Google with API.AI, go [here](tutorial_configuring_api_ai).
+For a detailed walkthrough on setting up an Action on Google with API.AI, go [here](tutorial_configuring_api_ai).
 
 ## Start bst proxy
 
