@@ -14,12 +14,17 @@ This tutorial shows you how to get started developing for Alexa Skills Kit using
 Clone the Amazon Alexa Skills Kit for JavaScript repo:  
 
 ```bash
-$ git clone https://github.com/amzn/alexa-skills-kit-js
+$ git clone https://github.com/alexa/skill-sample-nodejs-hello-world
 ```
 
-Go to the root level of the sample:
+Go to the source code directory of the sample:
 ```bash
-$ cd alexa-skills-kit-js/
+$ cd skill-sample-nodejs-hello-world/src
+```
+
+Run npm install to bring in dependencies:  
+```bash
+$ npm install
 ```
 
 ## Start bst proxy
@@ -29,7 +34,7 @@ For Nodejs Lambdas, bst proxy command, in addition to setting up the proxy, will
 This will start the helloWorld lambda:
 
 ```
-$ bst proxy lambda samples/helloWorld/src/index.js
+$ bst proxy lambda index.js
 ```
 
 ## Configure your Skill
@@ -78,7 +83,7 @@ You should get a valid JSON in reply:
 ![Test your Skill](/assets/images/bst-nodejs-lambda-test.png "Test your Skill")
 
 ## Next Steps
-You can now start adding functionality to your skill. To learn more about coding Alexa Skills, see the official [documentation](https://github.com/amzn/alexa-skills-kit-js)
+You can now start adding functionality to your skill. To learn more about coding Alexa Skills, see the official [documentation](https://github.com/alexa/alexa-skills-kit-sdk-for-nodejs)
 
 You can also try it out on an Alexa device like an Echo, as long as it is registered with your account.
 Just say "Open {Your Invocation Name}" to use it.
