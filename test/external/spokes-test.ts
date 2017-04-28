@@ -79,15 +79,22 @@ describe("Spokes", function() {
                },
                body: {
                    uuid: "secretKey",
-                   diagnosticsKey: "secretKey",
-                   endpoint: {
+                   diagnosticsKey: null,
+                   endPoint: {
                        name: "id"
                    },
+                   http: {
+                       url: "https://proxy.bespoken.tools",
+                   },
                    path: "/",
-                   pipeType: "string",
-                   proxy: false
+                   pipeType: "HTTP",
+                   proxy: true
                },
-               json: true
+               json: true,
+               // We add the endpoint on actual call to createPipe
+               endPoint: {
+                   name: "id"
+               },
            };
 
            assert.deepEqual(response, expectedResponse);
