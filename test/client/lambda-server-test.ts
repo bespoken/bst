@@ -1,13 +1,15 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
-import {Global} from "../../lib/core/global";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {HTTPClient} from "../../lib/core/http-client";
-
-Global.initialize();
+import {Global} from "../../lib/core/global";
 
 describe("LambdaServer", function() {
+    before(function () {
+        Global.initialize();
+    });
+
     beforeEach(function () {
         process.chdir("test/resources");
     });

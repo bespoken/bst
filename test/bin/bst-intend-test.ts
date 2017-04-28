@@ -7,26 +7,26 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 
-describe("bst-intend", function() {
-    let globalModule = {
-        Global: {
-            initializeCLI: function () {
+let globalModule = {
+    Global: {
+        initializeCLI: async function () {
 
-            },
+        },
+        running : function() {
+            let p = new BSTProcess();
+            p.port = 9999;
+            return p;
+        },
 
-            running : function() {
-                let p = new BSTProcess();
-                p.port = 9999;
-                return p;
-            },
-
-            version: function () {
-                return "0.0.0";
-            }
+        version: function () {
+            return "0.0.0";
         }
-    };
-    let BSTAlexa: any;
-    let sandbox: SinonSandbox = null;
+    }
+};
+let BSTAlexa: any;
+let sandbox: SinonSandbox = null;
+
+describe("bst-intend", function() {
     beforeEach(function () {
          BSTAlexa = function () {
             this.start = function (ready: Function) {
@@ -58,14 +58,9 @@ describe("bst-intend", function() {
                 callback(null, "Response: Here is a response");
             };
 
-            // Done gets called twice for some reason
-            let doneCalled = false;
             sandbox.stub(console, "log", function(data: Buffer) {
-                if (data !== undefined && data.indexOf("Response:") !== -1) {
-                    if (!doneCalled) {
-                        done();
-                    }
-                    doneCalled = true;
+                if (data !== undefined && data.indexOf("Response: ") !== -1) {
+                    done();
                 }
             });
 

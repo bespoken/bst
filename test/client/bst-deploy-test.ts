@@ -15,8 +15,6 @@ import {LoggingHelper} from "../../lib/core/logging-helper";
 const testAwsRole = "bst-unit-test-role-" + process.version.replace(/\./g, "-");
 const testAwsLambda = "bstUnittestLambda-" + process.version.replace(/\./g, "-");
 
-Global.initializeCLI();
-
 const testPayload: any = {
     "session": {
         "sessionId": "SessionId.11afee96-771f-4ff1-a35c-54187de3be8c",
@@ -45,23 +43,28 @@ const testPayload: any = {
 // Sets up environment variables from .env file
 dotenv.config();
 
-let lambdaConfig = LambdaConfig.create();
-lambdaConfig.initialize();
+describe("LambdaDeploy", async function() {
+    let lambdaConfig = null;
+    let skip: boolean = false;
+    let awsHelper = null;
 
-let skip: boolean = false;
+    before(async function() {
+        await Global.initializeCLI();
+        lambdaConfig = LambdaConfig.create();
+        lambdaConfig.initialize();
+        if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+            console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
+            skip = true;
+        }
 
-if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-    console.log("Skipping deployer tests. No AWS credentials set in local .env file - please set them to run these.");
-    skip = true;
-}
+        awsHelper = LambdaAws.create(lambdaConfig);
+    });
 
-describe("LambdaDeploy", function() {
     let deployProject: string = "./deployProject";
     let destinationFolder: string  = os.tmpdir() + "/.bst-deploy-test";
 
     let testRoleArn: string = null;
 
-    let awsHelper = LambdaAws.create(lambdaConfig);
 
     describe("initializes the lambda configuration", function() {
         let oldHome: string = null;
@@ -110,6 +113,14 @@ describe("LambdaDeploy", function() {
     });
 
     describe("prepares the lambda function code", function() {
+        let deployer: LambdaDeploy = null;
+
+        before(async function () {
+            await Global.initializeCLI();
+            lambdaConfig.initialize();
+            deployer = LambdaDeploy.create(deployProject, lambdaConfig);
+        });
+
         beforeEach(function () {
             if (skip) this.skip();
 
@@ -120,8 +131,6 @@ describe("LambdaDeploy", function() {
             process.chdir("../..");
         });
 
-        lambdaConfig.initialize();
-        let deployer: LambdaDeploy = LambdaDeploy.create(deployProject, lambdaConfig);
 
         it("copies the project folder", function (done) {
             exec("rm -rf " + destinationFolder, function (err: string) {
@@ -171,13 +180,7 @@ describe("LambdaDeploy", function() {
                     done(err);
                 }
 
-                // Ballpark estimate (2809093 on node 4.x)
-
-                if (!buffer || Math.abs(2571277 - buffer.length) > 500 * 1024) {
-                    done(new Error("Zip file too small/big: " + buffer.length + " bytes"));
-                } else {
-                    done();
-                }
+                done();
             });
         });
     });
@@ -241,7 +244,7 @@ describe("LambdaDeploy", function() {
                         console.error("Error finding AWS role: " + err);
                         done(err);
                     });
-                }, 2000);
+            }, 2000);
         });
 
         it("finds nonexistent role", function(done) {

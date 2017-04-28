@@ -10,15 +10,14 @@ describe("Global", function() {
     });
 
     describe("#initialize", function() {
-        it("Starts as CLI", function(done) {
-            Global.initializeCLI();
+        it("Starts as CLI", async function() {
+            await Global.initializeCLI();
             assert(Global.cli());
-            done();
         });
 
-        it("Lazy Loads Config", function(done) {
+        it("Have Config once Initialized", async function() {
+            await Global.initializeCLI();
             assert(Global.config());
-            done();
         });
 
         it("Checks Running", function(done) {

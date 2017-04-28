@@ -187,7 +187,7 @@ describe("bst-proxy", function() {
             });
             mockery.registerMock("../lib/core/global", {
                 Global: {
-                    initializeCLI: function () {},
+                    initializeCLI: async function () {},
                     running: function () {
                         return {
                             kill: function () {
@@ -212,7 +212,7 @@ describe("bst-proxy", function() {
             });
             mockery.registerMock("../lib/core/global", {
                 Global: {
-                    initializeCLI: function () {},
+                    initializeCLI: async function () {},
                     running: function () {
                         return {
                             kill: function () {
@@ -237,7 +237,7 @@ describe("bst-proxy", function() {
             });
             mockery.registerMock("../lib/core/global", {
                 Global: {
-                    initializeCLI: function () {},
+                    initializeCLI: async function () {},
                     running: function (): BSTProcess {
                         return null;
                     }

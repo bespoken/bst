@@ -6,12 +6,23 @@ import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 import * as sinon from "sinon";
 
-describe("BSTAlexa", function() {
+describe("BSTAlexa", async function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
 
+    before(async function () {
+        Global.initialize(false);
+        await Global.loadConfig();
+    });
+
     describe("#start()", function () {
         let sandbox: any = null;
+
+        before(async function () {
+            Global.initialize(false);
+            await Global.loadConfig();
+        });
+
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
         });
