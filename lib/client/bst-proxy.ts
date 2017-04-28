@@ -109,7 +109,7 @@ export class BSTProxy {
         // Every proxy has a process file associated with it
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
 
-        this.bespokenClient = new BespokeClient(Global.config().nodeID(), this.bespokenHost, this.bespokenPort, this.httpDomain, this.httpPort);
+        this.bespokenClient = new BespokeClient(Global.config().secretKey(), this.bespokenHost, this.bespokenPort, this.httpDomain, this.httpPort);
 
         // Make sure all callbacks have been hit before returning
         //  We will have to wait for two callbacks if this using the Lambda proxy
