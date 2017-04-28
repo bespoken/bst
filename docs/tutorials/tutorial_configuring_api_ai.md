@@ -1,4 +1,4 @@
-This tutorial will help you get setup using api.ai with our sample project and Bespoken tools.
+This tutorial will help you get setup using API.AI with our sample project and Bespoken tools.
 
 Ping us on [gitter](https://gitter.im/bespoken/bst) if you have any question.
 
@@ -14,7 +14,7 @@ git clone https://github.com/bespoken/super-simple-google-action
 
 # Walk-through
 ## Register/login to API.AI account
-Go to the [api.ai website](https://api.ai):
+Go to the [API.AI website](https://api.ai):
 
 <img src='../../assets/images/api-ai-register.png' />
 
