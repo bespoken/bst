@@ -6,7 +6,7 @@ The intend command generates intent requests for your service as if they were co
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
 To start using it, you will need a local file that contains your Intent Schema and Sample Utterances.  
-By default, we have adopted the pattern used by the Alexa Skills Sample projects (see [here](https://github.com/amzn/alexa-skills-kit-js/tree/master/samples/helloWorld)).
+By default, we have adopted the pattern used by the Alexa Skills Sample projects (see [here](https://github.com/alexa/skill-sample-nodejs-hello-world)).
 
 That is, we look for the Interaction Model files inside a folder called speechAssets located off the source root.  
 
@@ -53,4 +53,4 @@ The format of these files is the same as they are entered in the Alexa Skill con
 
 The Intent Schema is a JSON file. Samples utterances is a space-delimited text file.
 
-An example of these files can be found [here](https://github.com/amzn/alexa-skills-kit-js/tree/master/samples/helloWorld/speechAssets).
+An example of these files can be found [here](https://github.com/alexa/skill-sample-nodejs-hello-world/tree/master/speechAssets).
