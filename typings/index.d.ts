@@ -11,3 +11,4 @@
 /// <reference path="globals/wrench/index.d.ts" />
 /// <reference path="modules/express/index.d.ts" />
 /// <reference path="modules/request-promise-native/index.d.ts" />
+/// <reference path="modules/uuid/index.d.ts" />
