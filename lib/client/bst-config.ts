@@ -127,6 +127,8 @@ export class BSTConfig {
     private static async createExternalResources(nodeID?: string): Promise<any> {
         const sourceNameGenerator = new SourceNameGenerator();
         const generatedKey = await sourceNameGenerator.callService();
+        // This is for backwards compatibility - we use the nodeID for the secretKey if there is already a node-id.
+        // That way, the user does not need to change their configuration
         const secretKey = nodeID ? nodeID : generatedKey.secretKey;
         const requests = [this.createSpokesPipe(generatedKey.id, secretKey),
                             sourceNameGenerator.createDashboardSource(generatedKey.id, secretKey)];

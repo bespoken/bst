@@ -57,7 +57,7 @@ program
         // TODO: Re-add this lines once dashboard configuration is ready
         // console.log("Your URL for viewing skill data:");
         // console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
-        // console.log("Copy and paste this to your browser to your transaction history and summary data.");
+        // console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         // console.log("");
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile);
         handleOptions(proxy, options);
@@ -77,7 +77,7 @@ program
         // TODO: Re-add this lines once dashboard configuration is ready
         // console.log("Your URL for viewing skill data:");
         // console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
-        // console.log("Copy and paste this to your browser to your transaction history and summary data.");
+        // console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         // console.log("");
 
         let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
