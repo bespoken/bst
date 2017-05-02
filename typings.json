@@ -8,12 +8,12 @@
     "node-4": "registry:dt/node-4#4.0.0+20160720000508",
     "request": "registry:dt/request#0.0.0+20160726020908",
     "sinon": "registry:dt/sinon#1.16.0+20160517064723",
+    "uuid": "registry:dt/uuid#3.3.0+20160728152600",
     "winston": "registry:dt/winston#0.0.0+20160417152829",
     "wrench": "registry:dt/wrench#0.0.0+20160316155526"
   },
   "dependencies": {
     "express": "registry:npm/express#4.14.0+20160925001530",
-    "request-promise-native": "registry:dt/request-promise-native#1.0.3+20161105203411",
-    "uuid": "registry:npm/uuid#3.0.1+20161206160008"
+    "request-promise-native": "registry:dt/request-promise-native#1.0.3+20161105203411"
   }
 }

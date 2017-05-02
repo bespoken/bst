@@ -4,11 +4,12 @@ const rename = require('gulp-rename');
 const replace = require('gulp-replace');
 const tslint = require('gulp-tslint');
 const typedoc = require('gulp-bst-typedoc');
+var typescript = require('gulp-tsc');
 const run = require('gulp-run');
 const shell = require('gulp-shell');
 
 gulp.task('build', ['setup', 'lint'], function () {
-    return run('node_modules/typescript/bin/tsc').exec();
+    return gulp.src([]).pipe(typescript());
 });
 
 // http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
