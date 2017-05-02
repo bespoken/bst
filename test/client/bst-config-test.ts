@@ -3,13 +3,15 @@
 import * as assert from "assert";
 import * as fs from "fs";
 import * as sinon from "sinon";
-import * as uuid from "uuid";
 import {BSTConfig} from "../../lib/client/bst-config";
 import {exec} from "child_process";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
+
+// Getting uuid with require because we have issues with typings
+const uuid =  require("uuid");
 
 describe("BSTConfig", function() {
     describe("#bootstrap()", function() {
