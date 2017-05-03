@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+import * as program from "commander";
+import {Global} from "../lib/core/global";
+import {BSTAlexa} from "../lib/client/bst-alexa";
+
+program.version(Global.version());
+
+program
+    .usage("[options]")
+    .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
+    .option("-a, --appId <application-id>", "The application ID for the skill")
+    .option("-U, --userId <user-id>", "Sets the user id to the specified value")
+    .option("-t, --accessToken <accessToken>", "Sets the access token for emulating a user with a linked account")
+    .description("Creates an launch request and sends it to your skill")
+    .action(function () {
+        // Just by casting program to options, we can get all the options which are set on it
+        const options: any = program;
+        let url = options.url;
+        const applicationID = options.appId;
+
+        if (!options.url) {
+            const proxyProcess = Global.running();
+            if (proxyProcess === null) {
+                console.error("No URL specified and no proxy is currently running");
+                console.log();
+                console.log("URL (--url) must be specified if no proxy is currently running");
+                console.log();
+                console.log("If a proxy is running, the launch request will automatically be sent to it");
+                console.log();
+                process.exit(0);
+                return;
+            }
+
+            url = "http://localhost:" + proxyProcess.port;
+        }
+
+        const speaker = new BSTAlexa(url, null, null, applicationID);
+        speaker.start(function (error: string) {
+            if (error) {
+                process.exit(0);
+                return;
+            }
+
+            if (options.userId) {
+                speaker.context().setUserID(options.userId);
+            }
+
+            if (options.accessToken) {
+                speaker.context().setAccessToken(options.accessToken);
+            }
+
+            speaker.launched(function (errorInLaunch: any, response: any, request: any) {
+                if (errorInLaunch) {
+                    console.log("Error: " + errorInLaunch.message);
+                    return;
+                }
+
+                let jsonPretty = JSON.stringify(response, null, 4);
+                console.log("Request:");
+                console.log(JSON.stringify(request, null, 4));
+                console.log("");
+                console.log("Response:");
+                console.log(jsonPretty);
+                console.log("");
+            });
+        });
+    });
+
+Global.initializeCLI().then(
+    () => {
+        // When a command doesn't have obligatory parameters it's not working correctly
+        // so we are inserting an extra parameter even is not
+        process.argv.splice(2, 0, "extra");
+        program.parse(process.argv);
+    }
+).catch((error) => {
+    console.log("Error", error);
+});
+
