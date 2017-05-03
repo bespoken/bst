@@ -31,9 +31,13 @@ program
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
-        console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().sourceID(), Global.config().secretKey()));
-        console.log("(Be sure to put in your real path and other query string parameters!)");
+        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
+        // TODO: Re-add this lines once dashboard configuration is ready
+        // console.log("Your URL for viewing skill data:");
+        // console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().sourceID(), Global.config().secretKey()));
+        // console.log("(Be sure to put in your real path and other query string parameters!)");
+        // console.log("");
 
         let proxy: BSTProxy = BSTProxy.http(port);
         handleOptions(proxy, options);
@@ -50,10 +54,11 @@ program
         console.log("Your URL for Alexa Skill configuration:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        console.log("Your URL for viewing skill data:");
-        console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
-        console.log("Copy and paste this to your browser to your transaction history and summary data.");
-        console.log("");
+        // TODO: Re-add this lines once dashboard configuration is ready
+        // console.log("Your URL for viewing skill data:");
+        // console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
+        // console.log("Copy and paste this to your browser to view your transaction history and summary data.");
+        // console.log("");
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile);
         handleOptions(proxy, options);
         proxy.start();
@@ -69,10 +74,11 @@ program
         console.log("Your URL for Fulfillment configuration:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        console.log("Your URL for viewing skill data:");
-        console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
-        console.log("Copy and paste this to your browser to your transaction history and summary data.");
-        console.log("");
+        // TODO: Re-add this lines once dashboard configuration is ready
+        // console.log("Your URL for viewing skill data:");
+        // console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
+        // console.log("Copy and paste this to your browser to view your transaction history and summary data.");
+        // console.log("");
 
         let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
         handleOptions(proxy, options);

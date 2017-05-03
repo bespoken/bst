@@ -10,6 +10,9 @@ import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
 
+// Getting uuid with require because we have issues with typings
+const uuid =  require("uuid");
+
 describe("BSTConfig", function() {
     describe("#bootstrap()", function() {
         before(function () {
@@ -61,12 +64,13 @@ describe("BSTConfig", function() {
         });
 
         it("Updates old config version (nodeID)", async function () {
-            this.timeout(5000);
+            this.timeout(8000);
 
             // we load in order to create the file
             await BSTConfig.load();
+            const nodeID = uuid.v4();
             const oldConfiguration = {
-                nodeID: "oldNodeID",
+                nodeID,
                 lambdaDeploy: {
                     runtime: "nodejs4.3",
                     role: "",
@@ -87,11 +91,8 @@ describe("BSTConfig", function() {
             let config = await BSTConfig.load();
 
             // assert we have the new keys
-            assert.notEqual(typeof config.secretKey(), "undefined");
+            assert.equal(config.secretKey(), nodeID);
             assert.notEqual(typeof config.sourceID(), "undefined");
-
-            // assert we still have the old values
-            assert.equal(config.nodeID(), "oldNodeID");
         });
 
 
