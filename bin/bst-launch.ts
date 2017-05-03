@@ -18,7 +18,7 @@ program
         let url = options.url;
         const applicationID = options.appId;
 
-        if (options.url === undefined) {
+        if (!options.url) {
             const proxyProcess = Global.running();
             if (proxyProcess === null) {
                 console.error("No URL specified and no proxy is currently running");
@@ -36,7 +36,7 @@ program
 
         const speaker = new BSTAlexa(url, null, null, applicationID);
         speaker.start(function (error: string) {
-            if (error !== undefined) {
+            if (error) {
                 process.exit(0);
                 return;
             }

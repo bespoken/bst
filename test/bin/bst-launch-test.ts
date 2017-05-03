@@ -59,7 +59,7 @@ describe("bst-launch", function() {
             });
 
             sandbox.stub(console, "log", function(data: Buffer) {
-                if (data !== undefined && data.indexOf("Error:") !== -1) {
+                if (data && data.indexOf("Error:") !== -1) {
                     done();
                 }
             });
@@ -82,7 +82,7 @@ describe("bst-launch", function() {
             });
 
             sandbox.stub(console, "log", function(data: Buffer) {
-                if (data !== undefined && data.indexOf("Response:") !== -1) {
+                if (data && data.indexOf("Response:") !== -1) {
                     done();
                 }
             });
