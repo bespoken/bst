@@ -7,6 +7,7 @@ import {BSTProxy} from "../../lib/client/bst-proxy";
 
 describe("BSTProxy", async function() {
     before(async function() {
+        this.timeout(10000);
         await Global.initializeCLI();
     });
 
