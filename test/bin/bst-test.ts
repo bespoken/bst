@@ -64,6 +64,22 @@ describe("bst", function() {
             });
         });
 
+        describe("launch command", function() {
+
+            it("Calls launch", function(done) {
+                process.argv = command("node bst.js launch");
+                let mockProgram = sandbox.mock(require("commander"));
+                mockProgram.expects("executeSubCommand")
+                    .withArgs(command("node bst.js launch"), command("launch"), []);
+
+                NodeUtil.run("../../bin/bst.js");
+                setTimeout(function () {
+                    mockProgram.verify();
+                    done();
+                }, 100);
+            });
+        });
+
         describe("sleep command", function() {
             it("Calls speak", function(done) {
                 process.argv = command("node bst.js speak Hello World");

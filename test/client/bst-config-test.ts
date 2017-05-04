@@ -10,7 +10,12 @@ import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
 
+// Getting uuid with require because we have issues with typings
+const uuid =  require("uuid");
+
 describe("BSTConfig", function() {
+    this.timeout(30000);
+
     describe("#bootstrap()", function() {
         before(function () {
             (<any> BSTConfig).configDirectory = function () {
@@ -29,14 +34,11 @@ describe("BSTConfig", function() {
         });
 
         it("Test new config created correctly", async function () {
-            this.timeout(5000);
             await (<any> BSTConfig).bootstrapIfNeeded();
             assert(fs.existsSync((<any> BSTConfig).configPath()));
         });
 
         it("Loads existing config", async function () {
-            this.timeout(5000);
-
             // Make sure we have a new one
             let config = await BSTConfig.load();
             let secretKey = config.secretKey();
@@ -47,8 +49,6 @@ describe("BSTConfig", function() {
         });
 
         it("Updates existing config", async function () {
-            this.timeout(5000);
-
             // Make sure we have a new one
             let config = await BSTConfig.load();
             let secretKey = config.secretKey();
@@ -61,12 +61,11 @@ describe("BSTConfig", function() {
         });
 
         it("Updates old config version (nodeID)", async function () {
-            this.timeout(5000);
-
             // we load in order to create the file
             await BSTConfig.load();
+            const nodeID = uuid.v4();
             const oldConfiguration = {
-                nodeID: "oldNodeID",
+                nodeID,
                 lambdaDeploy: {
                     runtime: "nodejs4.3",
                     role: "",
@@ -87,11 +86,8 @@ describe("BSTConfig", function() {
             let config = await BSTConfig.load();
 
             // assert we have the new keys
-            assert.notEqual(typeof config.secretKey(), "undefined");
+            assert.equal(config.secretKey(), nodeID);
             assert.notEqual(typeof config.sourceID(), "undefined");
-
-            // assert we still have the old values
-            assert.equal(config.nodeID(), "oldNodeID");
         });
 
 
@@ -99,6 +95,8 @@ describe("BSTConfig", function() {
 });
 
 describe("BSTProcess", function() {
+    this.timeout(30000);
+
     describe("#run()", function() {
         let sandbox: SinonSandbox = null;
 
@@ -121,8 +119,6 @@ describe("BSTProcess", function() {
         });
 
         it("Test new process written", async function () {
-            this.timeout(5000);
-
             await BSTConfig.load();
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
@@ -133,8 +129,6 @@ describe("BSTProcess", function() {
         });
 
         it("Test existing process loaded", async function () {
-            this.timeout(5000);
-
             await BSTConfig.load();
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
@@ -149,8 +143,6 @@ describe("BSTProcess", function() {
         });
 
         it("Test existing process not running", async function () {
-            this.timeout(5000);
-
             await BSTConfig.load();
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
@@ -192,7 +184,6 @@ describe("BSTProcess", function() {
         });
 
         beforeEach(function (done) {
-            this.timeout(5000);
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
                 sandbox = sinon.sandbox.create();
                 Global.loadConfig().then(() => {
@@ -212,29 +203,28 @@ describe("BSTProcess", function() {
         });
 
         it("Test new process written", function (done) {
-                this.timeout(5000);
-                let runningPid: number = null;
-                let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
+            let runningPid: number = null;
+            let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
 
-                sandbox.stub(process, "kill", function (pid: number, code: any) {
-                    // Have to make sure to do the right thing when code is 0
-                    //  Otherwise, the initial check on whether the process is running does not work correctly
-                    //  FYI, calling kill with code 0 is what checks if a process is running
-                    if (code === 0) {
-                        return true;
-                    }
-                    assert.equal(pid, runningPid);
-                    assert.equal(code, "SIGKILL");
-                    proxy.stop(function () {
-                        done();
-                    });
-                });
-
-                proxy.start(function () {
-                    lambdaProcess = BSTProcess.running();
-                    runningPid = lambdaProcess.pid;
-                    lambdaProcess.kill();
+            sandbox.stub(process, "kill", function (pid: number, code: any) {
+                // Have to make sure to do the right thing when code is 0
+                //  Otherwise, the initial check on whether the process is running does not work correctly
+                //  FYI, calling kill with code 0 is what checks if a process is running
+                if (code === 0) {
+                    return true;
+                }
+                assert.equal(pid, runningPid);
+                assert.equal(code, "SIGKILL");
+                proxy.stop(function () {
+                    done();
                 });
             });
+
+            proxy.start(function () {
+                lambdaProcess = BSTProcess.running();
+                runningPid = lambdaProcess.pid;
+                lambdaProcess.kill();
+            });
+        });
     });
 });

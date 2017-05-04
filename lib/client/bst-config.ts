@@ -34,10 +34,6 @@ export class BSTConfig {
         BSTConfig.saveConfig(this.configuration);
     }
 
-    public nodeID(): string {
-        return this.configuration.nodeID;
-    }
-
     public sourceID(): string {
         return this.configuration.sourceID;
     }
@@ -94,9 +90,10 @@ export class BSTConfig {
             let config = JSON.parse(data.toString());
 
             if (!config.sourceID) {
-                const pipeConfig = await BSTConfig.createConfig();
+                const pipeConfig = await BSTConfig.createConfig(config.nodeID);
                 config.sourceID = pipeConfig.sourceID;
                 config.secretKey = pipeConfig.secretKey;
+                delete config.nodeID;
                 BSTConfig.saveConfig(config);
             }
         }
@@ -107,9 +104,9 @@ export class BSTConfig {
         fs.writeFileSync(BSTConfig.configPath(), configBuffer);
     }
 
-    private static async createConfig(): Promise<any> {
+    private static async createConfig(nodeID?: string): Promise<any> {
         let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
-        const pipeInfo = await BSTConfig.createSpokesPipe();
+        const pipeInfo = await BSTConfig.createExternalResources(nodeID);
 
         return {
             "sourceID": pipeInfo.endPoint.name,
@@ -118,24 +115,25 @@ export class BSTConfig {
         };
     }
 
-    private static async createSpokesPipe(): Promise<any> {
-        let isUUIDUnassigned = false;
-        let sourceNameGenerator = null;
-        let spokesClient = null;
-        let spokesPipe = null;
-        try {
-            sourceNameGenerator = new SourceNameGenerator();
-            const generatedKey = await sourceNameGenerator.callService();
-            spokesClient = new SpokesClient(generatedKey.id, generatedKey.secretKey);
-            isUUIDUnassigned = await spokesClient.verifyUUIDisNew();
-            if (isUUIDUnassigned) {
-                spokesPipe = await spokesClient.createPipe();
-            }
-        } catch (error) {
-            LoggingHelper.error(Logger, "Error : " + error.stack);
-            throw Error("Unable to create spokes connection");
+    private static async createSpokesPipe(id: string, secretKey: string): Promise<any> {
+        const spokesClient = new SpokesClient(id, secretKey);
+        const isUUIDUnassigned = await spokesClient.verifyUUIDisNew();
+        if (isUUIDUnassigned) {
+            return spokesClient.createPipe();
         }
-        return spokesPipe;
+        throw Error("Unable to create spokes connection");
+    }
+
+    private static async createExternalResources(nodeID?: string): Promise<any> {
+        const sourceNameGenerator = new SourceNameGenerator();
+        const generatedKey = await sourceNameGenerator.callService();
+        // This is for backwards compatibility - we use the nodeID for the secretKey if there is already a node-id.
+        // That way, the user does not need to change their configuration
+        const secretKey = nodeID ? nodeID : generatedKey.secretKey;
+        const requests = [this.createSpokesPipe(generatedKey.id, secretKey),
+                            sourceNameGenerator.createDashboardSource(generatedKey.id, secretKey)];
+        const responses = await Promise.all(requests);
+        return responses[0];
     }
 }
 

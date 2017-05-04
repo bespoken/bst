@@ -12,6 +12,9 @@ describe("Source Name Generator", function() {
                 "id": "id",
                 "secretKey": "secretKey"
             }`;
+        },
+        post: function (request) {
+            return request;
         }
     });
 
@@ -27,5 +30,24 @@ describe("Source Name Generator", function() {
         const response = await sourceNameGenerator.callService();
         assert.equal(response.id, "id");
         assert.equal(response.secretKey, "secretKey");
+    });
+
+    it("Creates a new source", async function() {
+        const sourceNameGenerator = new SourceNameGenerator();
+        const response = await sourceNameGenerator.createDashboardSource("id", "secretKey");
+        const expectedResponse = {
+            uri: "https://source-api.bespoken.tools/v1/createSource",
+            headers: {
+            },
+            body: {
+                source: {
+                    id: "id",
+                    secretKey: "secretKey",
+                    name: "id",
+                },
+            },
+            json: true
+        };
+        assert.deepEqual(response, expectedResponse);
     });
 });
