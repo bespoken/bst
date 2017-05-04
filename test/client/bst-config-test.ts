@@ -14,7 +14,7 @@ import {Global} from "../../lib/core/global";
 const uuid =  require("uuid");
 
 describe("BSTConfig", function() {
-    this.timeout(10000);
+    this.timeout(30000);
 
     describe("#bootstrap()", function() {
         before(function () {
