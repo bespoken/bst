@@ -2,7 +2,7 @@ import {LoglessContext} from "../logless/logless-context";
 import {LogType} from "./logless-context";
 
 /**
- * Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.
+ * Logless will automatically capture logs and diagnostics for your Node.js Lambda, Google Cloud Function or Express.js service.
  *
  * To use it with Lambdas, simply wrap your function handler, like so:
  * <pre><code>
@@ -15,7 +15,18 @@ import {LogType} from "./logless-context";
  *
  * </code></pre>
  *
- * To use it with Express.js, simply wrap configure it with your routes.
+ * To use it with Google Cloud Functions, simply wrap your function handler:
+ * <pre><code>
+ *     var bst = require('bespoken-tools');
+ *
+ *     exports.hello = bst.Logless.capture("&lt;SECRET_KEY&gt;", function (request, response) {
+ *         // Cloud Function code goes here
+ *         response.json({ foo: "bar" });
+ *     });
+ *
+ * </code></pre>
+ *
+ * To use it with Express.js, simply configure it with your routes:
  * <pre><code>
  *     var bst = require('bespoken-tools');
  *
