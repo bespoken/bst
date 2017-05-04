@@ -26,7 +26,7 @@ import {LogType} from "./logless-context";
  *
  * </code></pre>
  *
- * To use it with Express.js, simply wrap configure it with your routes:
+ * To use it with Express.js, simply configure it with your routes:
  * <pre><code>
  *     var bst = require('bespoken-tools');
  *
