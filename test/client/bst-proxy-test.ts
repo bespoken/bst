@@ -7,6 +7,7 @@ import {BSTProxy} from "../../lib/client/bst-proxy";
 
 describe("BSTProxy", async function() {
     before(async function() {
+        this.timeout(10000);
         await Global.initializeCLI();
     });
 
@@ -101,8 +102,7 @@ describe("BSTProxy", async function() {
     describe("#urlgen()", function() {
         it("Starts and Stops Correctly", function (done) {
             let url = BSTProxy.urlgen("http://jpk.com/test");
-            assert.equal(url, "https://bespoken.tools/dashboard/test?id="
-                + Global.config().sourceID() + "&key=" + Global.config().secretKey());
+            assert.equal(url, "https://proxy.bespoken.tools/test?node-id=" + Global.config().secretKey());
             done();
         });
     });

@@ -43,12 +43,13 @@ const testPayload: any = {
 // Sets up environment variables from .env file
 dotenv.config();
 
-describe("LambdaDeploy", async function() {
+describe("BST Deploy", async function() {
     let lambdaConfig = null;
     let skip: boolean = false;
     let awsHelper = null;
 
     before(async function() {
+        this.timeout(10000);
         await Global.initializeCLI();
         lambdaConfig = LambdaConfig.create();
         lambdaConfig.initialize();
