@@ -2,42 +2,33 @@ import * as url from "url";
 import {Url} from "url";
 import {Global} from "../core/global";
 export class URLMangler {
-    public static mangle(urlString: string, sourceID: string, secretKey: string): string {
+    public static mangle(urlString: string, nodeID: string): string {
         let urlValue: Url = url.parse(urlString, true, false);
-        return URLMangler.mangleJustPath(urlValue.path, sourceID, secretKey);
+        return URLMangler.mangleJustPath(urlValue.path, nodeID);
     }
 
-    public static manglePipeToPath(sourceID: string) {
-        return `https://${ sourceID }.${ Global.SpokesPipeDomain }`;
-    }
-
-    public static mangleJustPath(path: string, sourceID: string, secretKey: string): string {
+    public static mangleJustPath(path: string, nodeID: string): string {
         let newUrl: string = "https://";
-        newUrl += Global.SpokesDashboardHost;
+        newUrl += Global.BespokeServerHost;
         newUrl += path;
         if (path.indexOf("?") !== -1) {
             newUrl += "&";
         } else {
             newUrl += "?";
         }
-        newUrl += "id=" + sourceID;
-        newUrl += "&key=" + secretKey;
-
+        newUrl += "node-id=" + nodeID;
         return newUrl;
     }
 
     /**
      * Creates the BST proxy URL when there is no path
-     * @param sourceID
-     * @returns {string}
-     * @param secretKey
+     * @param nodeID
      * @returns {string}
      */
-    public static mangleNoPath(sourceID: string, secretKey: string): string {
+    public static mangleNoPath(nodeID: string): string {
         let newUrl: string = "https://";
-        newUrl += Global.SpokesDashboardHost;
-        newUrl += "?id=" + sourceID;
-        newUrl += "&key=" + secretKey;
+        newUrl += Global.BespokeServerHost;
+        newUrl += "?node-id=" + nodeID;
         return newUrl;
     }
 }
