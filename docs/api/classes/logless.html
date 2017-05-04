@@ -65,7 +65,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Logless will automatically capture logs and diagnostics for your Node.js Lambda or Express.js service.</p>
+						<p>Logless will automatically capture logs and diagnostics for your Node.js Lambda, Google Cloud Function or Express.js service.</p>
 					</div>
 					<p>To use it with Lambdas, simply wrap your function handler, like so:</p>
 					<pre><code>
@@ -77,7 +77,17 @@
     });
 
 </code></pre>
-					<p>To use it with Express.js, simply wrap configure it with your routes.</p>
+					<p>To use it with Google Cloud Functions, simply wrap your function handler:</p>
+					<pre><code>
+    var bst = require('bespoken-tools');
+
+    exports.hello = bst.Logless.capture("&lt;SECRET_KEY&gt;", function (request, response) {
+        // Cloud Function code goes here
+        response.json({ foo: "bar" });
+    });
+
+</code></pre>
+					<p>To use it with Express.js, simply wrap configure it with your routes:</p>
 					<pre><code>
     var bst = require('bespoken-tools');
 
@@ -144,7 +154,7 @@
 					<div class="tsd-signature tsd-kind-icon">Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;logless.bespoken.tools&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/bespoken/bst/blob/d03b1bc/lib/logless/logless.ts#L49">logless/logless.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/bespoken/bst/blob/2b2585b/lib/logless/logless.ts#L60">logless/logless.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -161,7 +171,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/d03b1bc/lib/logless/logless.ts#L58">logless/logless.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2b2585b/lib/logless/logless.ts#L69">logless/logless.ts:69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -195,7 +205,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/d03b1bc/lib/logless/logless.ts#L123">logless/logless.ts:123</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2b2585b/lib/logless/logless.ts#L134">logless/logless.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -212,7 +222,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/d03b1bc/lib/logless/logless.ts#L118">logless/logless.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2b2585b/lib/logless/logless.ts#L129">logless/logless.ts:129</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -237,7 +247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/d03b1bc/lib/logless/logless.ts#L72">logless/logless.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2b2585b/lib/logless/logless.ts#L83">logless/logless.ts:83</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -266,7 +276,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/bespoken/bst/blob/d03b1bc/lib/logless/logless.ts#L81">logless/logless.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/bespoken/bst/blob/2b2585b/lib/logless/logless.ts#L92">logless/logless.ts:92</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

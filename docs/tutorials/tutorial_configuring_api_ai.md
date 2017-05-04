@@ -75,7 +75,7 @@ Enable the first option, "Actions on Google".
 
 <img src='../../assets/images/api-ai-integration-details.png' />
 
-Enter the "World" for the "Invocation Name". If you have a Google Cloud Project setup, enter the ID on this screen. [More information here](https://cloud.google.com).
+Enter the "World" for the "Invocation Name". If you have a Google Cloud Project setup, enter the ID on this screen - [you can find the project ID here](https://console.cloud.google.com).
 
 If you want to use this Action on your Google Home device or in the [Web Simulator]((https://developers.google.com/actions/tools/web-simulator)), click "Preview".
 

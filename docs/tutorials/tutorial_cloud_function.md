@@ -7,7 +7,7 @@ This tutorial shows you how to get started developing for Actions on Google usin
     * `$ npm install bespoken-tools -g`
     * [Installation Instructions](/getting_started/)
 * Google Cloud account
-    * [Google Cloud](https://cloud.google.com/)
+    * [Google Cloud](https://console.cloud.google.com/)
 * API.AI account
     * [API.AI](https://api.ai/)
 
