@@ -95,7 +95,5 @@ if (process.argv.slice(2).length === 0) {
 
 Global.initializeCLI().then(
     () => program.parse(process.argv)
-).catch((error) => {
-    console.log("Error", error);
-});
+);
 

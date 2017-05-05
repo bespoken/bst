@@ -89,8 +89,6 @@ describe("BSTConfig", function() {
             assert.equal(config.secretKey(), nodeID);
             assert.notEqual(typeof config.sourceID(), "undefined");
         });
-
-
     });
 });
 

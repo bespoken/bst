@@ -20,7 +20,8 @@ export class SpokesClient {
             body: {
 
             },
-            json: true // Automatically parses the JSON string in the response
+            json: true, // Automatically parses the JSON string in the response
+            timeout: 30000
         };
 
         try {
@@ -59,7 +60,8 @@ export class SpokesClient {
                 pipeType: "HTTP",
                 proxy: true,
             },
-            json: true // Automatically parses the JSON string in the response
+            json: true, // Automatically parses the JSON string in the response
+            timeout: 30000
         };
         const response = await post(options);
         // Spokes creates a endPointID but not return the endPoint name
