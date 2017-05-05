@@ -135,7 +135,5 @@ program.Command.prototype.missingArgument = function(name: string): void {
 
 Global.initializeCLI().then(
     () => program.parse(process.argv)
-).catch((error) => {
-    console.log("Error", error);
-});
+);
 

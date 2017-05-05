@@ -73,7 +73,5 @@ Global.initializeCLI().then(
         process.argv.splice(2, 0, "extra");
         program.parse(process.argv);
     }
-).catch((error) => {
-    console.log("Error", error);
-});
+);
 

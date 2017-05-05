@@ -5,6 +5,7 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
+import {RequestError} from "../external/request-error";
 
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
@@ -19,11 +20,100 @@ describe("bst", function() {
         sandbox.restore();
     });
 
+    describe("Error Handling", function() {
+        beforeEach(function () {
+            mockery.enable();
+            mockery.warnOnUnregistered(false);
+        });
+
+        afterEach(function () {
+            mockery.disable();
+        });
+
+        it("Calls proxy and gets a timeout error", function(done) {
+            process.argv = command("node bst.js proxy http 9000");
+
+            let mockProgram = sandbox.mock(require("commander"));
+            let errorCalls = 0;
+
+            const timeoutError = new RequestError("ETIMEDOUT", 505);
+            timeoutError.code = "ETIMEDOUT";
+            mockProgram.expects("executeSubCommand")
+                .withArgs(command("node bst.js proxy http 9000"), command("proxy http 9000")).throws(timeoutError);
+
+            mockery.registerMock("../lib/core/logging-helper", {
+                "LoggingHelper": {
+                    info: function (level: any, message: string) {},
+                    error: function (level: any, message: string) {
+                        errorCalls++;
+                        try {
+                            if (errorCalls === 1) {
+                                assert.equal(message, "Couldn't establish connection, please try again later");
+                            }
+
+                            if (errorCalls === 2) {
+                                assert.equal(message, "If the issue persists, contact us at Bespoken:");
+                            }
+
+                            if (errorCalls === 3) {
+                                assert.equal(message, "\thttps://gitter.im/bespoken/bst");
+                                done();
+                            }
+                        } catch (error) {
+                            done(error);
+                        }
+                    }
+                }
+            });
+
+            NodeUtil.run("../../bin/bst.js");
+        });
+
+        it("Calls proxy and gets a generic error", function(done) {
+            process.argv = command("node bst.js proxy http 9000");
+
+            let mockProgram = sandbox.mock(require("commander"));
+            let errorCalls = 0;
+
+            const timeoutError = new RequestError("Generic Error", 505);
+            mockProgram.expects("executeSubCommand")
+                .withArgs(command("node bst.js proxy http 9000"), command("proxy http 9000")).throws(timeoutError);
+
+            mockery.registerMock("../lib/core/logging-helper", {
+                "LoggingHelper": {
+                    info: function (level: any, message: string) {},
+                    error: function (level: any, message: string) {
+                        errorCalls++;
+                        try {
+                            if (errorCalls === 1) {
+                                assert.equal(message, "Something went wrong, please try again later");
+                            }
+
+                            if (errorCalls === 2) {
+                                assert.equal(message, "If the issue persists, contact us at Bespoken:");
+                            }
+
+                            if (errorCalls === 3) {
+                                assert.equal(message, "\thttps://gitter.im/bespoken/bst");
+                                done();
+                            }
+                        } catch (error) {
+                            done(error);
+                        }
+                    }
+                }
+            });
+
+            NodeUtil.run("../../bin/bst.js");
+        });
+    });
+
     describe("proxy command", function() {
         it("Calls proxy for http", function(done) {
             process.argv = command("node bst.js proxy http 9000");
 
             let mockProgram = sandbox.mock(require("commander"));
+
             mockProgram.expects("executeSubCommand")
                 .withArgs(command("node bst.js proxy http 9000"), command("proxy http 9000"));
 

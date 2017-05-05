@@ -27,7 +27,14 @@ program
 Global.initializeCLI().then(
     () => program.parse(process.argv)
 ).catch((error) => {
-    LoggingHelper.error(Logger, error);
+    // Request to create pipe or source failed
+    if (error.code === "ETIMEDOUT") {
+        LoggingHelper.error(Logger, "Couldn't establish connection, please try again later");
+    } else {
+        LoggingHelper.error(Logger, "Something went wrong, please try again later");
+    }
+    LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+    LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
 });
 
 

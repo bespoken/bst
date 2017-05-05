@@ -90,23 +90,6 @@ describe("BSTConfig", function() {
             assert.equal(config.secretKey(), nodeID);
             assert.notEqual(typeof config.sourceID(), "undefined");
         });
-
-
-        it("Throws an error on timeout", async function () {
-            const functionVersion = (<any> BSTConfig).createExternalResources;
-            const error = new RequestError("Timeout error", 505);
-            error.code = "ETIMEDOUT";
-            (<any> BSTConfig).createExternalResources = function () {
-                throw error;
-            };
-
-            try {
-                await BSTConfig.load();
-            } catch (error) {
-                assert.equal(error.message, "Couldn't establish connection, please try again later");
-            }
-            (<any> BSTConfig).createExternalResources = functionVersion;
-        });
     });
 });
 

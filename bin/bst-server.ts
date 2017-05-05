@@ -17,6 +17,4 @@ program
 
 Global.initializeCLI().then(
     () => program.parse(process.argv)
-).catch((error) => {
-    console.log("Error", error);
-});
+);
