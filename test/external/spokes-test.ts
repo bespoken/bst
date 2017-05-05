@@ -91,6 +91,7 @@ describe("Spokes", function() {
                    proxy: true
                },
                json: true,
+               timeout: 30000,
                // We add the endpoint on actual call to createPipe
                endPoint: {
                    name: "id"

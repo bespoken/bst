@@ -105,7 +105,7 @@ export class BSTConfig {
     }
 
     private static async createConfig(nodeID?: string): Promise<any> {
-        let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
+        const lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
         const pipeInfo = await BSTConfig.createExternalResources(nodeID);
 
         return {

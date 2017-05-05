@@ -8,10 +8,10 @@ describe("Source Name Generator", function() {
     mockery.warnOnReplace(false);
     mockery.registerMock("request-promise-native", {
         get: function () {
-            return `{
+            return {
                 "id": "id",
                 "secretKey": "secretKey"
-            }`;
+            };
         },
         post: function (request) {
             return request;
@@ -46,7 +46,8 @@ describe("Source Name Generator", function() {
                     name: "id",
                 },
             },
-            json: true
+            json: true,
+            timeout: 30000
         };
         assert.deepEqual(response, expectedResponse);
     });
