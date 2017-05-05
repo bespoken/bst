@@ -48,7 +48,8 @@ describe("bst", function() {
                         errorCalls++;
                         try {
                             if (errorCalls === 1) {
-                                assert.equal(message, "Couldn't establish connection, please try again later");
+                                assert.equal(message, "Could not establish connection." +
+                                    " Please check your network connection and try again.");
                             }
 
                             if (errorCalls === 2) {
@@ -86,7 +87,8 @@ describe("bst", function() {
                         errorCalls++;
                         try {
                             if (errorCalls === 1) {
-                                assert.equal(message, "Something went wrong, please try again later");
+                                assert.equal(message, "Something went wrong." +
+                                    " Please check your network connection and try again.");
                             }
 
                             if (errorCalls === 2) {
