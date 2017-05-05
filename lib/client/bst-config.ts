@@ -106,13 +106,21 @@ export class BSTConfig {
 
     private static async createConfig(nodeID?: string): Promise<any> {
         let lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
-        const pipeInfo = await BSTConfig.createExternalResources(nodeID);
+        try {
+            const pipeInfo = await BSTConfig.createExternalResources(nodeID);
 
-        return {
-            "sourceID": pipeInfo.endPoint.name,
-            "secretKey": pipeInfo.uuid,
-            "lambdaDeploy": lambdaConfig
-        };
+            return {
+                "sourceID": pipeInfo.endPoint.name,
+                "secretKey": pipeInfo.uuid,
+                "lambdaDeploy": lambdaConfig
+            };
+        } catch (error) {
+            if (error.code === "ETIMEDOUT") {
+                throw new Error("Couldn't establish connection, please try again later");
+            }
+            throw error;
+        }
+
     }
 
     private static async createSpokesPipe(id: string, secretKey: string): Promise<any> {

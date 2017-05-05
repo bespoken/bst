@@ -2,8 +2,12 @@ import {get, post} from "request-promise-native";
 
 export class SourceNameGenerator {
     public async callService() {
-        const response = await get("https://source-api.bespoken.tools/v1/sourceId");
-        return JSON.parse(response);
+        const options = {
+            uri: "https://source-api.bespoken.tools/v1/sourceId",
+            json: true,
+            timeout: 30000
+        };
+        return get(options);
     };
 
     public async createDashboardSource(id: string, secretKey: string) {
@@ -18,8 +22,8 @@ export class SourceNameGenerator {
                     name: id,
                 },
             },
-            json: true
-
+            json: true,
+            timeout: 30000
         };
         return post(options);
     }

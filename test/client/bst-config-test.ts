@@ -7,6 +7,7 @@ import {BSTConfig} from "../../lib/client/bst-config";
 import {exec} from "child_process";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
+import {RequestError} from "../external/request-error";
 import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
 
@@ -91,6 +92,21 @@ describe("BSTConfig", function() {
         });
 
 
+        it("Throws an error on timeout", async function () {
+            const functionVersion = (<any> BSTConfig).createExternalResources;
+            const error = new RequestError("Timeout error", 505);
+            error.code = "ETIMEDOUT";
+            (<any> BSTConfig).createExternalResources = function () {
+                throw error;
+            };
+
+            try {
+                await BSTConfig.load();
+            } catch (error) {
+                assert.equal(error.message, "Couldn't establish connection, please try again later");
+            }
+            (<any> BSTConfig).createExternalResources = functionVersion;
+        });
     });
 });
 
