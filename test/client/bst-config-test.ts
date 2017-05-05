@@ -7,7 +7,6 @@ import {BSTConfig} from "../../lib/client/bst-config";
 import {exec} from "child_process";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
-import {RequestError} from "../external/request-error";
 import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
 
