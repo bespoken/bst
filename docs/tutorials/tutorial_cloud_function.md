@@ -24,6 +24,11 @@ Go to the root level of the sample:
 $ cd super-simple-google-action/
 ```
 
+Install the dependencies:
+```bash
+$ npm install
+```
+
 ## Configure your API.AI Action
 For a detailed walkthrough on setting up an Action on Google with API.AI, go [here](tutorial_configuring_api_ai).
 
