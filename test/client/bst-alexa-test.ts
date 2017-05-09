@@ -6,6 +6,20 @@ import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 import * as sinon from "sinon";
 
+describe("BSTAlexa Without Config", function() {
+    it("#start()", function (done) {
+        let speak = new BSTAlexa("http://localhost:9000",
+            "test/resources/speechAssets/IntentSchema.json",
+            "test/resources/speechAssets/SampleUtterances.txt");
+        speak.start(function (error: string) {
+            assert(error === undefined);
+            speak.stop(function() {
+                done();
+            });
+        });
+    });
+});
+
 describe("BSTAlexa", async function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
