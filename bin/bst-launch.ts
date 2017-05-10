@@ -18,6 +18,12 @@ program
         let url = options.url;
         const applicationID = options.appId;
 
+        if (process.argv.some( arg => arg === "-h" || arg === "--help")) {
+            program.outputHelp();
+            process.exit(0);
+            return;
+        }
+
         if (!options.url) {
             const proxyProcess = Global.running();
             if (proxyProcess === null) {
