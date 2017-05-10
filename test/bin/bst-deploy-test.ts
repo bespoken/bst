@@ -5,10 +5,11 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
-import {Global} from "../../lib/core/global";
 import {LambdaConfig} from "../../lib/client/lambda-config";
+import {Global} from "../../lib/core/global";
 
 const dotenv = require("dotenv");
+const uuid = require("uuid");
 
 // The test project
 const deployProject: string = "./deployProject";
@@ -26,22 +27,23 @@ describe("bst-deploy", function() {
 
     before(async function (): Promise<void> {
         this.timeout(20000);
-        try {
-            Global.initialize(false);
-            await Global.loadConfig();
+        mockery.enable({useCleanCache: true});
+        mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
+        mockery.registerMock("../external/source-name-generator", {
+            SourceNameGenerator: mockSourceGenerator,
+        });
 
-            lambdaConfig = LambdaConfig.create();
-            lambdaConfig.initialize();
+        Global.initialize(false);
+        await Global.loadConfig();
 
-            if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-                console.log("Skipping deployer tests. No AWS credentials.");
-                skip = true;
-            }
-        }  catch (error) {
-            console.log("Error: ", error);
-            throw error;
+        lambdaConfig = LambdaConfig.create();
+        lambdaConfig.initialize();
+
+        if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+            console.log("Skipping deployer tests. No AWS credentials.");
+            skip = true;
         }
-
     });
 
     let sandbox: SinonSandbox = null;
@@ -96,9 +98,6 @@ describe("bst-deploy", function() {
         let originalFunction: any = null;
         beforeEach (function () {
             originalFunction = process.stdout.write;
-        });
-
-        afterEach (function () {
         });
 
         it("Prints help with no-args", function(done) {
@@ -176,6 +175,18 @@ describe("bst-deploy", function() {
     });
 });
 
-let command = function (command: string): Array<string> {
+const command = function (command: string): Array<string> {
     return command.split(" ");
+};
+
+const mockSourceGenerator = class SourceNameGenerator {
+    public callService() {
+        const id = uuid.v4();
+        return {
+            id,
+            secretKey: "unit-test" + id,
+        };
+    };
+
+    public createDashboardSource () {};
 };
