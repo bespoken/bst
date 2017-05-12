@@ -15,24 +15,24 @@ import {SpokesClient as mockSpokes} from "../mocks/mock-spokes";
 // Getting uuid with require because we have issues with typings
 const uuid =  require("uuid");
 
-mockery.enable({useCleanCache: true});
-mockery.warnOnUnregistered(false);
-mockery.warnOnReplace(false);
-mockery.registerMock("../external/source-name-generator", {
-    SourceNameGenerator: mockSourceNameGenerator,
-});
-mockery.registerMock("../external/spokes", {
-    SpokesClient: mockSpokes,
-});
-
-const BSTConfig = require("../../lib/client/bst-config").BSTConfig;
+let BSTConfig;
 
 describe("BSTConfig", function() {
     this.timeout(30000);
 
     describe("#bootstrap()", function() {
         before(function () {
+            mockery.enable({useCleanCache: true});
+            mockery.warnOnUnregistered(false);
+            mockery.warnOnReplace(false);
+            mockery.registerMock("../external/source-name-generator", {
+                SourceNameGenerator: mockSourceNameGenerator,
+            });
+            mockery.registerMock("../external/spokes", {
+                SpokesClient: mockSpokes,
+            });
 
+            BSTConfig = require("../../lib/client/bst-config").BSTConfig;
             (<any> BSTConfig).configDirectory = function () {
                 return "test/resources/.bst";
             };
@@ -46,6 +46,11 @@ describe("BSTConfig", function() {
 
         afterEach(function () {
 
+        });
+
+        after(function () {
+            mockery.deregisterAll();
+            mockery.disable();
         });
 
         it("Test new config created correctly", async function () {
