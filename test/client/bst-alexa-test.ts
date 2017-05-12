@@ -20,25 +20,16 @@ describe("BSTAlexa Without Config", function() {
     });
 });
 
-describe("BSTAlexa", async function() {
+describe("BSTAlexa", function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
-
-    before(async function () {
-        Global.initialize(false);
-        await Global.loadConfig();
-    });
 
     describe("#start()", function () {
         let sandbox: any = null;
 
-        before(async function () {
-            Global.initialize(false);
-            await Global.loadConfig();
-        });
-
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
+            Global.initialize(false, true);
         });
 
         afterEach(function () {
@@ -67,6 +58,7 @@ describe("BSTAlexa", async function() {
 
         it("Initializes with application ID", function (done) {
             this.timeout(5000);
+            console.log(Global.config());
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt",
@@ -79,11 +71,12 @@ describe("BSTAlexa", async function() {
 
         it("Initializing after setting the application ID initialize with application ID", function (done) {
             this.timeout(5000);
+            // Adding the applicationId to the global config before initializing alexa
+            Global.config().updateApplicationID("1234567890J");
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function () {
-                assert(Global.config().applicationID(), "1234567890J");
                 assert(speak.context().applicationID(), "1234567890J");
                 done();
             });

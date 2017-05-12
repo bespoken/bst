@@ -6,9 +6,9 @@ import {BespokeServer} from "../../lib/server/bespoke-server";
 import {BSTProxy} from "../../lib/client/bst-proxy";
 
 describe("BSTProxy", async function() {
-    before(async function() {
+    before(function() {
         this.timeout(10000);
-        await Global.initializeCLI();
+        Global.initialize(false, true);
     });
 
     describe("#http()", function() {

@@ -26,7 +26,7 @@ gulp.task('setup', function (done) {
 });
 
 gulp.task('lint', function() {
-    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts", "!lib/**/*.d.ts", "!bin/*.d.ts"])
+    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts", "!lib/**/*.d.ts", "!bin/*.d.ts", "!test/**/*.d.ts"])
         .pipe(tslint({
             formatter: "verbose"
         }))

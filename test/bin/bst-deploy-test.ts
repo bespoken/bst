@@ -9,7 +9,6 @@ import {LambdaConfig} from "../../lib/client/lambda-config";
 import {Global} from "../../lib/core/global";
 
 const dotenv = require("dotenv");
-const uuid = require("uuid");
 
 // The test project
 const deployProject: string = "./deployProject";
@@ -27,15 +26,8 @@ describe("bst-deploy", function() {
 
     before(async function (): Promise<void> {
         this.timeout(20000);
-        mockery.enable({useCleanCache: true});
-        mockery.warnOnUnregistered(false);
-        mockery.warnOnReplace(false);
-        mockery.registerMock("../external/source-name-generator", {
-            SourceNameGenerator: mockSourceGenerator,
-        });
 
-        Global.initialize(false);
-        await Global.loadConfig();
+        Global.initialize(false, true);
 
         lambdaConfig = LambdaConfig.create();
         lambdaConfig.initialize();
@@ -177,16 +169,4 @@ describe("bst-deploy", function() {
 
 const command = function (command: string): Array<string> {
     return command.split(" ");
-};
-
-const mockSourceGenerator = class SourceNameGenerator {
-    public callService() {
-        const id = uuid.v4();
-        return {
-            id,
-            secretKey: "unit-test" + id,
-        };
-    };
-
-    public createDashboardSource () {};
 };

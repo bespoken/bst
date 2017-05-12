@@ -7,7 +7,7 @@ import {Global} from "../../lib/core/global";
 
 describe("LambdaServer", function() {
     before(function () {
-        Global.initialize();
+        Global.initialize(false, true);
     });
 
     beforeEach(function () {

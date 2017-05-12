@@ -3,21 +3,36 @@
 import * as assert from "assert";
 import * as fs from "fs";
 import * as sinon from "sinon";
-import {BSTConfig} from "../../lib/client/bst-config";
 import {exec} from "child_process";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
+import * as mockery from "mockery";
+import {SourceNameGenerator as mockSourceNameGenerator} from "../mocks/mock-source-name-generator";
+import {SpokesClient as mockSpokes} from "../mocks/mock-spokes";
 
 // Getting uuid with require because we have issues with typings
 const uuid =  require("uuid");
+
+mockery.enable({useCleanCache: true});
+mockery.warnOnUnregistered(false);
+mockery.warnOnReplace(false);
+mockery.registerMock("../external/source-name-generator", {
+    SourceNameGenerator: mockSourceNameGenerator,
+});
+mockery.registerMock("../external/spokes", {
+    SpokesClient: mockSpokes,
+});
+
+const BSTConfig = require("../../lib/client/bst-config").BSTConfig;
 
 describe("BSTConfig", function() {
     this.timeout(30000);
 
     describe("#bootstrap()", function() {
         before(function () {
+
             (<any> BSTConfig).configDirectory = function () {
                 return "test/resources/.bst";
             };
@@ -176,15 +191,21 @@ describe("BSTProcess", function() {
         let lambdaProcess: BSTProcess = null;
 
         before(function () {
+            (<any> BSTConfig).configDirectory = function () {
+                return "test/resources/.bst";
+            };
+
             (<any> BSTProcess).processPath = function () {
                 return "test/resources/.bst/process";
             };
+
+            Global.initialize(false, true);
         });
 
         beforeEach(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
                 sandbox = sinon.sandbox.create();
-                Global.loadConfig().then(() => {
+                (<any> BSTConfig).load().then(() => {
                     done();
                 });
             });
