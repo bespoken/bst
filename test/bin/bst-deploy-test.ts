@@ -24,7 +24,7 @@ describe("bst-deploy", function() {
     let lambdaConfig = null;
     let skip: boolean = false;
 
-    before(async function (): Promise<void> {
+    before(function () {
         this.timeout(20000);
 
         Global.initialize(false, true);
