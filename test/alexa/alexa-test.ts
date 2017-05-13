@@ -69,7 +69,7 @@ describe("Alexa", function() {
             };
 
             alexa.startSession(skillURL, model, false).spoken("Take Me To Walmart {A}", function (error: any, response: any) {
-                assert(response.response.shouldEndSession);
+                assert(!response.response.shouldEndSession);
                 done();
             });
         });

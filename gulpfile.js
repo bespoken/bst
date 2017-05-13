@@ -21,7 +21,7 @@ gulp.task('build', ['setup', 'lint'], function () {
 // http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
 var testStatus;
 gulp.task('test-suites', function() {
-    return gulp.src(['test/**/*-test.js'])
+    return gulp.src(['test/alexa/*-test.js'])
         .pipe(
             tap(function(file, t) {
                 var testFile = Path.relative(process.cwd(), file.path);
@@ -47,7 +47,7 @@ gulp.task('test-suites', function() {
                     console.error("Error: " + mocha.error);
                 }
 
-                testStatus = mocha.status;
+                testStatus |= mocha.status;
                 console.error("Status: " + testStatus);
                 console.log(mocha.stdout.toString());
                 if (mocha.stderr.length) {
@@ -109,7 +109,11 @@ gulp.task("coverage", ['coverage-suites'], function (done) {
 
 gulp.task("test", ["test-suites"], function (done) {
     console.log("TestStatus: " + testStatus);
-    return gulp.src("test").pipe(fail(testStatus, true));
+    if (testStatus !== 0) {
+        process.exit(1);
+    } else {
+        done();
+    }
 });
 
 gulp.task('setup', function (done) {
