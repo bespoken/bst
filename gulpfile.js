@@ -11,16 +11,17 @@ const shell = require('gulp-shell');
 const tap = require("gulp-tap");
 const Mocha = require('mocha');
 const Path = require('path');
+const fail = require('gulp-fail');
+const nyc = require('nyc');
 
 gulp.task('build', ['setup', 'lint'], function () {
     return run('node_modules/typescript/bin/tsc').exec();
 });
 
 // http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
-gulp.task('test-run', function() {
-    var pass = 0;
-    var fail = [];
-    return gulp.src(['test/alexa/*-test.js'])
+var testStatus;
+gulp.task('test-suites', function() {
+    return gulp.src(['test/**/*-test.js'])
         .pipe(
             tap(function(file, t) {
                 var testFile = Path.relative(process.cwd(), file.path);
@@ -45,7 +46,9 @@ gulp.task('test-run', function() {
                 if (mocha.error) {
                     console.error("Error: " + mocha.error);
                 }
-                console.error("Status: " + mocha.status);
+
+                testStatus = mocha.status;
+                console.error("Status: " + testStatus);
                 console.log(mocha.stdout.toString());
                 if (mocha.stderr.length) {
                     console.log("Errors:\n" + mocha.stderr);
@@ -54,8 +57,59 @@ gulp.task('test-run', function() {
         );
 });
 
-gulp.task("test", ["test-run"], function () {
-    console.log("done");
+gulp.task('coverage-suites', ['coverage-clean'], function() {
+    return gulp.src(['test/**/*-test.js'])
+        .pipe(
+            tap(function(file, t) {
+                var testFile = Path.relative(process.cwd(), file.path);
+                // Instantiate a Mocha instance.
+                // var mocha = new Mocha();
+                //
+                // var testFile = Path.relative(process.cwd(), file.path);
+                // console.log("File: " + testFile);
+                // mocha.addFile(testFile);
+                //
+                // var runner = mocha.run();
+                //
+                // runner.on('pass', function (e) {
+                //     pass++;
+                // });
+                //
+                // runner.on('fail', function (e) {
+                //     fail.push(e.title);
+                // });
+
+                var mocha = spawn("node_modules/.bin/nyc", ['--clean=false','--silent=true',
+                    'node_modules/.bin/mocha', '--colors', testFile]);
+                if (mocha.error) {
+                    console.error("Error: " + mocha.error);
+                }
+
+                testStatus = mocha.status;
+                console.error("Status: " + testStatus);
+                console.log(mocha.stdout.toString());
+                if (mocha.stderr.length) {
+                    console.log("Errors:\n" + mocha.stderr);
+                }
+            })
+        );
+});
+
+gulp.task("coverage-clean", function(done) {
+    run('rm -rf .nyc_output/*').exec(function () {
+        done();
+    })
+});
+
+gulp.task("coverage", ['coverage-suites'], function (done) {
+    run('nyc report --reporter=text-lcov | coveralls').exec(function() {
+        done();
+    })
+});
+
+gulp.task("test", ["test-suites"], function (done) {
+    console.log("TestStatus: " + testStatus);
+    return gulp.src("test").pipe(fail(testStatus, true));
 });
 
 gulp.task('setup', function (done) {
