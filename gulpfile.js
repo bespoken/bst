@@ -1,20 +1,61 @@
+const spawn = require('child_process').spawnSync;
+const foreach = require('gulp-foreach');
 const gulp = require('gulp');
-const mocha = require('gulp-mocha');
+const mocha = require('gulp-spawn-mocha');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
 const tslint = require('gulp-tslint');
 const typedoc = require('gulp-bst-typedoc');
 const run = require('gulp-run');
 const shell = require('gulp-shell');
+const tap = require("gulp-tap");
+const Mocha = require('mocha');
+const Path = require('path');
 
 gulp.task('build', ['setup', 'lint'], function () {
     return run('node_modules/typescript/bin/tsc').exec();
 });
 
 // http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
-gulp.task('test', ['build'], function() {
-    return gulp.src(['test/**/*-test.js'])
-        .pipe(mocha());
+gulp.task('test-run', function() {
+    var pass = 0;
+    var fail = [];
+    return gulp.src(['test/alexa/*-test.js'])
+        .pipe(
+            tap(function(file, t) {
+                var testFile = Path.relative(process.cwd(), file.path);
+                // Instantiate a Mocha instance.
+                // var mocha = new Mocha();
+                //
+                // var testFile = Path.relative(process.cwd(), file.path);
+                // console.log("File: " + testFile);
+                // mocha.addFile(testFile);
+                //
+                // var runner = mocha.run();
+                //
+                // runner.on('pass', function (e) {
+                //     pass++;
+                // });
+                //
+                // runner.on('fail', function (e) {
+                //     fail.push(e.title);
+                // });
+
+                var mocha = spawn("node_modules/mocha/bin/mocha", ["--colors", testFile]);
+                if (mocha.error) {
+                    console.error("Error: " + mocha.error);
+                }
+                console.error("Status: " + mocha.status);
+                console.log(mocha.stdout.toString());
+                if (mocha.stderr.length) {
+                    console.log("Errors:\n" + mocha.stderr);
+                }
+            })
+        );
+});
+
+gulp.task("test", ["test-run"], function () {
+    console.log("done");
 });
 
 gulp.task('setup', function (done) {
