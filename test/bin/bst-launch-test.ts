@@ -44,6 +44,28 @@ describe("bst-launch", function() {
     });
 
     describe("Launch command", function() {
+        it("Prints help with help parameter", function(done) {
+            process.argv = command("node bst-launch.js -h");
+
+            const mockProgram = sandbox.mock(require("commander"));
+            mockProgram.expects("outputHelp").once();
+
+            const mockProcess = sandbox.mock(process);
+            mockProcess.expects("exit").once().withExactArgs(0);
+
+            NodeUtil.load("../../bin/bst-launch.js");
+
+            setTimeout(function () {
+                try {
+                    mockProgram.verify();
+                    mockProcess.verify();
+                    done();
+                } catch (assertionError) {
+                    done(assertionError);
+                }
+            }, 100);
+        });
+
         it("Prints error if launch throws error", function(done) {
             process.argv = command("node bst-launch.js");
             mockery.registerMock("../lib/client/bst-alexa", {
