@@ -1,20 +1,97 @@
 const gulp = require('gulp');
-const mocha = require('gulp-mocha');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
+const run = require('gulp-run');
+const path = require('path');
+const spawn = require('child_process').spawnSync;
+const tap = require('gulp-tap');
 const tslint = require('gulp-tslint');
 const typedoc = require('gulp-bst-typedoc');
-const run = require('gulp-run');
-const shell = require('gulp-shell');
 
 gulp.task('build', ['setup', 'lint'], function () {
     return run('node_modules/typescript/bin/tsc').exec();
 });
 
-// http://stackoverflow.com/questions/33191377/gulp-hangs-after-finishing
-gulp.task('test', ['build'], function() {
+var testStatus;
+// Runs each test file as its own process using spawn
+// We use the testStatus variable to track if any of the processes had failing tests
+gulp.task('test-suite-run', ['build'], function() {
     return gulp.src(['test/**/*-test.js'])
-        .pipe(mocha());
+        .pipe(
+            tap(function(file, t) {
+                const testFile = path.relative(process.cwd(), file.path);
+                const mocha = spawn('node_modules/mocha/bin/mocha', ['--colors', testFile]);
+                if (mocha.error) {
+                    console.error('Error: ' + mocha.error);
+                }
+
+                testStatus |= mocha.status;
+                console.log(mocha.stdout.toString());
+                if (mocha.stderr.length) {
+                    console.error("Errors:\n" + mocha.stderr);
+                }
+            })
+        );
+});
+
+// Runs the all the test suites, and then based on the status, exits
+// This is a separate task because there is not an easy way to tell when each of the Test Suite processes finishes
+gulp.task('test', ['test-suite-run'], function (done) {
+    var message = "Tests Completed. All Succeeded.";
+    if (testStatus > 0) {
+        message = "Tests Completed. Some Tests Failed.";
+    }
+    console.log(message);
+
+    if (testStatus !== 0) {
+        process.exit(1);
+    } else {
+        done();
+    }
+});
+
+
+// Clean up the .nyc_output directory
+// Needs to be run before coverage, as we generate many files into the directory while running
+gulp.task('coverage-clean', ['build'], function(done) {
+    run('rm -rf .nyc_output').exec(function () {
+        run('mkdir .nyc_output').exec(function () {
+            done();
+        });
+    });
+});
+
+gulp.task('coverage-suite-run', ['coverage-clean'], function() {
+    return gulp.src(['test/**/*-test.js'])
+        .pipe(
+            tap(function(file, t) {
+                var testFile = path.relative(process.cwd(), file.path);
+
+                var nyc = spawn('node_modules/.bin/nyc', ['--clean=false','--silent=true',
+                    'node_modules/.bin/mocha', '--colors', testFile]);
+                if (nyc.error) {
+                    console.error(nyc.error);
+                }
+
+                testStatus = nyc.status;
+                console.log(nyc.stdout.toString());
+                if (nyc.stderr.length) {
+                    console.error(nyc.stderr.toString());
+                }
+            })
+        );
+});
+
+gulp.task("coverage", ['coverage-suite-run'], function (done) {
+    run('nyc report --reporter=lcov').exec(function() {
+        done();
+    })
+});
+
+gulp.task("coveralls", ['coverage-suite-run'], function (done) {
+    run('nyc report --reporter=text-lcov | coveralls').exec(function() {
+        done();
+    })
 });
 
 gulp.task('setup', function (done) {
@@ -26,7 +103,7 @@ gulp.task('setup', function (done) {
 });
 
 gulp.task('lint', function() {
-    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts", "!lib/**/*.d.ts", "!bin/*.d.ts"])
+    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts", "!lib/**/*.d.ts", "!bin/*.d.ts", "!test/**/*.d.ts"])
         .pipe(tslint({
             formatter: "verbose"
         }))

@@ -21,6 +21,8 @@ test/**/*.js
 test/**/*.map
 test/resources/.bst/config
 
+.nyc_output/
+
 **/.DS_Store
 
 typings/globals/
@@ -33,3 +35,4 @@ site/
 !test/resources/*
 !test/resources/exampleProject/*
 !test/resources/deployProject/*
+test/resources/ContentPromoPromptCopy.m4a
