@@ -28,7 +28,7 @@ gulp.task('test-suite-run', ['build'], function() {
                 testStatus |= mocha.status;
                 console.log(mocha.stdout.toString());
                 if (mocha.stderr.length) {
-                    console.log("Errors:\n" + mocha.stderr);
+                    console.error("Errors:\n" + mocha.stderr);
                 }
             })
         );
@@ -37,7 +37,12 @@ gulp.task('test-suite-run', ['build'], function() {
 // Runs the all the test suites, and then based on the status, exits
 // This is a separate task because there is not an easy way to tell when each of the Test Suite processes finishes
 gulp.task('test', ['test-suite-run'], function (done) {
-    console.log("TestStatus: " + testStatus);
+    var message = "Tests Completed. All Succeeded.";
+    if (testStatus > 0) {
+        message = "Tests Completed. Some Tests Failed.";
+    }
+    console.log(message);
+
     if (testStatus !== 0) {
         process.exit(1);
     } else {
@@ -63,7 +68,7 @@ gulp.task('coverage-suite-run', ['coverage-clean'], function() {
                 var nyc = spawn('node_modules/.bin/nyc', ['--clean=false','--silent=true',
                     'node_modules/.bin/mocha', '--colors', testFile]);
                 if (nyc.error) {
-                    console.error("Error: " + nyc.error);
+                    console.error(nyc.error);
                 }
 
                 testStatus = nyc.status;
