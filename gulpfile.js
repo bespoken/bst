@@ -54,7 +54,7 @@ gulp.task('test', ['test-suite-run'], function (done) {
 // Clean up the .nyc_output directory
 // Needs to be run before coverage, as we generate many files into the directory while running
 gulp.task('coverage-clean', ['build'], function(done) {
-    run('rm -rf .nyc_output/*').exec(function () {
+    run('rm .nyc_output/*').exec(function () {
         done();
     })
 });
@@ -101,7 +101,7 @@ gulp.task('setup', function (done) {
 });
 
 gulp.task('lint', function() {
-    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts", "!lib/**/*.d.ts", "!bin/*.d.ts"])
+    return gulp.src(["lib/**/*.ts", "bin/*.ts", "test/**/*.ts", "!lib/**/*.d.ts", "!bin/*.d.ts", "!test/**/*.d.ts"])
         .pipe(tslint({
             formatter: "verbose"
         }))
