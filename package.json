@@ -29,7 +29,6 @@
     "dotenv": "^2.0.0",
     "gulp": "^3.9.1",
     "gulp-bst-typedoc": "^2.0.1",
-    "gulp-fail": "^1.0.5",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "gulp-run": "^1.7.1",
