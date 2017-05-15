@@ -5,8 +5,8 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import SinonSandbox = Sinon.SinonSandbox;
-import {Global} from "../../lib/core/global";
 import {LambdaConfig} from "../../lib/client/lambda-config";
+import {Global} from "../../lib/core/global";
 
 const dotenv = require("dotenv");
 
@@ -24,24 +24,18 @@ describe("bst-deploy", function() {
     let lambdaConfig = null;
     let skip: boolean = false;
 
-    before(async function (): Promise<void> {
+    before(function () {
         this.timeout(20000);
-        try {
-            Global.initialize(false);
-            await Global.loadConfig();
 
-            lambdaConfig = LambdaConfig.create();
-            lambdaConfig.initialize();
+        Global.initialize(false, true);
 
-            if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
-                console.log("Skipping deployer tests. No AWS credentials.");
-                skip = true;
-            }
-        }  catch (error) {
-            console.log("Error: ", error);
-            throw error;
+        lambdaConfig = LambdaConfig.create();
+        lambdaConfig.initialize();
+
+        if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
+            console.log("Skipping deployer tests. No AWS credentials.");
+            skip = true;
         }
-
     });
 
     let sandbox: SinonSandbox = null;
@@ -96,9 +90,6 @@ describe("bst-deploy", function() {
         let originalFunction: any = null;
         beforeEach (function () {
             originalFunction = process.stdout.write;
-        });
-
-        afterEach (function () {
         });
 
         it("Prints help with no-args", function(done) {
@@ -176,6 +167,6 @@ describe("bst-deploy", function() {
     });
 });
 
-let command = function (command: string): Array<string> {
+const command = function (command: string): Array<string> {
     return command.split(" ");
 };

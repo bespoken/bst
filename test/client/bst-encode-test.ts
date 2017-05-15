@@ -111,7 +111,7 @@ describe("BSTEncode", function() {
 
     describe("#encodeAndPublishFile()", function() {
         it("Encodes and Publishes a file", function (done) {
-            this.timeout(10000);
+            this.timeout(20000);
             if (doNotRun(this, done)) return;
 
             const config = {
