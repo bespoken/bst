@@ -54,9 +54,11 @@ gulp.task('test', ['test-suite-run'], function (done) {
 // Clean up the .nyc_output directory
 // Needs to be run before coverage, as we generate many files into the directory while running
 gulp.task('coverage-clean', ['build'], function(done) {
-    run('rm .nyc_output/*').exec(function () {
-        done();
-    })
+    run('rm -rf .nyc_output').exec(function () {
+        run('mkdir .nyc_output').exec(function () {
+            done();
+        });
+    });
 });
 
 gulp.task('coverage-suite-run', ['coverage-clean'], function() {
