@@ -304,9 +304,9 @@ export class LambdaDeploy {
         /***** V2
 
         let script_filename = "post-install.sh";
-        let cmd = this.lambdaFolder + "/" + script_filename;
+        let cmd = path.join(this.lambdaFolder, script_filename);
 
-        let filePath = [codeDirectory, script_filename].join("/");
+        let filePath = path.join(codeDirectory, script_filename);
 
         fs.exists(filePath, function (exists: boolean) {
             if (exists) {
@@ -409,7 +409,7 @@ export class LambdaDeploy {
 
         let files: string[] = wrench.readdirSyncRecursive(codeDirectory);
         files.forEach(function (file: string) {
-            let filePath = [codeDirectory, file].join("/");
+            let filePath = path.join(codeDirectory, file);
             let isFile = fs.lstatSync(filePath).isFile();
             if (isFile) {
                 let content = fs.readFileSync(filePath);

@@ -9,7 +9,7 @@ const tslint = require('gulp-tslint');
 const typedoc = require('gulp-bst-typedoc');
 
 gulp.task('build', ['setup', 'lint'], function () {
-    return run('node_modules/typescript/bin/tsc').exec();
+    return run('node node_modules/typescript/bin/tsc').exec();
 });
 
 var testStatus;

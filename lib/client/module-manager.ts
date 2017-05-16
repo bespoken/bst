@@ -2,6 +2,7 @@ import * as fs from "fs";
 import {LoggingHelper} from "../core/logging-helper";
 import {FSWatcher} from "fs";
 import {NodeUtil} from "../core/node-util";
+import * as path from "path";
 
 let Logger = "MODULE-MGR";
 
@@ -19,8 +20,8 @@ export class ModuleManager {
 
     public constructor(private directory: string) {
         // If the directory path is not absolute, make it so
-        if (!this.directory.startsWith("/")) {
-            this.directory = [process.cwd(), this.directory].join("/");
+        if (!path.isAbsolute(directory)) {
+            this.directory = path.join(process.cwd(), this.directory);
         }
     }
 
@@ -48,7 +49,7 @@ export class ModuleManager {
     }
 
     public module(filePath: string): any {
-        const fullPath = [this.directory, filePath].join("/");
+        const fullPath = path.join(this.directory, filePath);
         let module: any = null;
         if (fullPath in this.modules && !this.dirty) {
             module = this.modules[fullPath];
