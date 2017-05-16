@@ -20,7 +20,7 @@ gulp.task('test-suite-run', ['build'], function() {
         .pipe(
             tap(function(file, t) {
                 const testFile = path.relative(process.cwd(), file.path);
-                const mocha = spawn('node node_modules/mocha/bin/mocha', ['--colors', testFile]);
+                const mocha = spawn('node_modules/mocha/bin/mocha', ['--colors', testFile]);
                 if (mocha.error) {
                     console.error('Error: ' + mocha.error);
                 }
