@@ -42,7 +42,7 @@ https://github.com/bespoken/bst/releases
 8) Test the npm deployed package (new changes, sanity checks)
 
 9) Mark the newest package as latest
-npm dist-tag add bespoken-tools@<version> latest
+`npm dist-tag add bespoken-tools@<version> latest`
 
 **Notes on testing:**
 To test your new package before publishing, follow these instructions:  
