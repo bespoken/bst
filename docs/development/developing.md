@@ -31,13 +31,18 @@ This is necessary because master is a protected branch - changes cannot be pushe
 4) Updated the version number:  
 `npm version patch`
 
-5) Publish the new version:  
-`npm publish`
+5) Publish the new version as beta:
+`npm publish --tag beta`
 
 6) Create and merge a pull request for the branch
 
 7) Add release notes:  
 https://github.com/bespoken/bst/releases
+
+8) Test the npm deployed package (new changes, sanity checks)
+
+9) Mark the newest package as latest
+npm dist-tag add bespoken-tools@<version> latest
 
 **Notes on testing:**
 To test your new package before publishing, follow these instructions:  
