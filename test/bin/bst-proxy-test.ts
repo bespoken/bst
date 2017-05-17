@@ -79,6 +79,14 @@ describe("bst-proxy", function() {
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
+        it("Calls HTTP proxy with verbose option", function(done) {
+            process.argv = command("node bst-proxy.js http 9000 --verbose");
+            mockProxy.start = function () {
+                done();
+            };
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
         it("Calls HTTP proxy with options", function(done) {
             process.argv = command("node bst-proxy.js --pithy --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
 
@@ -125,6 +133,15 @@ describe("bst-proxy", function() {
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
+        it("Calls Function proxy with verbose option", function(done) {
+            process.argv = command("node bst-proxy.js function function.js handler --verbose");
+            mockProxy.start = function () {
+                done();
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
         it("Calls function proxy with options", function(done) {
             process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 function function.js handler");
             let optionsSet = false;
@@ -148,6 +165,15 @@ describe("bst-proxy", function() {
     describe("lambda command", function() {
         it("Calls Lambda proxy", function(done) {
             process.argv = command("node bst-proxy.js lambda lambda.js");
+            mockProxy.start = function () {
+                done();
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
+        it("Calls Lambda proxy with verbose option", function(done) {
+            process.argv = command("node bst-proxy.js lambda lambda.js --verbose");
             mockProxy.start = function () {
                 done();
             };
