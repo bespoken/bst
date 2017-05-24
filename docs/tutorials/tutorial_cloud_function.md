@@ -67,6 +67,7 @@ Cut and paste the secret key into the index.js file in Super Simple Google Actio
 The line is at the bottom of the file.
 
 Now, the summary and log data for your action will be available in the Dashboard, both while using the proxy for development and once you go live!
+<img src='../../assets/images/dashboard-logs-actions.png' />
 
 ## Next Steps
 You can now start adding functionality to your action. To learn more about working with Actions on Google, see the official [documentation](https://developers.google.com/actions/)
