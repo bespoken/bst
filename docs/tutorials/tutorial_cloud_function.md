@@ -1,5 +1,5 @@
 
-This tutorial shows you how to get started developing for Actions on Google using a Google Cloud Function.  
+This tutorial shows you how to get started developing for Actions on Google using a Google Cloud Function with Bespoken.
 
 ## Prerequisites
 
