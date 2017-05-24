@@ -54,6 +54,7 @@ Or you can try it in the [Actions on Google Web Simulator](https://developers.go
 To use our monitoring and logging facility, [sign up here](https://bespoken.tools/dashboard).
 
 Once you have signed in, create a new source by clicking on the "+" icon or link at the top:
+<img src='../../assets/images/dashboard-source-adding.png' />
 
 Name your source and then hit "Create Source". On the following page, select "Next: Check For Logs".
 
