@@ -61,7 +61,7 @@ Name your source and then hit "Create Source". On the following page, select "Ne
 On the right-hand side of the page, select "Show" over the Secret Key:
 <img src='../../assets/images/dashboard-secretkey.png' />
 
-Cut and paste the secret key into the index.js file, at the bottom:
+Cut and paste the secret key into the index.js file, at the bottom of the Super Simple Google Action project:
 <script src="https://gist.github.com/jkelvie/6bd2f5c7eb11fd6307fa538b0f918557.js"></script>
 
 Now, the summary and log data for your action in the Dashboard, both while using the proxy for development and once you go live!
