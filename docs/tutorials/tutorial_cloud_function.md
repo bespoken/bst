@@ -50,6 +50,21 @@ You should see the request and response come across the console where the `bst p
 
 Or you can try it in the [Actions on Google Web Simulator](https://developers.google.com/actions/tools/web-simulator).
 
+## Hooking into the Bespoken Dashboard
+To use our monitoring and logging facility, [sign up here](https://bespoken.tools/dashboard).
+
+Once you have signed in, create a new source by clicking on the "+" icon or link at the top:
+
+Name your source and then hit "Create Source". On the following page, select "Next: Check For Logs".
+
+On the right-hand side of the page, select "Show" over the Secret Key:
+<img src='../../assets/images/dashboard-secretkey.png' />
+
+Cut and paste the secret key into the index.js file, at the bottom:
+<script src="https://gist.github.com/jkelvie/6bd2f5c7eb11fd6307fa538b0f918557.js"></script>
+
+Now, you will summary and log data for your action in the Dashboard, both while using the proxy for development and once you go live!
+
 ## Next Steps
 You can now start adding functionality to your action. To learn more about working with Actions on Google, see the official [documentation](https://developers.google.com/actions/)
 
