@@ -59,7 +59,7 @@ Once you have signed in, create a new source by clicking on the "+" button at th
 Name your source and then hit "Create Source". On the following page, select "Next: Check For Logs".
 
 On the right-hand side of the page, select "Show" over the Secret Key:
-<img src='../../assets/images/dashboard-secretkey.png' />
+<img src='../../assets/images/dashboard-secretkey.png' style='height: 60' />
 
 Cut and paste the secret key into the index.js file in Super Simple Google Action project:
 <script src="https://gist.github.com/jkelvie/6bd2f5c7eb11fd6307fa538b0f918557.js"></script>
@@ -67,7 +67,7 @@ Cut and paste the secret key into the index.js file in Super Simple Google Actio
 The line is at the bottom of the file.
 
 Now, the summary and log data for your action will be available in the Dashboard, both while using the proxy for development and once you go live!
-<img src='../../assets/images/dashboard-logs-actions.png' height='60' />
+<img src='../../assets/images/dashboard-logs-actions.png' />
 
 ## Next Steps
 You can now start adding functionality to your action. To learn more about working with Actions on Google, see the official [documentation](https://developers.google.com/actions/)
