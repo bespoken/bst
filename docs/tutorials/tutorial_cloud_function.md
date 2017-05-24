@@ -53,5 +53,5 @@ Or you can try it in the [Actions on Google Web Simulator](https://developers.go
 ## Next Steps
 You can now start adding functionality to your action. To learn more about working with Actions on Google, see the official [documentation](https://developers.google.com/actions/)
 
-You can also try it out on a Google Home, as long as it is registered with your account.
+You can also try it out on a Google Home or [Google Assistant-enabled phone](https://assistant.google.com), as long as it is registered with your account.
 Just say "Talk To {Your Invocation Name}" to use it.
