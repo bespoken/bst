@@ -2,7 +2,6 @@
 
 import {BespokeClient} from "./bespoke-client";
 import {LambdaServer} from "./lambda-server";
-import {URLMangler} from "./url-mangler";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
 import {FunctionServer} from "./function-server";
