@@ -71,15 +71,6 @@ export class BSTProxy {
     }
 
     /**
-     * Generates the URL to be used for Alexa configuration
-     * @param url
-     * @returns
-     */
-    public static urlgen(url: string): string {
-        return URLMangler.mangle(url, Global.config().secretKey());
-    }
-
-    /**
      * Specifies the host and port of the bespoken server to connect to
      * @param host
      * @param port

@@ -273,41 +273,6 @@ describe("bst-proxy", function() {
             NodeUtil.load("../../bin/bst-proxy.js");
         });
     });
-
-
-    describe("urlgen", function() {
-        it("Calls urlgen", function(done) {
-            process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");
-
-            mockProxy.urlgen = function (url: string) {
-                assert.equal(url, "http://jpk.com/test");
-                done();
-            };
-
-            NodeUtil.load("../../bin/bst-proxy.js");
-        });
-
-        it("Prints the BST URL", function(done) {
-            process.argv = command("node bst-proxy.js urlgen http://jpk.com/test");
-            mockProxy.urlgen = function (url: string) {
-                return url;
-            };
-
-            let count = 0;
-            // Confirm the help prints out
-            sandbox.stub(console, "log", function (data: Buffer) {
-                count++;
-                if (data !== undefined) {
-                    console.error("Date: " + data.toString());
-                }
-                if (count === 3 && data.toString().indexOf("http") !== -1) {
-                    done();
-                }
-            });
-
-            NodeUtil.load("../../bin/bst-proxy.js");
-        });
-    });
 });
 
 let command = function (command: string): Array<string> {
