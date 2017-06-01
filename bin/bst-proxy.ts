@@ -32,13 +32,12 @@ program
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
-        console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().secretKey()));
+        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        // TODO: Re-add this lines once dashboard configuration is ready
-        // console.log("Your URL for viewing skill data:");
-        // console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().sourceID(), Global.config().secretKey()));
-        // console.log("(Be sure to put in your real path and other query string parameters!)");
-        // console.log("");
+        console.log("Your URL for viewing skill data:");
+        console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().sourceID(), Global.config().secretKey()));
+        console.log("(Be sure to put in your real path and other query string parameters!)");
+        console.log("");
 
         let proxy: BSTProxy = BSTProxy.http(port);
         handleOptions(proxy, options);
@@ -54,13 +53,12 @@ program
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, options: any) {
         console.log("Your URL for Alexa Skill configuration:");
-        console.log(URLMangler.mangleNoPath(Global.config().secretKey()));
+        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        // TODO: Re-add this lines once dashboard configuration is ready
-        // console.log("Your URL for viewing skill data:");
-        // console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
-        // console.log("Copy and paste this to your browser to view your transaction history and summary data.");
-        // console.log("");
+        console.log("Your URL for viewing skill data:");
+        console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
+        console.log("Copy and paste this to your browser to view your transaction history and summary data.");
+        console.log("");
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile);
         handleOptions(proxy, options);
         proxy.start();
@@ -75,13 +73,12 @@ program
     .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
     .action(function (functionFile: string, functionName: string, options: any) {
         console.log("Your URL for Fulfillment configuration:");
-        console.log(URLMangler.mangleNoPath(Global.config().secretKey()));
+        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        // TODO: Re-add this lines once dashboard configuration is ready
-        // console.log("Your URL for viewing skill data:");
-        // console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
-        // console.log("Copy and paste this to your browser to view your transaction history and summary data.");
-        // console.log("");
+        console.log("Your URL for viewing your function data:");
+        console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
+        console.log("Copy and paste this to your browser to view your transaction history and summary data.");
+        console.log("");
 
         let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
         handleOptions(proxy, options);
@@ -106,17 +103,6 @@ program
             }
         }
 
-    });
-
-program
-    .command("urlgen <alexa-url>")
-    .description("Generates the URL to be used in the Alexa Skill configuration")
-    .action(function (url: string) {
-        let bstURL: string = BSTProxy.urlgen(url);
-        console.log("Enter this URL on the Configuration tab of your skill:");
-        console.log();
-        console.log("\t" + bstURL);
-        console.log();
     });
 
 // Forces help to be printed if neither lambda nor HTTP is printed
