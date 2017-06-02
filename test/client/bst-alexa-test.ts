@@ -6,39 +6,30 @@ import {LambdaServer} from "../../lib/client/lambda-server";
 import {Global} from "../../lib/core/global";
 import * as sinon from "sinon";
 
-describe("BSTAlexa Without Config", function() {
-    it("#start()", function (done) {
-        let speak = new BSTAlexa("http://localhost:9000",
-            "test/resources/speechAssets/IntentSchema.json",
-            "test/resources/speechAssets/SampleUtterances.txt");
-        speak.start(function (error: string) {
-            assert(error === undefined);
-            speak.stop(function() {
-                done();
-            });
-        });
-    });
-});
-
 describe("BSTAlexa", async function() {
     let alexa: BSTAlexa = null;
     let lambdaServer: LambdaServer = null;
 
-    before(async function () {
-        Global.initialize(false);
-        await Global.loadConfig();
+    describe("BSTAlexa Without Config", function() {
+        it("#start()", function (done) {
+            let speak = new BSTAlexa("http://localhost:9000",
+                "test/resources/speechAssets/IntentSchema.json",
+                "test/resources/speechAssets/SampleUtterances.txt");
+            speak.start(function (error: string) {
+                assert(error === undefined);
+                speak.stop(function() {
+                    done();
+                });
+            });
+        });
     });
 
     describe("#start()", function () {
         let sandbox: any = null;
 
-        before(async function () {
-            Global.initialize(false);
-            await Global.loadConfig();
-        });
-
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
+            Global.initialize(false, true);
         });
 
         afterEach(function () {
@@ -79,11 +70,12 @@ describe("BSTAlexa", async function() {
 
         it("Initializing after setting the application ID initialize with application ID", function (done) {
             this.timeout(5000);
+            // Adding the applicationId to the global config before initializing alexa
+            Global.config().updateApplicationID("1234567890J");
             let speak = new BSTAlexa("http://localhost:9000",
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function () {
-                assert(Global.config().applicationID(), "1234567890J");
                 assert(speak.context().applicationID(), "1234567890J");
                 done();
             });
@@ -281,8 +273,9 @@ describe("BSTAlexa", async function() {
             alexa = new BSTAlexa("http://localhost:10000");
             alexa.start(function () {
                 lambdaServer = new LambdaServer("AudioPlayerLambda.js", 10000);
-                lambdaServer.start();
-                done();
+                lambdaServer.start(function () {
+                    done();
+                });
             });
         });
 
@@ -300,8 +293,13 @@ describe("BSTAlexa", async function() {
                 let i = 0;
                 alexa.on("AudioPlayer.PlaybackStarted", function (audioItem: any) {
                     i++;
-                    assert.equal(audioItem.stream.token, i + "");
-                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
+                    try {
+                        assert.equal(audioItem.stream.token, i + "");
+                        assert.equal(audioItem.stream.offsetInMilliseconds, 0);
+                    } catch (error) {
+                        done(error);
+                    }
+
 
                     alexa.playbackOffset(i * 1000);
                     alexa.playbackFinished();
@@ -310,8 +308,13 @@ describe("BSTAlexa", async function() {
                 let j = 0;
                 alexa.on("AudioPlayer.PlaybackFinished", function (audioItem: any) {
                     j++;
-                    assert.equal(audioItem.stream.token, j + "");
-                    assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    try {
+                        assert.equal(audioItem.stream.token, j + "");
+                        assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    } catch (error) {
+                        done(error);
+                    }
+
                     if (j === 2) {
                         done();
                     }
@@ -326,9 +329,12 @@ describe("BSTAlexa", async function() {
                 let i = 0;
                 alexa.once("AudioPlayer.PlaybackStarted", function (audioItem: any) {
                     i++;
-                    assert.equal(audioItem.stream.token, i + "");
-                    assert.equal(audioItem.stream.offsetInMilliseconds, 0);
-
+                    try {
+                        assert.equal(audioItem.stream.token, i + "");
+                        assert.equal(audioItem.stream.offsetInMilliseconds, 0);
+                    } catch (error) {
+                        done(error);
+                    }
                     alexa.playbackOffset(i * 1000);
                     alexa.playbackFinished();
                     alexa.once("AudioPlayer.PlaybackFinished", function () {
@@ -336,17 +342,21 @@ describe("BSTAlexa", async function() {
                     });
 
                     if (i > 1) {
-                        assert.fail();
+                        done(assert.fail());
                     }
                 });
 
                 let j = 0;
                 alexa.once("AudioPlayer.PlaybackFinished", function (audioItem: any) {
                     j++;
-                    assert.equal(audioItem.stream.token, j + "");
-                    assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    try {
+                        assert.equal(audioItem.stream.token, j + "");
+                        assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
+                    } catch (error) {
+                        done(error);
+                    }
                     if (j > 1) {
-                        assert.fail();
+                        done(assert.fail());
                     }
                 });
 
@@ -358,20 +368,28 @@ describe("BSTAlexa", async function() {
             it("Audio Item Finished", function (done) {
                let count = 0;
                 alexa.on("response", function (response: any, request: any) {
-                    count++;
-                    if (count === 5) {
-                        assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
-                    }
+                    try {
+                        count++;
+                        if (count === 5) {
+                            assert.equal(request.request.type, "AudioPlayer.PlaybackFinished");
+                        }
 
-                    if (count === 6) {
-                        assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
-                        done();
+                        if (count === 6) {
+                            assert.equal(request.request.type, "AudioPlayer.PlaybackStarted");
+                            done();
+                        }
+                    } catch (error) {
+                        done(error);
                     }
                 });
 
                 alexa.intended("PlayIntent", null, function () {
                     alexa.playbackFinished(function (error, response, request) {
-                        assert.equal(response.response.directives[0].audioItem.stream.token, "3");
+                        try {
+                            assert.equal(response.response.directives[0].audioItem.stream.token, "3");
+                        } catch (error) {
+                            done(error);
+                        }
                         alexa.playbackFinished();
                     });
                 });
@@ -383,19 +401,26 @@ describe("BSTAlexa", async function() {
                 this.timeout(5000);
                 let count = 0;
                 alexa.on("response", function (response: any, request: any) {
-                    console.log("RequestType: " + request.request.type);
-                    count++;
-                    if (count === 3) {
-                        assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
-                        assert.equal(request.request.token, "1");
-                        assert.equal(request.request.offsetInMilliseconds, 0);
-                        done();
+                    try {
+                        count++;
+                        if (count === 3) {
+                            assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
+                            assert.equal(request.request.token, "1");
+                            assert.equal(request.request.offsetInMilliseconds, 0);
+                            done();
+                        }
+                    } catch (error) {
+                        done(error);
                     }
                 });
 
                 alexa.intended("PlayIntent", null, function () {
                     alexa.playbackNearlyFinished(function (error, response, request) {
-                        assert.equal(response.response.directives[0].audioItem.stream.token, "3");
+                        try {
+                            assert.equal(response.response.directives[0].audioItem.stream.token, "3");
+                        } catch (error) {
+                            done(error);
+                        }
                     });
                 });
             });
@@ -408,8 +433,12 @@ describe("BSTAlexa", async function() {
                 alexa.intended("PlayIntent", null, function () {
                     alexa.on("AudioPlayer.PlaybackStarted", function () {
                         alexa.playbackStopped(function(error, response, request) {
-                            assert.equal(request.request.type, "AudioPlayer.PlaybackStopped");
-                            done();
+                            try {
+                                assert.equal(request.request.type, "AudioPlayer.PlaybackStopped");
+                                done();
+                            } catch (error) {
+                                done(error);
+                            }
                         });
                     });
                 });

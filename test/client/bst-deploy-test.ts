@@ -48,9 +48,9 @@ describe("BST Deploy", async function() {
     let skip: boolean = false;
     let awsHelper = null;
 
-    before(async function() {
+    before(function() {
         this.timeout(10000);
-        await Global.initializeCLI();
+        Global.initialize(false, true);
         lambdaConfig = LambdaConfig.create();
         lambdaConfig.initialize();
         if (!lambdaConfig.AWS_ACCESS_KEY_ID) {
@@ -116,8 +116,8 @@ describe("BST Deploy", async function() {
     describe("prepares the lambda function code", function() {
         let deployer: LambdaDeploy = null;
 
-        before(async function () {
-            await Global.initializeCLI();
+        before(function () {
+            Global.initialize(false, true);
             lambdaConfig.initialize();
             deployer = LambdaDeploy.create(deployProject, lambdaConfig);
         });
