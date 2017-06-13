@@ -201,6 +201,51 @@ describe("bst", function() {
             mockery.disable();
         });
 
+        it("Shows version for bst and node", function() {
+            process.argv = command("node bst.js test");
+            setVersion("v4.0.0");
+
+            let mockProcess = sandbox.mock(process);
+            const packageInfo: any = require("../../package.json");
+
+            return new Promise((resolve, reject) => {
+                mockProcess.expects("exit").once().withExactArgs(1);
+                mockery.registerMock("../lib/core/logging-helper", {
+                    "LoggingHelper": {
+                        info: function (level: any, message: string) {
+                            console.log(message);
+                            const expectedLog = "BST: v" + packageInfo.version + "  Node: v4.0.0";
+                            try {
+                                assert.equal(expectedLog, message);
+                            } catch (error) {
+                                reject(error);
+                            }
+                            resolve();
+                        },
+                        error: function (level: any, message: string) {
+                            reject(assert.fail("This should not be called!"));
+                        }
+                    }
+                });
+
+                NodeUtil.run("../../bin/bst.js");
+            });
+        });
+    });
+
+    describe("Version Check", function() {
+        let originalVersion: string = null;
+        beforeEach(function () {
+            originalVersion = process.version;
+            mockery.enable();
+            mockery.warnOnUnregistered(false);
+        });
+
+        afterEach(function () {
+            setVersion(originalVersion);
+            mockery.disable();
+        });
+
         it("Errors on a low version", function(done) {
             process.argv = command("node bst.js test");
             setVersion("v3.0.0");

@@ -80,12 +80,45 @@ describe("BSTConfig", function() {
             assert.equal(config2.applicationID(), "12345678");
         });
 
-        it("Updates old config version (nodeID)", async function () {
+        it("Updates old config version (nodeID) when it doesn't have sourceID", async function () {
             // we load in order to create the file
             await BSTConfig.load();
             const nodeID = uuid.v4();
             const oldConfiguration = {
                 nodeID,
+                version: "1.0.0",
+                lambdaDeploy: {
+                    runtime: "nodejs4.3",
+                    role: "",
+                    handler: "index.handler",
+                    description: "My BST lambda skill",
+                    timeout: 3,
+                    memorySize: 128,
+                    vpcSubnets: "",
+                    vpcSecurityGroups: "",
+                    excludeGlobs: "event.json"
+                }
+            };
+
+            // We overwrite the file
+            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            fs.writeFileSync("test/resources/.bst/config", configBuffer);
+
+            let config = await BSTConfig.load();
+
+            // assert we have the new keys
+            assert.equal(config.secretKey(), nodeID);
+            assert.notEqual(typeof config.sourceID(), "undefined");
+        });
+
+        it("Discard old sourceId and secretKey when it doesn't have a version", async function () {
+            // we load in order to create the file
+            await BSTConfig.load();
+            const nodeID = uuid.v4();
+            const oldConfiguration = {
+                nodeID,
+                secretKey: "thisWontPersist",
+                sourceID: "thisWontPersistEither",
                 lambdaDeploy: {
                     runtime: "nodejs4.3",
                     role: "",

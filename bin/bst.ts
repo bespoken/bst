@@ -5,8 +5,8 @@ import {LoggingHelper} from "../lib/core/logging-helper";
 
 let Logger = "BST";
 
-console.log("BST: v" + Global.version() + "  Node: " + process.version);
-console.log("");
+LoggingHelper.info(Logger, "BST: v" + Global.version() + "  Node: " + process.version);
+LoggingHelper.info(Logger, "");
 
 let nodeMajorVersion = parseInt(process.version.substr(1, 2));
 
