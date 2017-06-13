@@ -94,14 +94,18 @@ export class BSTConfig {
             let config = JSON.parse(data.toString());
 
             if (!config.sourceID || !config.version) {
-                const pipeConfig = await BSTConfig.createConfig(config.nodeID);
-                config.sourceID = pipeConfig.sourceID;
-                config.secretKey = pipeConfig.secretKey;
-                config.version = pipeConfig.version;
-                delete config.nodeID;
-                BSTConfig.saveConfig(config);
+                await BSTConfig.updateConfig(config);
             }
         }
+    }
+
+    private static async updateConfig(config: any): Promise<void> {
+        const generatedConfig = await BSTConfig.createConfig(config.nodeID);
+        config.sourceID = generatedConfig.sourceID;
+        config.secretKey = generatedConfig.secretKey;
+        config.version = generatedConfig.version;
+        delete config.nodeID;
+        BSTConfig.saveConfig(config);
     }
 
     private static saveConfig(config: any) {
