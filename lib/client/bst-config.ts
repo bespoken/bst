@@ -93,10 +93,11 @@ export class BSTConfig {
             let data = fs.readFileSync(BSTConfig.configPath());
             let config = JSON.parse(data.toString());
 
-            if (!config.sourceID) {
+            if (!config.sourceID || !config.version) {
                 const pipeConfig = await BSTConfig.createConfig(config.nodeID);
                 config.sourceID = pipeConfig.sourceID;
                 config.secretKey = pipeConfig.secretKey;
+                config.version = pipeConfig.version;
                 delete config.nodeID;
                 BSTConfig.saveConfig(config);
             }
