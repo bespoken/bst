@@ -207,7 +207,6 @@ describe("bst", function() {
 
             let mockProcess = sandbox.mock(process);
             const packageInfo: any = require("../../package.json");
-            let count = 0;
 
             return new Promise((resolve, reject) => {
                 mockProcess.expects("exit").once().withExactArgs(1);
