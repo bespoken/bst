@@ -57,8 +57,7 @@ export class Global {
     }
 
     public static version(): string {
-        let packageInfo: any = require("../../package.json");
-        return packageInfo.version;
+       return BSTConfig.getBstVersion();
     }
 }
 

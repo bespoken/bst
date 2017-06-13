@@ -34,6 +34,10 @@ export class BSTConfig {
         BSTConfig.saveConfig(this.configuration);
     }
 
+    public static getBstVersion() {
+        const packageInfo: any = require("../../package.json");
+        return packageInfo.version;
+    }
     public sourceID(): string {
         return this.configuration.sourceID;
     }
@@ -111,7 +115,8 @@ export class BSTConfig {
         return {
             "sourceID": pipeInfo.endPoint.name,
             "secretKey": pipeInfo.uuid,
-            "lambdaDeploy": lambdaConfig
+            "lambdaDeploy": lambdaConfig,
+            "version": this.getBstVersion(),
         };
     }
 
