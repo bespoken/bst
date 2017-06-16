@@ -34,6 +34,10 @@ export class BSTConfig {
         BSTConfig.saveConfig(this.configuration);
     }
 
+    public static getBstVersion() {
+        const packageInfo: any = require("../../package.json");
+        return packageInfo.version;
+    }
     public sourceID(): string {
         return this.configuration.sourceID;
     }
@@ -89,14 +93,19 @@ export class BSTConfig {
             let data = fs.readFileSync(BSTConfig.configPath());
             let config = JSON.parse(data.toString());
 
-            if (!config.sourceID) {
-                const pipeConfig = await BSTConfig.createConfig(config.nodeID);
-                config.sourceID = pipeConfig.sourceID;
-                config.secretKey = pipeConfig.secretKey;
-                delete config.nodeID;
-                BSTConfig.saveConfig(config);
+            if (!config.sourceID || !config.version) {
+                await BSTConfig.updateConfig(config);
             }
         }
+    }
+
+    private static async updateConfig(config: any): Promise<void> {
+        const generatedConfig = await BSTConfig.createConfig(config.nodeID);
+        config.sourceID = generatedConfig.sourceID;
+        config.secretKey = generatedConfig.secretKey;
+        config.version = generatedConfig.version;
+        delete config.nodeID;
+        BSTConfig.saveConfig(config);
     }
 
     private static saveConfig(config: any) {
@@ -111,7 +120,8 @@ export class BSTConfig {
         return {
             "sourceID": pipeInfo.endPoint.name,
             "secretKey": pipeInfo.uuid,
-            "lambdaDeploy": lambdaConfig
+            "lambdaDeploy": lambdaConfig,
+            "version": this.getBstVersion(),
         };
     }
 

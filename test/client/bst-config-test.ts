@@ -3,18 +3,38 @@
 import * as assert from "assert";
 import * as fs from "fs";
 import * as sinon from "sinon";
-import {BSTConfig} from "../../lib/client/bst-config";
 import {exec} from "child_process";
+import {Global} from "../../lib/core/global";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import SinonSandbox = Sinon.SinonSandbox;
-import {Global} from "../../lib/core/global";
+import * as mockery from "mockery";
 
 // Getting uuid with require because we have issues with typings
 const uuid =  require("uuid");
+let BSTConfig;
 
 describe("BSTConfig", function() {
     this.timeout(30000);
+
+    before(function() {
+        mockery.enable({useCleanCache: true});
+        mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
+        mockery.registerMock("../external/source-name-generator", {
+            SourceNameGenerator: SourceNameGenerator,
+        });
+        mockery.registerMock("../external/spokes", {
+            SpokesClient: SpokesClient,
+        });
+
+        BSTConfig = require("../../lib/client/bst-config").BSTConfig;
+    });
+
+    after(function() {
+        mockery.deregisterAll();
+        mockery.disable();
+    });
 
     describe("#bootstrap()", function() {
         before(function () {
@@ -60,12 +80,45 @@ describe("BSTConfig", function() {
             assert.equal(config2.applicationID(), "12345678");
         });
 
-        it("Updates old config version (nodeID)", async function () {
+        it("Updates old config version (nodeID) when it doesn't have sourceID", async function () {
             // we load in order to create the file
             await BSTConfig.load();
             const nodeID = uuid.v4();
             const oldConfiguration = {
                 nodeID,
+                version: "1.0.0",
+                lambdaDeploy: {
+                    runtime: "nodejs4.3",
+                    role: "",
+                    handler: "index.handler",
+                    description: "My BST lambda skill",
+                    timeout: 3,
+                    memorySize: 128,
+                    vpcSubnets: "",
+                    vpcSecurityGroups: "",
+                    excludeGlobs: "event.json"
+                }
+            };
+
+            // We overwrite the file
+            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            fs.writeFileSync("test/resources/.bst/config", configBuffer);
+
+            let config = await BSTConfig.load();
+
+            // assert we have the new keys
+            assert.equal(config.secretKey(), nodeID);
+            assert.notEqual(typeof config.sourceID(), "undefined");
+        });
+
+        it("Discard old sourceId and secretKey when it doesn't have a version", async function () {
+            // we load in order to create the file
+            await BSTConfig.load();
+            const nodeID = uuid.v4();
+            const oldConfiguration = {
+                nodeID,
+                secretKey: "thisWontPersist",
+                sourceID: "thisWontPersistEither",
                 lambdaDeploy: {
                     runtime: "nodejs4.3",
                     role: "",
@@ -176,16 +229,34 @@ describe("BSTProcess", function() {
         let lambdaProcess: BSTProcess = null;
 
         before(function () {
+            mockery.enable({useCleanCache: true});
+            mockery.warnOnUnregistered(false);
+            mockery.warnOnReplace(false);
+            mockery.registerMock("../external/source-name-generator", {
+                SourceNameGenerator: SourceNameGenerator,
+            });
+            mockery.registerMock("../external/spokes", {
+                SpokesClient: SpokesClient,
+            });
+
+            BSTConfig = require("../../lib/client/bst-config").BSTConfig;
+            (<any> BSTConfig).configDirectory = function () {
+                return "test/resources/.bst";
+            };
+
             (<any> BSTProcess).processPath = function () {
                 return "test/resources/.bst/process";
             };
         });
 
-        beforeEach(function (done) {
-            exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
-                sandbox = sinon.sandbox.create();
-                Global.loadConfig().then(() => {
-                    done();
+        beforeEach(async function () {
+            return new Promise(resolve => {
+                exec("rm -rf " + (<any> BSTConfig).configDirectory(), async function () {
+                    sandbox = sinon.sandbox.create();
+                    // Strange issue that makes the directory not available if this two are not run together
+                    await Global.loadConfig();
+                    await BSTConfig.load();
+                    resolve();
                 });
             });
         });
@@ -196,6 +267,8 @@ describe("BSTProcess", function() {
 
         after(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
+                mockery.deregisterAll();
+                mockery.disable();
                 done();
             });
         });
@@ -226,3 +299,40 @@ describe("BSTProcess", function() {
         });
     });
 });
+
+class SourceNameGenerator {
+    public callService() {
+        const id = uuid.v4();
+        return {
+            id,
+                secretKey: "unit-test" + id,
+            };
+    };
+
+    public createDashboardSource () {};
+}
+
+class SpokesClient {
+    public constructor(private _id: string, private _secretKey: string) {
+    }
+
+    public verifyUUIDisNew() {
+        return true;
+    }
+
+    public createPipe () {
+        return {
+            uuid: this._secretKey,
+            diagnosticsKey: null,
+            endPoint: {
+                name: this._id
+            },
+            http: {
+                url: "https://proxy.bespoken.tools",
+            },
+            path: "/",
+            pipeType: "HTTP",
+            proxy: true
+        };
+    }
+}
