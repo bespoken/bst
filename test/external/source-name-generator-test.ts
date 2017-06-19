@@ -44,6 +44,7 @@ describe("Source Name Generator", function() {
                     id: "id",
                     secretKey: "secretKey",
                     name: "id",
+                    liveDebug: true,
                 },
             },
             json: true,
