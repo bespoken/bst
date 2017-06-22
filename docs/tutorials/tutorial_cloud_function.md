@@ -1,5 +1,5 @@
 
-This tutorial shows you how to get started developing for Actions on Google using a Google Cloud Function.  
+This tutorial shows you how to get started developing for Actions on Google using a Google Cloud Function with Bespoken.
 
 ## Prerequisites
 
@@ -50,8 +50,27 @@ You should see the request and response come across the console where the `bst p
 
 Or you can try it in the [Actions on Google Web Simulator](https://developers.google.com/actions/tools/web-simulator).
 
+## Hooking into the Bespoken Dashboard
+To use our monitoring and logging facility, [sign up here](https://bespoken.tools/dashboard).
+
+Once you have signed in, create a new source by clicking on the "+" button at the bottom or link at the top:
+<img src='../../assets/images/dashboard-source-adding.png' />
+
+Name your source and then hit "Create Source". On the following page, select "Next: Check For Logs".
+
+On the right-hand side of the page, select "Show" over the Secret Key:
+<img src='../../assets/images/dashboard-secretkey.png' style='height: 60px !important' />
+
+Cut and paste the secret key into the index.js file in Super Simple Google Action project:
+<script src="https://gist.github.com/jkelvie/6bd2f5c7eb11fd6307fa538b0f918557.js"></script>
+
+The line is at the bottom of the file.
+
+Now, the summary and log data for your action will be available in the Dashboard, both while using the proxy for development and once you go live!
+<img src='../../assets/images/dashboard-logs-actions.png' />
+
 ## Next Steps
 You can now start adding functionality to your action. To learn more about working with Actions on Google, see the official [documentation](https://developers.google.com/actions/)
 
-You can also try it out on a Google Home, as long as it is registered with your account.
+You can also try it out on a Google Home or [Google Assistant-enabled phone](https://assistant.google.com), as long as it is registered with your account.
 Just say "Talk To {Your Invocation Name}" to use it.

@@ -77,7 +77,7 @@ Enable the first option, "Actions on Google".
 
 Enter the "World" for the "Invocation Name". If you have a Google Cloud Project setup, enter the ID on this screen - [you can find the project ID here](https://console.cloud.google.com).
 
-If you want to use this Action on your Google Home device or in the [Web Simulator]((https://developers.google.com/actions/tools/web-simulator)), click "Preview".
+If you want to use this Action on your Google Home device, [Google Assistant-enabled phone](https://assistant.google.com) or in the [Web Simulator]((https://developers.google.com/actions/tools/web-simulator)), click "Preview".
 
 # Next Steps
 To use this API.AI-based Action, follow our [tutorial here](tutorial_cloud_function).
