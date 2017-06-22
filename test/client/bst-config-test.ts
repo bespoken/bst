@@ -111,14 +111,12 @@ describe("BSTConfig", function() {
             assert.notEqual(typeof config.sourceID(), "undefined");
         });
 
-        it("Discard old sourceId and secretKey when it doesn't have a version", async function () {
+        it("Discard old sourceId when it doesn't have a version", async function () {
             // we load in order to create the file
             await BSTConfig.load();
-            const nodeID = uuid.v4();
             const oldConfiguration = {
-                nodeID,
-                secretKey: "thisWontPersist",
-                sourceID: "thisWontPersistEither",
+                secretKey: "thisWillPersist",
+                sourceID: "thisWontPersist",
                 lambdaDeploy: {
                     runtime: "nodejs4.3",
                     role: "",
@@ -139,8 +137,10 @@ describe("BSTConfig", function() {
             let config = await BSTConfig.load();
 
             // assert we have the new keys
-            assert.equal(config.secretKey(), nodeID);
+            assert.equal(config.secretKey(), "thisWillPersist");
             assert.notEqual(typeof config.sourceID(), "undefined");
+            assert.notEqual(config.sourceID(), "thisWontPersist");
+
         });
     });
 });

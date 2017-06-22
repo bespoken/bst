@@ -20,6 +20,7 @@ export class SourceNameGenerator {
                     id,
                     secretKey,
                     name: id,
+                    liveDebug: true,
                 },
             },
             json: true,

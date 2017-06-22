@@ -100,7 +100,7 @@ export class BSTConfig {
     }
 
     private static async updateConfig(config: any): Promise<void> {
-        const generatedConfig = await BSTConfig.createConfig(config.nodeID);
+        const generatedConfig = await BSTConfig.createConfig(config.nodeID || config.secretKey);
         config.sourceID = generatedConfig.sourceID;
         config.secretKey = generatedConfig.secretKey;
         config.version = generatedConfig.version;
