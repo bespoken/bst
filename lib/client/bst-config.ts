@@ -151,8 +151,8 @@ export class BSTConfig {
         // If someone have only sourceID but not secretKey then he modified the config, so it's ok to drop
         if (!secretKey) {
             const generatedKey = await sourceNameGenerator.callService();
-            id = generatedKey.secretKey;
-            key = generatedKey.id;
+            id = generatedKey.id;
+            key = generatedKey.key;
         }
 
         // This means it has nodeID but have no pipe or key
@@ -171,7 +171,6 @@ export class BSTConfig {
         try {
             await sourceNameGenerator.createDashboardSource(id, key);
         } catch (e) {
-            console.log("Error", e);
             // If the source already exists everything is fine
             if (e.statusCode !== 403) {
                 throw(e);
