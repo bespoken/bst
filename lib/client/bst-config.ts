@@ -100,7 +100,8 @@ export class BSTConfig {
     }
 
     private static async updateConfig(config: any): Promise<void> {
-        const generatedConfig = await BSTConfig.createConfig(config.nodeID || config.secretKey);
+        const previousKey = config.nodeID || config.secretKey;
+        const generatedConfig = await BSTConfig.createConfig(previousKey, config.sourceID);
         config.sourceID = generatedConfig.sourceID;
         config.secretKey = generatedConfig.secretKey;
         config.version = generatedConfig.version;
@@ -113,9 +114,9 @@ export class BSTConfig {
         fs.writeFileSync(BSTConfig.configPath(), configBuffer);
     }
 
-    private static async createConfig(nodeID?: string): Promise<any> {
+    private static async createConfig(nodeID?: string, sourceID?: string): Promise<any> {
         const lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
-        const pipeInfo = await BSTConfig.createExternalResources(nodeID);
+        const pipeInfo = await BSTConfig.createExternalResources(nodeID, sourceID);
 
         return {
             "sourceID": pipeInfo.endPoint.name,
@@ -131,19 +132,62 @@ export class BSTConfig {
         if (isUUIDUnassigned) {
             return spokesClient.createPipe();
         }
-        throw Error("Unable to create spokes connection");
+
+        // Pipe exists, we return the info we have as pipe
+        return {
+            endPoint: {
+                name: id,
+            },
+            uuid: secretKey,
+        };
     }
 
-    private static async createExternalResources(nodeID?: string): Promise<any> {
+    private static async createSource(secretKey?: string, sourceID?: string): Promise<any> {
         const sourceNameGenerator = new SourceNameGenerator();
-        const generatedKey = await sourceNameGenerator.callService();
-        // This is for backwards compatibility - we use the nodeID for the secretKey if there is already a node-id.
-        // That way, the user does not need to change their configuration
-        const secretKey = nodeID ? nodeID : generatedKey.secretKey;
-        const requests = [this.createSpokesPipe(generatedKey.id, secretKey),
-                            sourceNameGenerator.createDashboardSource(generatedKey.id, secretKey)];
-        const responses = await Promise.all(requests);
-        return responses[0];
+        let id;
+        let key;
+
+        // Covers new users case and also
+        // If someone have only sourceID but not secretKey then he modified the config, so it's ok to drop
+        if (!secretKey) {
+            const generatedKey = await sourceNameGenerator.callService();
+            id = generatedKey.secretKey;
+            key = generatedKey.id;
+        }
+
+        // This means it has nodeID but have no pipe or key
+        if (secretKey && !sourceID) {
+            const generatedKey = await sourceNameGenerator.callService();
+            id = generatedKey.id;
+            key = secretKey;
+        }
+
+        if (sourceID && secretKey) {
+            // We have a previously created config, we try to create it directly
+            id = sourceID;
+            key = secretKey;
+        }
+
+        try {
+            await sourceNameGenerator.createDashboardSource(id, key);
+        } catch (e) {
+            console.log("Error", e);
+            // If the source already exists everything is fine
+            if (e.statusCode !== 403) {
+                throw(e);
+            }
+        }
+
+        return {
+            id,
+            key,
+        };
+    }
+
+    private static async createExternalResources(secretKey?: string, sourceID?: string): Promise<any> {
+        const sourceData = await this.createSource(secretKey, sourceID);
+        const pipe = await this.createSpokesPipe(sourceData.id, sourceData.key);
+        return pipe;
     }
 }
 
