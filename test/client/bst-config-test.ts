@@ -116,7 +116,7 @@ describe("BSTConfig", function() {
             await BSTConfig.load();
             const oldConfiguration = {
                 secretKey: "thisWillPersist",
-                sourceID: "thisWontPersist",
+                sourceID: "thisWillPersistToo",
                 lambdaDeploy: {
                     runtime: "nodejs4.3",
                     role: "",
@@ -138,8 +138,38 @@ describe("BSTConfig", function() {
 
             // assert we have the new keys
             assert.equal(config.secretKey(), "thisWillPersist");
-            assert.notEqual(typeof config.sourceID(), "undefined");
-            assert.notEqual(config.sourceID(), "thisWontPersist");
+            assert.equal(config.sourceID(), "thisWillPersistToo");
+
+        });
+
+        it("Continue when sourceId return it exist error", async function () {
+            // we load in order to create the file
+            await BSTConfig.load();
+            const oldConfiguration = {
+                secretKey: "thisWillPersist",
+                sourceID: "thisWillPersistToo",
+                lambdaDeploy: {
+                    runtime: "nodejs4.3",
+                    role: "",
+                    handler: "index.handler",
+                    description: "My BST lambda skill",
+                    timeout: 3,
+                    memorySize: 128,
+                    vpcSubnets: "",
+                    vpcSecurityGroups: "",
+                    excludeGlobs: "event.json"
+                }
+            };
+
+            // We overwrite the file
+            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            fs.writeFileSync("test/resources/.bst/config", configBuffer);
+
+            let config = await BSTConfig.load();
+
+            // assert we have the new keys
+            assert.equal(config.secretKey(), "thisWillPersist");
+            assert.equal(config.sourceID(), "thisWillPersistToo");
 
         });
     });
