@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
+import {BSTConfig} from "../lib/client/bst-config";
 import {LoggingHelper} from "../lib/core/logging-helper";
+import * as path from "path";
 
 let Logger = "BST";
 
@@ -11,6 +13,9 @@ console.log("");
 let nodeMajorVersion = parseInt(process.version.substr(1, 2));
 
 if (nodeMajorVersion < 4) {
+    LoggingHelper.error(Logger, "!!!!Node version must be >= 4!!!!");
+    LoggingHelper.error(Logger, "Please install to use bst");
+    LoggingHelper.prepareForFileLoggingAndDisableConsole(path.join(BSTConfig.configDirectory(), "bst-debug.log"));
     LoggingHelper.error(Logger, "!!!!Node version must be >= 4!!!!");
     LoggingHelper.error(Logger, "Please install to use bst");
     process.exit(1);
@@ -36,6 +41,9 @@ Global.initializeCLI().then(
     }
     LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
     LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+    LoggingHelper.prepareForFileLoggingAndDisableConsole(path.join(BSTConfig.configDirectory(), "bst-debug.log"));
+    LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
+    LoggingHelper.error(Logger, error);
 });
 
 

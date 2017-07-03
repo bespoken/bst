@@ -64,7 +64,7 @@ export class BSTConfig {
         this.configuration = config;
     }
 
-    private static configDirectory(): string {
+    public static configDirectory(): string {
         return getUserHome() + "/" + BSTDirectoryName;
     }
 
