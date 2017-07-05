@@ -2,7 +2,6 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
-import * as path from "path";
 
 let Logger = "BST";
 
