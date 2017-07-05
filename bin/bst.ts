@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTConfig} from "../lib/client/bst-config";
 import {LoggingHelper} from "../lib/core/logging-helper";
 import * as path from "path";
 
@@ -15,7 +14,7 @@ let nodeMajorVersion = parseInt(process.version.substr(1, 2));
 if (nodeMajorVersion < 4) {
     LoggingHelper.error(Logger, "!!!!Node version must be >= 4!!!!");
     LoggingHelper.error(Logger, "Please install to use bst");
-    LoggingHelper.prepareForFileLoggingAndDisableConsole(path.join(BSTConfig.configDirectory(), "bst-debug.log"));
+    LoggingHelper.prepareForFileLoggingAndDisableConsole("bst-debug.log");
     LoggingHelper.error(Logger, "!!!!Node version must be >= 4!!!!");
     LoggingHelper.error(Logger, "Please install to use bst");
     process.exit(1);
