@@ -41,7 +41,7 @@ Global.initializeCLI().then(
     }
     LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
     LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
-    LoggingHelper.prepareForFileLoggingAndDisableConsole(path.join(BSTConfig.configDirectory(), "bst-debug.log"));
+    LoggingHelper.prepareForFileLoggingAndDisableConsole("bst-debug.log");
     LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
     LoggingHelper.error(Logger, error);
 });
