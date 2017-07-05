@@ -66,6 +66,8 @@ describe("BSTConfig", function() {
             // Make sure it does not get created again
             let config2 = await BSTConfig.load();
             assert.equal(config2.secretKey(), secretKey);
+            assert.equal(config2.secretKey(), "unit-test" + config2.sourceID());
+
         });
 
         it("Updates existing config", async function () {
