@@ -51,11 +51,11 @@ export class LambdaServer {
 
             request.on("end", function () {
                 // Handle a ping - so this can work with health checks
-                if (request.method === "GET") {
+                const isPing = request.method === "GET" && request.url &&  request.url.indexOf("/localPing") !== -1;
+                if (isPing) {
                     return response.end("ALIVE");
-                } else {
-                    self.invoke(request, requestBody, response);
                 }
+                self.invoke(request, requestBody, response);
             });
         });
 
@@ -98,7 +98,9 @@ export class LambdaServer {
         // let lambda = System.import("./" + file);
         const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
         try {
-            const bodyJSON: any = JSON.parse(body.toString());
+            const bodyToString = body.toString();
+            const bodyJSON: any = JSON.parse(bodyToString === "" ? null : bodyToString);
+
             if (this.verbose) {
                 console.log("Request:");
                 console.log(JSON.stringify(bodyJSON, null, 2));
