@@ -1,7 +1,7 @@
 import {WebhookRequest} from "../core/webhook-request";
 import * as net from "net";
-import {Server} from "net";
-import {Socket} from "net";
+import {Server, Socket} from "net";
+import * as https from "https";
 import {LoggingHelper} from "../core/logging-helper";
 
 let Logger = "WEBHOOK";
@@ -9,6 +9,7 @@ let Logger = "WEBHOOK";
 export interface WebhookReceivedCallback {
     (webhookRequest: WebhookRequest): void;
 }
+
 export class WebhookManager {
     private server: Server;
     private host: string;
@@ -23,7 +24,9 @@ export class WebhookManager {
         let self = this;
 
         let socketIndex = 0;
-        this.server = net.createServer(function(socket: Socket) {
+
+        const socketFunction = function(input) {
+            const socket = input as Socket;
             let webhookRequest = new WebhookRequest(socket);
             socketIndex++;
 
@@ -53,7 +56,22 @@ export class WebhookManager {
                 delete self.socketMap[socketKey];
             });
 
-        }).listen(this.port, this.host);
+        };
+
+        if (process.env.SSL_CERT) {
+            const cert = process.env.SSL_CERT as string;
+            const key = process.env.SSL_KEY as string;
+
+            const credentials = {
+                cert: cert.replace(/\\n/g, "\n"),
+                key: key.replace(/\\n/g, "\n"),
+            };
+
+            this.server = https.createServer(credentials, socketFunction).listen(this.port, this.host);
+        } else {
+            this.server = net.createServer(socketFunction).listen(this.port, this.host);
+        }
+
 
         this.server.on("listening", function () {
             if (started !== undefined && started !== null) {
