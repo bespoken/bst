@@ -26,7 +26,7 @@
   "devDependencies": {
     "bst-typedoc": "^0.4.6",
     "dotenv": "^2.0.0",
-    "codecov": "^1.0.1",
+    "codecov": "^2.2.0",
     "gulp": "^3.9.1",
     "gulp-bst-typedoc": "^2.0.1",
     "gulp-rename": "^1.2.2",
@@ -62,9 +62,8 @@
   },
   "scripts": {
     "test": "gulp test",
-    "posttest": "nyc report --reporter=json && codecov -f coverage/*.json",
     "coverage": "gulp coverage",
-    "coveralls": "gulp coveralls",
+    "codecov": "gulp codecov",
     "preversion": "gulp build && gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
   },
