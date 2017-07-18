@@ -89,7 +89,7 @@ gulp.task("coverage", ['coverage-suite-run'], function (done) {
 });
 
 gulp.task("codecov", ['coverage-suite-run'], function (done) {
-    run('nyc report --reporter=json | codecov').exec(function() {
+    run('nyc report --reporter=json && codecov -f coverage/*.json').exec(function() {
         done();
     })
 });
