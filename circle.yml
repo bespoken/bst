@@ -28,5 +28,15 @@ deployment:
       - ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - ./hyper pull bespoken/bst:$CIRCLE_TAG
       - ./hyper rm -f bst || true
-      - ./hyper run -d --name bst --size s4 --restart=always -P bespoken/bst:$CIRCLE_TAG
+      - >
+        ./hyper run
+        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+        -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+        -e SSL_CERT="$SSL_CERT"
+        -e SSL_KEY="$SSL_KEY"
+        -d
+        --name bst
+        --size s4
+        --restart=always
+        -P bespoken/bst:$CIRCLE_TAG
       - ./hyper fip attach 199.245.58.242 bst
