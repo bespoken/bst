@@ -13,10 +13,10 @@
     <a href="https://travis-ci.org/bespoken/bst">
         <img alt="Build Status" class="badge" src="https://travis-ci.org/bespoken/bst.svg?branch=master">
     </a>
-    <a href="https://coveralls.io/github/bespoken/bst?branch=master">
-        <img alt="Coverage Status" class="badge" src="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
+    <a href="https://codecov.io/gh/bespoken/bst">
+      <img src="https://codecov.io/gh/bespoken/bst/branch/master/graph/badge.svg" alt="Codecov" />
     </a>
-    <a href="https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master">
+    <a href="https://www.npmjs.com/package/bespoken-tools">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
     <a href="http://docs.bespoken.tools/">
