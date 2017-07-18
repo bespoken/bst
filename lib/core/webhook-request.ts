@@ -3,7 +3,6 @@
 import * as querystring from "querystring";
 import {BufferUtil} from "./buffer-util";
 import {Socket} from "net";
-import {IncomingMessage} from "http";
 
 export class WebhookRequest {
     public rawContents: Buffer;
