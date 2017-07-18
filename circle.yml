@@ -12,11 +12,12 @@ dependencies:
     - ./hyper --help
     - case $CIRCLE_NODE_INDEX in 0) NODE_VERSION=4 ;; 1) NODE_VERSION=5 ;; 2) NODE_VERSION=6 ;; 3) NODE_VERSION=7 ;;esac; nvm install $NODE_VERSION && nvm alias default $NODE_VERSION
 
-test:
-  post:
-    - npm run codecov
-
 deployment:
+  codecov:
+    branch: /.*/
+    commands:
+      - npm run codecov
+
   bst-server:
     tag: /bst-server-.*/
     commands:
