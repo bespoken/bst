@@ -1,7 +1,8 @@
 import {WebhookRequest} from "../core/webhook-request";
-import * as net from "net";
 import {Server} from "net";
-import {Socket} from "net";
+import {IncomingMessage} from "http";
+import * as http from "http";
+import * as https from "https";
 import {LoggingHelper} from "../core/logging-helper";
 
 let Logger = "WEBHOOK";
@@ -9,10 +10,11 @@ let Logger = "WEBHOOK";
 export interface WebhookReceivedCallback {
     (webhookRequest: WebhookRequest): void;
 }
+
 export class WebhookManager {
     private server: Server;
     private host: string;
-    private socketMap: {[id: number]: Socket} = {};
+    private socketMap: {[id: number]: IncomingMessage} = {};
     public onWebhookReceived: WebhookReceivedCallback = null;
 
     constructor (private port: number) {
@@ -23,21 +25,17 @@ export class WebhookManager {
         let self = this;
 
         let socketIndex = 0;
-        this.server = net.createServer(function(socket: Socket) {
+
+        const requestFunction = function(request) {
+            const socket = request.socket;
             let webhookRequest = new WebhookRequest(socket);
             socketIndex++;
-
             let socketKey = socketIndex;
-            self.socketMap[socketIndex] = socket;
-            socket.on("data", function(data: Buffer) {
-                // Throw away the pings - too much noise
-                let dataString = data.toString();
+            self.socketMap[socketIndex] = request;
 
-                if (dataString.length > 4 && dataString.substr(0, 3) !== "GET") {
-                    LoggingHelper.info(Logger, "Webhook From " + socket.remoteAddress + ":" + socket.remotePort);
-                }
-
-                webhookRequest.append(data);
+            request.on("data", function(data: Buffer) {
+                console.log("Received");
+                webhookRequest.appendFromRequest(request, data);
                 if (webhookRequest.done()) {
                     self.onWebhookReceived(webhookRequest);
 
@@ -49,11 +47,27 @@ export class WebhookManager {
                 }
             });
 
-            socket.on("close", function () {
+            request.on("close", function () {
                 delete self.socketMap[socketKey];
             });
 
-        }).listen(this.port, this.host);
+        };
+
+        if (!process.env.SSL_CERT) {
+            this.server = http.createServer(requestFunction).listen(this.port);
+        } else {
+            const cert = process.env.SSL_CERT as string;
+            const key = process.env.SSL_KEY as string;
+
+            const credentials = {
+                cert: cert.replace(/\\n/g, "\n"),
+                key: key.replace(/\\n/g, "\n"),
+            };
+
+            const httpsServer = https.createServer(credentials, requestFunction);
+            this.server = httpsServer.listen(this.port, this.host);
+        }
+
 
         this.server.on("listening", function () {
             if (started !== undefined && started !== null) {
@@ -66,8 +80,8 @@ export class WebhookManager {
     public stop (callback?: () => void): void {
         let self: WebhookManager = this;
         for (let key in self.socketMap) {
-            let socket = self.socketMap[key];
-            socket.end();
+            let message = self.socketMap[key];
+            message.socket.end();
         }
 
         this.server.close(function () {

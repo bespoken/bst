@@ -3,6 +3,7 @@
 import * as querystring from "querystring";
 import {BufferUtil} from "./buffer-util";
 import {Socket} from "net";
+import {IncomingMessage} from "http";
 
 export class WebhookRequest {
     public rawContents: Buffer;
@@ -49,7 +50,27 @@ export class WebhookRequest {
         }
     }
 
-    private appendBody(bodyPart: string) {
+    private appendHtmlDataToBodyBuffer(request: IncomingMessage, data: Buffer): Buffer {
+        const requestLine = request.method + " " + request.url + " " + request.httpVersion;
+        const headersLines = request.rawHeaders.reduce((acc, val, currentIndex) => {
+                if (currentIndex % 2 === 0) {
+                    const key = val + ":";
+                    acc = acc + key;
+                } else {
+                    const value = val + "\r\n";
+                    acc = acc + value;
+                }
+                return acc;
+         }, "");
+        return Buffer.concat([Buffer.from(requestLine + "\n" + headersLines + "\r\n"), data]);
+    }
+
+    public appendFromRequest(request: IncomingMessage, data: Buffer) {
+        this.append(this.appendHtmlDataToBodyBuffer(request, data));
+    }
+
+
+    public appendBody(bodyPart: string) {
         this.body += bodyPart;
     }
 
@@ -57,7 +78,6 @@ export class WebhookRequest {
         if (this.method === "GET") {
             return true;
         }
-
         return (this.body.length === this.contentLength());
     }
 
