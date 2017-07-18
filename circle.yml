@@ -29,4 +29,4 @@ deployment:
       - ./hyper pull bespoken/bst:$CIRCLE_TAG
       - ./hyper rm -f bst || true
       - ./hyper run -d --name bst --size s4 --restart=always -P bespoken/bst:$CIRCLE_TAG
-      - ./hyper fip attach 199.245.48.179 bst
+      - ./hyper fip attach 199.245.58.242 bst
