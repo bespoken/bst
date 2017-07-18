@@ -1,9 +1,9 @@
 import {WebhookRequest} from "../core/webhook-request";
 import {Server} from "net";
-import {IncomingMessage} from "http";
 import * as http from "http";
 import * as https from "https";
 import {LoggingHelper} from "../core/logging-helper";
+import {Socket} from "net";
 
 let Logger = "WEBHOOK";
 
@@ -14,7 +14,7 @@ export interface WebhookReceivedCallback {
 export class WebhookManager {
     private server: Server;
     private host: string;
-    private socketMap: {[id: number]: IncomingMessage} = {};
+    private socketMap: {[id: number]: Socket} = {};
     public onWebhookReceived: WebhookReceivedCallback = null;
 
     constructor (private port: number) {
@@ -79,8 +79,8 @@ export class WebhookManager {
     public stop (callback?: () => void): void {
         let self: WebhookManager = this;
         for (let key in self.socketMap) {
-            let message = self.socketMap[key];
-            message.socket.end();
+            let socket = self.socketMap[key];
+            socket.end();
         }
 
         this.server.close(function () {
