@@ -39,4 +39,4 @@ deployment:
         --size s4
         --restart=always
         -P bespoken/bst:$CIRCLE_TAG
-      - ./hyper fip attach 199.245.58.242 bst
+      - ./hyper fip attach -f 199.245.58.242 bst
