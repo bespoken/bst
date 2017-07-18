@@ -20,4 +20,4 @@ RUN npm -version
 
 RUN npm install
 
-CMD node bin/bst-server.js 443 5000
+CMD node bin/bst-server.js 5000 443
