@@ -10,6 +10,11 @@ import {WebhookRequest} from "../../lib/core/webhook-request";
 import {HTTPClient} from "../../lib/core/http-client";
 
 describe("WebhookManager", function() {
+    before(() => {
+        // Do not use SSL for unit tests
+        delete process.env.SSL_CERT;
+    });
+
     describe("Connect", function() {
         it("Should Connect and Receive Data", function(done) {
             this.timeout(5000);
