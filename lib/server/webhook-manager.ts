@@ -26,16 +26,14 @@ export class WebhookManager {
 
         let socketIndex = 0;
 
-        const requestFunction = function(request) {
-            const socket = request.socket;
+        const connectFunction = function(socket) {
             let webhookRequest = new WebhookRequest(socket);
             socketIndex++;
             let socketKey = socketIndex;
-            self.socketMap[socketIndex] = request;
+            self.socketMap[socketIndex] = socket;
 
-            request.on("data", function(data: Buffer) {
-                console.log("Received");
-                webhookRequest.appendFromRequest(request, data);
+            socket.on("data", function(data: Buffer) {
+                webhookRequest.append(data);
                 if (webhookRequest.done()) {
                     self.onWebhookReceived(webhookRequest);
 
@@ -47,14 +45,15 @@ export class WebhookManager {
                 }
             });
 
-            request.on("close", function () {
+            socket.on("close", function () {
                 delete self.socketMap[socketKey];
             });
 
         };
 
         if (!process.env.SSL_CERT) {
-            this.server = http.createServer(requestFunction).listen(this.port);
+            this.server = http.createServer().listen(this.port);
+            this.server.on("connection", connectFunction);
         } else {
             const cert = process.env.SSL_CERT as string;
             const key = process.env.SSL_KEY as string;
@@ -64,10 +63,10 @@ export class WebhookManager {
                 key: key.replace(/\\n/g, "\n"),
             };
 
-            const httpsServer = https.createServer(credentials, requestFunction);
+            const httpsServer = https.createServer(credentials);
             this.server = httpsServer.listen(this.port, this.host);
+            this.server.on("secureConnection", connectFunction);
         }
-
 
         this.server.on("listening", function () {
             if (started !== undefined && started !== null) {
