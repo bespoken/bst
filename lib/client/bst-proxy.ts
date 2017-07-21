@@ -5,6 +5,7 @@ import {LambdaServer} from "./lambda-server";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
 import {FunctionServer} from "./function-server";
+import {LoggingHelper} from "../core/logging-helper";
 
 export enum ProxyType {
     GOOGLE_CLOUD_FUNCTION,
@@ -121,12 +122,17 @@ export class BSTProxy {
     }
 
     public start(onStarted?: (error?: any) => void): BSTProxy {
-        // Every proxy has a process file associated with it
-        BSTProcess.run(this.httpPort, this.proxyType, process.pid);
-
-        if (!this.proxySecretKey) {
+        // If we have a configuration (i.e., are being run from CLI), we use it
+        if (Global.config()) {
+            BSTProcess.run(this.httpPort, this.proxyType, process.pid);
             this.proxySecretKey = Global.config().secretKey();
+        } else if (!this.proxySecretKey) {
+            // If we are being called programmatically, the secret key must be provided
+            throw new Error("Secret key must be provided via .secretKey(key) function. Secret key can be found in ~/.bst/config.");
+        } else {
+            LoggingHelper.initialize(false);
         }
+
         this.bespokenClient = new BespokeClient(this.proxySecretKey, this.bespokenHost, this.bespokenPort, this.httpDomain, this.httpPort);
 
         // Make sure all callbacks have been hit before returning
