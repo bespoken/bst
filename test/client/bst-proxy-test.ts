@@ -20,8 +20,6 @@ describe("BSTProxy Programmatic", function () {
         let proxy = BSTProxy.http(9999);
         try {
             proxy.start();
-            assert.equal("SECRET_KEY", (proxy as any).bespokenClient.nodeID);
-
         } catch (e) {
             assert(e.message.startsWith("Secret key must be provided"));
             done();
