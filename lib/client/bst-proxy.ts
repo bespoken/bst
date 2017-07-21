@@ -126,10 +126,13 @@ export class BSTProxy {
         if (Global.config()) {
             BSTProcess.run(this.httpPort, this.proxyType, process.pid);
             this.proxySecretKey = Global.config().secretKey();
-        } else if (!this.proxySecretKey) {
-            // If we are being called programmatically, the secret key must be provided
-            throw new Error("Secret key must be provided via .secretKey(key) function. Secret key can be found in ~/.bst/config.");
         } else {
+            // Handle start when being called programmatically (and presumably standalone)
+            if (!this.proxySecretKey) {
+                // If we are being called programmatically, the secret key must be provided
+                throw new Error("Secret key must be provided via .secretKey(key) function. Secret key can be found in ~/.bst/config.");
+            }
+
             LoggingHelper.initialize(false);
         }
 
