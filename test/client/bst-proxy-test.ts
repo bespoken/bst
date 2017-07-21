@@ -34,7 +34,9 @@ describe("BSTProxy", async function() {
         it("Starts and Stops Correctly With Options", function (done) {
             let server = new BespokeServer(4000, 3000);
             server.start(function () {
-                let proxy = BSTProxy.http(9999).bespokenServer("localhost", 3000);
+                let proxy = BSTProxy.http(9999)
+                    .bespokenServer("localhost", 3000)
+                    .secretKey("SECRET_KEY");
                 proxy.start(function () {
                     let count = 0;
                     let bothDone = function () {
@@ -43,6 +45,8 @@ describe("BSTProxy", async function() {
                             done();
                         }
                     };
+
+                    assert.equal("SECRET_KEY", (proxy as any).bespokenClient.nodeID);
 
                     proxy.stop(bothDone);
                     server.stop(bothDone);

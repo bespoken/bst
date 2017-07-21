@@ -15,12 +15,32 @@ export enum ProxyType {
 const DefaultLambdaPort = 10000;
 
 /**
- * Exposes the BST proxy command for use
+ * Exposes the BST proxy command for use.
+ *
+ * The proxy creates a tunnel to the Bespoken Proxy server.
+ *
+ * To start it a proxy programmatically, simply call:
+ * ```javascript
+ * const proxy = BSTProxy.lambda("index.js").("SECRET_KEY").start(() => {
+ *      // Stuff to do on start
+ * });
+ * ```
+ *
+ * To stop, call:
+ * ```javascript
+ * proxy.stop(() => {
+ *     // Stuff to do on stop
+ *     // If being used in unit tests, good to wait for this to ensure resources are properly cleaned up
+ * });
+ * ```
+ *
+ * Your secret key can be found in the ~/.bst/config file.
  */
 export class BSTProxy {
     private bespokenClient: BespokeClient = null;
     private functionServer: FunctionServer = null;
     private lambdaServer: LambdaServer = null;
+    private proxySecretKey: string;
 
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
@@ -86,6 +106,11 @@ export class BSTProxy {
         return this;
     }
 
+    public secretKey(secretKey: string): BSTProxy {
+        this.proxySecretKey = secretKey;
+        return this;
+    }
+
     /**
      * Specifies the port the Lambda/Function Server should listen on. Only for proxies with built-in servers.
      * @param port
@@ -95,11 +120,14 @@ export class BSTProxy {
         return this;
     }
 
-    public start(onStarted?: (error?: any) => void): void {
+    public start(onStarted?: (error?: any) => void): BSTProxy {
         // Every proxy has a process file associated with it
         BSTProcess.run(this.httpPort, this.proxyType, process.pid);
 
-        this.bespokenClient = new BespokeClient(Global.config().secretKey(), this.bespokenHost, this.bespokenPort, this.httpDomain, this.httpPort);
+        if (!this.proxySecretKey) {
+            this.proxySecretKey = Global.config().secretKey();
+        }
+        this.bespokenClient = new BespokeClient(this.proxySecretKey, this.bespokenHost, this.bespokenPort, this.httpDomain, this.httpPort);
 
         // Make sure all callbacks have been hit before returning
         //  We will have to wait for two callbacks if this using the Lambda proxy
@@ -126,6 +154,7 @@ export class BSTProxy {
             this.functionServer = new FunctionServer(this.functionFile, this.functionName, this.httpPort);
             this.functionServer.start(callback);
         }
+        return this;
     }
 
     public stop(onStopped?: () => void): void {
