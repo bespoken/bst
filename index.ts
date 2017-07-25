@@ -5,6 +5,7 @@ export {AudioItemStream} from "./lib/alexa/audio-item";
 export {BSTAlexa} from "./lib/client/bst-alexa";
 export {BSTAlexaEvents} from "./lib/client/bst-alexa";
 export {BSTEncode} from "./lib/client/bst-encode";
+export {BSTProxy} from "./lib/client/bst-proxy";
 export {IEncoderConfig} from "./lib/client/bst-encode";
 export {LambdaFunction} from "./lib/logless/logless";
 export {LambdaServer} from "./lib/client/lambda-server";

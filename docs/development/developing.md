@@ -1,12 +1,11 @@
 # Initial Setup
-## Install typings and gulp
-`npm install typings --global`  
-`npm install gulp --global`
+## Install packages
+`npm install`
 
-These commands will be used commonly for development tasks.
+This will grab all the npm packages associated with the project and set it up.
 
 ## Run gulp build
-`gulp build`  
+`npm run build`
 
 Under the covers this runs `npm install` and sets everything up.
 
