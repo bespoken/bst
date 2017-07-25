@@ -73,7 +73,7 @@ export class LoggingHelper {
             LoggingHelper.logger = winston.add(winston.transports.Console,
                 {
                     formatter: LoggingHelper.formatter,
-                    level: "info"
+                    level: "warn"
                 }
             );
         }

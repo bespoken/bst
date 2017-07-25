@@ -125,6 +125,7 @@ gulp.task('typedoc', function () {
             'lib/alexa/alexa-session.ts',
             'lib/client/bst-alexa.ts',
             'lib/client/bst-encode.ts',
+            'lib/client/bst-proxy.ts',
             'lib/client/lambda-server.ts',
             'lib/logless/logless.ts',
             'lib/logless/logless-context.ts']
