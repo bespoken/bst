@@ -31,7 +31,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
-        console.log("Your URL for Alexa Skill configuration:");
+        console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
         console.log("Your URL for viewing skill data:");
@@ -52,7 +52,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, options: any) {
-        console.log("Your URL for Alexa Skill configuration:");
+        console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
         console.log("Your URL for viewing skill data:");
