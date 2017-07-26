@@ -44,6 +44,7 @@ describe("bst", function() {
             mockery.registerMock("../lib/core/logging-helper", {
                 "LoggingHelper": {
                     info: function (level: any, message: string) {},
+                    prepareForFileLoggingAndDisableConsole: () => {},
                     error: function (level: any, message: string) {
                         errorCalls++;
                         try {
@@ -82,6 +83,7 @@ describe("bst", function() {
 
             mockery.registerMock("../lib/core/logging-helper", {
                 "LoggingHelper": {
+                    prepareForFileLoggingAndDisableConsole: () => {},
                     info: function (level: any, message: string) {},
                     error: function (level: any, message: string) {
                         errorCalls++;
@@ -210,6 +212,7 @@ describe("bst", function() {
             mockProcess.expects("exit").once().withExactArgs(1);
             mockery.registerMock("../lib/core/logging-helper", {
                 "LoggingHelper": {
+                    prepareForFileLoggingAndDisableConsole: () => {},
                     info: function (level: any, message: string) {},
                     error: function (level: any, message: string) {
                         errorCalls++;

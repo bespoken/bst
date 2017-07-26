@@ -12,6 +12,11 @@ import {IncomingMessage} from "http";
 import {Global} from "../../lib/core/global";
 
 describe("BespokeServerTest", function() {
+    before(() => {
+        // Do not use SSL for unit tests
+        delete process.env.SSL_CERT;
+    });
+
     describe("ReceiveWebhook", function() {
         it("Connects and Receives Callback", function(done) {
             this.timeout(2000);

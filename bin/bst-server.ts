@@ -8,7 +8,7 @@ import {Global} from "../lib/core/global";
 program
     .command("start <webhookPort> <nodePort>")
     .description("Starts the BST server")
-    .action(function (nodeID: string, port: number, options: any) {
+    .action(function () {
         let webhookPort: number = parseInt(process.argv[3]);
         let serverPort: number = parseInt(process.argv[4]);
         let bespokeServer = new BespokeServer(webhookPort, serverPort);

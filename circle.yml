@@ -1,0 +1,42 @@
+machine:
+  node:
+    version: 6.9.2
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - wget https://hyper-install.s3.amazonaws.com/hyper-linux-x86_64.tar.gz
+    - tar xzf hyper-linux-x86_64.tar.gz
+    - chmod +x hyper
+    - ./hyper --help
+    - case $CIRCLE_NODE_INDEX in 0) NODE_VERSION=4 ;; 1) NODE_VERSION=5 ;; 2) NODE_VERSION=6 ;; 3) NODE_VERSION=7 ;;esac; nvm install $NODE_VERSION && nvm alias default $NODE_VERSION
+
+deployment:
+  codecov:
+    branch: /.*/
+    commands:
+      - npm run codecov
+
+  bst-server:
+    tag: /bst-server-.*/
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker build -f docker/Dockerfile -t bespoken/bst:$CIRCLE_TAG .
+      - docker push bespoken/bst:$CIRCLE_TAG
+      - ./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET
+      - ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - ./hyper pull bespoken/bst:$CIRCLE_TAG
+      - ./hyper rm -f bst || true
+      - >
+        ./hyper run
+        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+        -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+        -e SSL_CERT="$SSL_CERT"
+        -e SSL_KEY="$SSL_KEY"
+        -d
+        --name bst
+        --size s4
+        --restart=always
+        -P bespoken/bst:$CIRCLE_TAG
+      - ./hyper fip attach -f 199.245.58.242 bst

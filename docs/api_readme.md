@@ -4,6 +4,7 @@ Bespoken Tools Reference API
 We currently only expose four primary classes:
 - [BSTAlexa](classes/bstalexa.html)
 - [BSTEncode](classes/bstencode.html)
+- [BSTProxy](classes/bstproxy.html)
 - [LambdaServer](classes/lambdaserver.html)
 - [Logless](classes/logless.html)
 
@@ -14,6 +15,8 @@ We make them available to:
 [BSTAlexa](classes/bstalexa.html) is our Alexa emulator. It allows one to write unit tests and functional tests that mimic the functionality of the Alexa service.
 
 The [LambdaServer](classes/lambdaserver.html) makes it easy to run your Lambdas locally for unit and functional tests.
+
+[BSTProxy](classes/bstproxy.html) allows our proxy tool to be used programmatically. An [example is here](https://github.com/bespoken/super-simple-audio-player/blob/Part3/test/index-test.js).
 
 [BSTEncode](classes/bstencode.html) encodes audio files to [Alexa standards](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/speech-synthesis-markup-language-ssml-reference) and makes them available via S3.
 

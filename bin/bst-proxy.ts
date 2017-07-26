@@ -31,12 +31,12 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
-        console.log("Your URL for Alexa Skill configuration:");
+        console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
         console.log("Your URL for viewing skill data:");
-        console.log(URLMangler.mangleJustPath("/YOUR/SKILL/PATH", Global.config().sourceID(), Global.config().secretKey()));
-        console.log("(Be sure to put in your real path and other query string parameters!)");
+        console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
+        console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
 
         let proxy: BSTProxy = BSTProxy.http(port);
@@ -52,7 +52,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, options: any) {
-        console.log("Your URL for Alexa Skill configuration:");
+        console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
         console.log("Your URL for viewing skill data:");

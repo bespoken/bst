@@ -83,13 +83,13 @@ gulp.task('coverage-suite-run', ['coverage-clean'], function() {
 });
 
 gulp.task("coverage", ['coverage-suite-run'], function (done) {
-    run('nyc report --reporter=lcov').exec(function() {
+    run('nyc report --reporter=json').exec(function() {
         done();
     })
 });
 
-gulp.task("coveralls", ['coverage-suite-run'], function (done) {
-    run('nyc report --reporter=text-lcov | coveralls').exec(function() {
+gulp.task("codecov", ['coverage-suite-run'], function (done) {
+    run('nyc report --reporter=json && codecov -f coverage/*.json').exec(function() {
         done();
     })
 });
@@ -125,6 +125,7 @@ gulp.task('typedoc', function () {
             'lib/alexa/alexa-session.ts',
             'lib/client/bst-alexa.ts',
             'lib/client/bst-encode.ts',
+            'lib/client/bst-proxy.ts',
             'lib/client/lambda-server.ts',
             'lib/logless/logless.ts',
             'lib/logless/logless-context.ts']

@@ -49,7 +49,7 @@ export class WebhookRequest {
         }
     }
 
-    private appendBody(bodyPart: string) {
+    public appendBody(bodyPart: string) {
         this.body += bodyPart;
     }
 
@@ -57,7 +57,6 @@ export class WebhookRequest {
         if (this.method === "GET") {
             return true;
         }
-
         return (this.body.length === this.contentLength());
     }
 

@@ -152,7 +152,7 @@ export class BSTConfig {
         if (!secretKey) {
             const generatedKey = await sourceNameGenerator.callService();
             id = generatedKey.id;
-            key = generatedKey.key;
+            key = generatedKey.secretKey;
         }
 
         // This means it has nodeID but have no pipe or key

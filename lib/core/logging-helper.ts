@@ -49,6 +49,16 @@ export class LoggingHelper {
         }
     }
 
+    public static prepareForFileLoggingAndDisableConsole(file: string): void {
+        LoggingHelper.logger.add(winston.transports.File,
+            {
+                formatter: LoggingHelper.cli ? LoggingHelper.cliFormatter : LoggingHelper.formatter,
+                level: "error",
+                filename: file,
+            });
+        LoggingHelper.logger.remove(winston.transports.Console);
+    }
+
     public static initialize (cli: boolean): void {
         LoggingHelper.cli = cli;
         winston.clear();
@@ -63,7 +73,7 @@ export class LoggingHelper {
             LoggingHelper.logger = winston.add(winston.transports.Console,
                 {
                     formatter: LoggingHelper.formatter,
-                    level: "info"
+                    level: "warn"
                 }
             );
         }
