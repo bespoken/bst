@@ -25,8 +25,10 @@ export class LambdaServer {
      * @param file The file the defines the Lambda
      * @param port The port the service should listen on
      * @param verbose Prints out verbose information about requests and responses
+     * @param functionName Allows to access a function different from handler
+
      */
-    public constructor(private file: string, private port: number, private verbose?: boolean) {}
+    public constructor(private file: string, private port: number, private verbose?: boolean, private functionName?: string) {}
 
     /**
      * Starts the LambdaServer listening on the port specified in the constructor.
@@ -106,7 +108,8 @@ export class LambdaServer {
                 console.log(JSON.stringify(bodyJSON, null, 2));
             }
 
-            lambda.handler(bodyJSON, context, function(error: Error, result: any) {
+            const handlerFunction = this.functionName ? this.functionName : "handler";
+            lambda[handlerFunction](bodyJSON, context, function(error: Error, result: any) {
                 context.done(error, result);
             });
         } catch (e) {

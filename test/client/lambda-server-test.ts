@@ -34,6 +34,21 @@ describe("LambdaServer", function() {
 
         });
 
+        it("Starts Correctly With a custom function", function(done) {
+            let runner = new LambdaServer("ExampleLambdaCustomFunction.js", 10000, false, "myHandler");
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                let responseString = data.toString();
+                assert.equal(responseString, "{\"success\":true}");
+                runner.stop();
+                done();
+            });
+
+        });
+
         it("Handles Lambda Fail Correctly", function(done) {
             let runner = new LambdaServer("ExampleLambda.js", 10000);
             runner.start();
