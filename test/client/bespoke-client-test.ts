@@ -37,11 +37,12 @@ describe("BespokeClient", function() {
         });
 
         it("Connects to something other than localhost", function(done) {
-            let client = new BespokeClient("JPK", "proxy.bespoken.tools", 5000, "0.0.0.0", 9001);
+            this.timeout(5000);
+            let client = new BespokeClient("JPK", "proxy.bespoken.tools", 5000, "0.0.0.0", 443);
             client.onConnect = function (error: any) {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("proxy.bespoken.tools", 80, "/test?node-id=JPK", "Test", function (data: Buffer, statusCode: number, success: boolean) {
-                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:9001");
+                webhookCaller.post("proxy.bespoken.tools", 443, "/test?node-id=JPK", "Test", function (data: Buffer, statusCode: number, success: boolean) {
+                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:443");
                     assert.equal(statusCode, 500);
 
                     client.shutdown(function () {

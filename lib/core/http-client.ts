@@ -1,6 +1,7 @@
 /// <reference path="../../typings/index.d.ts" />
 
 import * as http from "http";
+import * as https from "https";
 import {BufferUtil} from "./buffer-util";
 
 export class HTTPClient {
@@ -19,10 +20,7 @@ export class HTTPClient {
             }
         };
 
-        // Set up the request
-        let responseData: Buffer = new Buffer("");
-        let post_req = http.request(post_options, function(response) {
-            // response.setEncoding("utf8");
+        const functionCallback = function(response) {
             response.on("data", function (chunk: Buffer) {
                 responseData = Buffer.concat([responseData, chunk]);
             });
@@ -32,7 +30,12 @@ export class HTTPClient {
                     callback(responseData, response.statusCode, true);
                 }
             });
-        });
+        };
+        // Set up the request
+        let responseData: Buffer = new Buffer("");
+        let post_req = port === 443 ?
+            https.request(post_options, functionCallback) :
+            http.request(post_options, functionCallback);
 
         post_req.on("error", function (error: any) {
             if (callback !== undefined && callback !== null) {
