@@ -34,7 +34,7 @@ program
         console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        console.log("Your URL for viewing skill data:");
+        console.log("Your URL for viewing requests/responses sent to your service:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
@@ -55,7 +55,7 @@ program
         console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        console.log("Your URL for viewing skill data:");
+        console.log("Your URL for viewing requests/responses sent to your service:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");

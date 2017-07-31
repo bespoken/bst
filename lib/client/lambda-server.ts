@@ -25,8 +25,7 @@ export class LambdaServer {
      * @param file The file the defines the Lambda
      * @param port The port the service should listen on
      * @param verbose Prints out verbose information about requests and responses
-     * @param functionName Allows to access a function different from handler
-
+     * @param functionName Use the named function as opposed to the default ("handler")
      */
     public constructor(private file: string, private port: number, private verbose?: boolean, private functionName?: string) {}
 
