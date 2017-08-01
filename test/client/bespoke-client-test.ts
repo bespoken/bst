@@ -25,7 +25,8 @@ class MockBespokeClient extends BespokeClient {
 // These tests related to the keep alive, which are tricky to write
 // I believe they are worth it because this is critical functionality to our robustness
 describe("BespokeClient", function() {
-    const testPort = 9000 + parseInt(process.version.substr(1, 2), 10);
+    const nodeMajorVersion = parseInt(process.version.substr(1, 2), 10);
+    const testPort = 9000 + nodeMajorVersion;
     describe("#connect()", function() {
         it("Fails to connect", function(done) {
             let client = new BespokeClient("JPK", "localhost", 9000, "localhost", 9000 );
@@ -38,10 +39,10 @@ describe("BespokeClient", function() {
 
         it("Connects to something other than localhost", function(done) {
             this.timeout(5000);
-            let client = new BespokeClient("JPK", "proxy.bespoken.tools", 5000, "0.0.0.0", testPort );
+            let client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "0.0.0.0", testPort );
             client.onConnect = function (error: any) {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("proxy.bespoken.tools", 443, "/test?node-id=JPK", "Test", function (data: Buffer, statusCode: number, success: boolean) {
+                webhookCaller.post("proxy.bespoken.tools", 443, "/test?node-id=JPK" + nodeMajorVersion, "Test", function (data: Buffer, statusCode: number, success: boolean) {
                     assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:" + testPort);
                     assert.equal(statusCode, 500);
 
