@@ -96,6 +96,28 @@ describe("BSTProxy", async function() {
                 });
             });
         });
+
+        it("Starts and Stops Correctly With Named Function", function (done) {
+            let server = new BespokeServer(4000, 5000);
+            server.start(function () {
+                let proxy = BSTProxy.lambda("../resources/ExampleLambdaCustomFunction.js", "myHandler");
+                proxy.port(2000);
+                proxy.start(function () {
+                    assert.equal((<any> proxy).lambdaServer.server.address().port, 2000);
+
+                    let count = 0;
+                    let bothDone = function () {
+                        count++;
+                        if (count === 2) {
+                            done();
+                        }
+                    };
+
+                    proxy.stop(bothDone);
+                    server.stop(bothDone);
+                });
+            });
+        });
     });
 
     describe("#cloudFunction()", function() {

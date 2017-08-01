@@ -68,9 +68,10 @@ export class BSTProxy {
      * @param lambdaFile
      * @returns {BSTProxy}
      */
-    public static lambda(lambdaFile: string): BSTProxy {
+    public static lambda(lambdaFile: string, functionName?: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA);
         tool.functionFile = lambdaFile;
+        tool.functionName = functionName;
         tool.httpPort = DefaultLambdaPort;
         return tool;
     }
@@ -154,7 +155,7 @@ export class BSTProxy {
 
         if (this.proxyType === ProxyType.LAMBDA) {
             callbackCountDown++;
-            this.lambdaServer = new LambdaServer(this.functionFile, this.httpPort);
+            this.lambdaServer = new LambdaServer(this.functionFile, this.httpPort, false, this.functionName);
             this.lambdaServer.start(callback);
         }
 

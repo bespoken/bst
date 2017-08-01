@@ -34,7 +34,7 @@ program
         console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        console.log("Your URL for viewing skill data:");
+        console.log("Your URL for viewing requests/responses sent to your service:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
@@ -45,21 +45,21 @@ program
     });
 
 program
-    .command("lambda <lambda-file>")
+    .command("lambda <lambda-file> [function-name]")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .description("Proxies a AWS Lambda defined in the specified file")
-    .action(function (lambdaFile: string, options: any) {
+    .action(function (lambdaFile: string, functionName: string, options: any) {
         console.log("Your public URL for accessing your local service:");
         console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
         console.log("");
-        console.log("Your URL for viewing skill data:");
+        console.log("Your URL for viewing requests/responses sent to your service:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
-        let proxy: BSTProxy = BSTProxy.lambda(lambdaFile);
+        let proxy: BSTProxy = BSTProxy.lambda(lambdaFile, functionName);
         handleOptions(proxy, options);
         proxy.start();
     });

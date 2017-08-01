@@ -172,6 +172,15 @@ describe("bst-proxy", function() {
             NodeUtil.load("../../bin/bst-proxy.js");
         });
 
+        it("Calls Lambda proxy with functionName", function(done) {
+            process.argv = command("node bst-proxy.js lambda lambda.js myHandler");
+            mockProxy.start = function () {
+                done();
+            };
+
+            NodeUtil.load("../../bin/bst-proxy.js");
+        });
+
         it("Calls Lambda proxy with verbose option", function(done) {
             process.argv = command("node bst-proxy.js lambda lambda.js --verbose");
             mockProxy.start = function () {
