@@ -1,7 +1,5 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as sinon from "sinon";
-import SinonSandbox = Sinon.SinonSandbox;
+import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 
 describe("bst-sleep", function() {

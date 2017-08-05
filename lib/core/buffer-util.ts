@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import {StringUtil} from "./string-util";
 
 export class BufferUtil {

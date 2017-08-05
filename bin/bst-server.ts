@@ -1,4 +1,4 @@
-/// <reference path="../typings/index.d.ts" />
+
 
 // Startup script for running BST
 import {BespokeServer} from "../lib/server/bespoke-server";
