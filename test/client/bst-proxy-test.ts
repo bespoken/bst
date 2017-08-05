@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import {Global} from "../../lib/core/global";
 import {BespokeServer} from "../../lib/server/bespoke-server";

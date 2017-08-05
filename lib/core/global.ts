@@ -1,6 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
-
 import {LoggingHelper} from "./logging-helper";
 import {BSTConfig} from "../client/bst-config";
 import {BSTProcess} from "../client/bst-config";
