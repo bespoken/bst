@@ -3,11 +3,12 @@ import * as util from "util";
 import {Logless} from "./logless";
 const uuid = require("uuid");
 
+
 export class LoglessContext {
     private _callback: Function;
     private _queue: Array<Log> = [];
     private _transactionID: string;
-    private _uncaughtExceptionHandler: Function;
+    private _uncaughtExceptionHandler: (Error) => void;
 
     public constructor(private _source: string) {
 

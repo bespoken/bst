@@ -1,4 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
 import * as assert from "assert";
 import * as fs from "fs";
 import {FileUtil} from "../../lib/core/file-util";
