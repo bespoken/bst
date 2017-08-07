@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as net from "net";
 import {NetworkErrorType} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";

@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as assert from "assert";
 import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
@@ -334,7 +336,7 @@ describe("BSTAlexa", async function() {
                     });
 
                     if (i > 1) {
-                        assert.fail("fail");
+                        assert.fail();
                     }
                 });
 
@@ -344,7 +346,7 @@ describe("BSTAlexa", async function() {
                     assert.equal(audioItem.stream.token, j + "");
                     assert.equal(audioItem.stream.offsetInMilliseconds, j * 1000);
                     if (j > 1) {
-                        assert.fail("fail");
+                        assert.fail();
                     }
                 });
 

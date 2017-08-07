@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import {Global} from "../../lib/core/global";
 import * as os from "os";
 import {LambdaDeploy} from "../../lib/client/lambda-deploy";

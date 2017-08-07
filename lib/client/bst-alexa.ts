@@ -120,7 +120,7 @@ export class BSTAlexa {
      * @param callback
      * @return Itself
      */
-    public on(eventType: string, callback: (...args: any[]) => void): BSTAlexa {
+    public on(eventType: string, callback: Function): BSTAlexa {
         if (eventType.startsWith("AudioPlayer")) {
             if (!BSTAlexa.validateAudioEventType(eventType)) {
                 throw Error("No event type: " + eventType + " is defined");
@@ -150,7 +150,7 @@ export class BSTAlexa {
      * @param callback
      * @returns Itself
      */
-    public once(eventType: string, callback: (...args: any[]) => void): BSTAlexa {
+    public once(eventType: string, callback: Function): BSTAlexa {
         if (eventType.startsWith("AudioPlayer")) {
             if (!BSTAlexa.validateAudioEventType(eventType)) {
                 throw Error("No event type: " + eventType + " is defined");
