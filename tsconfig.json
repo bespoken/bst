@@ -11,6 +11,7 @@
     "target": "ES6"
   },
   "include": [
+    "bin/**/*.ts",
     "lib/**/*.ts",
     "test/**/*.ts",
     "index.ts"
