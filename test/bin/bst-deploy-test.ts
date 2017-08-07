@@ -1,10 +1,8 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as sinon from "sinon";
+import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
-import SinonSandbox = Sinon.SinonSandbox;
 import {Global} from "../../lib/core/global";
 import {LambdaConfig} from "../../lib/client/lambda-config";
 

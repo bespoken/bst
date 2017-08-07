@@ -1,9 +1,7 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as mockery from "mockery";
 import * as sinon from "sinon";
+import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
-import SinonSandbox = Sinon.SinonSandbox;
 
 describe("bst commands", function() {
     let sandbox: SinonSandbox = null;
