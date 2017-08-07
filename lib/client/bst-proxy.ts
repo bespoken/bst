@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import {BespokeClient} from "./bespoke-client";
 import {LambdaServer} from "./lambda-server";
 import {BSTProcess} from "./bst-config";

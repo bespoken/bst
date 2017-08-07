@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as querystring from "querystring";
 import {BufferUtil} from "./buffer-util";
 import {Socket} from "net";

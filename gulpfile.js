@@ -96,7 +96,9 @@ gulp.task("codecov", ['coverage-suite-run'], function (done) {
 
 gulp.task('setup', function (done) {
     run('npm install').exec(function () {
-        done();
+        run('typings install').exec(function () {
+            done();
+        });
     });
 });
 

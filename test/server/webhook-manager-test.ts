@@ -1,6 +1,7 @@
 /**
  * Created by jpk on 7/1/16.
  */
+/// <reference path="../../typings/index.d.ts" />
 
 import * as assert from "assert";
 
