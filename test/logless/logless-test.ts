@@ -33,6 +33,23 @@ describe("Logless", function() {
         process.addListener("uncaughtException", uncaughtExceptionHandler);
     });
 
+    describe("Logless Context", function () {
+        it("Works if a context already exists", function () {
+            const createNamespace = require("continuation-local-storage").createNamespace;
+            createNamespace("my session");
+
+            const context = new LoglessContext("Logger");
+
+            // This throws on failing validation of continuation-local-storage
+            try {
+                context.captureConsole(() => {});
+            } catch (error) {
+                assert(false);
+            }
+            assert(true);
+        });
+    });
+
     describe("Logging Using the Lambda Context", function () {
         it("Logs real stuff", function (done) {
             let context = new MockContext();
