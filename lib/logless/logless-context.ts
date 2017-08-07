@@ -74,6 +74,10 @@ export class LoglessContext {
      * @returns {any}
      */
     public captureConsole(routine: Function): any {
+        if (!this.usesContinuationLocalStorage()) {
+            return;
+        }
+
         let namespace = require("continuation-local-storage").getNamespace("Logless");
 
         let self = this;
@@ -285,7 +289,8 @@ export class LoglessContext {
     }
 
     private usesContinuationLocalStorage (): boolean {
-        return (<any> process).namespaces !== undefined;
+        return (<any> process).namespaces !== undefined &&
+            require("continuation-local-storage").getNamespace("Logless") !== undefined;
     }
 }
 
