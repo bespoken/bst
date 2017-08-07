@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as assert from "assert";
 import {Alexa, AlexaEvent} from "../../lib/alexa/alexa";
 import {AudioPlayer} from "../../lib/alexa/audio-player";

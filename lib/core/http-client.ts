@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as http from "http";
 import * as https from "https";
 import {BufferUtil} from "./buffer-util";
