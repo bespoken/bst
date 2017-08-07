@@ -34,7 +34,7 @@ describe("Logless", function() {
     });
 
     describe("Logless Context", function () {
-        it("Works if a context already exists",function () {
+        it("Works if a context already exists", function () {
             const createNamespace = require("continuation-local-storage").createNamespace;
             createNamespace("my session");
 
