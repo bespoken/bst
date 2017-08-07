@@ -33,6 +33,23 @@ describe("Logless", function() {
         process.addListener("uncaughtException", uncaughtExceptionHandler);
     });
 
+    describe("Logless Context", function () {
+        it("Works if a context already exists",function () {
+            const createNamespace = require("continuation-local-storage").createNamespace;
+            createNamespace("my session");
+
+            const context = new LoglessContext("Logger");
+
+            // This throws on failing validation of continuation-local-storage
+            try {
+                context.captureConsole(() => {});
+            } catch (error) {
+                assert(false);
+            }
+            assert(true);
+        });
+    });
+
     describe("Logging Using the Lambda Context", function () {
         it("Logs real stuff", function (done) {
             let context = new MockContext();
@@ -674,6 +691,7 @@ describe("Logless Express Tests", function () {
         let count = 0;
         // logger variable gets set on the handler so we can write tests like this
         verifyLogger((<any> handlers.requestHandler).logger, function(data: any) {
+            console.log(data.logs);
             assert.equal(data.logs.length, 4);
             assert.equal(data.logs[0].tags.length, 1);
             assert.equal(data.logs[0].tags[0], "request");
