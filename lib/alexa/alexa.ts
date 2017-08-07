@@ -209,11 +209,11 @@ export class Alexa {
         request.post(options, responseHandler);
     }
 
-    public on(event: AlexaEvent, callback: Function) {
+    public on(event: AlexaEvent, callback: (...args: any[]) => void) {
         this._emitter.on(AlexaEvent[event], callback);
     }
 
-    public once(event: AlexaEvent, callback: Function) {
+    public once(event: AlexaEvent, callback: (...args: any[]) => void) {
         this._emitter.once(AlexaEvent[event], callback);
     }
 

@@ -1,11 +1,9 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import * as sinon from "sinon";
 import * as winston from "winston";
 
 import {LoggingHelper} from "../../lib/core/logging-helper";
-import SinonSandbox = Sinon.SinonSandbox;
+import {SinonSandbox} from "sinon";
 
 describe("LoggingHelper", function() {
     let sandbox: SinonSandbox = null;

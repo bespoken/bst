@@ -11,7 +11,7 @@ const Logger = "BSPKD";
 export class BespokeServer {
     private nodeManager: NodeManager;
     private webhookManager: WebhookManager;
-    private uncaughtExceptionHandler: Function;
+    private uncaughtExceptionHandler: (err: Error) => void;
 
     public constructor (private webhookPort: number, private nodePort: number) {}
 
