@@ -1,17 +1,19 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as sinon from "sinon";
 import * as assert from "assert";
 import {Logless} from "../../lib/logless/logless";
 import {LoglessContext} from "../../lib/logless/logless-context";
-import {Response} from "express/lib/response";
-import {Request} from "express/lib/request";
+import {Response} from "~express/lib/response";
+import {Request} from "~express/lib/request";
 import {Server} from "http";
 import {HTTPClient} from "../../lib/core/http-client";
-import {Application} from "express/lib/application";
+import {Application} from "~express/lib/application";
 const express = require("express");
 const bodyParser = require("body-parser");
 
 describe("Logless", function() {
-    let uncaughtExceptionHandler: (...args: any[]) => void = null;
+    let uncaughtExceptionHandler: Function = null;
     let sandbox: any = null;
 
     beforeEach(function () {

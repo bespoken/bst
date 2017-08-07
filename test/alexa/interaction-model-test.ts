@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as assert from "assert";
 import {InteractionModel} from "../../lib/alexa/interaction-model";
 

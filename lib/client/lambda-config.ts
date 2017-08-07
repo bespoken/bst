@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import {Global} from "../core/global";
 
 let PropertiesReader = require("properties-reader");

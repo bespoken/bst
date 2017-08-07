@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as assert from "assert";
 import {SampleUtterances} from "../../lib/alexa/sample-utterances";
 import {Phrase} from "../../lib/alexa/sample-utterances";

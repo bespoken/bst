@@ -1,3 +1,5 @@
+/// <reference path="../../typings/index.d.ts" />
+
 import * as assert from "assert";
 import {LambdaServer} from "../../lib/client/lambda-server";
 import {HTTPClient} from "../../lib/core/http-client";
