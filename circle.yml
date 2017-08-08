@@ -30,8 +30,8 @@ deployment:
       - ./hyper rm -f bst || true
       - >
         ./hyper run
-        -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-        -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+        -e AWS_ACCESS_KEY_ID=$PROD_AWS_ACCESS_KEY_ID
+        -e AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY
         -e SSL_CERT="$SSL_CERT"
         -e SSL_KEY="$SSL_KEY"
         -d
