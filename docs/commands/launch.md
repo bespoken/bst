@@ -4,7 +4,7 @@ The launch command send a launch request to your service as if it was comming fr
 
 To start using it, you will need to support the "LaunchRequest" event on your handler for the received Intents in your service.
 
-**Usage**
+## Usage
 
 To invoke the launch command, simply type:
 ```
@@ -15,7 +15,7 @@ The launch command will return the full request and response of the interaction 
 
 By default, the system will use the service currently running via the `bst proxy` command
 
-**Working without using the proxy**
+## Working without using the proxy
 
 If no service is currently running via bst proxy, and HTTP endpoint can be specified with the `--url` option:
 ```
