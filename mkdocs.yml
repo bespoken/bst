@@ -11,6 +11,7 @@ pages:
     - bst intend: commands/intend.md
     - bst proxy: commands/proxy.md
     - bst speak: commands/speak.md
+    - bst launch: commands/launch.md
 - API Reference: api_nav.md
 - Tutorials for Alexa Skills:
     - Node.js Lambda: tutorials/tutorial_lambda_nodejs.md
