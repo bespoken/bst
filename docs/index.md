@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://bespoken.tools/">
-    <img alt="BST" src="./docs/assets/images/bespoken-logo.png" width="546">
+    <img alt="BST" src="https://bespoken.io/wp-content/uploads/Bespoken-Logo-RGB-e1500333659572.png" width="546">
   </a>
 </p>
 
