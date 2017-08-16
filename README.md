@@ -42,6 +42,7 @@ The command-line tools include:
 * [Deploy](http://docs.bespoken.tools/en/latest/commands/deploy) - One-command deployment of Lambda functions  
 * [Proxy](http://docs.bespoken.tools/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop  
 * [Speak](http://docs.bespoken.tools/en/latest/commands/speak) and [Intend](http://docs.bespoken.tools/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
+* [Launch](http://docs.bespoken.tools/en/latest/commands/launch) - Send a Launch Request to your Alexa skill
 
 The library provides:
 
