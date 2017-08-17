@@ -74,17 +74,15 @@ export class BespokeClient {
 
     private onWebhookReceived(request: WebhookRequest): void {
         const self = this;
-        // Print out the contents of the request body to the console
-        LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
 
         if (this.secretKey) {
             let secretKeyValidated: boolean = false;
-            if (request.headers && request.headers["secretKey"] === this.secretKey) {
+
+            if (request.headers && request.headers["secretkey"] === this.secretKey) {
                 secretKeyValidated = true;
             }
 
-            if (request.queryParameters && request.queryParameters["secretKey"] === this.secretKey) {
+            if (request.queryParameters && request.queryParameters["secretkey"] === this.secretKey) {
                 secretKeyValidated = true;
             }
 
@@ -94,6 +92,10 @@ export class BespokeClient {
                 return;
             }
         }
+
+        // Print out the contents of the request body to the console
+        LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
+        LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
