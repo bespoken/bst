@@ -41,7 +41,7 @@ export class BSTProxy {
     private lambdaServer: LambdaServer = null;
     private proxySecretKey: string;
 
-    private isSecure:boolean = false;
+    private isSecure: boolean = false;
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
     private functionFile: string;
