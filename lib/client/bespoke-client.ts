@@ -26,7 +26,8 @@ export class BespokeClient {
                 private host: string,
                 private port: number,
                 private targetDomain: string,
-                private targetPort: number) {}
+                private targetPort: number,
+                private secretKey?: string) {}
 
     public connect(onConnect?: (error?: any) => void): void {
         let self = this;
@@ -76,6 +77,23 @@ export class BespokeClient {
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
         LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
+
+        if (this.secretKey) {
+            let secretKeyValidated: boolean = false;
+            if (request.headers && request.headers["secretKey"] === this.secretKey) {
+                secretKeyValidated = true;
+            }
+
+            if (request.queryParameters && request.queryParameters["secretKey"] === this.secretKey) {
+                secretKeyValidated = true;
+            }
+
+            if (!secretKeyValidated) {
+                const errorMessage = "Unauthorized request";
+                this.socketHandler.send(HTTPBuffer.errorResponse(errorMessage).raw().toString(), request.id());
+                return;
+            }
+        }
 
         let tcpClient = new TCPClient(request.id() + "");
         let httpBuffer = new HTTPBuffer();
