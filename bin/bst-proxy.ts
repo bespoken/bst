@@ -33,7 +33,7 @@ program
     .option("--targetDomain <targetDomain>", "Set this to forward requests to something other than localhost")
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
-    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named secretkey) ")
+    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
         console.log("Your public URL for accessing your local service:");
@@ -55,7 +55,7 @@ program
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
-    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named secretkey) ")
+    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, functionName: string, options: any) {
         console.log("Your public URL for accessing your local service:");
@@ -76,7 +76,7 @@ program
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
-    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named secretkey) ")
+    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
     .action(function (functionFile: string, functionName: string, options: any) {
         console.log("Your URL for Fulfillment configuration:");

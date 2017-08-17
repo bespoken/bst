@@ -78,11 +78,11 @@ export class BespokeClient {
         if (this.secretKey) {
             let secretKeyValidated: boolean = false;
 
-            if (request.headers && request.headers["secretkey"] === this.secretKey) {
+            if (request.headers && request.headers["bespoken-key"] === this.secretKey) {
                 secretKeyValidated = true;
             }
 
-            if (request.queryParameters && request.queryParameters["secretkey"] === this.secretKey) {
+            if (request.queryParameters && request.queryParameters["bespoken-key"] === this.secretKey) {
                 secretKeyValidated = true;
             }
 

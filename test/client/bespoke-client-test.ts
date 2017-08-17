@@ -86,7 +86,7 @@ describe("BespokeClient", function() {
             const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "0.0.0.0", testPort, "JPK");
             client.onConnect = function (error: any) {
                 const webhookCaller = new HTTPClient();
-                const path = "/test?node-id=JPK" + nodeMajorVersion + "&secretkey=JPK";
+                const path = "/test?node-id=JPK" + nodeMajorVersion + "&bespoken-key=JPK";
                 webhookCaller.post("proxy.bespoken.tools", 443, path, "Test", function (data: Buffer, statusCode: number, success: boolean) {
                     // This error comes from the webhook client instead of rejecting
                     assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:" + testPort);
@@ -113,7 +113,7 @@ describe("BespokeClient", function() {
                 const webhookCaller = new HTTPClient();
                 const path = "/test?node-id=JPK" + nodeMajorVersion;
                 const extraHeader = {
-                    "secretKey": "JPK",
+                    "bespoken-key": "JPK",
                 };
 
                 webhookCaller.postWithExtraHeaders("proxy.bespoken.tools", 443, path, "Test", extraHeader, function (data: Buffer, statusCode: number, success: boolean) {
