@@ -55,7 +55,7 @@ describe("LambdaServer", function() {
             let inputData = {"data": "Test", "doFailure": true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal(responseString, "Error: Failure!");
+                assert.equal(responseString, "Unhandled Exception from Lambda: Error: Failure!");
                 runner.stop();
                 done();
             });
@@ -69,7 +69,7 @@ describe("LambdaServer", function() {
             let inputData = {"data": "Test", "doFailure": true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 let responseString = data.toString();
-                assert.equal(responseString, "TypeError: Cannot read property 'call' of undefined");
+                assert.equal(responseString, "Unhandled Exception from Lambda: TypeError: Cannot read property 'call' of undefined");
                 runner.stop();
                 done();
             });
@@ -128,7 +128,7 @@ describe("LambdaServer", function() {
             let client = new HTTPClient();
             let inputData = {"data": "Test", doFailure: true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
-                assert.equal(data.toString(), "Error: Failed!");
+                assert.equal(data.toString(), "Unhandled Exception from Lambda: Error: Failed!");
                 runner.stop();
                 done();
             });

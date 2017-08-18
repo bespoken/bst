@@ -112,6 +112,11 @@ export class LambdaServer {
                 context.done(error, result);
             });
         } catch (e) {
+            if (e.stack) {
+                console.error(e.stack);
+            } else {
+                console.error(e);
+            }
             context.fail(e);
         }
     }
@@ -157,7 +162,7 @@ class LambdaContext {
         } else {
             statusCode = 500;
             contentType = "text/plain";
-            bodyString = error.toString();
+            bodyString = "Unhandled Exception from Lambda: " + error.toString();
         }
 
         this.response.writeHead(statusCode, {
