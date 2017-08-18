@@ -97,7 +97,11 @@ export class FunctionServer {
         try {
             cloudFunction[this.functionName].call(cloudFunction, request, response);
         } catch (e) {
-            console.error(e.stack);
+            if (e.stack) {
+                console.error(e.stack);
+            } else {
+                console.error(e);
+            }
             const message = "Unhandled Exception from Cloud Function: " + e;
             response.status(500).send(message);
         }
