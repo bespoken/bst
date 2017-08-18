@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as winston from "winston";
 import {StringUtil} from "./string-util";
 import {LoggerInstance} from "winston";

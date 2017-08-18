@@ -26,10 +26,11 @@ export class BespokeClient {
                 private host: string,
                 private port: number,
                 private targetDomain: string,
-                private targetPort: number) {}
+                private targetPort: number,
+                private secretKey?: string) {}
 
     public connect(onConnect?: (error?: any) => void): void {
-        let self = this;
+        const self = this;
 
         if (onConnect !== undefined && onConnect !== null) {
             this.onConnect = onConnect;
@@ -72,13 +73,32 @@ export class BespokeClient {
     }
 
     private onWebhookReceived(request: WebhookRequest): void {
-        let self = this;
+        const self = this;
+
+        if (this.secretKey) {
+            let secretKeyValidated: boolean = false;
+
+            if (request.headers && request.headers["bespoken-key"] === this.secretKey) {
+                secretKeyValidated = true;
+            }
+
+            if (request.queryParameters && request.queryParameters["bespoken-key"] === this.secretKey) {
+                secretKeyValidated = true;
+            }
+
+            if (!secretKeyValidated) {
+                const errorMessage = "Unauthorized request";
+                this.socketHandler.send(HTTPBuffer.errorResponse(errorMessage).raw().toString(), request.id());
+                return;
+            }
+        }
+
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
         LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
 
-        let tcpClient = new TCPClient(request.id() + "");
-        let httpBuffer = new HTTPBuffer();
+        const tcpClient = new TCPClient(request.id() + "");
+        const httpBuffer = new HTTPBuffer();
         tcpClient.transmit(self.targetDomain, self.targetPort, request.toTCP(), function(data: Buffer, error: NetworkErrorType, message: string) {
 
             if (data != null) {
@@ -122,8 +142,8 @@ export class BespokeClient {
         } else {
             LoggingHelper.info(Logger, "Connected - " + this.host + ":" + this.port);
             // As soon as we connect, we send our ID
-            let messageJSON = {"id": this.nodeID};
-            let message = JSON.stringify(messageJSON);
+            const messageJSON = {"id": this.nodeID};
+            const message = JSON.stringify(messageJSON);
 
             this.socketHandler.send(message);
             if (this.onConnect !== undefined  && this.onConnect !== null) {
@@ -135,7 +155,7 @@ export class BespokeClient {
     private messageReceived (message: string, messageID?: number) {
         // First message we get back is an ack
         if (message.indexOf("ACK") !== -1) {
-            // console.log("Client: ACK RECEIVED");
+
         } else if (message.indexOf(Global.KeepAliveMessage) !== -1) {
             this.keepAlive.received();
         } else {

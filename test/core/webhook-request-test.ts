@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import {WebhookRequest} from "../../lib/core/webhook-request";
 import {BufferUtil} from "../../lib/core/buffer-util";
 import * as assert from "assert";

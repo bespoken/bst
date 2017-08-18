@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as TypeMoq from "typemoq";
 import * as assert from "assert";
 import * as net from "net";

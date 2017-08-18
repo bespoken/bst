@@ -7,8 +7,9 @@ export class URLMangler {
         return URLMangler.mangleJustPath(urlValue.path, sourceID, secretKey);
     }
 
-    public static manglePipeToPath(sourceID: string) {
-        return `https://${ sourceID }.${ Global.SpokesPipeDomain }`;
+    public static manglePipeToPath(sourceID: string, secretKey?: string) {
+        const secureParam = secretKey ? "?bespoken-key=" + secretKey : "";
+        return `https://${ sourceID }.${ Global.SpokesPipeDomain }${ secureParam }`;
     }
 
     public static mangleJustPath(path: string, sourceID: string, secretKey: string): string {

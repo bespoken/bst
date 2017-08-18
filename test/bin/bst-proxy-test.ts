@@ -1,10 +1,8 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
-import SinonSandbox = Sinon.SinonSandbox;
+import {SinonSandbox} from "sinon";
 import {BSTProcess} from "../../lib/client/bst-config";
 
 describe("bst-proxy", function() {
@@ -88,7 +86,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --pithy --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
+            process.argv = command("node bst-proxy.js --secure --pithy --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
 
             let pithyCalled = false;
             sandbox.stub(console, "log", function (log: string) {
@@ -99,10 +97,12 @@ describe("bst-proxy", function() {
 
             let optionsSet = false;
             let domainSet = false;
+            let security = false;
             mockProxy.start = function () {
                 assert(optionsSet, "Options not set");
                 assert(domainSet, "Domain not set");
                 assert(pithyCalled, "Pithy must be set");
+                assert(security, "Security must be set");
                 done();
             };
 
@@ -115,6 +115,10 @@ describe("bst-proxy", function() {
             mockProxy.targetDomain = function (domain: string) {
                 assert.equal(domain, "0.0.0.0");
                 domainSet = true;
+            };
+
+            mockProxy.activateSecurity = function () {
+                security = true;
             };
 
 

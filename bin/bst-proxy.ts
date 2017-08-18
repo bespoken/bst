@@ -20,6 +20,10 @@ let handleOptions = function(proxy: BSTProxy, options: any) {
     } else {
         LoggingHelper.setVerbose(true);
     }
+
+    if (options.secure) {
+        proxy.activateSecurity();
+    }
 };
 
 program
@@ -29,11 +33,21 @@ program
     .option("--targetDomain <targetDomain>", "Set this to forward requests to something other than localhost")
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
+    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies an HTTP service running at the specified port")
     .action(function (port: number, options: any) {
-        console.log("Your public URL for accessing your local service:");
-        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
-        console.log("");
+        if (options.secure) {
+            console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
+            console.log("");
+            console.log("Your public URL for accessing your local service with bespoken-key in the query:");
+            console.log(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey()));
+            console.log("");
+        } else {
+            console.log("Your public URL for accessing your local service:");
+            console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
+            console.log("");
+        }
+
         console.log("Your URL for viewing requests/responses sent to your service:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
@@ -50,11 +64,21 @@ program
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
+    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a AWS Lambda defined in the specified file")
     .action(function (lambdaFile: string, functionName: string, options: any) {
-        console.log("Your public URL for accessing your local service:");
-        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
-        console.log("");
+        if (options.secure) {
+            console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
+            console.log("");
+            console.log("Your public URL for accessing your local service with bespoken-key in the query:");
+            console.log(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey()));
+            console.log("");
+        } else {
+            console.log("Your public URL for accessing your local service:");
+            console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
+            console.log("");
+        }
+
         console.log("Your URL for viewing requests/responses sent to your service:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
@@ -70,11 +94,21 @@ program
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
+    .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
     .action(function (functionFile: string, functionName: string, options: any) {
-        console.log("Your URL for Fulfillment configuration:");
-        console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
-        console.log("");
+        if (options.secure) {
+            console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
+            console.log("");
+            console.log("Your URL for Fulfillment configuration with bespoken-key in the query:");
+            console.log(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey()));
+            console.log("");
+        } else {
+            console.log("Your URL for Fulfillment configuration:");
+            console.log(URLMangler.manglePipeToPath(Global.config().sourceID()));
+            console.log("");
+        }
+
         console.log("Your URL for viewing your function data:");
         console.log(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey()));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");

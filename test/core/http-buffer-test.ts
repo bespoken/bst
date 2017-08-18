@@ -1,4 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
 import * as assert from "assert";
 import {BufferUtil} from "../../lib/core/buffer-util";
 import {HTTPChunk, HTTPBuffer} from "../../lib/core/http-buffer";

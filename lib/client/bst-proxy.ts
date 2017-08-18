@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import {BespokeClient} from "./bespoke-client";
 import {LambdaServer} from "./lambda-server";
 import {BSTProcess} from "./bst-config";
@@ -43,6 +41,7 @@ export class BSTProxy {
     private lambdaServer: LambdaServer = null;
     private proxySecretKey: string;
 
+    private isSecure: boolean = false;
     private bespokenHost: string = "proxy.bespoken.tools";
     private bespokenPort: number = 5000;
     private functionFile: string;
@@ -114,6 +113,13 @@ export class BSTProxy {
     }
 
     /**
+     * Enables security which validates that the secret key is present in query or headers
+     */
+    public activateSecurity() {
+       this.isSecure = true;
+    }
+
+    /**
      * Specifies the port the Lambda/Function Server should listen on. Only for proxies with built-in servers.
      * @param port
      */
@@ -137,7 +143,12 @@ export class BSTProxy {
             LoggingHelper.initialize(false);
         }
 
-        this.bespokenClient = new BespokeClient(this.proxySecretKey, this.bespokenHost, this.bespokenPort, this.httpDomain, this.httpPort);
+        this.bespokenClient = new BespokeClient(this.proxySecretKey,
+                                                this.bespokenHost,
+                                                this.bespokenPort,
+                                                this.httpDomain,
+                                                this.httpPort,
+                                                this.isSecure ? this.proxySecretKey : undefined);
 
         // Make sure all callbacks have been hit before returning
         //  We will have to wait for two callbacks if this using the Lambda proxy
