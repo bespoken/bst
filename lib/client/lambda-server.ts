@@ -112,6 +112,7 @@ export class LambdaServer {
                 context.done(error, result);
             });
         } catch (e) {
+            console.error(e.stack);
             context.fail(e);
         }
     }
