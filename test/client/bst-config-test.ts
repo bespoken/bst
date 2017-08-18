@@ -1,13 +1,11 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import * as fs from "fs";
 import * as sinon from "sinon";
+import {SinonSandbox} from "sinon";
 import {exec} from "child_process";
 import {Global} from "../../lib/core/global";
 import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
-import SinonSandbox = Sinon.SinonSandbox;
 import * as mockery from "mockery";
 
 // Getting uuid with require because we have issues with typings

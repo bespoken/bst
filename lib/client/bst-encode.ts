@@ -37,7 +37,7 @@ export interface IEncoderConfig {
  * MP3, 48 kbps, 16000 hz
  */
 export class BSTEncode {
-    private static EncoderHost = "elb-ecs-bespokenencoder-dev-299768275.us-east-1.elb.amazonaws.com";
+    private static EncoderHost = "encoder.bespoken.io";
     private static EncoderPath = "/encode";
 
     private _configuration: IEncoderConfig;

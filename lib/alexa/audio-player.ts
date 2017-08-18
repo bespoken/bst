@@ -98,11 +98,11 @@ export class AudioPlayer {
         }
     }
 
-    public on(audioPlayerRequest: string, listener: Function) {
+    public on(audioPlayerRequest: string, listener: (...args: any[]) => void) {
         this._emitter.on(audioPlayerRequest, listener);
     }
 
-    public once(audioPlayerRequest: string, listener: Function) {
+    public once(audioPlayerRequest: string, listener: (...args: any[]) => void) {
 
         this._emitter.once(audioPlayerRequest, listener);
     }
@@ -183,4 +183,4 @@ export class AudioPlayer {
     public playing(): AudioItem {
         return this._playing;
     }
-}
+};

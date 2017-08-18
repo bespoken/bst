@@ -1,11 +1,9 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
-import SinonSandbox = Sinon.SinonSandbox;
+import {SinonSandbox} from "sinon";
 
 describe("bst-speak", function() {
     let globalModule = {

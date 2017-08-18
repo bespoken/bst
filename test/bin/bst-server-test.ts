@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import * as mockery from "mockery";
 import {NodeUtil} from "../../lib/core/node-util";

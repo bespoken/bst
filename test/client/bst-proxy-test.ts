@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as assert from "assert";
 import {Global} from "../../lib/core/global";
 import {BespokeServer} from "../../lib/server/bespoke-server";
@@ -35,12 +33,12 @@ describe("BSTProxy", async function() {
 
     describe("#http()", function() {
         it("Starts and Stops Correctly", function (done) {
-            let server = new BespokeServer(4000, 5000);
+            const server = new BespokeServer(4000, 5000);
             server.start(function () {
-                let proxy = BSTProxy.http(5000);
+                const proxy = BSTProxy.http(5000);
                 proxy.start(function () {
                     let count = 0;
-                    let bothDone = function () {
+                    const bothDone = function () {
                         count++;
                         if (count === 2) {
                             done();
@@ -54,13 +52,15 @@ describe("BSTProxy", async function() {
         });
 
         it("Starts and Stops Correctly With Options", function (done) {
-            let server = new BespokeServer(4000, 3000);
+            const server = new BespokeServer(4000, 3000);
             server.start(function () {
-                let proxy = BSTProxy.http(9999)
+                const proxy = BSTProxy.http(9999)
                     .bespokenServer("localhost", 3000);
+                proxy.activateSecurity();
+                proxy.secretKey("JPK");
                 proxy.start(function () {
                     let count = 0;
-                    let bothDone = function () {
+                    const bothDone = function () {
                         count++;
                         if (count === 2) {
                             done();
@@ -76,15 +76,15 @@ describe("BSTProxy", async function() {
 
     describe("#lambda()", function() {
         it("Starts and Stops Correctly", function (done) {
-            let server = new BespokeServer(4000, 5000);
+            const server = new BespokeServer(4000, 5000);
             server.start(function () {
-                let proxy = BSTProxy.lambda("../resources/ExampleLambda.js");
+                const proxy = BSTProxy.lambda("../resources/ExampleLambda.js");
                 proxy.port(2000);
                 proxy.start(function () {
                     assert.equal((<any> proxy).lambdaServer.server.address().port, 2000);
 
                     let count = 0;
-                    let bothDone = function () {
+                    const bothDone = function () {
                         count++;
                         if (count === 2) {
                             done();
@@ -98,15 +98,15 @@ describe("BSTProxy", async function() {
         });
 
         it("Starts and Stops Correctly With Named Function", function (done) {
-            let server = new BespokeServer(4000, 5000);
+            const server = new BespokeServer(4000, 5000);
             server.start(function () {
-                let proxy = BSTProxy.lambda("../resources/ExampleLambdaCustomFunction.js", "myHandler");
+                const proxy = BSTProxy.lambda("../resources/ExampleLambdaCustomFunction.js", "myHandler");
                 proxy.port(2000);
                 proxy.start(function () {
                     assert.equal((<any> proxy).lambdaServer.server.address().port, 2000);
 
                     let count = 0;
-                    let bothDone = function () {
+                    const bothDone = function () {
                         count++;
                         if (count === 2) {
                             done();
@@ -122,15 +122,15 @@ describe("BSTProxy", async function() {
 
     describe("#cloudFunction()", function() {
         it("Starts and Stops Correctly", function (done) {
-            let server = new BespokeServer(4000, 5000);
+            const server = new BespokeServer(4000, 5000);
             server.start(function () {
-                let proxy = BSTProxy.cloudFunction("../resources/ExampleFunction.js");
+                const proxy = BSTProxy.cloudFunction("../resources/ExampleFunction.js");
                 proxy.port(2000);
                 proxy.start(function () {
                     assert.equal((<any> proxy).functionServer.server.address().port, 2000);
 
                     let count = 0;
-                    let bothDone = function () {
+                    const bothDone = function () {
                         count++;
                         if (count === 2) {
                             done();

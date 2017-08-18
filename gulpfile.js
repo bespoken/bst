@@ -6,7 +6,7 @@ const path = require('path');
 const spawn = require('child_process').spawnSync;
 const tap = require('gulp-tap');
 const tslint = require('gulp-tslint');
-const typedoc = require('gulp-bst-typedoc');
+const typedoc = require('gulp-typedoc');
 
 gulp.task('build', ['setup', 'lint'], function () {
     return run('node node_modules/typescript/bin/tsc').exec();
@@ -96,9 +96,7 @@ gulp.task("codecov", ['coverage-suite-run'], function (done) {
 
 gulp.task('setup', function (done) {
     run('npm install').exec(function () {
-        run('typings install').exec(function () {
-            done();
-        });
+        done();
     });
 });
 

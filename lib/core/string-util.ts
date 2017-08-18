@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 export class StringUtil {
     public static replaceAll(s: string, val: string, newVal: string): string {
         while (s.indexOf(val) !== -1) {

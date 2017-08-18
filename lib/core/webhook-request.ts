@@ -1,5 +1,3 @@
-/// <reference path="../../typings/index.d.ts" />
-
 import * as querystring from "querystring";
 import {BufferUtil} from "./buffer-util";
 import {Socket} from "net";
@@ -10,7 +8,7 @@ export class WebhookRequest {
     public uri: string;
     public body: string;
     public queryParameters: {[id: string]: string} = {};
-    private headers: { [id: string]: string };
+    public headers: { [id: string]: string };
     private requestID: number;
 
     public constructor(public sourceSocket?: Socket) {
