@@ -4,9 +4,6 @@ node_js:
   - "6"
   - "5"
   - "4"
-branches:
-  except:
-    - "master"
 script:
  - npm run test
 # TODO: Define coverage strategy here after testing build with no env and external PR
