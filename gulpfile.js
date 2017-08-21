@@ -94,6 +94,13 @@ gulp.task("codecov", ['coverage-suite-run'], function (done) {
     })
 });
 
+gulp.task("coveralls", ['coverage-suite-run'], function (done) {
+    run('nyc report --reporter=text-lcov | coveralls').exec(function() {
+        done();
+    })
+});
+
+
 gulp.task('setup', function (done) {
     run('npm install').exec(function () {
         done();
