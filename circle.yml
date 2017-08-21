@@ -10,11 +10,15 @@ dependencies:
     - tar xzf hyper-linux-x86_64.tar.gz
     - chmod +x hyper
     - ./hyper --help
-    - case $CIRCLE_NODE_INDEX in 0) NODE_VERSION=4 ;; 1) NODE_VERSION=5 ;; 2) NODE_VERSION=6 ;; 3) NODE_VERSION=7 ;;esac; nvm install $NODE_VERSION && nvm alias default $NODE_VERSION
+
+general:
+  branches:
+    only:
+      - master
 
 deployment:
   codecov:
-    branch: /.*/
+    branch: master
     commands:
       - npm run codecov
 
