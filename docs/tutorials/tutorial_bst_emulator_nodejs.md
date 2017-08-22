@@ -20,7 +20,7 @@ the BSTAlexa emulator can be used for testing regular Alexa skills as well.
     * If you do not have one and want to follow along at home, [try ours here](https://github.com/bespoken/streamer).
     * Derived from excellent streaming skill example provided by Amazon.
     * The test used in this tutorial is [found here](https://github.com/bespoken/streamer/blob/master/test/streamerTest.js).
-* Bespoken Tools added to your project's package.json
+* Bespoken tools added to your project's package.json
     * `$ npm install bespoken-tools --save-dev`
     * For this example, we make it a "dev" dependency as we will be using it only for testing.
 

@@ -4,6 +4,9 @@ import {LogType} from "./logless-context";
 /**
  * Logless will automatically capture logs and diagnostics for your Node.js Lambda, Google Cloud Function or Express.js service.
  *
+ * Before you integrate the code, you will need to a key. You get it from [the Bespoken Dashboard](https://apps.bespoken.io/dashboard) (requires registration/sign-in).
+ * Once integrated, this is where your logs and data will be viewable.
+ *
  * To use it with Lambdas, simply wrap your function handler, like so:
  * <pre><code>
  *     var bst = require('bespoken-tools');

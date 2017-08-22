@@ -10,7 +10,7 @@ let Logger = "BST-LAMBDA";
 /**
  * The LambdaServer wraps a Node.js Lambda routine in a simple HTTP service.
  *
- * It makes it easy to test Lambdas locally, and in conjunction with our other Bespoken Tools.
+ * It makes it easy to test Lambdas locally, and in conjunction with our other tools.
  *
  * To use it, simply provide the filename of the Lambda function along with the port the HTTP server should listen on.
  */

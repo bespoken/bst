@@ -9,10 +9,10 @@ When you run the bst proxy command, you will see a URL output:
 
 ```bash
 $ bst proxy lambda index.js
-BST: v0.6.5  Node: v4.3.2
+BST: v1.0.4  Node: v4.3.2
 
-Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
+Your public URL for accessing your local service:
+https://determined-rice.bespoken.link
 ```
 
 From your [Skill's list](https://developer.amazon.com/edw/home.html#/skills/list), select an existing skill to edit or create a new one.  Navigate to the Configuration step and update the HTTPS endpoint to the one provided by the proxy command.
@@ -31,15 +31,15 @@ For example, when you run the bst proxy http command:
 
 ```bash
 $ bst proxy http 9999
-BST: v0.6.5  Node: v4.3.2
+BST: v1.0.4  Node: v4.3.2
 
-Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools/YOUR/SKILL/PATH?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
-(Be sure to put in your real path and other query string parameters!)
+Your public URL for accessing your local service:
+https://determined-rice.bespoken.link
 ```
 
-And your local server listens on path `/alexa-skill`, you need to update the URL with your path before configuring your Skill.
+If your local server listens on path `/alexa-skill`, you need to update the URL with your path before configuring your Skill.
 
 ```
-https://proxy.bespoken.tools/alexa-skill?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
+Your public URL for accessing your local service:
+https://determined-rice.bespoken.link/alexa-skill
 ```

@@ -140,7 +140,7 @@ gulp.task('typedoc', function () {
             excludeNotExported: true,
             excludeExternals: true,
             mode: 'file',
-            name: 'Bespoken Tools',
+            name: 'Bespoken',
             readme: 'docs/api_readme.md',
             target: 'ES6',
             out: 'docs/api',

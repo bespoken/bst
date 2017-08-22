@@ -1,4 +1,4 @@
-This tutorial will help you get setup using API.AI with our sample project and Bespoken tools.
+This tutorial will help you get setup using API.AI with our sample project and Bespoken.
 
 Ping us on [gitter](https://gitter.im/bespoken/bst) if you have any question.
 
