@@ -38,8 +38,6 @@ With Bespoken, develop faster and better. Do not slow-down for:
 * Over-complicated and highly manual testing routines
 * Complex ffmpeg encoding and configuration
 
-With Bespoken, build high-quality, faster.
-
 The command-line tools include:
 
 * [Deploy](http://docs.bespoken.tools/en/latest/commands/deploy) - One-command deployment of Lambda functions  
