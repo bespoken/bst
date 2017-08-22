@@ -5,7 +5,7 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import {SinonSandbox} from "sinon";
 
-describe("bst-speak", function() {
+describe("bst-utter", function() {
     let globalModule = {
         Global: {
             initializeCLI: async function () {
@@ -41,9 +41,9 @@ describe("bst-speak", function() {
         mockery.disable();
     });
 
-    describe("speak command", function() {
+    describe("utter command", function() {
         it("Speaks One Word", function(done) {
-            process.argv = command("node bst-speak.js Hello");
+            process.argv = command("node bst-utter.js Hello");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
                     this.start = function(ready: Function) {
@@ -62,11 +62,11 @@ describe("bst-speak", function() {
                     done();
                 }
             });
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks With Application ID", function(done) {
-            process.argv = command("node bst-speak.js Hello --appId 1234567890");
+            process.argv = command("node bst-utter.js Hello --appId 1234567890");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
@@ -75,11 +75,11 @@ describe("bst-speak", function() {
                 }
             });
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks With Application ID Succinct Syntax", function(done) {
-            process.argv = command("node bst-speak.js Hello -a 1234567890");
+            process.argv = command("node bst-utter.js Hello -a 1234567890");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
@@ -88,11 +88,11 @@ describe("bst-speak", function() {
                 }
             });
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks With access token", function(done) {
-            process.argv = command("node bst-speak.js Hello -a 1234567890 -t AccessToken -i test/alexa/resources/IntentSchema.json -s test/alexa/resources/SampleUtterances.txt");
+            process.argv = command("node bst-utter.js Hello -a 1234567890 -t AccessToken -i test/alexa/resources/IntentSchema.json -s test/alexa/resources/SampleUtterances.txt");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
@@ -103,11 +103,11 @@ describe("bst-speak", function() {
             });
 
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks With user id", function(done) {
-            process.argv = command("node bst-speak.js Hello --userId 123456");
+            process.argv = command("node bst-utter.js Hello --userId 123456");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
@@ -118,11 +118,11 @@ describe("bst-speak", function() {
             });
 
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks With user id abbreviated", function(done) {
-            process.argv = command("node bst-speak.js Hello -U 123456");
+            process.argv = command("node bst-utter.js Hello -U 123456");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
@@ -133,11 +133,11 @@ describe("bst-speak", function() {
             });
 
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks With Custom URL", function(done) {
-            process.argv = command("node bst-speak.js Hello --url https://proxy.bespoken.tools");
+            process.argv = command("node bst-utter.js Hello --url https://proxy.bespoken.tools");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (url: string) {
                     this.url = url;
@@ -151,11 +151,11 @@ describe("bst-speak", function() {
                 }
             });
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks One Word With Verbose", function(done) {
-            process.argv = command("node bst-speak.js Hello");
+            process.argv = command("node bst-utter.js Hello");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
                     this.start = function(ready: Function) {
@@ -177,11 +177,11 @@ describe("bst-speak", function() {
                     done();
                 }
             });
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Speaks Multiple Word", function(done) {
-            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
+            process.argv = command("node bst-utter.js Hello There Ladies And Gentlemen");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function () {
                     this.start = function(ready: Function) {
@@ -195,11 +195,11 @@ describe("bst-speak", function() {
                     };
                 }
             });
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Has no interaction model", function(done) {
-            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
+            process.argv = command("node bst-utter.js Hello There Ladies And Gentlemen");
 
             sandbox.stub(process, "exit", function(exitCode: number) {
                 assert.equal(exitCode, 0);
@@ -214,7 +214,7 @@ describe("bst-speak", function() {
                 }
             });
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
 
         it("Has No Process", function(done) {
@@ -231,13 +231,13 @@ describe("bst-speak", function() {
                 }
             });
 
-            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
+            process.argv = command("node bst-utter.js Hello There Ladies And Gentlemen");
             // Prints out error if no process running
             globalModule.Global.running = function () {
                 return null;
             };
 
-            NodeUtil.load("../../bin/bst-speak.js");
+            NodeUtil.load("../../bin/bst-utter.js");
         });
     });
 });

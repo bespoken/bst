@@ -30,14 +30,14 @@ program
         }
 
         // Just by casting program to options, we can get all the options which are set on it
-        let options: any = program;
+        const options: any = program;
         let url = options.url;
-        let intentSchemaPath = options.intents;
-        let samplesPath = options.samples;
-        let applicationID = options.appId;
+        const intentSchemaPath = options.intents;
+        const samplesPath = options.samples;
+        const applicationID = options.appId;
 
         if (options.url === undefined) {
-            let proxyProcess = Global.running();
+            const proxyProcess = Global.running();
             if (proxyProcess === null) {
                 console.error("No URL specified and no proxy is currently running");
                 console.log();
@@ -52,7 +52,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        let speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        const speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
 
         speaker.start(function (error: string) {
             if (error !== undefined) {

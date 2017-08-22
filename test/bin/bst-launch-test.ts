@@ -166,7 +166,7 @@ describe("bst-launch", function() {
         });
 
         it("Generates a launch request With user id abbreviated", function(done) {
-            process.argv = command("node bst-speak.js -U 123456");
+            process.argv = command("node bst-utter.js -U 123456");
             mockery.registerMock("../lib/client/bst-alexa", {
                 BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");

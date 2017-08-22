@@ -140,13 +140,13 @@ describe("bst", function() {
             }, 100);
         });
 
-        describe("speak command", function() {
+        describe("utter command", function() {
 
-            it("Calls speak", function(done) {
-                process.argv = command("node bst.js speak Hello World");
+            it("Calls utter", function(done) {
+                process.argv = command("node bst.js utter Hello World");
                 let mockProgram = sandbox.mock(require("commander"));
                 mockProgram.expects("executeSubCommand")
-                    .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
+                    .withArgs(command("node bst.js utter Hello World"), command("utter Hello World"), []);
 
                 NodeUtil.run("../../bin/bst.js");
                 setTimeout(function () {
@@ -160,7 +160,7 @@ describe("bst", function() {
 
             it("Calls launch", function(done) {
                 process.argv = command("node bst.js launch");
-                let mockProgram = sandbox.mock(require("commander"));
+                const mockProgram = sandbox.mock(require("commander"));
                 mockProgram.expects("executeSubCommand")
                     .withArgs(command("node bst.js launch"), command("launch"), []);
 
@@ -173,11 +173,11 @@ describe("bst", function() {
         });
 
         describe("sleep command", function() {
-            it("Calls speak", function(done) {
-                process.argv = command("node bst.js speak Hello World");
-                let mockProgram = sandbox.mock(require("commander"));
+            it("Calls sleep", function(done) {
+                process.argv = command("node bst.js sleep Here");
+                const mockProgram = sandbox.mock(require("commander"));
                 mockProgram.expects("executeSubCommand")
-                    .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
+                    .withArgs(command("node bst.js sleep Here"), command("sleep Here"), []);
 
                 NodeUtil.run("../../bin/bst.js");
                 setTimeout(function () {
