@@ -16,6 +16,9 @@
     <a href="https://codecov.io/gh/bespoken/bst">
       <img src="https://codecov.io/gh/bespoken/bst/branch/master/graph/badge.svg" alt="Codecov" />
     </a>
+    <a href='https://coveralls.io/github/bespoken/bst?branch=master'>
+        <img src='https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master' alt='Coverage Status' />
+    </a>
     <a href="https://www.npmjs.com/package/bespoken-tools">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
