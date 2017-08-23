@@ -96,12 +96,12 @@ export class LambdaServer {
         const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
 
         if (request.url !== "/") {
-            // verify that path does not contain '..' or node_modules anywhere
-            if (/(.*\.\.)|(.*node_modules)/.test(request.url)) {
-                context.fail(Error(`LambdaServer input url should not contain '..' or node_modules characters found: ${request.url}`));
+            // verify that path does not contain more than one '.' or node_modules anywhere
+            if (/(.*\..*\.)|(.*node_modules)/.test(request.url)) {
+                context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${request.url}`));
                 return;
             }
-            [path, handlerFunction] = request.url.split(":");
+            [path, handlerFunction] = request.url.split(".");
         }
         else {
             // no url argument supplied -- use file parameter (supplied in constructor) instead
@@ -121,7 +121,7 @@ export class LambdaServer {
                 console.log(JSON.stringify(bodyJSON, null, 2));
             }
 
-            handlerFunction = handlerFunction != null ? handlerFunction : this.functionName ? this.functionName : "handler";
+            handlerFunction = handlerFunction ? handlerFunction : this.functionName ? this.functionName : "handler";
             lambda[handlerFunction](bodyJSON, context, function(error: Error, result: any) {
                 context.done(error, result);
             });
