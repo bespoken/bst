@@ -122,13 +122,53 @@ describe("LambdaServer", function() {
         });
 
         it("Uses Callback With Failure", function(done) {
-            let runner = new LambdaServer("CallbackLambda.js", 10000);
+            let runner = new LambdaServer("CallbackLambda", 10000);
             runner.start();
 
             let client = new HTTPClient();
             let inputData = {"data": "Test", doFailure: true};
             client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
                 assert.equal(data.toString(), "Unhandled Exception from Lambda: Error: Failed!");
+                runner.stop();
+                done();
+            });
+        });
+
+        it("Invoke uses URL to find module when URL is present", function(done) {
+            let runner = new LambdaServer(null, 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "/exampleProject/ExampleLambda.js:handler", JSON.stringify(inputData), function(data: Buffer) {
+                let o: any = JSON.parse(data.toString());
+                assert(true, o.success);
+                runner.stop();
+                done();
+            });
+        });
+
+        it("Invoke with URL of valid module and invalid handler should raise error", function(done) {
+            let runner = new LambdaServer(null, 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "/exampleProject/ExampleLambda.js:fakehandler", JSON.stringify(inputData), function(data: Buffer) {
+                assert.equal(data.toString(), "Unhandled Exception from Lambda: TypeError: lambda[handlerFunction] is not a function");
+                runner.stop();
+                done();
+            });
+        });
+
+        it("Invoke with illegal url passed to find LambdaServer.invoke should raise error", function(done) {
+            let runner = new LambdaServer(null, 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "/node_modules/exampleProject/ExampleLambda.js:fakeHandler", JSON.stringify(inputData), function(data: Buffer) {
+                assert.equal(data.toString(), "Unhandled Exception from Lambda: Error: LambdaServer input url should not contain '..' or node_modules characters found: /node_modules/exampleProject/ExampleLambda.js:fakeHandler");
                 runner.stop();
                 done();
             });

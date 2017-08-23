@@ -19,7 +19,6 @@ export class LambdaServer {
     private requests: Array<IncomingMessage> = [];
     private server: Server = null;
 
-
     /**
      * Creates a server that exposes a Lambda as an HTTP service
      * @param file The file the defines the Lambda
@@ -27,7 +26,7 @@ export class LambdaServer {
      * @param verbose Prints out verbose information about requests and responses
      * @param functionName Use the named function as opposed to the default ("handler")
      */
-    public constructor(private file: string, private port: number, private verbose?: boolean, private functionName?: string) {}
+    public constructor(private file?: string, private port?: number, private verbose?: boolean, private functionName?: string) {}
 
     /**
      * Starts the LambdaServer listening on the port specified in the constructor.
@@ -92,12 +91,27 @@ export class LambdaServer {
     }
 
     private invoke (request: IncomingMessage, body: Buffer, response: ServerResponse): void {
-        let path: string = this.file;
+        let path: string;
+        let handlerFunction: string;
+        const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
+
+        if (request.url !== "/") {
+            // verify that path does not contain '..' or node_modules anywhere
+            if (/(.*\.\.)|(.*node_modules)/.test(request.url)) {
+                context.fail(Error(`LambdaServer input url should not contain '..' or node_modules characters found: ${request.url}`));
+                return;
+            }
+            [path, handlerFunction] = request.url.split(":");
+        }
+        else {
+            // no url argument supplied -- use file parameter (supplied in constructor) instead
+            path = this.file;
+        }
+
         LoggingHelper.debug(Logger, "Invoking Lambda: " + path);
 
         const lambda = this.moduleManager.module(path);
         // let lambda = System.import("./" + file);
-        const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
         try {
             const bodyToString = body.toString();
             const bodyJSON: any = JSON.parse(bodyToString === "" ? null : bodyToString);
@@ -107,7 +121,7 @@ export class LambdaServer {
                 console.log(JSON.stringify(bodyJSON, null, 2));
             }
 
-            const handlerFunction = this.functionName ? this.functionName : "handler";
+            handlerFunction = handlerFunction != null ? handlerFunction : this.functionName ? this.functionName : "handler";
             lambda[handlerFunction](bodyJSON, context, function(error: Error, result: any) {
                 context.done(error, result);
             });
