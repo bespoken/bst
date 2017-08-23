@@ -1,5 +1,5 @@
 
-This tutorial shows you how to use Bespoken Tools to test AWS Lambdas locally.
+This tutorial shows you how to use Bespoken to test AWS Lambdas locally.
 
 Using this, you can send HTTP requests directly to and from your AWS Lambda (Node.js or Python) on your laptop.
 

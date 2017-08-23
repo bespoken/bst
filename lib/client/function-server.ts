@@ -10,7 +10,7 @@ let Logger = "BST-FUNCTION";
 /**
  * The FunctionServer wraps a Google Cloud Function routine in a simple HTTP service.
  *
- * It makes it easy to test Cloud Functions locally, and in conjunction with our other Bespoken Tools.
+ * It makes it easy to test Cloud Functions locally, and in conjunction with our other tools.
  *
  * To use it, simply provide the filename of the Cloud function along with the port the HTTP server should listen on.
  */

@@ -7,7 +7,7 @@ $ node --version && npm --version
 We support node version `4.x.x` and above.  For help installing, see [How To Install NPM](http://blog.npmjs.org/post/85484771375/how-to-install-npm)
 
 
-Next, install the bespoken tools command line tool (bst):
+Next, install the Bespoken command line tool (bst):
 ```
 $ npm install bespoken-tools -g
 ```
@@ -20,7 +20,7 @@ Verify the installation by typing:
 $ bst
 ```
 
-To work with the Bespoken Tools API, install it with your project as part of the package.json:
+To work with the Bespoken API, install it with your project as part of the package.json:
 ```
 npm install bespoken-tools --save
 ```

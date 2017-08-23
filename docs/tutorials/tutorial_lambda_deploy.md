@@ -1,5 +1,5 @@
 
-This tutorial shows you how to use the Bespoken Tools to test and deploy your Node.js AWS Lambdas. 
+This tutorial shows you how to use the Bespoken tools to test and deploy your Node.js AWS Lambdas.
 It will also show you how to install a Lambda that will access resources inside your private VPC.
 
 ## Use case

@@ -2,7 +2,7 @@ This tutorial shows you how to get started developing with bst for Alexa Skills 
 
 ## Prerequisites
 
-* bespoken tools (bst)
+* Bespoken command-line tools (bst)
     * `$ npm install bespoken-tools -g`
     * [Installation Instructions](/getting_started/)
 * Amazon Developer Account

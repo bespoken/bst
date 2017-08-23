@@ -32,13 +32,11 @@
 
 ---
 # Overview
-With Bespoken Tools, develop faster and better. Do not slow-down for:
+With Bespoken, develop faster and better. Do not slow-down for:
 
 * Time-consuming server deployments
 * Over-complicated and highly manual testing routines
 * Complex ffmpeg encoding and configuration
-
-With Bespoken tools, build high-quality, faster.
 
 The command-line tools include:
 
@@ -61,7 +59,7 @@ For use of the CLI:
 $ npm install bespoken-tools -g
 ```
 
-For use of the Bespoken Tools library (including Logless and the Emulator):
+For use of the Bespoken library (including Logless and the Emulator):
 
 ```bash
 $ npm install bespoken-tools --save

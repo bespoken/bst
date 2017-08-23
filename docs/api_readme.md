@@ -1,7 +1,7 @@
-Bespoken Tools Reference API
-============================
+Bespoken Reference API
+======================
 # Overview
-We currently only expose four primary classes:
+We currently expose five primary classes:
 - [BSTAlexa](classes/bstalexa.html)
 - [BSTEncode](classes/bstencode.html)
 - [BSTProxy](classes/bstproxy.html)
