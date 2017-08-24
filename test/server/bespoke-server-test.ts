@@ -36,7 +36,7 @@ describe("BespokeServerTest", function() {
 
             bespokeClient.connect(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "Test", function (data: Buffer) {
+                webhookCaller.post("localhost", 8010, "/?node-id=JPK", "Test", function (data: Buffer) {
                     console.log("data: " + data.toString());
                     let json = JSON.parse(data.toString());
                     assert.equal(json.data, "test");
@@ -70,7 +70,7 @@ describe("BespokeServerTest", function() {
             // The meat of the test - after everything has started
             let onStarted = function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                webhookCaller.post("localhost", 8010, "/?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
                     let json = JSON.parse(data.toString());
                     assert(json.success);
                     onCompleted();
@@ -78,7 +78,7 @@ describe("BespokeServerTest", function() {
 
                 // Stagger the requests slightly
                 setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
+                    webhookCaller.post("localhost", 8010, "/?node-id=JPK", "{\"test\": true}", function (data: Buffer) {
                         let json = JSON.parse(data.toString());
                         assert(json.success);
                         onCompleted();
@@ -126,14 +126,14 @@ describe("BespokeServerTest", function() {
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, "localhost", 10000);
             bespokeClient.connect(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": true}", function (data: Buffer, status: number, success: boolean) {
+                webhookCaller.post("localhost", 8010, "/?node-id=JPK", "{\"noop\": true}", function (data: Buffer, status: number, success: boolean) {
                     count++;
                     console.log("data: " + data.toString());
                     assert.equal(success, false);
                 });
 
                 setTimeout(function () {
-                    webhookCaller.post("localhost", 8010, "/test?node-id=JPK", "{\"noop\": false}", function () {
+                    webhookCaller.post("localhost", 8010, "/?node-id=JPK", "{\"noop\": false}", function () {
                         count++;
                     });
                 }, 10);
@@ -150,7 +150,7 @@ describe("BespokeServerTest", function() {
                 let bespokeClient = new BespokeClient("JPK", "localhost", 9000, "localhost", 9001);
                 bespokeClient.onConnect = function () {
                     let webhookCaller = new HTTPClient();
-                    webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test");
+                    webhookCaller.post("localhost", 8000, "/?node-id=JPK", "Test");
                 };
 
                 bespokeClient.connect();
@@ -170,7 +170,7 @@ describe("BespokeServerTest", function() {
 
             server.start(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8000, "/test?node-id=JPK", "Test", function (body: any, statusCode: number) {
+                webhookCaller.post("localhost", 8000, "/?node-id=JPK", "Test", function (body: any, statusCode: number) {
                     assert.equal(body, "Node is not active: JPK");
                     assert.equal(statusCode, 404);
 
@@ -188,7 +188,7 @@ describe("BespokeServerTest", function() {
 
             server.start(function () {
                 let webhookCaller = new HTTPClient();
-                webhookCaller.post("localhost", 8000, "/test", "Test", function (body: any, statusCode: number) {
+                webhookCaller.post("localhost", 8000, "/", "Test", function (body: any, statusCode: number) {
                     assert.equal(body, "No node specified. Must be included with the querystring as node-id.");
                     assert.equal(statusCode, 400);
 
