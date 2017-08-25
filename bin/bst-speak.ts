@@ -52,18 +52,24 @@ program
         }
 
         if (token) {
-            console.log("Token Message:");
+            console.log("Your token is saved, you can now use this command without providing a token");
         }
 
         console.log("Transcript:");
+        console.log(silentEchoResponse.transcript);
         console.log();
-        console.log(silentEchoResponse.);
-        console.log("\t(Bespoken Dashboard account required for use of this feature)");
+        console.log("Stream:");
+        console.log(silentEchoResponse.transcriptAudioURL);
         console.log();
-        console.log("Then try again with:");
-        console.log();
-        console.log("\tbst speak --token <ProvidedToken> <Speech to try>");
-        console.log();
+        if (silentEchoResponse.card) {
+            console.log("Card:");
+            silentEchoResponse.card.mainTitle && console.log(silentEchoResponse.card.mainTitle);
+            silentEchoResponse.card.subTitle && console.log(silentEchoResponse.card.subTitle);
+            silentEchoResponse.card.textField && console.log(silentEchoResponse.card.textField);
+            silentEchoResponse.card.imageURL && console.log(silentEchoResponse.card.imageURL);
+        }
+
+
 
     });
 
