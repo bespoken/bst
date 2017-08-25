@@ -42,7 +42,7 @@ export class BSTAlexaEvents {
 }
 
 /**
- * Programmatic interface for interacting with the Bespoken Tools Alexa emulator.
+ * Programmatic interface for interacting with the Bespoken Alexa emulator.
  *
  * Overview on usage can be found [here](../index.html). NodeJS tutorial [here](../../tutorials/tutorial_bst_emulator_nodejs)
  *

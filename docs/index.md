@@ -16,6 +16,9 @@
     <a href="https://codecov.io/gh/bespoken/bst">
       <img src="https://codecov.io/gh/bespoken/bst/branch/master/graph/badge.svg" alt="Codecov" />
     </a>
+    <a href='https://coveralls.io/github/bespoken/bst?branch=master'>
+        <img src='https://coveralls.io/repos/github/bespoken/bst/badge.svg?branch=master' alt='Coverage Status' />
+    </a>
     <a href="https://www.npmjs.com/package/bespoken-tools">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
@@ -29,13 +32,11 @@
 
 ---
 # Overview
-With Bespoken Tools, develop faster and better. Do not slow-down for:
+With Bespoken, develop faster and better. Do not slow-down for:
 
 * Time-consuming server deployments
 * Over-complicated and highly manual testing routines
 * Complex ffmpeg encoding and configuration
-
-With Bespoken tools, build high-quality, faster.
 
 The command-line tools include:
 
@@ -58,7 +59,7 @@ For use of the CLI:
 $ npm install bespoken-tools -g
 ```
 
-For use of the Bespoken Tools library (including Logless and the Emulator):
+For use of the Bespoken library (including Logless and the Emulator):
 
 ```bash
 $ npm install bespoken-tools --save
