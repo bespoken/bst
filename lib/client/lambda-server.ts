@@ -95,13 +95,15 @@ export class LambdaServer {
         let handlerFunction: string;
         const context: LambdaContext = new LambdaContext(request, body, response, this.verbose);
 
-        if (request.url !== "/") {
+        const onlyUrl = request.url.split("?")[0];
+
+        if (onlyUrl !== "/") {
             // verify that path does not contain more than one '.' or node_modules anywhere
-            if (/(.*\..*\.)|(.*node_modules)/.test(request.url)) {
-                context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${request.url}`));
+            if (/(.*\..*\.)|(.*node_modules)/.test(onlyUrl)) {
+                context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${onlyUrl}`));
                 return;
             }
-            [path, handlerFunction] = request.url.split(".");
+            [path, handlerFunction] = onlyUrl.split(".");
         }
         else {
             // no url argument supplied -- use file parameter (supplied in constructor) instead
