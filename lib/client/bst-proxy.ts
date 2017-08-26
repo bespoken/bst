@@ -67,7 +67,7 @@ export class BSTProxy {
      * @param lambdaFile
      * @returns {BSTProxy}
      */
-    public static lambda(lambdaFile: string, functionName?: string): BSTProxy {
+    public static lambda(lambdaFile?: string, functionName?: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA);
         tool.functionFile = lambdaFile;
         tool.functionName = functionName;
