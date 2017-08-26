@@ -59,7 +59,7 @@ program
     });
 
 program
-    .command("lambda <lambda-file> [function-name]")
+    .command("lambda [lambda-file] [function-name]")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
