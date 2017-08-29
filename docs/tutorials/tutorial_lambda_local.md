@@ -55,7 +55,7 @@ curl -H "Content-Type: application/json" \
 
 And the output:
 
-<img src='../../assets/images/bst-lambda-local-curl.png' />
+<img src='../../docs/assets/images/bst-lambda-local-curl.png' />
 
 The actual output from the Lambda is highlighted in red.
 
@@ -76,7 +76,7 @@ You can step through your code using your favorite IDE. [Follow this tutorial](t
 **Webhooks**  
 Using the URL printed out when the `bst proxy` starts up, you can access your local service from across the web.
 
-<img src='../../assets/images/bst-lambda-local-proxy.png' />
+<img src='../../docs/assets/images/bst-lambda-local-proxy.png' />
 
 Take the URL that is printed out for you and see that you can hit it from anywhere on the web.
 
