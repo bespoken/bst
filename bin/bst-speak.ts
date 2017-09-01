@@ -55,22 +55,7 @@ program
             console.log("Your token is saved, you can now use this command without providing a token");
         }
 
-        console.log("Transcript:");
-        console.log(silentEchoResponse.transcript);
-        console.log();
-        console.log("Stream:");
-        console.log(silentEchoResponse.transcriptAudioURL);
-        console.log();
-        if (silentEchoResponse.card) {
-            console.log("Card:");
-            silentEchoResponse.card.mainTitle && console.log(silentEchoResponse.card.mainTitle);
-            silentEchoResponse.card.subTitle && console.log(silentEchoResponse.card.subTitle);
-            silentEchoResponse.card.textField && console.log(silentEchoResponse.card.textField);
-            silentEchoResponse.card.imageURL && console.log(silentEchoResponse.card.imageURL);
-        }
-
-
-
+        console.log(SilentEchoClient.renderResult(silentEchoResponse));
     });
 
 // Forces help to be printed
