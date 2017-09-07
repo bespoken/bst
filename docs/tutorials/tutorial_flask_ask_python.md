@@ -74,12 +74,6 @@ https://your-proxy.bespoken.link
 INFO  2016-09-12T17:34:52.202Z Connected - proxy.bespoken.tools:5000
 ```
 
-Since tidepooler.py does not have a path it is listening on, simply `/`, you can remove the `YOUR/SKILL/PATH` from the provided URL and copy and paste as your endpoint:
-
-```
-https://your-proxy.bespoken.link
-```
-
 Also make sure you select "HTTPS" for the endpoint type and account linking is set to "NO".
 
 __Configure SSL__  
