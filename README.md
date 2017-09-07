@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://bespoken.tools/">
+  <a href="https://bespoken.io/">
     <img alt="BST" src="https://bespoken.io/wp-content/uploads/Bespoken-Logo-RGB-e1500333659572.png" width="546">
   </a>
 </p>
@@ -22,7 +22,7 @@
     <a href="https://www.npmjs.com/package/bespoken-tools">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
-    <a href="http://docs.bespoken.tools/">
+    <a href="http://docs.bespoken.io/">
         <img alt="Read The Docs" class="badge" src="https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat">
     </a>
     <a href="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
