@@ -32,15 +32,6 @@ $ bst proxy lambda index.js
 
 You can learn more here at our [Node.js Tutorial](/tutorials/tutorial_lambda_nodejs):
 
-**Options**
-
-The `--verbose` flag will print out the requests and responses from all calls made to your skill.
-
-To use it, just start up the proxy with:
-```bash
-$ bst proxy lambda index.js --verbose
-```
-
 ## bst proxy http
 
 **Overview**  
@@ -72,38 +63,23 @@ To use it, just start up the proxy with:
 $ bst proxy http 9999 --verbose
 ```
 
-## bst proxy urlgen
+
+## bst proxy function
 
 **Overview**
 
-Your skill must be setup to point at our server. For example, if the URL for your skill is normally:
-```
-https://myskill.example.com/skillA
-```
-
-It should instead be configured to point at the bst proxy server, like so:
-```
-https://proxy.bespoken.tools/skillA?node-id=1b84270f-5b58-4176-a8b6-7b5b1c03a308
-```
-
-_Note the Node ID passed in the query string.  This is a UUID that ties off your local proxy with our server._
-
-The rest of the URL path and query string should be unchanged.
-
-For more information on configuring your Skill see [Configuring your Skill for bst proxy](/alexa_skills_kit_configuration).
+The proxy function command allows you to run a Google Cloud Function as a local service your machine.
 
 **Usage**
 
-The proxy urlgen command can help generate the endpoint.
+To use it, invoke it with the Cloud Function file to run.  The proxy will automatically use the latest code in your working directory.
 
 Syntax:
 ```bash
-$ bst proxy urlgen <URL>
+$ bst proxy function <FUNCTION_FILE> <FUNCTION_NAME>
 ```
 
 Example:
 ```bash
-$ bst proxy urlgen https://myskill.example.com/skillA
+$ bst proxy function index.js myFunction
 ```
-
-The above example command will then provide you with HTTPS endpoint that is required during the configuration step when you setup your Alexa Skill.
