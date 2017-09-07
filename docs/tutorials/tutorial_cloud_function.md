@@ -66,6 +66,9 @@ Cut and paste the secret key into the index.js file in Super Simple Google Actio
 
 The line is at the bottom of the file.
 
+If you are using a Cloud Function for Firebase (as opposed to a "plain" Google Cloud Function), it will look like this:  
+<script src="https://gist.github.com/jkelvie/cb6bffc4753456b2d5cd152fc5391efd.js"></script>
+
 Now, the summary and log data for your action will be available in the Dashboard, both while using the proxy for development and once you go live!
 <img src='../../assets/images/dashboard-logs-actions.png' />
 
