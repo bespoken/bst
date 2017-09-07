@@ -27,9 +27,9 @@ npm install bespoken-tools --save
 
 You will then be able to use our:
  
-* [BSTAlexa](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) emulator 
-* [BSTEncode](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) audio encoder
-* [Logless](http://docs.bespoken.tools/en/latest/api/classes/logless.html) effortless logging and diagnostics service
+* [BSTAlexa](http://docs.bespoken.io/en/latest/api/classes/bstalexa.html) emulator
+* [BSTEncode](http://docs.bespoken.io/en/latest/api/classes/bstalexa.html) audio encoder
+* [Logless](http://docs.bespoken.io/en/latest/api/classes/logless.html) effortless logging and diagnostics service
 
 ## Updating
 

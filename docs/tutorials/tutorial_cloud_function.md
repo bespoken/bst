@@ -51,7 +51,7 @@ You should see the request and response come across the console where the `bst p
 Or you can try it in the [Actions on Google Web Simulator](https://developers.google.com/actions/tools/web-simulator).
 
 ## Hooking into the Bespoken Dashboard
-To use our monitoring and logging facility, [sign up here](https://bespoken.tools/dashboard).
+To use our monitoring and logging facility, [sign up here](https://apps.bespoken.io/dashboard).
 
 Once you have signed in, create a new source by clicking on the "+" button at the bottom or link at the top:
 <img src='../../assets/images/dashboard-source-adding.png' />

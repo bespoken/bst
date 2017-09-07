@@ -86,4 +86,4 @@ This is extremely useful for debugging Webhook-based services (like Facebook Mes
 For Node.js Lambdas, we have a one-step deploy tool. You can [read about it here](../commands/deploy).
 
 **Alexa Skills**  
-We have built this originally to make it super-easy to develop Alexa skills. We offer an [array of commands and APIs](http://docs.bespoken.tools) that aim to make developing for Alexa faster and more bullet-proof.  
+We have built this originally to make it super-easy to develop Alexa skills. We offer an [array of commands and APIs](http://docs.bespoken.io) that aim to make developing for Alexa faster and more bullet-proof.

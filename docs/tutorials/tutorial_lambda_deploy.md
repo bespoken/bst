@@ -117,7 +117,7 @@ $ bst proxy lambda index.js
 BST: v0.9.13  Node: v6.3.0
 
 Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools?node-id=bdd4aad4-2339-4e85-aa33-2bbcd2e03168
+https://your-proxy.bespoken.link
 
 INFO  2016-11-04T01:32:01.139Z LambdaServer started on port: 10000
 INFO  2016-11-04T01:32:01.250Z Connected - proxy.bespoken.tools:5000
@@ -202,7 +202,7 @@ Response:
 ```
 
 If something isn't right, you can debug the skill locally with BST. 
-You can step through your code using your favorite IDE. [Follow this tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger) 
+You can step through your code using your favorite IDE. [Follow this tutorial](/tutorials/tutorial_lambda_debugger)
 to learn how easy that is.
 
 ## Install the Lambda
