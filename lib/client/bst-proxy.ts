@@ -2,6 +2,7 @@ import {BespokeClient} from "./bespoke-client";
 import {LambdaServer} from "./lambda-server";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
+import {BSTConfig} from "./bst-config";
 import {FunctionServer} from "./function-server";
 import {LoggingHelper} from "../core/logging-helper";
 
@@ -128,7 +129,7 @@ export class BSTProxy {
         return this;
     }
 
-    public start(onStarted?: (error?: any) => void): BSTProxy {
+    public async start(onStarted?: (error?: any) => void): Promise<BSTProxy> {
         // If we have a configuration (i.e., are being run from CLI), we use it
         if (Global.config()) {
             BSTProcess.run(this.httpPort, this.proxyType, process.pid);
@@ -136,8 +137,9 @@ export class BSTProxy {
         } else {
             // Handle start when being called programmatically (and presumably standalone)
             if (!this.proxySecretKey) {
-                // If we are being called programmatically, the secret key must be provided
-                throw new Error("Secret key must be provided via .secretKey(key) function. Secret key can be found in ~/.bst/config.");
+                // Load config if not present
+                const config = await BSTConfig.load();
+                this.proxySecretKey = config.secretKey();
             }
 
             LoggingHelper.initialize(false);
