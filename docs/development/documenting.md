@@ -1,7 +1,7 @@
 # Overview
 We are using typedoc and mkdocs to generate documentation.
 
-Mkdocs is used to generate documentation that is shown on ReadTheDocs - http://docs.bespoken.tools.
+Mkdocs is used to generate documentation that is shown on ReadTheDocs - http://docs.bespoken.io.
 
 **Please note - do not change the docs/index.md file directly**   
 It will be generated/copied from the README.md using the **docs** gulp task:

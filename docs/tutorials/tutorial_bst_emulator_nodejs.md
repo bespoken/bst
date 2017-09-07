@@ -72,15 +72,15 @@ afterEach(function(done) {
 });
 ```
 
-The beforeEach block initializes the [LambdaServer](http://docs.bespoken.tools/en/latest/api/classes/lambdaserver.html) 
-and the [BSTAlexa emulator](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html).
+The beforeEach block initializes the [LambdaServer](/api/classes/lambdaserver.html)
+and the [BSTAlexa emulator](/api/classes/bstalexa.html).
 
 The first parameter to the LambdaServer tells it the location of the Lambda file to be run.
 It automatically wraps the Lambda in a service, and exposes it on the port supplied in the second argument.
 
 The last parameter indicates it should be in verbose mode - this causes requests and responses from the skill to be printed to the console.
 
-The [BSTAlexa start call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#start) takes the URL of the Lambda server as its first parameter (it begins listening).  
+The [BSTAlexa start call](/api/classes/bstalexa.html#start) takes the URL of the Lambda server as its first parameter (it begins listening).
 *Note that if you are not using Lambdas but a "Plain Old HTTP Service" you can skip the server start call and just point it at a server here.*
 
 Additionally, it takes the location of the Intent Schema and Utterances in the second and third parameters. 
@@ -152,20 +152,20 @@ it('Plays To Completion', function (done) {
 });
 ```
 
-This test uses the [BSTAlexa#playbackFinished() call](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbackfinished) 
+This test uses the [BSTAlexa#playbackFinished() call](/api/classes/bstalexa.html#playbackfinished)
 to emulate the audio playing to completion on the device.  
 
-The Alexa service first calls [BSTAlexa#playbackNearlyFinished()](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#playbacknearlyfinished). 
+The Alexa service first calls [BSTAlexa#playbackNearlyFinished()](/api/classes/bstalexa.html#playbacknearlyfinished).
 This request is triggered by the Alexa service when a track is almost done playing, and is frequently used by skills to enqueue the next AudioItem in the queue for playback on the device.
 
 The Alexa service then sends a 'AudioPlayer.PlaybackFinished' request to the skill, which we expect to then trigger the playback of the next track in the queue.  
 
-We also use the [BSTAlexa#once() listener](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html#once) - this allows us to listen for specific events occurring within the Alexa emulator. 
+We also use the [BSTAlexa#once() listener](/api/classes/bstalexa.html#once) - this allows us to listen for specific events occurring within the Alexa emulator.
 In this case, we want to confirm that the next track was queued correctly and has begun playing.
 
 We use the once call to indicate we only want to receive this event the first time it happens. This is useful for watching on events like PlaybackStarted, which are likely to happen many times in the course of an interaction.
 
-The events that can be listened for are listed [here](../api/classes/bstalexaevents.html).
+The events that can be listened for are listed [here](/api/classes/bstalexaevents.html).
 
 ## Going Even Further
 Our sample project, [Bespoken Streamer](https://github.com/bespoken/streamer/), provides even more examples.
