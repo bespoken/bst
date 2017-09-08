@@ -35,7 +35,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies an HTTP service running at the specified port")
-    .action(async function (port: number, options: any) {
+    .action( function (port: number, options: any) {
         if (options.secure) {
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
@@ -55,7 +55,7 @@ program
 
         let proxy: BSTProxy = BSTProxy.http(port);
         handleOptions(proxy, options);
-        await proxy.start();
+        proxy.start();
     });
 
 program
@@ -66,7 +66,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a AWS Lambda defined in the specified file")
-    .action(async function (lambdaFile: string, functionName: string, options: any) {
+    .action( function (lambdaFile: string, functionName: string, options: any) {
         if (options.secure) {
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
@@ -85,7 +85,7 @@ program
         console.log("");
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile, functionName);
         handleOptions(proxy, options);
-        await proxy.start();
+        proxy.start();
     });
 
 program
@@ -96,7 +96,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
-    .action(async function (functionFile: string, functionName: string, options: any) {
+    .action( function (functionFile: string, functionName: string, options: any) {
         if (options.secure) {
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
@@ -116,7 +116,7 @@ program
 
         let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
         handleOptions(proxy, options);
-        await proxy.start();
+        proxy.start();
     });
 
 program

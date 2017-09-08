@@ -8,9 +8,9 @@ describe("BSTProxy Programmatic", function () {
     let mockConfig = {
         BSTConfig: {
             load: () => {
-                return {
+                return Promise.resolve({
                     secretKey: () => "SECRET_KEY",
-                };
+                });
             },
         },
     };

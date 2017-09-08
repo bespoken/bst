@@ -129,28 +129,13 @@ export class BSTProxy {
         return this;
     }
 
-    public async start(onStarted?: (error?: any) => void): Promise<BSTProxy> {
-        // If we have a configuration (i.e., are being run from CLI), we use it
-        if (Global.config()) {
-            BSTProcess.run(this.httpPort, this.proxyType, process.pid);
-            this.proxySecretKey = Global.config().secretKey();
-        } else {
-            // Handle start when being called programmatically (and presumably standalone)
-            if (!this.proxySecretKey) {
-                // Load config if not present
-                const config = await BSTConfig.load();
-                this.proxySecretKey = config.secretKey();
-            }
-
-            LoggingHelper.initialize(false);
-        }
-
+    public startWithConfig(onStarted?: (error?: any) => void): BSTProxy {
         this.bespokenClient = new BespokeClient(this.proxySecretKey,
-                                                this.bespokenHost,
-                                                this.bespokenPort,
-                                                this.httpDomain,
-                                                this.httpPort,
-                                                this.isSecure ? this.proxySecretKey : undefined);
+            this.bespokenHost,
+            this.bespokenPort,
+            this.httpDomain,
+            this.httpPort,
+            this.isSecure ? this.proxySecretKey : undefined);
 
         // Make sure all callbacks have been hit before returning
         //  We will have to wait for two callbacks if this using the Lambda proxy
@@ -177,7 +162,32 @@ export class BSTProxy {
             this.functionServer = new FunctionServer(this.functionFile, this.functionName, this.httpPort);
             this.functionServer.start(callback);
         }
+
         return this;
+    }
+
+    public start(onStarted?: (error?: any) => void): void {
+        // If we have a configuration (i.e., are being run from CLI), we use it
+        const self = this;
+        if (Global.config()) {
+            BSTProcess.run(this.httpPort, this.proxyType, process.pid);
+            this.proxySecretKey = Global.config().secretKey();
+            this.startWithConfig(onStarted);
+        } else {
+            // Handle start when being called programmatically (and presumably standalone)
+            if (!this.proxySecretKey) {
+                // Load config if not present
+                BSTConfig.load().then((config) => {
+                    self.proxySecretKey = config.secretKey();
+                    self.startWithConfig(onStarted);
+                    LoggingHelper.initialize(false);
+                });
+                return;
+            }
+
+            self.startWithConfig(onStarted);
+            LoggingHelper.initialize(false);
+        }
     }
 
     public stop(onStopped?: () => void): void {
