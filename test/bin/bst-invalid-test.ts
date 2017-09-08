@@ -87,14 +87,6 @@ describe("bst commands", function() {
             setTimeout(checkResult, 1000);
             NodeUtil.load("../../bin/bst-proxy.js");
         });
-
-        it("Prints error with missing mandatory arg", function(done) {
-            process.argv = command("node bst-proxy.js lambda");
-            resultPattern = "missing required argument lambda-file";
-            mochaDone = done;
-            setTimeout(checkResult, 1000);
-            NodeUtil.load("../../bin/bst-proxy.js");
-        });
     });
 });
 
