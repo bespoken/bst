@@ -103,7 +103,9 @@ export class LambdaServer {
                 context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${onlyUrl}`));
                 return;
             }
-            [path, handlerFunction] = onlyUrl.split(".");
+            const splitUrl = onlyUrl.split(".");
+            path = splitUrl[0];
+            handlerFunction = splitUrl[1];
         }
         else {
             // no url argument supplied -- use file parameter (supplied in constructor) instead

@@ -3,7 +3,7 @@ const rename = require('gulp-rename');
 const replace = require('gulp-replace');
 const run = require('gulp-run');
 const path = require('path');
-const spawn = require('child_process').spawnSync;
+const spawn = require('cross-spawn');
 const tap = require('gulp-tap');
 const tslint = require('gulp-tslint');
 const typedoc = require('gulp-typedoc');
@@ -20,14 +20,19 @@ gulp.task('test-suite-run', ['build'], function() {
         .pipe(
             tap(function(file, t) {
                 const testFile = path.relative(process.cwd(), file.path);
-                const mocha = spawn('node_modules/mocha/bin/mocha', ['--colors', testFile]);
+
+                const mocha = spawn.sync('node_modules/mocha/bin/mocha', ['--colors', testFile]);
+
                 if (mocha.error) {
-                    console.error('Error: ' + mocha.error);
+                    console.error('Error: ' + mocha.error, mocha.error);
                 }
 
                 testStatus |= mocha.status;
-                console.log(mocha.stdout.toString());
-                if (mocha.stderr.length) {
+                if (mocha.stdout) {
+                    console.log(mocha.stdout.toString());
+                }
+
+                if (mocha.stderr && mocha.stderr.length) {
                     console.error("Errors:\n" + mocha.stderr);
                 }
             })
@@ -67,7 +72,7 @@ gulp.task('coverage-suite-run', ['coverage-clean'], function() {
             tap(function(file, t) {
                 var testFile = path.relative(process.cwd(), file.path);
 
-                var nyc = spawn('node_modules/.bin/nyc', ['--clean=false','--silent=true',
+                var nyc = spawn.sync('node_modules/.bin/nyc', ['--clean=false','--silent=true',
                     'node_modules/.bin/mocha', '--colors', testFile]);
                 if (nyc.error) {
                     console.error(nyc.error);
