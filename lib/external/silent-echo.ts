@@ -16,7 +16,6 @@ export class SilentEchoClient {
         }
 
         const silentEcho = new SilentEcho(tokenToUse);
-        silentEcho.baseURL = "https://silentecho-dev.bespoken.io/process";
         return silentEcho.message(utterance);
     }
 

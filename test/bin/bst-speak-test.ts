@@ -14,7 +14,7 @@ describe("bst-utter", function() {
 
             },
             config: function () {
-                return {};
+                return { sourceID: () => "mySource" };
             },
             running : function() {
                 let p = new BSTProcess();

@@ -37,7 +37,7 @@ program
             if (error.message === "Token Required") {
                 console.log("You need a token for this option to work, get it here:");
                 console.log();
-                console.log("\thttps://apps.bespoken.io/dashboard/validation");
+                console.log("\thttps://apps.bespoken.io/dashboard/skills/" + Global.config().sourceID() + "/validation");
                 console.log("\t(Bespoken Dashboard account required for use of this feature)");
                 console.log();
                 console.log("Then try again with:");
