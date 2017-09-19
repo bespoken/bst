@@ -12,7 +12,7 @@ That is, we look for the Interaction Model files inside a folder called speechAs
 
 You can specify an alternative location via options to the command-line.
 
-## Speaking
+## Uttering
 
 To invoke the utter command, simply type:
 ```

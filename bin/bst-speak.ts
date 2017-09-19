@@ -8,7 +8,7 @@ program.version(Global.version());
 program
     .usage("[options] <utterance>")
     .option("-t, --token <token>", `The token for interacting with your virtual Alexa device - get it here:\n" +
-        "https://apps.bespoken.io/dashboard/validation\n" +
+        "https://apps.bespoken.io/dashboard/skills/<SKILL_ID>/validation\n" +
         "(Bespoken Dashboard account required for use of this feature)`)
     .description("Speaks to your virtual Alexa device")
     .action(async function () {

@@ -1,7 +1,7 @@
 
 ## Overview
 
-The speak command communicates to a virtual device to test your skills with text as if you were voice commands.
+The speak command communicates to a virtual device to test your skills with text as if they were voice commands.
 
 It allows you to test your skill without using a physical device and it will return the generated audio response converted to text as well as the card data and possible audio streams that could have been returned.
 
