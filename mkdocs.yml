@@ -11,6 +11,7 @@ pages:
     - bst deploy: commands/deploy.md
     - bst intend: commands/intend.md
     - bst proxy: commands/proxy.md
+    - bst utter: commands/utter.md
     - bst speak: commands/speak.md
     - bst launch: commands/launch.md
 - API Reference: api_nav.md
