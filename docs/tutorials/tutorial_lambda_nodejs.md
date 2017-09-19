@@ -60,8 +60,8 @@ When you started the proxy, bst printed out a URL that you need to configure you
 $ bst proxy lambda samples/helloWorld/src/index.js
 BST: v0.6.5  Node: v4.3.2
 
-Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
+Your public URL for accessing your local service:
+https://your-proxy.bespoken.link
 ```
 Alternatively, you can create this URL via the `proxy urlgen` command.
 

@@ -65,19 +65,13 @@ When you started the proxy, bst printed out a URL that you need to configure you
 
 ```bash
 $ bst proxy http 5000
-BST: v0.6.14  Node: v4.3.2
+BST: v1.0.4  Node: v4.3.2
 
-Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools/YOUR/SKILL/PATH?node-id=d34ca5f3-f55e-4e07-9d1e-4fcf918433b5
+Your public URL for accessing your local service:
+https://your-proxy.bespoken.link
 (Be sure to put in your real path and other query string parameters!)
 
 INFO  2016-09-12T17:34:52.202Z Connected - proxy.bespoken.tools:5000
-```
-
-Since tidepooler.py does not have a path it is listening on, simply `/`, you can remove the `YOUR/SKILL/PATH` from the provided URL and copy and paste as your endpoint:
-
-```
-https://proxy.bespoken.tools/?node-id=d34ca5f3-f55e-4e07-9d1e-4fcf918433b5
 ```
 
 Also make sure you select "HTTPS" for the endpoint type and account linking is set to "NO".

@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://bespoken.tools/">
+  <a href="https://bespoken.io/">
     <img alt="BST" src="https://bespoken.io/wp-content/uploads/Bespoken-Logo-RGB-e1500333659572.png" width="546">
   </a>
 </p>
@@ -22,7 +22,7 @@
     <a href="https://www.npmjs.com/package/bespoken-tools">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
-    <a href="http://docs.bespoken.tools/">
+    <a href="http://docs.bespoken.io/">
         <img alt="Read The Docs" class="badge" src="https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat">
     </a>
     <a href="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
@@ -40,16 +40,16 @@ With Bespoken, develop faster and better. Do not slow-down for:
 
 The command-line tools include:
 
-* [Deploy](http://docs.bespoken.tools/en/latest/commands/deploy) - One-command deployment of Lambda functions  
-* [Proxy](http://docs.bespoken.tools/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop  
-* [Speak](http://docs.bespoken.tools/en/latest/commands/speak) and [Intend](http://docs.bespoken.tools/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
-* [Launch](http://docs.bespoken.tools/en/latest/commands/launch) - Send a Launch Request to your Alexa skill
+* [Deploy](http://docs.bespoken.io/en/latest/commands/deploy) - One-command deployment of Lambda functions
+* [Proxy](http://docs.bespoken.io/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop
+* [Speak](http://docs.bespoken.io/en/latest/commands/speak) and [Intend](http://docs.bespoken.io/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
+* [Launch](http://docs.bespoken.io/en/latest/commands/launch) - Send a Launch Request to your Alexa skill
 
 The library provides:
 
-* [BSTAlexa](http://docs.bespoken.tools/en/latest/api/classes/bstalexa.html) - Alexa emulator for unit-testing and functional-testing of your skills
-* [BSTEncode](http://docs.bespoken.tools/en/latest/api/classes/bstencode.html) - Encodes audio files for use in SSML without pesky ffmpeg
-* [Logless](http://docs.bespoken.tools/en/latest/api/classes/logless.html) - Completely painless, serverless logging
+* [BSTAlexa](http://docs.bespoken.io/en/latest/api/classes/bstalexa.html) - Alexa emulator for unit-testing and functional-testing of your skills
+* [BSTEncode](http://docs.bespoken.io/en/latest/api/classes/bstencode.html) - Encodes audio files for use in SSML without pesky ffmpeg
+* [Logless](http://docs.bespoken.io/en/latest/api/classes/logless.html) - Completely painless, serverless logging
 
 # Installation
 
@@ -65,22 +65,22 @@ For use of the Bespoken library (including Logless and the Emulator):
 $ npm install bespoken-tools --save
 ```
 
-For additional help, see [Getting Started](http://docs.bespoken.tools/en/latest/getting_started)
+For additional help, see [Getting Started](http://docs.bespoken.io/en/latest/getting_started)
 
 ## Tutorials For Alexa Skills
-* [Nodejs Lambda Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_nodejs)
-* [Java Server Tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_local_server_java)
-* [Python & Flask-Ask](http://docs.bespoken.tools/en/latest/tutorials/tutorial_flask_ask_python)
-* [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.tools/en/latest/tutorials/tutorial_bst_emulator_nodejs)
+* [Nodejs Lambda Tutorial](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_nodejs)
+* [Java Server Tutorial](http://docs.bespoken.io/en/latest/tutorials/tutorial_local_server_java)
+* [Python & Flask-Ask](http://docs.bespoken.io/en/latest/tutorials/tutorial_flask_ask_python)
+* [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.io/en/latest/tutorials/tutorial_bst_emulator_nodejs)
 
 ## Tutorials For Actions on Google
-* [With Cloud Functions](http://docs.bespoken.tools/en/latest/tutorials/tutorial_cloud_function)
-* [With API.AI](http://docs.bespoken.tools/en/latest/tutorials/tutorial_configuring_api_ai)
+* [With Cloud Functions](http://docs.bespoken.io/en/latest/tutorials/tutorial_cloud_function)
+* [With API.AI](http://docs.bespoken.io/en/latest/tutorials/tutorial_configuring_api_ai)
 
 ## Tutorials For General Lambdas
-* [Running Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_local)
-* [Debugging Lambdas Locally](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger)
-* [Deploying Lambdas](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_deploy)
+* [Running Lambdas Locally](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_local)
+* [Debugging Lambdas Locally](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_debugger)
+* [Deploying Lambdas](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_deploy)
 
 ## Questions/Feedback?
 

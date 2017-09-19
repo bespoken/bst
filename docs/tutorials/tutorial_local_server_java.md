@@ -66,10 +66,10 @@ When you started the proxy, bst printed out a URL that you need to configure you
 
 ```bash
 $ bst proxy http 9999
-BST: v0.6.5  Node: v4.3.2
+BST: v1.0.4  Node: v4.3.2
 
-Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools/YOUR/SKILL/PATH?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
+Your public URL for accessing your local service:
+https://your-proxy.bespoken.link
 (Be sure to put in your real path and other query string parameters!)
 
 ```
@@ -78,7 +78,7 @@ Alternatively, you can create this URL via the `proxy urlgen` command.
 You first need to modify it to the path that your server is listening on, in this case it is `/hello`.
 
 ```
-https://proxy.bespoken.tools/hello?node-id=0c6a4f17-c86f-4024-ba26-a351ac319431
+https://your-proxy.bespoken.link/hello
 ```
 
 Copy and paste this URL as your endpoint:

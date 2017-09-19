@@ -2,8 +2,30 @@ import * as assert from "assert";
 import {Global} from "../../lib/core/global";
 import {BespokeServer} from "../../lib/server/bespoke-server";
 import {BSTProxy} from "../../lib/client/bst-proxy";
+import * as mockery from "mockery";
 
 describe("BSTProxy Programmatic", function () {
+    let mockConfig = {
+        BSTConfig: {
+            load: () => {
+                return Promise.resolve({
+                    secretKey: () => "SECRET_KEY",
+                });
+            },
+        },
+    };
+
+    beforeEach(function () {
+        mockery.enable({useCleanCache: true});
+        mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
+        mockery.registerMock("./bst-config", mockConfig);
+    });
+
+    afterEach(function () {
+        mockery.deregisterAll();
+        mockery.disable();
+    });
     it("Starts and stops programmatically", function (done) {
         let proxy = BSTProxy.http(9999).secretKey("SECRET_KEY");
         proxy.start(() => {
@@ -15,13 +37,15 @@ describe("BSTProxy Programmatic", function () {
     });
 
     it("Fails to start programmatically without secret key", function (done) {
-        let proxy = BSTProxy.http(9999);
-        try {
-            proxy.start();
-        } catch (e) {
-            assert(e.message.startsWith("Secret key must be provided"));
-            done();
-        }
+        const mockifiedProxy = require("../../lib/client/bst-proxy").BSTProxy;
+        let proxy = mockifiedProxy.http(9999);
+
+        proxy.start(() => {
+            assert.equal("SECRET_KEY", (proxy as any).bespokenClient.nodeID);
+            proxy.stop(() => {
+                done();
+            });
+        });
     });
 });
 

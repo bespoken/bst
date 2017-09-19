@@ -5,7 +5,7 @@
     <packaging>jar</packaging>
     <version>2.29-SNAPSHOT</version>
     <name>Bespoken Sample Java</name>
-    <url>http://bespoken.tools</url>
+    <url>https://bespoken.io</url>
 
     <dependencies>
         <dependency>

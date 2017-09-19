@@ -35,7 +35,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies an HTTP service running at the specified port")
-    .action(function (port: number, options: any) {
+    .action( function (port: number, options: any) {
         if (options.secure) {
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
@@ -59,14 +59,14 @@ program
     });
 
 program
-    .command("lambda <lambda-file> [function-name]")
+    .command("lambda [lambda-file] [function-name]")
     .option("--bstHost <bstHost>", "The host name of the BST server")
     .option("--bstPort <bstPort>", "The port of the BST server", parseInt)
     .option("--pithy", "Disables verbose diagnostics")
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a AWS Lambda defined in the specified file")
-    .action(function (lambdaFile: string, functionName: string, options: any) {
+    .action( function (lambdaFile: string, functionName: string, options: any) {
         if (options.secure) {
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
@@ -96,7 +96,7 @@ program
     .option("--verbose", "Enable verbose diagnostics (activated by default)")
     .option("--secure", "Enables security forcing inclusion of secret key on query or headers (should be named bespoken-key) ")
     .description("Proxies a Google HTTP Cloud Function defined in the specified file with the specified name")
-    .action(function (functionFile: string, functionName: string, options: any) {
+    .action( function (functionFile: string, functionName: string, options: any) {
         if (options.secure) {
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");

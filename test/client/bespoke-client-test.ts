@@ -37,11 +37,21 @@ describe("BespokeClient", function() {
 
         it("Connects to something other than localhost", function(done) {
             this.timeout(5000);
-            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "0.0.0.0", testPort);
+            const client = new BespokeClient("JPK" + nodeMajorVersion,
+                "proxy.bespoken.tools",
+                5000,
+                "127.0.0.1",
+                testPort);
+
             client.onConnect = function (error: any) {
                 const webhookCaller = new HTTPClient();
-                webhookCaller.post("proxy.bespoken.tools", 443, "/test?node-id=JPK" + nodeMajorVersion, "Test", function (data: Buffer, statusCode: number, success: boolean) {
-                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:" + testPort);
+                webhookCaller.post("proxy.bespoken.tools",
+                    443,
+                    "/test?node-id=JPK" + nodeMajorVersion,
+                    "Test",
+                    function (data: Buffer, statusCode: number, success: boolean) {
+                    assert.equal(data.toString(),
+                        "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 127.0.0.1:" + testPort);
                     assert.equal(statusCode, 500);
 
                     client.shutdown(function () {
@@ -52,7 +62,7 @@ describe("BespokeClient", function() {
 
             client.onError = function (errorType, message) {
                 // We expect an error - make sure it contains the correct domain name
-                assert(message.indexOf("0.0.0.0") !== -1);
+                assert(message.indexOf("127.0.0.1") !== -1);
             };
 
             client.connect();
@@ -60,7 +70,7 @@ describe("BespokeClient", function() {
 
         it("Rejects messages on a secure server", function(done) {
             this.timeout(5000);
-            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "0.0.0.0", 443, "JPK");
+            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "127.0.0.1", 443, "JPK");
             client.onConnect = function (error: any) {
                 const webhookCaller = new HTTPClient();
                 webhookCaller.post("proxy.bespoken.tools", 443, "/test?node-id=JPK" + nodeMajorVersion, "Test", function (data: Buffer, statusCode: number, success: boolean) {
@@ -75,7 +85,7 @@ describe("BespokeClient", function() {
 
             client.onError = function (errorType, message) {
                 // We expect an error - make sure it contains the correct domain name
-                assert(message.indexOf("0.0.0.0") !== -1);
+                assert(message.indexOf("127.0.0.1") !== -1);
             };
 
             client.connect();
@@ -83,13 +93,13 @@ describe("BespokeClient", function() {
 
         it("Accepts messages on a secure server when secret on query string", function(done) {
             this.timeout(5000);
-            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "0.0.0.0", testPort, "JPK");
+            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "127.0.0.1", testPort, "JPK");
             client.onConnect = function (error: any) {
                 const webhookCaller = new HTTPClient();
                 const path = "/test?node-id=JPK" + nodeMajorVersion + "&bespoken-key=JPK";
                 webhookCaller.post("proxy.bespoken.tools", 443, path, "Test", function (data: Buffer, statusCode: number, success: boolean) {
                     // This error comes from the webhook client instead of rejecting
-                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:" + testPort);
+                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 127.0.0.1:" + testPort);
                     assert.equal(statusCode, 500);
 
                     client.shutdown(function () {
@@ -100,7 +110,7 @@ describe("BespokeClient", function() {
 
             client.onError = function (errorType, message) {
                 // We expect an error - make sure it contains the correct domain name
-                assert(message.indexOf("0.0.0.0") !== -1);
+                assert(message.indexOf("127.0.0.1") !== -1);
             };
 
             client.connect();
@@ -108,7 +118,7 @@ describe("BespokeClient", function() {
 
         it("Accepts messages on a secure server when secret on header", function(done) {
             this.timeout(5000);
-            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "0.0.0.0", testPort, "JPK");
+            const client = new BespokeClient("JPK" + nodeMajorVersion, "proxy.bespoken.tools", 5000, "127.0.0.1", testPort, "JPK");
             client.onConnect = function (error: any) {
                 const webhookCaller = new HTTPClient();
                 const path = "/test?node-id=JPK" + nodeMajorVersion;
@@ -118,7 +128,7 @@ describe("BespokeClient", function() {
 
                 webhookCaller.postWithExtraHeaders("proxy.bespoken.tools", 443, path, "Test", extraHeader, function (data: Buffer, statusCode: number, success: boolean) {
                     // This error comes from the webhook client instead of rejecting
-                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 0.0.0.0:" + testPort);
+                    assert.equal(data.toString(), "BST Proxy - Local Forwarding Error\nconnect ECONNREFUSED 127.0.0.1:" + testPort);
                     assert.equal(statusCode, 500);
 
                     client.shutdown(function () {
@@ -129,7 +139,7 @@ describe("BespokeClient", function() {
 
             client.onError = function (errorType, message) {
                 // We expect an error - make sure it contains the correct domain name
-                assert(message.indexOf("0.0.0.0") !== -1);
+                assert(message.indexOf("127.0.0.1") !== -1);
             };
 
             client.connect();
@@ -138,14 +148,14 @@ describe("BespokeClient", function() {
 
     describe("KeepAlive worked", function() {
         it("Gets lots of keep alives", function(done) {
-            const nodeManager = new NodeManager(9000);
+            const nodeManager = new NodeManager(testPort);
             let count = 0;
             (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
                 count++;
                 node.socketHandler.send(Global.KeepAliveMessage);
             };
 
-            const client = new MockBespokeClient("JPK", "localhost", 9000, "localhost", 9001);
+            const client = new MockBespokeClient("JPK", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
             nodeManager.start();
             client.connect();
 
@@ -157,9 +167,17 @@ describe("BespokeClient", function() {
 
             // Let everything run for one second and ensure no errors are received
             setTimeout(function () {
-                if (count < 40) {
-                    assert(false, "Not enough keep alives received");
+                // Mac and Linux generate more events than windows due threading in windows
+                if ((process.platform.includes("win") &&  count < 8) ||
+                    (!process.platform.includes("win") && count < 40)) {
+                    try {
+                        assert(false, "Not enough keep alives received");
+                    } catch (error) {
+                        done(error);
+                        return;
+                    }
                 }
+
                 client.shutdown(function () {
                     nodeManager.stop(function () {
                         done();
@@ -171,7 +189,7 @@ describe("BespokeClient", function() {
 
     describe("KeepAlive failed", function() {
         it("Fails", function(done) {
-            const nodeManager = new NodeManager(9000);
+            const nodeManager = new NodeManager(testPort);
             let count = 0;
             (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
                 count++;
@@ -180,7 +198,7 @@ describe("BespokeClient", function() {
                 }
             };
 
-            const client = new MockBespokeClient("JPK", "localhost", 9000, "localhost", 9001);
+            const client = new MockBespokeClient("JPK", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
             nodeManager.start();
             client.connect();
 
@@ -192,10 +210,13 @@ describe("BespokeClient", function() {
             };
 
             setTimeout(function () {
-                console.log("Count: " + count + " Failures: " + failureCount);
-
                 if (failureCount > 2) {
-                    assert(false, "Too many failures received");
+                    try {
+                        assert(false, "Too many failures received");
+                    } catch (error) {
+                        done(error);
+                        return;
+                    }
                 }
 
                 client.shutdown(function () {

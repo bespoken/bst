@@ -114,10 +114,10 @@ Start the BST proxy to expose the Lambda for the BST tools.
 ```shell
 $ cd quote-skill/
 $ bst proxy lambda index.js 
-BST: v0.9.13  Node: v6.3.0
+BST: v1.0.4  Node: v6.3.0
 
-Your URL for Alexa Skill configuration:
-https://proxy.bespoken.tools?node-id=bdd4aad4-2339-4e85-aa33-2bbcd2e03168
+Your public URL for accessing your local service:
+https://your-proxy.bespoken.link
 
 INFO  2016-11-04T01:32:01.139Z LambdaServer started on port: 10000
 INFO  2016-11-04T01:32:01.250Z Connected - proxy.bespoken.tools:5000
@@ -128,11 +128,11 @@ Now let's "tell" something to our skill. From another shell session run the BST 
 "random qoute" is one of the sample utterances. The command prints out the matching request (intent) and the response. 
 No need to go to the Amazon Alexa UI to do basic tests. 
 
-You can read more about the `bst speak` command [here](http://docs.bespoken.tools/en/latest/commands/speak/)
+You can read more about the `bst speak` command [here](/commands/speak/)
 
 ```shell
 $ bst speak random quote
-BST: v0.9.13  Node: v6.3.0
+BST: v1.0.4  Node: v6.3.0
 
 Intent: RandomQuote Session: null
 INFO  2016-11-04T01:35:10.096Z CALLING: IntentRequest
@@ -202,7 +202,7 @@ Response:
 ```
 
 If something isn't right, you can debug the skill locally with BST. 
-You can step through your code using your favorite IDE. [Follow this tutorial](http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_debugger) 
+You can step through your code using your favorite IDE. [Follow this tutorial](/tutorials/tutorial_lambda_debugger)
 to learn how easy that is.
 
 ## Install the Lambda
@@ -215,7 +215,7 @@ It could be relative or absolute path.
 ```shell
 $ bst deploy lambda . 
 INFO  2016-11-04T00:22:31.654Z No configuration. Creating one: /Users/opendog/.bst/config
-BST: v0.9.13  Node: v6.3.0
+BST: v1.0.4  Node: v6.3.0
 
 We named your lambda function quote-skill (same as the project folder)
 We created a AWS role for your lambda and called it lambda-bst-execution. You are welcome!
@@ -416,7 +416,7 @@ From the Lambda project folder run this:
 
 ```shell
 $ bst deploy lambda . 
-BST: v0.9.13  Node: v6.3.0
+BST: v1.0.4  Node: v6.3.0
 
 We named your lambda function quote-skill (same as the project folder)
 Re-using existing BST lambda role.

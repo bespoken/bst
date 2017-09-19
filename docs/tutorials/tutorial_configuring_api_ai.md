@@ -2,7 +2,7 @@ This tutorial will help you get setup using API.AI with our sample project and B
 
 Ping us on [gitter](https://gitter.im/bespoken/bst) if you have any question.
 
-This tutorial goes great with our [Bespoken for Cloud Functions tutorial](https://docs.bespoken.tools/tutorials/tutorial_cloud_function) :-)
+This tutorial goes great with our [Bespoken for Cloud Functions tutorial](/tutorials/tutorial_cloud_function) :-)
 
 # Pre-Requisites
 This tutorial assumes you have cloned the [Super Simple Google Action repository](https://github.com/bespoken/super-simple-google-action).

@@ -2,6 +2,7 @@ site_name: bespoken.io
 repo_url: https://github.com/bespoken/bst
 site_dir: 'site'
 strict: true
+google_analytics: ['UA-99287066-2', 'docs.bespoken.io']
 pages:
 - Home: index.md
 - Getting Started: getting_started.md

@@ -2,6 +2,7 @@ import {BespokeClient} from "./bespoke-client";
 import {LambdaServer} from "./lambda-server";
 import {BSTProcess} from "./bst-config";
 import {Global} from "../core/global";
+import {BSTConfig} from "./bst-config";
 import {FunctionServer} from "./function-server";
 import {LoggingHelper} from "../core/logging-helper";
 
@@ -67,7 +68,7 @@ export class BSTProxy {
      * @param lambdaFile
      * @returns {BSTProxy}
      */
-    public static lambda(lambdaFile: string, functionName?: string): BSTProxy {
+    public static lambda(lambdaFile?: string, functionName?: string): BSTProxy {
         let tool: BSTProxy = new BSTProxy(ProxyType.LAMBDA);
         tool.functionFile = lambdaFile;
         tool.functionName = functionName;
@@ -128,27 +129,13 @@ export class BSTProxy {
         return this;
     }
 
-    public start(onStarted?: (error?: any) => void): BSTProxy {
-        // If we have a configuration (i.e., are being run from CLI), we use it
-        if (Global.config()) {
-            BSTProcess.run(this.httpPort, this.proxyType, process.pid);
-            this.proxySecretKey = Global.config().secretKey();
-        } else {
-            // Handle start when being called programmatically (and presumably standalone)
-            if (!this.proxySecretKey) {
-                // If we are being called programmatically, the secret key must be provided
-                throw new Error("Secret key must be provided via .secretKey(key) function. Secret key can be found in ~/.bst/config.");
-            }
-
-            LoggingHelper.initialize(false);
-        }
-
+    public startWithConfig(onStarted?: (error?: any) => void): BSTProxy {
         this.bespokenClient = new BespokeClient(this.proxySecretKey,
-                                                this.bespokenHost,
-                                                this.bespokenPort,
-                                                this.httpDomain,
-                                                this.httpPort,
-                                                this.isSecure ? this.proxySecretKey : undefined);
+            this.bespokenHost,
+            this.bespokenPort,
+            this.httpDomain,
+            this.httpPort,
+            this.isSecure ? this.proxySecretKey : undefined);
 
         // Make sure all callbacks have been hit before returning
         //  We will have to wait for two callbacks if this using the Lambda proxy
@@ -175,7 +162,32 @@ export class BSTProxy {
             this.functionServer = new FunctionServer(this.functionFile, this.functionName, this.httpPort);
             this.functionServer.start(callback);
         }
+
         return this;
+    }
+
+    public start(onStarted?: (error?: any) => void): void {
+        // If we have a configuration (i.e., are being run from CLI), we use it
+        const self = this;
+        if (Global.config()) {
+            BSTProcess.run(this.httpPort, this.proxyType, process.pid);
+            this.proxySecretKey = Global.config().secretKey();
+            this.startWithConfig(onStarted);
+        } else {
+            // Handle start when being called programmatically (and presumably standalone)
+            if (!this.proxySecretKey) {
+                // Load config if not present
+                BSTConfig.load().then((config) => {
+                    self.proxySecretKey = config.secretKey();
+                    self.startWithConfig(onStarted);
+                    LoggingHelper.initialize(false);
+                });
+                return;
+            }
+
+            self.startWithConfig(onStarted);
+            LoggingHelper.initialize(false);
+        }
     }
 
     public stop(onStopped?: () => void): void {
