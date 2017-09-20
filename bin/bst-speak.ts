@@ -7,9 +7,10 @@ program.version(Global.version());
 
 program
     .usage("[options] <utterance>")
-    .option("-t, --token <token>", `The token for interacting with your virtual Alexa device - get it here:\n" +
-        "https://apps.bespoken.io/dashboard/skills/<SKILL_ID>/validation\n" +
-        "(Bespoken Dashboard account required for use of this feature)`)
+    .option("-t, --token <token>", `The token for interacting with your virtual Alexa device - get it here:
+
+        \thttps://apps.bespoken.io/dashboard/skills/<SKILL_ID>/validation
+        \t(Bespoken Dashboard account required for use of this feature)\n`)
     .description("Speaks to your virtual Alexa device")
     .action(async function () {
         // To handle utterances with multiple words, we need to look at the args
