@@ -1,7 +1,7 @@
 
 ## Overview
 
-The utter command generates intent requests for your service as if they were coming from Alexa itself.
+The utter command takes an utterance ("play next song") and turns into a JSON payload, imitating as if it was coming from Alexa itself.
 
 It works in a manner very similar to the Alexa simulator available via the Alexa developer console.  
 
