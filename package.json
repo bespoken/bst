@@ -3,7 +3,7 @@
   "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "1.0.8",
+  "version": "1.0.10",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js"
@@ -20,6 +20,7 @@
     "properties-reader": "0.0.15",
     "request": "^2.74.0",
     "request-promise-native": "^1.0.3",
+    "silent-echo-sdk": "^0.2.4",
     "uuid": "3.0.0",
     "winston": "^2.2.0"
   },

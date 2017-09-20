@@ -5,14 +5,16 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import {SinonSandbox} from "sinon";
 
-describe("bst-speak", function() {
+describe("bst-utter", function() {
+    const tokenWarning = "Your token is saved, you can now use this command without providing a token";
+
     let globalModule = {
         Global: {
             initializeCLI: async function () {
 
             },
             config: function () {
-                return {};
+                return { sourceID: () => "mySource" };
             },
             running : function() {
                 let p = new BSTProcess();
@@ -41,202 +43,106 @@ describe("bst-speak", function() {
         mockery.disable();
     });
 
-    describe("speak command", function() {
-        it("Speaks One Word", function(done) {
+    describe("Speak command", function() {
+        it("Send message without token warning", function(done) {
             process.argv = command("node bst-speak.js Hello");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function () {
-                    this.start = function(ready: Function) {
-                        ready();
-                    };
-
-                    this.spoken = function (utterance: string, callback: any) {
-                        assert.equal(utterance, "Hello");
-                        callback(null, {"request": "test"}, {"response": "test"});
-                    };
+            mockery.registerMock("../lib/external/silent-echo", {
+                SilentEchoClient: {
+                    speak: function() {
+                        return {
+                            transcript: "Response"
+                        };
+                    },
+                    renderResult: function (result: any) {
+                        try {
+                            assert.equal(result.transcript, "Response");
+                        } catch (error) {
+                            done(error);
+                        }
+                        return "Response Rendered";
+                    },
                 }
             });
 
+            let flagResponse = false;
+            let flagToken = true;
             sandbox.stub(console, "log", function(data: Buffer) {
-                if (data !== undefined && data.indexOf("Response:") !== -1) {
+                if (data && data.includes(tokenWarning)) {
+                    flagToken = false;
+                }
+
+                if (data && data.includes("Response Rendered")) {
+                    flagResponse = true;
+                }
+
+                if (flagToken && flagResponse) {
                     done();
                 }
             });
             NodeUtil.load("../../bin/bst-speak.js");
         });
 
-        it("Speaks With Application ID", function(done) {
-            process.argv = command("node bst-speak.js Hello --appId 1234567890");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
-                    assert.equal(applicationID, "1234567890");
-                    this.start = function () {};
-                    done();
-                }
-            });
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks With Application ID Succinct Syntax", function(done) {
-            process.argv = command("node bst-speak.js Hello -a 1234567890");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
-                    assert.equal(applicationID, "1234567890");
-                    this.start = function () {};
-                    done();
-                }
-            });
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks With access token", function(done) {
-            process.argv = command("node bst-speak.js Hello -a 1234567890 -t AccessToken -i test/alexa/resources/IntentSchema.json -s test/alexa/resources/SampleUtterances.txt");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
-                    const commander = require("commander");
-                    assert.equal(commander.accessToken, "AccessToken");
-                    this.start = function () {};
-                    done();
-                }
-            });
-
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks With user id", function(done) {
-            process.argv = command("node bst-speak.js Hello --userId 123456");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
-                    const commander = require("commander");
-                    assert.equal(commander.userId, "123456");
-                    this.start = function () {};
-                    done();
-                }
-            });
-
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks With user id abbreviated", function(done) {
-            process.argv = command("node bst-speak.js Hello -U 123456");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
-                    const commander = require("commander");
-                    assert.equal(commander.userId, "123456");
-                    this.start = function () {};
-                    done();
-                }
-            });
-
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks With Custom URL", function(done) {
-            process.argv = command("node bst-speak.js Hello --url https://proxy.bespoken.tools");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (url: string) {
-                    this.url = url;
-                    this.start = function(ready: Function) {
-                        assert.equal(this.url, "https://proxy.bespoken.tools");
-                        ready();
-                        done();
-                    };
-
-                    this.spoken = function (utterance: string, callback: any) {};
-                }
-            });
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks One Word With Verbose", function(done) {
+        it("Throws missing token error", function(done) {
             process.argv = command("node bst-speak.js Hello");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function () {
-                    this.start = function(ready: Function) {
-                        ready();
-                    };
-
-                    this.spoken = function (utterance: string, callback: any) {
-                        assert.equal(utterance, "Hello");
-                        callback(null, {"response": "test"}, {"request": "test"});
-                    };
+            mockery.registerMock("../lib/external/silent-echo", {
+                SilentEchoClient: {
+                    speak: function() {
+                        throw new Error("Token Required");
+                    },
+                    renderResult: function (result: any) {
+                      return "";
+                    },
                 }
             });
 
-            let count = 0;
-            sandbox.stub(console, "log", function(data: Buffer) {
-                count++;
-                if (count === 4 && data !== undefined) {
-                    assert(data.toString().indexOf("request") !== -1);
-                    done();
-                }
-            });
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Speaks Multiple Word", function(done) {
-            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function () {
-                    this.start = function(ready: Function) {
-                        ready();
-                    };
-
-                    this.spoken = function (utterance: string) {
-                        assert.equal(utterance, "Hello There Ladies And Gentlemen");
-                        done();
-                        return this;
-                    };
-                }
-            });
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Has no interaction model", function(done) {
-            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
-
-            sandbox.stub(process, "exit", function(exitCode: number) {
-                assert.equal(exitCode, 0);
-                assert(messageReceived);
-                done();
-            });
-
-            let messageReceived = false;
-            sandbox.stub(console, "error", function(message: string) {
-                if (message !== undefined && message.indexOf("Cause: ") !== -1) {
-                    messageReceived = true;
-                }
-            });
-
-            NodeUtil.load("../../bin/bst-speak.js");
-        });
-
-        it("Has No Process", function(done) {
             sandbox.stub(process, "exit", function(exitCode: number) {
                 assert.equal(exitCode, 0);
             });
 
-            let count = 0;
             sandbox.stub(console, "log", function(data: Buffer) {
-                count++;
-                if (count === 4) {
-                    assert(data.toString().indexOf("proxy is running") !== -1);
+                const initialString = "You need a token for this option to work, get it here:";
+                if (data !== undefined && data.indexOf(initialString) !== -1) {
                     done();
                 }
             });
+            NodeUtil.load("../../bin/bst-speak.js");
+        });
 
-            process.argv = command("node bst-speak.js Hello There Ladies And Gentlemen");
-            // Prints out error if no process running
-            globalModule.Global.running = function () {
-                return null;
-            };
+        it("Send message with token warning when provided", function(done) {
+            process.argv = command("node bst-speak.js --token Token Hello");
+            mockery.registerMock("../lib/external/silent-echo", {
+                SilentEchoClient: {
+                    speak: function() {
+                        return {
+                            transcript: "Response"
+                        };
+                    },
+                    renderResult: function (result: any) {
+                        try {
+                            assert.equal(result.transcript, "Response");
+                        } catch (error) {
+                            done(error);
+                        }
+                        return "Response Rendered";
+                    },
+                }
+            });
 
+            let flagResponse = false;
+            let flagToken = false;
+            sandbox.stub(console, "log", function(data: Buffer) {
+                if (data !== undefined && data.includes(tokenWarning)) {
+                    flagToken = true;
+                }
+
+                if (data !== undefined && data.includes("Response Rendered")) {
+                    flagResponse = true;
+                }
+
+                if (flagResponse && flagToken) {
+                    done();
+                }
+            });
             NodeUtil.load("../../bin/bst-speak.js");
         });
     });

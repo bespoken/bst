@@ -31,7 +31,7 @@ describe("bst", function() {
         it("Calls proxy and gets a timeout error", function(done) {
             process.argv = command("node bst.js proxy http 9000");
 
-            let mockProgram = sandbox.mock(require("commander"));
+            const mockProgram = sandbox.mock(require("commander"));
             let errorCalls = 0;
 
             const timeoutError = new RequestError("ETIMEDOUT", 505);
@@ -72,7 +72,7 @@ describe("bst", function() {
         it("Calls proxy and gets a generic error", function(done) {
             process.argv = command("node bst.js proxy http 9000");
 
-            let mockProgram = sandbox.mock(require("commander"));
+            const mockProgram = sandbox.mock(require("commander"));
             let errorCalls = 0;
 
             const timeoutError = new RequestError("Generic Error", 505);
@@ -114,7 +114,7 @@ describe("bst", function() {
         it("Calls proxy for http", function(done) {
             process.argv = command("node bst.js proxy http 9000");
 
-            let mockProgram = sandbox.mock(require("commander"));
+            const mockProgram = sandbox.mock(require("commander"));
 
             mockProgram.expects("executeSubCommand")
                 .withArgs(command("node bst.js proxy http 9000"), command("proxy http 9000"));
@@ -128,7 +128,7 @@ describe("bst", function() {
 
         it("Calls proxy for lambda", function(done) {
             process.argv = command("node bst.js proxy lambda lambda.js");
-            let mockProgram = sandbox.mock(require("commander"));
+            const mockProgram = sandbox.mock(require("commander"));
             mockProgram.expects("executeSubCommand")
                 .withArgs(command("node bst.js proxy lambda lambda.js"), command("proxy lambda lambda.js"));
 
@@ -140,13 +140,13 @@ describe("bst", function() {
             }, 100);
         });
 
-        describe("speak command", function() {
+        describe("utter command", function() {
 
-            it("Calls speak", function(done) {
-                process.argv = command("node bst.js speak Hello World");
-                let mockProgram = sandbox.mock(require("commander"));
+            it("Calls utter", function(done) {
+                process.argv = command("node bst.js utter Hello World");
+                const mockProgram = sandbox.mock(require("commander"));
                 mockProgram.expects("executeSubCommand")
-                    .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
+                    .withArgs(command("node bst.js utter Hello World"), command("utter Hello World"), []);
 
                 NodeUtil.run("../../bin/bst.js");
                 setTimeout(function () {
@@ -160,7 +160,7 @@ describe("bst", function() {
 
             it("Calls launch", function(done) {
                 process.argv = command("node bst.js launch");
-                let mockProgram = sandbox.mock(require("commander"));
+                const mockProgram = sandbox.mock(require("commander"));
                 mockProgram.expects("executeSubCommand")
                     .withArgs(command("node bst.js launch"), command("launch"), []);
 
@@ -173,11 +173,11 @@ describe("bst", function() {
         });
 
         describe("sleep command", function() {
-            it("Calls speak", function(done) {
-                process.argv = command("node bst.js speak Hello World");
-                let mockProgram = sandbox.mock(require("commander"));
+            it("Calls sleep", function(done) {
+                process.argv = command("node bst.js sleep Here");
+                const mockProgram = sandbox.mock(require("commander"));
                 mockProgram.expects("executeSubCommand")
-                    .withArgs(command("node bst.js speak Hello World"), command("speak Hello World"), []);
+                    .withArgs(command("node bst.js sleep Here"), command("sleep Here"), []);
 
                 NodeUtil.run("../../bin/bst.js");
                 setTimeout(function () {
@@ -206,7 +206,7 @@ describe("bst", function() {
             setVersion("v3.0.0");
 
             let errorCalls = 0;
-            let mockProcess = sandbox.mock(process);
+            const mockProcess = sandbox.mock(process);
             mockProcess.expects("exit").once().withExactArgs(1);
             mockery.registerMock("../lib/core/logging-helper", {
                 "LoggingHelper": {
@@ -232,7 +232,7 @@ describe("bst", function() {
             process.argv = command("node bst.js test");
             setVersion("v4.0.0");
 
-            let mockProcess = sandbox.mock(process);
+            const mockProcess = sandbox.mock(process);
             mockProcess.expects("exit").once().withExactArgs(1);
             mockery.registerMock("../lib/core/logging-helper", {
                 "LoggingHelper": {
@@ -253,11 +253,11 @@ describe("bst", function() {
     });
 });
 
-let command = function (command: string): Array<string> {
+const command = function (command: string): Array<string> {
     return command.split(" ");
 };
 
-let setVersion = function (version: string): void {
+const setVersion = function (version: string): void {
     Object.defineProperty(process, "version", {
         value: version
     });

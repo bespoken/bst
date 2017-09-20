@@ -55,6 +55,15 @@ export class BSTConfig {
         this.commit();
     }
 
+    public updateSilentEchoToken(silentEchoToken: string): void {
+        this.configuration.silentEchoToken = silentEchoToken;
+        this.commit();
+    }
+
+    public silentEchoToken(): string {
+        return this.configuration.silentEchoToken;
+    }
+
     public commit() {
         let configBuffer = new Buffer(JSON.stringify(this.configuration, null, 4) + "\n");
         fs.writeFileSync(BSTConfig.configPath(), configBuffer);
