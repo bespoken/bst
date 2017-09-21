@@ -1,5 +1,10 @@
 
 ## Overview
+>Please note - as of version 1.1.0, what was known as the speak command has become [utter](utter).
+
+>This new version works directly with AVS - we think you will love it!
+
+>Run an `npm update bespoken-tools -g` to get this latest functionality
 
 The speak command communicates to a virtual device to test your skills with text as if they were voice commands.
 
