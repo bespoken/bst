@@ -8,11 +8,12 @@ pages:
 - Getting Started: getting_started.md
 - Alexa Skill Configuration: alexa_skills_kit_configuration.md
 - Commands:
-    - bst deploy: commands/deploy.md
-    - bst intend: commands/intend.md
     - bst proxy: commands/proxy.md
-    - bst speak: commands/speak.md
     - bst launch: commands/launch.md
+    - bst intend: commands/intend.md
+    - bst utter: commands/utter.md
+    - bst speak: commands/speak.md
+    - bst deploy: commands/deploy.md
 - API Reference: api_nav.md
 - Tutorials for Alexa Skills:
     - Node.js Lambda: tutorials/tutorial_lambda_nodejs.md
