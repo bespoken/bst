@@ -20,7 +20,7 @@
     "properties-reader": "0.0.15",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "silent-echo-sdk": "bespoken/silent-echo-sdk#removeDefault",
+    "silent-echo-sdk": "^0.3.2",
     "uuid": "3.0.0",
     "winston": "^2.4.0"
   },
