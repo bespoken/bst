@@ -39,20 +39,25 @@ gulp.task('test-suite-run', ['build'], function() {
         );
 });
 
-// Runs the all the test suites, and then based on the status, exits
-// This is a separate task because there is not an easy way to tell when each of the Test Suite processes finishes
-gulp.task('test', ['test-suite-run'], function (done) {
-    var message = "Tests Completed. All Succeeded.";
+
+const validateTestStatusAndExit = (doneFunction, typeOfProcess) => {
+    var message = typeOfProcess + " Completed. All Tests Succeeded.";
     if (testStatus > 0) {
-        message = "Tests Completed. Some Tests Failed.";
+        message = typeOfProcess +" Completed. Some Tests Failed.";
     }
     console.log(message);
 
     if (testStatus !== 0) {
         process.exit(1);
     } else {
-        done();
+        doneFunction();
     }
+};
+
+// Runs the all the test suites, and then based on the status, exits
+// This is a separate task because there is not an easy way to tell when each of the Test Suite processes finishes
+gulp.task('test', ['test-suite-run'], function (done) {
+    validateTestStatusAndExit(done, "Tests");
 });
 
 
@@ -78,7 +83,7 @@ gulp.task('coverage-suite-run', ['coverage-clean'], function() {
                     console.error(nyc.error);
                 }
 
-                testStatus = nyc.status;
+                testStatus |= nyc.status;
                 console.log(nyc.stdout.toString());
                 if (nyc.stderr.length) {
                     console.error(nyc.stderr.toString());
@@ -95,16 +100,15 @@ gulp.task("coverage", ['coverage-suite-run'], function (done) {
 
 gulp.task("codecov", ['coverage-suite-run'], function (done) {
     run('nyc report --reporter=json && codecov -f coverage/*.json').exec(function() {
-        done();
-    })
+        validateTestStatusAndExit(done, "Coverage");
+    });
 });
 
 gulp.task("coveralls", ['coverage-suite-run'], function (done) {
     run('nyc report --reporter=text-lcov | coveralls').exec(function() {
-        done();
-    })
+        validateTestStatusAndExit(done, "Coverage");
+    });
 });
-
 
 gulp.task('setup', function (done) {
     run('npm install').exec(function () {
