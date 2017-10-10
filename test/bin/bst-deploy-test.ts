@@ -3,8 +3,7 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
-import {Global} from "../../lib/core/global";
-import {LambdaConfig} from "../../lib/client/lambda-config";
+import {BSTProcess} from "../../lib/client/bst-config";
 
 const dotenv = require("dotenv");
 
@@ -17,16 +16,46 @@ const testLambdaName: string = "test-lambda-name";
 // Sets up environment variables from .env file
 dotenv.config();
 
-
+let LambdaConfig;
 describe("bst-deploy", function() {
     let lambdaConfig = null;
     let skip: boolean = false;
+    let globalModule = {
+        Global: {
+            initializeCLI: async function () {
+
+            },
+            config: function () {
+                return {
+                    configuration: {
+                        lambdaDeploy: {},
+                    },
+                    save: function () {
+
+                    },
+                };
+            },
+            running : function() {
+                let p = new BSTProcess();
+                p.port = 9999;
+                return p;
+            },
+
+            version: function () {
+                return "0.0.0";
+            },
+        }
+    };
 
     before(async function (): Promise<void> {
         this.timeout(20000);
         try {
-            Global.initialize(false);
-            await Global.loadConfig();
+            mockery.enable({useCleanCache: true});
+            mockery.warnOnUnregistered(false);
+            mockery.warnOnReplace(false);
+            mockery.registerMock("../core/global", globalModule);
+
+            LambdaConfig = require("../../lib/client/lambda-config").LambdaConfig;
 
             lambdaConfig = LambdaConfig.create();
             lambdaConfig.initialize();
@@ -48,7 +77,7 @@ describe("bst-deploy", function() {
         LambdaDeploy: {
             lambdaConfig: LambdaConfig,
 
-            create: function (lambdaFolder: string, lambdaConfig: LambdaConfig) {
+            create: function (lambdaFolder: string, lambdaConfig: any) {
                 assert.equal(lambdaFolder, deployProject);
                 this.lambdaConfig = lambdaConfig;
                 return this;
