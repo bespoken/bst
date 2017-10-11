@@ -4,7 +4,6 @@ import * as sinon from "sinon";
 import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
-
 const dotenv = require("dotenv");
 
 // The test project
@@ -23,7 +22,6 @@ describe("bst-deploy", function() {
     let globalModule = {
         Global: {
             initializeCLI: async function () {
-
             },
             config: function () {
                 return {
@@ -54,6 +52,7 @@ describe("bst-deploy", function() {
             mockery.warnOnUnregistered(false);
             mockery.warnOnReplace(false);
             mockery.registerMock("../core/global", globalModule);
+            mockery.registerMock("../lib/core/global", globalModule);
 
             LambdaConfig = require("../../lib/client/lambda-config").LambdaConfig;
 
@@ -102,11 +101,18 @@ describe("bst-deploy", function() {
 
     beforeEach(function () {
         if (skip) this.skip();
-
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/client/lambda-deploy", mockDeployModule);
         mockery.registerMock("../lib/client/lambda-role", mockRoleModule);
+        mockery.registerMock("../core/global", globalModule);
+        mockery.registerMock("../lib/core/global", globalModule);
+        mockery.registerMock("../lib/core/logging-helper", {
+            LoggingHelper: {
+                setVerbose: () => {}
+            }
+        });
+
         sandbox = sinon.sandbox.create();
         sandbox.stub(process, "exit", function () {}); // Ignore exit()
         process.chdir("test/resources");
@@ -172,13 +178,13 @@ describe("bst-deploy", function() {
 
         it("Options", function(done) {
             this.timeout(5000);
-
             process.argv = command("node bst-deploy.js lambda " + deployProject + " --verbose --lambdaName " + testLambdaName);
             let verboseCalled = false;
 
             sandbox.stub(console, "log", function (log: string) {
                 if (log.indexOf("Enabling verbose logging") !== -1) {
                     verboseCalled = true;
+
                 }
             });
 
