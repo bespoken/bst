@@ -1,46 +1,80 @@
 import * as assert from "assert";
-import {BSTAlexa} from "../../lib/client/bst-alexa";
 import {LambdaServer} from "../../lib/client/lambda-server";
-import {Global} from "../../lib/core/global";
+import * as mockery from "mockery";
 import * as sinon from "sinon";
+import {BSTProcess} from "../../lib/client/bst-config";
 
-describe("BSTAlexa Without Config", function() {
-    it("#start()", function (done) {
-        let speak = new BSTAlexa("http://localhost:9000",
-            "test/resources/speechAssets/IntentSchema.json",
-            "test/resources/speechAssets/SampleUtterances.txt");
-        speak.start(function (error: string) {
-            assert(error === undefined);
-            speak.stop(function() {
-                done();
-            });
-        });
-    });
-});
+let applicationID = "abc";
+
+let globalModule = {
+    Global: {
+        initializeCLI: async function () {
+        },
+        config: function () {
+            return {
+                configuration: {
+                    lambdaDeploy: {},
+                },
+                save: function () {
+
+                },
+                applicationID: function() {
+                    return applicationID;
+                },
+                updateApplicationID: function (id) {
+                    applicationID = id;
+                }
+            };
+        },
+        running : function() {
+            let p = new BSTProcess();
+            p.port = 9999;
+            return p;
+        },
+
+        version: function () {
+            return "0.0.0";
+        },
+    }
+};
 
 describe("BSTAlexa", async function() {
-    let alexa: BSTAlexa = null;
+    let alexa = null;
     let lambdaServer: LambdaServer = null;
-
-    before(async function () {
-        Global.initialize(false);
-        await Global.loadConfig();
-    });
+    let BSTAlexa;
 
     describe("#start()", function () {
         let sandbox: any = null;
 
-        before(async function () {
-            Global.initialize(false);
-            await Global.loadConfig();
-        });
-
         beforeEach(function () {
             sandbox = sinon.sandbox.create();
+            mockery.enable({useCleanCache: true});
+            mockery.warnOnUnregistered(false);
+            mockery.registerMock("../core/global", globalModule);
+            BSTAlexa = require("../../lib/client/bst-alexa").BSTAlexa;
+
         });
 
         afterEach(function () {
+            mockery.deregisterAll();
+            mockery.disable();
             sandbox.restore();
+        });
+
+        describe("BSTAlexa Without Config", function() {
+            it("#start()", function (done) {
+                const BSTAlexa = require("../../lib/client/bst-alexa").BSTAlexa;
+
+                let speak = new BSTAlexa("http://localhost:9000",
+                    "test/resources/speechAssets/IntentSchema.json",
+                    "test/resources/speechAssets/SampleUtterances.txt");
+                speak.start(function (error: string) {
+                    assert(error === undefined);
+                    speak.stop(function() {
+                        done();
+                    });
+                });
+            });
         });
 
         it("Start with defaults", function (done) {
@@ -70,7 +104,7 @@ describe("BSTAlexa", async function() {
                 "test/resources/speechAssets/SampleUtterances.txt",
                 "1234567890J");
             speak.start(function () {
-                assert(Global.config().applicationID(), "1234567890J");
+                assert(globalModule.Global.config().applicationID(), "1234567890J");
                 done();
             });
         });
@@ -81,7 +115,7 @@ describe("BSTAlexa", async function() {
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function () {
-                assert(Global.config().applicationID(), "1234567890J");
+                assert(globalModule.Global.config().applicationID(), "1234567890J");
                 assert(speak.context().applicationID(), "1234567890J");
                 done();
             });
@@ -381,7 +415,6 @@ describe("BSTAlexa", async function() {
                 this.timeout(5000);
                 let count = 0;
                 alexa.on("response", function (response: any, request: any) {
-                    console.log("RequestType: " + request.request.type);
                     count++;
                     if (count === 3) {
                         assert.equal(request.request.type, "AudioPlayer.PlaybackNearlyFinished");
