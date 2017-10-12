@@ -6,7 +6,6 @@ import {exec} from "child_process";
 import {ProxyType} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import * as mockery from "mockery";
-import * as path from "path";
 
 let globalModule = {
     Global: {
