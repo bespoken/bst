@@ -25,7 +25,4 @@ if (process.argv.slice(2).length === 0) {
     program.outputHelp();
 }
 
-Global.initializeCLI().then(
-    () => program.parse(process.argv)
-);
-
+program.parse(process.argv);
