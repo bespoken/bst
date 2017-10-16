@@ -155,7 +155,7 @@ describe("BespokeClient", function() {
                 node.socketHandler.send(Global.KeepAliveMessage);
             };
 
-            const client = new MockBespokeClient("JPK", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
+            const client = new MockBespokeClient("JPK", "localhost", testPort, "localhost", testPort + 1);
             nodeManager.start();
             client.connect();
 
@@ -168,6 +168,7 @@ describe("BespokeClient", function() {
             // Let everything run for one second and ensure no errors are received
             setTimeout(function () {
                 // Mac and Linux generate more events than windows due threading in windows
+
                 if ((process.platform.includes("win") &&  count < 8) ||
                     (!process.platform.includes("win") && count < 40)) {
                     try {
