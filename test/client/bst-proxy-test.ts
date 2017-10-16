@@ -4,7 +4,6 @@ import * as mockery from "mockery";
 const mockConfig = {
     BSTConfig: {
         load: () => {
-            console.log("Invoked BstConfig mocks");
             return Promise.resolve({
                 secretKey: () => "SECRET_KEY",
             });

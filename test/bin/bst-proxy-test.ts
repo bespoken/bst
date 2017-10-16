@@ -5,6 +5,35 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {SinonSandbox} from "sinon";
 import {BSTProcess} from "../../lib/client/bst-config";
 
+const globalModule = {
+    Global: {
+        initializeCLI: async function () {
+        },
+        config: function () {
+            return {
+                configuration: {
+                    lambdaDeploy: {},
+                },
+                secretKey: function () {
+                    return "secretKey";
+                },
+                sourceID() {
+                    return "sourceID";
+                }
+            };
+        },
+        running : function() {
+            let p = new BSTProcess();
+            p.port = 9999;
+            return p;
+        },
+
+        version: function () {
+            return "0.0.0";
+        },
+    }
+};
+
 describe("bst-proxy", function() {
     let sandbox: SinonSandbox = null;
 
@@ -33,6 +62,12 @@ describe("bst-proxy", function() {
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/client/bst-proxy", mockModule);
+        mockery.registerMock("../lib/core/global", globalModule);
+        mockery.registerMock("../lib/core/logging-helper", {
+            LoggingHelper: {
+                setVerbose: () => {}
+            }
+        });
         sandbox = sinon.sandbox.create();
         sandbox.stub(process, "exit", function () {}); // Ignore exit()
     });
