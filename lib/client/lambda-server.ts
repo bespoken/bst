@@ -97,25 +97,28 @@ export class LambdaServer {
 
         const onlyUrl = request.url.split("?")[0];
 
-        if (onlyUrl !== "/") {
-            // verify that path does not contain more than one '.' or node_modules anywhere
-            if (/(.*\..*\.)|(.*node_modules)/.test(onlyUrl)) {
-                context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${onlyUrl}`));
+        if (this.file) {
+            path = this.file;
+        } else {
+            if (onlyUrl !== "/") {
+                // verify that path does not contain more than one '.' or node_modules anywhere
+                if (/(.*\..*\.)|(.*node_modules)/.test(onlyUrl)) {
+                    context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${onlyUrl}`));
+                    return;
+                }
+                const splitUrl = onlyUrl.split(".");
+                path = splitUrl[0];
+                handlerFunction = splitUrl[1];
+            }
+            else {
+                // no url argument supplied and no file being used
+                context.fail(Error("You should provide the lambda file or pass it in the url"));
                 return;
             }
-            const splitUrl = onlyUrl.split(".");
-            path = splitUrl[0];
-            handlerFunction = splitUrl[1];
         }
-        else {
-            // no url argument supplied -- use file parameter (supplied in constructor) instead
-            path = this.file;
-        }
-
         LoggingHelper.debug(Logger, "Invoking Lambda: " + path);
 
         const lambda = this.moduleManager.module(path);
-        // let lambda = System.import("./" + file);
         try {
             const bodyToString = body.toString();
             const bodyJSON: any = JSON.parse(bodyToString === "" ? null : bodyToString);
