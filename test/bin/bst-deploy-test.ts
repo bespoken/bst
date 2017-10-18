@@ -3,9 +3,7 @@ import * as mockery from "mockery";
 import * as sinon from "sinon";
 import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
-import {Global} from "../../lib/core/global";
-import {LambdaConfig} from "../../lib/client/lambda-config";
-
+import {BSTProcess} from "../../lib/client/bst-config";
 const dotenv = require("dotenv");
 
 // The test project
@@ -17,16 +15,46 @@ const testLambdaName: string = "test-lambda-name";
 // Sets up environment variables from .env file
 dotenv.config();
 
-
+let LambdaConfig;
 describe("bst-deploy", function() {
     let lambdaConfig = null;
     let skip: boolean = false;
+    let globalModule = {
+        Global: {
+            initializeCLI: async function () {
+            },
+            config: function () {
+                return {
+                    configuration: {
+                        lambdaDeploy: {},
+                    },
+                    save: function () {
+
+                    },
+                };
+            },
+            running : function() {
+                let p = new BSTProcess();
+                p.port = 9999;
+                return p;
+            },
+
+            version: function () {
+                return "0.0.0";
+            },
+        }
+    };
 
     before(async function (): Promise<void> {
         this.timeout(20000);
         try {
-            Global.initialize(false);
-            await Global.loadConfig();
+            mockery.enable({useCleanCache: true});
+            mockery.warnOnUnregistered(false);
+            mockery.warnOnReplace(false);
+            mockery.registerMock("../core/global", globalModule);
+            mockery.registerMock("../lib/core/global", globalModule);
+
+            LambdaConfig = require("../../lib/client/lambda-config").LambdaConfig;
 
             lambdaConfig = LambdaConfig.create();
             lambdaConfig.initialize();
@@ -48,7 +76,7 @@ describe("bst-deploy", function() {
         LambdaDeploy: {
             lambdaConfig: LambdaConfig,
 
-            create: function (lambdaFolder: string, lambdaConfig: LambdaConfig) {
+            create: function (lambdaFolder: string, lambdaConfig: any) {
                 assert.equal(lambdaFolder, deployProject);
                 this.lambdaConfig = lambdaConfig;
                 return this;
@@ -73,11 +101,18 @@ describe("bst-deploy", function() {
 
     beforeEach(function () {
         if (skip) this.skip();
-
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/client/lambda-deploy", mockDeployModule);
         mockery.registerMock("../lib/client/lambda-role", mockRoleModule);
+        mockery.registerMock("../core/global", globalModule);
+        mockery.registerMock("../lib/core/global", globalModule);
+        mockery.registerMock("../lib/core/logging-helper", {
+            LoggingHelper: {
+                setVerbose: () => {}
+            }
+        });
+
         sandbox = sinon.sandbox.create();
         sandbox.stub(process, "exit", function () {}); // Ignore exit()
         process.chdir("test/resources");
@@ -143,13 +178,13 @@ describe("bst-deploy", function() {
 
         it("Options", function(done) {
             this.timeout(5000);
-
             process.argv = command("node bst-deploy.js lambda " + deployProject + " --verbose --lambdaName " + testLambdaName);
             let verboseCalled = false;
 
             sandbox.stub(console, "log", function (log: string) {
                 if (log.indexOf("Enabling verbose logging") !== -1) {
                     verboseCalled = true;
+
                 }
             });
 

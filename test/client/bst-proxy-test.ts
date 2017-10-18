@@ -1,25 +1,26 @@
 import * as assert from "assert";
-import {Global} from "../../lib/core/global";
-import {BespokeServer} from "../../lib/server/bespoke-server";
-import {BSTProxy} from "../../lib/client/bst-proxy";
 import * as mockery from "mockery";
 
-describe("BSTProxy Programmatic", function () {
-    let mockConfig = {
-        BSTConfig: {
-            load: () => {
-                return Promise.resolve({
-                    secretKey: () => "SECRET_KEY",
-                });
-            },
+const mockConfig = {
+    BSTConfig: {
+        load: () => {
+            return Promise.resolve({
+                secretKey: () => "SECRET_KEY",
+            });
         },
-    };
+    },
+};
 
+let BSTProxy;
+
+describe("BSTProxy Programmatic", function () {
     beforeEach(function () {
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
         mockery.warnOnReplace(false);
         mockery.registerMock("./bst-config", mockConfig);
+        BSTProxy = require("../../lib/client/bst-proxy").BSTProxy;
+
     });
 
     afterEach(function () {
@@ -50,9 +51,19 @@ describe("BSTProxy Programmatic", function () {
 });
 
 describe("BSTProxy", async function() {
+    let BespokeServer;
     before(async function() {
         this.timeout(10000);
+
+        mockery.enable({useCleanCache: true});
+        mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
+        mockery.registerMock("./bst-config", mockConfig);
+        mockery.registerMock("../client/bst-config", mockConfig);
+        const Global = require("../../lib/core/global").Global;
         await Global.initializeCLI();
+        BespokeServer = require("../../lib/server/bespoke-server").BespokeServer;
+
     });
 
     describe("#http()", function() {

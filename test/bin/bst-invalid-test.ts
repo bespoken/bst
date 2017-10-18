@@ -3,6 +3,26 @@ import * as sinon from "sinon";
 import {SinonSandbox} from "sinon";
 import {NodeUtil} from "../../lib/core/node-util";
 
+let globalModule = {
+    Global: {
+        initializeCLI: async function () {
+        },
+        config: function () {
+            return {
+                configuration: {
+                    lambdaDeploy: {},
+                },
+                save: function () {
+
+                },
+            };
+        },
+        version: function () {
+            return "0.0.0";
+        },
+    }
+};
+
 describe("bst commands", function() {
     let sandbox: SinonSandbox = null;
     let originalFunction: any = null;
@@ -31,6 +51,8 @@ describe("bst commands", function() {
     beforeEach(function () {
         mockery.enable({useCleanCache: true});
         mockery.warnOnUnregistered(false);
+        mockery.registerMock("../lib/core/global", globalModule);
+
         sandbox = sinon.sandbox.create();
         sandbox.stub(process, "exit", function (n: number) {}); // Ignore exit()
         originalFunction = process.stdout.write;

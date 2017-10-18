@@ -3,10 +3,35 @@ import * as fs from "fs";
 import * as sinon from "sinon";
 import {SinonSandbox} from "sinon";
 import {exec} from "child_process";
-import {Global} from "../../lib/core/global";
-import {ProxyType, BSTProxy} from "../../lib/client/bst-proxy";
+import {ProxyType} from "../../lib/client/bst-proxy";
 import {BSTProcess} from "../../lib/client/bst-config";
 import * as mockery from "mockery";
+
+let globalModule = {
+    Global: {
+        initializeCLI: async function () {
+        },
+        config: function () {
+            return {
+                configuration: {
+                    lambdaDeploy: {},
+                },
+                secretKey: function () {
+                    return "secretKey";
+                },
+            };
+        },
+        running : function() {
+            let p = new BSTProcess();
+            p.port = 9999;
+            return p;
+        },
+
+        version: function () {
+            return "0.0.0";
+        },
+    }
+};
 
 // Getting uuid with require because we have issues with typings
 const uuid =  require("uuid");
@@ -268,6 +293,7 @@ describe("BSTProcess", function() {
             mockery.registerMock("../external/spokes", {
                 SpokesClient: SpokesClient,
             });
+            mockery.registerMock("../core/global", globalModule);
 
             BSTConfig = require("../../lib/client/bst-config").BSTConfig;
             (<any> BSTConfig).configDirectory = function () {
@@ -277,15 +303,17 @@ describe("BSTProcess", function() {
             (<any> BSTProcess).processPath = function () {
                 return "test/resources/.bst/process";
             };
+
+            mockery.registerMock("./bst-config", { BSTProcess: <any> BSTProcess});
+
+
         });
 
         beforeEach(async function () {
             return new Promise(resolve => {
                 exec("rm -rf " + (<any> BSTConfig).configDirectory(), async function () {
                     sandbox = sinon.sandbox.create();
-                    // Strange issue that makes the directory not available if this two are not run together
-                    await Global.loadConfig();
-                    await BSTConfig.load();
+                    fs.mkdirSync((<any> BSTConfig).configDirectory());
                     resolve();
                 });
             });
@@ -305,6 +333,7 @@ describe("BSTProcess", function() {
 
         it("Test new process written", function (done) {
             let runningPid: number = null;
+            const BSTProxy = require("../../lib/client/bst-proxy").BSTProxy;
             let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
 
             sandbox.stub(process, "kill", function (pid: number, code: any) {

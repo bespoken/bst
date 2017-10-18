@@ -1,9 +1,6 @@
-
-
 // Startup script for running BST
 import {BespokeServer} from "../lib/server/bespoke-server";
 import * as program from "commander";
-import {Global} from "../lib/core/global";
 
 program
     .command("start <webhookPort> <nodePort>")
@@ -15,6 +12,4 @@ program
         bespokeServer.start();
     });
 
-Global.initializeCLI().then(
-    () => program.parse(process.argv)
-);
+program.parse(process.argv);
