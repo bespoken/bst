@@ -16,7 +16,7 @@ Global.initializeCLI().then(
             .usage("[options] <utterance>")
             .option("-t, --token <token>", `The token for interacting with your virtual Alexa device - get it here:
 
-        \thttps://apps.bespoken.io/dashboard/skills/${Global.config().sourceID()}/validation
+        \thttps://${Global.SpokesDashboardHost}/skills/${Global.config().sourceID()}/validation
         \t(Bespoken Dashboard account required for use of this feature)\n`)
             .description("Speaks to your virtual Alexa device")
             .action(async function () {
@@ -45,7 +45,7 @@ Global.initializeCLI().then(
                     if (error.message === "Token Required") {
                         console.log("You need a token for this option to work, get it here:");
                         console.log();
-                        console.log("\thttps://apps.bespoken.io/dashboard/skills/" + Global.config().sourceID() + "/validation");
+                        console.log("\thttps://" + Global.SpokesDashboardHost + "/skills/" + Global.config().sourceID() + "/validation");
                         console.log("\t(Bespoken Dashboard account required for use of this feature)");
                         console.log();
                         console.log("Then try again with:");
