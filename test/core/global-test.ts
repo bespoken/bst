@@ -1,10 +1,33 @@
 import * as assert from "assert";
 import {NodeUtil} from "../../lib/core/node-util";
+import * as mockery from "mockery";
+
+const mockConfig = {
+    BSTConfig: {
+        load: () => {
+            return Promise.resolve({
+                secretKey: () => "SECRET_KEY",
+            });
+        },
+    },
+    BSTProcess: {
+        running: () => true,
+    }
+};
 
 describe("Global", function() {
     let Global: any = null;
     beforeEach(function () {
+        mockery.enable({useCleanCache: true});
+        mockery.warnOnUnregistered(false);
+        mockery.warnOnReplace(false);
+        mockery.registerMock("../client/bst-config", mockConfig);
         Global = NodeUtil.requireClean("../../lib/core/global").Global;
+    });
+
+    afterEach(function () {
+        mockery.deregisterAll();
+        mockery.disable();
     });
 
     describe("#initialize", function() {

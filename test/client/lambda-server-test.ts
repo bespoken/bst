@@ -187,6 +187,19 @@ describe("LambdaServer", function() {
             });
         });
 
+        it("Invoke without url and file should return error", function(done) {
+            let runner = new LambdaServer(null, 10000);
+            runner.start();
+
+            let client = new HTTPClient();
+            let inputData = {"data": "Test"};
+            client.post("localhost", 10000, "", JSON.stringify(inputData), function(data: Buffer) {
+                assert.equal(data.toString(), "Unhandled Exception from Lambda: Error: You should provide the lambda file or pass it in the url");
+                runner.stop();
+                done();
+            });
+        });
+
 
         it("Checks Context Stuff", function(done) {
             let runner = new LambdaServer("ContextLambda.js", 10000);
