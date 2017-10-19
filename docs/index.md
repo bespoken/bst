@@ -40,11 +40,11 @@ With Bespoken, develop faster and better. Do not slow-down for:
 
 The command-line tools include:
 
-* [Deploy](http://docs.bespoken.io/en/latest/commands/deploy) - One-command deployment of Lambda functions
 * [Proxy](http://docs.bespoken.io/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop
-* [Speak](http://docs.bespoken.io/en/latest/commands/speak) - Communicate to a virtual device to test your skills with text as if they were voice commands.
-* [Utter](http://docs.bespoken.io/en/latest/commands/utter) and [Intend](http://docs.bespoken.io/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
 * [Launch](http://docs.bespoken.io/en/latest/commands/launch) - Send a Launch Request to your Alexa skill
+* [Utter](http://docs.bespoken.io/en/latest/commands/utter) and [Intend](http://docs.bespoken.io/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
+* [Speak](http://docs.bespoken.io/en/latest/commands/speak) - Send a request directly an Alexa Virtual Device - uses the "real" Alexa! Magic!
+* [Deploy](http://docs.bespoken.io/en/latest/commands/deploy) - One-command deployment of Lambda functions
 
 The library provides:
 
