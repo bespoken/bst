@@ -7,7 +7,7 @@ export class WebhookRequest {
     public method: string;
     public uri: string;
     public body: string;
-    public queryParameters: {[id: string]: string} = {};
+    public queryParameters: {[id: string]: string | string[]} = {};
     public headers: { [id: string]: string };
     private requestID: number;
 
@@ -96,7 +96,12 @@ export class WebhookRequest {
     public nodeID (): string {
         let nodeValue: string = null;
         if ("node-id" in this.queryParameters) {
-            nodeValue = this.queryParameters["node-id"];
+            if (typeof this.queryParameters["node-id"] === "string") {
+                nodeValue = this.queryParameters["node-id"] as string;
+            } else {
+                // If parameter have multiple node-id's, we pick first one
+                nodeValue = (this.queryParameters["node-id"] as string[])[0];
+            }
         }
         return nodeValue;
     }
