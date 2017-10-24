@@ -181,6 +181,24 @@ describe("BespokeServerTest", function() {
             });
         });
 
+        it("Handles Multiple Nodes", function(done) {
+            this.timeout(2000);
+            // Start the server
+            let server = new BespokeServer(8000, 9000);
+
+            server.start(function () {
+                let webhookCaller = new HTTPClient();
+                webhookCaller.post("localhost", 8000, "/?node-id=JPK&node-id=JPK", "Test", function (body: any, statusCode: number) {
+                    assert.equal(body, "Only one node-id should be present in the query");
+                    assert.equal(statusCode, 400);
+
+                    server.stop(function () {
+                        done();
+                    });
+                });
+            });
+        });
+
         it("Handles No Node", function(done) {
             this.timeout(2000);
             // Start the server

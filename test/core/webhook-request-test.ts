@@ -6,10 +6,10 @@ import * as fs from "fs";
 describe("WebhookRequest", function() {
     describe("SimplePost", function() {
         it("All Data At Once", function (done) {
-            let request = new WebhookRequest(null);
+            const request = new WebhookRequest(null);
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
-            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+            const buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
             request.append(buffer);
 
             assert.ok(request.body.indexOf("version") !== -1);
@@ -42,16 +42,16 @@ describe("WebhookRequest", function() {
 
     describe("TwoPartPost", function() {
         it("Data Split In Two", function(done) {
-            let request = new WebhookRequest(null);
+            const request = new WebhookRequest(null);
             // Had to run this command to get proper carriage returns in my file:
             //  sed -e 's/$/\r/' WebhookRequest.raw > WebhookRequest.raw
-            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
-            let bufferString: string = buffer.toString();
+            const buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+            const bufferString: string = buffer.toString();
 
             console.log("BUFFER: " + BufferUtil.prettyPrint(buffer));
             // Split the buffer into two pieces
-            let buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
-            let buffer2 = bufferString.substr(bufferString.indexOf("38Z"));
+            const buffer1 = bufferString.substr(0, bufferString.indexOf("38Z"));
+            const buffer2 = bufferString.substr(bufferString.indexOf("38Z"));
 
             request.append(BufferUtil.fromString(buffer1));
             request.append(BufferUtil.fromString(buffer2));
@@ -67,23 +67,39 @@ describe("WebhookRequest", function() {
 
     describe("#nodeID", function () {
         it("Returns null when not specified", function(done) {
-            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+            const buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
             let bufferString: string = buffer.toString();
             bufferString = bufferString.replace("node-id", "dummy");
 
-            let request = new WebhookRequest(null);
+            const request = new WebhookRequest(null);
             request.append(BufferUtil.fromString(bufferString));
             assert.equal(request.nodeID(), null);
             done();
         });
 
         it("Returns value when specified", function(done) {
-            let buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+            const buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
 
-            let request = new WebhookRequest(null);
+            const request = new WebhookRequest(null);
             request.append(buffer);
             assert.equal(request.nodeID(), "JPK");
             done();
+        });
+
+        it("Returns error when two node-id's", function(done) {
+            const buffer: Buffer = fs.readFileSync("test/core/WebhookRequestProper.raw");
+            let bufferString: string = buffer.toString();
+            bufferString = bufferString.replace("node-id=JPK", "node-id=JPK&node-id=JPK");
+
+            const request = new WebhookRequest(null);
+            request.append(BufferUtil.fromString(bufferString));
+            try {
+                request.nodeID();
+                // unreachable because of error
+                assert(false);
+            } catch (error) {
+                done(assert.equal(error.message, "Only one node-id should be present in the query"));
+            }
         });
     });
 });
