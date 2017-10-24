@@ -41,6 +41,14 @@ export class BespokeServer {
                 HTTPHelper.respond(webhookRequest.sourceSocket, 200, "bst-server-" + Global.version());
 
             } else {
+                try {
+                    webhookRequest.nodeID();
+                } catch (error) {
+                    HTTPHelper.respond(webhookRequest.sourceSocket, 400, error.message);
+                    Statistics.instance().record(null, AccessType.REQUEST_DROPPED);
+                    return;
+                }
+
                 if (webhookRequest.nodeID() === null) {
                     LoggingHelper.error(Logger, "No node specified: " + webhookRequest.uri);
 
@@ -48,6 +56,7 @@ export class BespokeServer {
                 } else {
                     // Lookup the node
                     let node = self.nodeManager.node(webhookRequest.nodeID());
+
 
                     if (node == null) {
                         LoggingHelper.error(Logger, "Node is not active: " + webhookRequest.nodeID());

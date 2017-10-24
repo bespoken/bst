@@ -99,8 +99,7 @@ export class WebhookRequest {
             if (typeof this.queryParameters["node-id"] === "string") {
                 nodeValue = this.queryParameters["node-id"] as string;
             } else {
-                // If parameter have multiple node-id's, we pick first one
-                nodeValue = (this.queryParameters["node-id"] as string[])[0];
+               throw new Error("Only one node-id should be present in the query");
             }
         }
         return nodeValue;
