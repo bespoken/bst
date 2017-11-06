@@ -105,9 +105,14 @@ export class WebhookRequest {
         return nodeValue;
     }
 
+    private extractNodeIdFromRequest(tcpString: string) {
+        console.log("Full TCP String: ", tcpString);
+        return tcpString.replace("/?node-id=" + this.nodeID(), "/");
+    }
+
     // Turns the webhook HTTP request into straight TCP payload
     public toTCP (): string {
-        return this.rawContents.toString();
+        return this.extractNodeIdFromRequest(this.rawContents.toString());
     }
 
     public toString(): string {

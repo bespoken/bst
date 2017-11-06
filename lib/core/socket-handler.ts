@@ -94,7 +94,7 @@ export class SocketHandler {
             if (badMessage) {
                 LoggingHelper.error(Logger, "Bad message received: " + dataString);
             } else {
-                LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
+                LoggingHelper.info(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
                 this.onMessage(message, messageID);
             }
 
@@ -107,22 +107,21 @@ export class SocketHandler {
         }
     }
 
-    public send(message: string, messageID?: number) {
+    public send(message: Buffer, messageID?: number) {
         // If the socket was already closed, do not write anything
         if (this.socket === null) {
             LoggingHelper.warn(Logger, "Writing message to closed socket: " + messageID);
             return;
         }
 
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message));
+        LoggingHelper.info(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message.toString()));
 
         // If no message ID is specified, just grab a timestamp
         if (messageID === undefined || messageID === null) {
             messageID = new Date().getTime();
         }
         // Use TOKEN as message delimiter
-        message = message + messageID + Global.MessageDelimiter;
-        this.socket.write(message, null);
+        this.socket.write(Buffer.from([message, messageID, Global.MessageDelimiter]), null);
     }
 
     public remoteAddress (): string {
