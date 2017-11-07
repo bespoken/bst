@@ -115,7 +115,7 @@ export class BespokeClient {
                         payload = httpBuffer.body().toString();
                     }
                     LoggingHelper.verbose(Logger, "Payload:\n" + payload);
-                    self.socketHandler.send(httpBuffer.raw(), request.id());
+                    self.socketHandler.send(httpBuffer.raw().toString(), request.id());
                 }
             } else if (error !== null && error !== undefined) {
                 if (error === NetworkErrorType.CONNECTION_REFUSED) {

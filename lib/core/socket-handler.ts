@@ -107,7 +107,7 @@ export class SocketHandler {
         }
     }
 
-    public send(message: Buffer, messageID?: number) {
+    public send(message: string, messageID?: number) {
         // If the socket was already closed, do not write anything
         if (this.socket === null) {
             LoggingHelper.warn(Logger, "Writing message to closed socket: " + messageID);
@@ -121,7 +121,8 @@ export class SocketHandler {
             messageID = new Date().getTime();
         }
         // Use TOKEN as message delimiter
-        this.socket.write(Buffer.from([message, messageID, Global.MessageDelimiter]), null);
+        message = message + messageID + Global.MessageDelimiter;
+        this.socket.write(message, null);
     }
 
     public remoteAddress (): string {
