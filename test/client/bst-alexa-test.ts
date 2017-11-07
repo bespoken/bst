@@ -135,7 +135,7 @@ describe("BSTAlexa", async function() {
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function (error: string) {
                 assert(error);
-                assert.equal(error, "File not found: test/resources/speechAssets/Intent.json");
+                assert.equal(error, "ENOENT: no such file or directory, open 'test/resources/speechAssets/Intent.json'");
                 assert(errorReceived);
                 done();
             });
