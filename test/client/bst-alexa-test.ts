@@ -43,10 +43,6 @@ describe("BSTAlexa", async function() {
     let lambdaServer: LambdaServer = null;
     let BSTAlexa;
 
-    before(function () {
-        BSTAlexa = require("../../lib/client/bst-alexa").BSTAlexa;
-    });
-
     describe("#start()", function () {
         let sandbox: any = null;
 
@@ -139,7 +135,7 @@ describe("BSTAlexa", async function() {
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start(function (error: string) {
                 assert(error);
-                assert.equal(error, "ENOENT: no such file or directory, open 'test/resources/speechAssets/Intent.json'");
+                assert.equal(error, "File not found: test/resources/speechAssets/Intent.json");
                 assert(errorReceived);
                 done();
             });
@@ -236,19 +232,27 @@ describe("BSTAlexa", async function() {
 
         describe("#on()", function() {
             it("On skill response received", function (done) {
+                alexa.intended("HelloIntent", null);
                 let count = 0;
-
-                const callback = (error: Error, response: any, request: any) => {
+                alexa.on("response", function (response: any) {
                     count++;
                     assert.equal(response.output, "Well, Hello To You");
+                    alexa.intended("HelloIntent");
                     if (count === 2) {
                         done();
-                        return;
                     }
-                    alexa.intended("HelloIntent" , null, callback);
-                };
+                });
+            });
 
-                alexa.intended("HelloIntent", null, callback);
+            it("On no match for event", function (done) {
+                alexa.intended("HelloIntent", null);
+                try {
+                    alexa.on("nope", function () {
+                        assert(false, "This should not be reached");
+                    });
+                } catch (e) {
+                    done();
+                }
             });
 
             it("On no match for audio event", function (done) {
@@ -264,6 +268,20 @@ describe("BSTAlexa", async function() {
         });
 
         describe("#once()", function() {
+            it("Once skill response received", function (done) {
+                alexa.intended("HelloIntent", null);
+                let count = 0;
+                alexa.once("response", function (response: any) {
+                    count++;
+                    if (count === 2) {
+                        assert(false, "This should not be reached");
+                    }
+                    assert.equal(response.output, "Well, Hello To You");
+                    alexa.intended("HelloIntent");
+                    done();
+                });
+            });
+
             it("On no match for event", function (done) {
                 alexa.intended("HelloIntent", null);
                 try {
@@ -370,7 +388,7 @@ describe("BSTAlexa", async function() {
 
         describe("#playbackFinished()", function() {
             it("Audio Item Finished", function (done) {
-               let count = 0;
+                let count = 0;
                 alexa.on("response", function (response: any, request: any) {
                     count++;
                     if (count === 5) {

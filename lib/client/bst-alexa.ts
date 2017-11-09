@@ -3,7 +3,6 @@ import {Alexa, AlexaEvent} from "../alexa/alexa";
 import {Global} from "../core/global";
 import {SessionEndedReason} from "../alexa/service-request";
 import {AlexaContext} from "../alexa/alexa-context";
-import {VirtualAlexa} from "virtual-alexa";
 
 export class BSTAlexaEvents {
     /**
@@ -57,7 +56,7 @@ export class BSTAlexa {
     public static DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
     public static DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";
     private _alexa: Alexa = null;
-    private virtualAlexa: VirtualAlexa = null;
+
     /**
      * Creates a new Alexa emulator
      * @param skillURL The URL the skill is listening that this emulator should interact with
@@ -95,24 +94,6 @@ export class BSTAlexa {
      */
     public start(ready: (error?: string) => void): void {
         let self = this;
-        try {
-            this.virtualAlexa = VirtualAlexa.Builder()
-                .intentSchemaFile(this.intentSchemaFile)
-                .sampleUtterancesFile(this.sampleUtterancesFile)
-                .applicationID(this.applicationID)
-                .skillURL(this.skillURL)
-                .create();
-        } catch (error) {
-            if (error.message.indexOf("ENOENT") !== -1) {
-                console.error("Error loading Interaction model, please check the provided files");
-                console.error("Cause: " + error.message);
-                console.error();
-                ready(error.message);
-                return;
-            }
-            throw error;
-        }
-
         InteractionModel.fromFiles(this.intentSchemaFile, this.sampleUtterancesFile, function(model: InteractionModel, error: string) {
             if (error !== undefined && error !== null) {
                 ready(error);
@@ -148,6 +129,8 @@ export class BSTAlexa {
             if (this._alexa.context().audioPlayerEnabled()) {
                 this._alexa.context().audioPlayer().on(eventType, callback);
             }
+        } else if (eventType === BSTAlexaEvents.Response) {
+            this._alexa.on(AlexaEvent.SkillResponse, callback);
         } else {
             throw Error("No event type: " + eventType + " is defined");
         }
@@ -176,6 +159,8 @@ export class BSTAlexa {
             if (this._alexa.context().audioPlayerEnabled()) {
                 this._alexa.context().audioPlayer().once(eventType, callback);
             }
+        } else if (eventType === BSTAlexaEvents.Response) {
+            this._alexa.once(AlexaEvent.SkillResponse, callback);
         } else {
             throw Error("No event type: " + eventType + " is defined");
         }
@@ -203,17 +188,11 @@ export class BSTAlexa {
      * @returns Itself
      */
     public spoken(phrase: string, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
-        let request: any;
-        this.virtualAlexa.filter((generatedRequest) => { request = generatedRequest; });
-
-        this.virtualAlexa.utter(phrase).then((payload) => {
+        this._alexa.spoken(phrase, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
-                    callback(null, payload, request);
+                callback(error, response, request);
             }
-        }).catch(error => {
-            callback(error, null, request);
         });
-
         return this;
     }
 
@@ -225,17 +204,11 @@ export class BSTAlexa {
      * @returns Itself
      */
     public intended(intentName: string, slots?: {[id: string]: string}, callback?: (error: any, response: any, request: any) => void): BSTAlexa {
-        let request: any;
-        this.virtualAlexa.filter((generatedRequest) => { request = generatedRequest; });
-
-        this.virtualAlexa.intend(intentName, slots).then((payload) => {
+        this._alexa.intended(intentName, slots, function (error: any, response: any, request: any) {
             if (callback !== undefined && callback !== null) {
-                callback(null, payload, request);
+                callback(error, response, request);
             }
-        }).catch(error => {
-            callback(error, null, request);
         });
-
         return this;
     }
 
@@ -245,14 +218,7 @@ export class BSTAlexa {
      * @returns Itself
      */
     public launched(callback?: (error: any, response: any, request: any) => void): BSTAlexa {
-        let request: any;
-        this.virtualAlexa.filter((generatedRequest) => { request = generatedRequest; });
-
-        this.virtualAlexa.launch().then(payload => {
-                callback(null, payload, request);
-        }).catch(error => {
-            callback(error, null, request);
-        });
+        this._alexa.launched(callback);
         return this;
     }
 

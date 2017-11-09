@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTAlexa} from "../lib/client/bst-alexa";
+import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
 
 program.version(Global.version());
 
@@ -14,7 +14,7 @@ program
     .option("-U, --userId <user-id>", "Sets the user id to the specified value")
     .option("-t, --accessToken <accessToken>", "Sets the access token for emulating a user with a linked account")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
-    .action(function () {
+    .action( function () {
         // To handle utterances with multiple words, we need to look at the args
         let utterance: string = "";
         for (let i = 0; i < program.args.length; i++ ) {
@@ -52,39 +52,39 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        const speaker = new BSTVirtualAlexa(url, intentSchemaPath, samplesPath, applicationID);
 
-        speaker.start(function (error: string) {
-            if (error !== undefined) {
-                process.exit(0);
-                return;
-            }
+        try {
+            speaker.start();
+        } catch (error) {
+            process.exit(0);
+            return;
+        }
 
-            if (options.userId) {
-                speaker.context().setUserID(options.userId);
-            }
+        if (options.userId) {
+            speaker.context().user().setID(options.userId);
+        }
 
-            if (options.accessToken) {
-                speaker.context().setAccessToken(options.accessToken);
-            }
+        if (options.accessToken) {
+            speaker.context().setAccessToken(options.accessToken);
+        }
 
-            speaker.spoken(utterance, function(error: any, response: any, request: any) {
-                if (error) {
-                    console.log("Spoke: " + utterance);
-                    console.log("");
-                    console.log("Error: " + error.message);
-                    return;
-                }
-                let jsonPretty = JSON.stringify(response, null, 4);
+        speaker.spoken(utterance, function(error: any, response: any, request: any) {
+            if (error) {
                 console.log("Spoke: " + utterance);
                 console.log("");
-                console.log("Request:");
-                console.log(JSON.stringify(request, null, 4));
-                console.log("");
-                console.log("Response:");
-                console.log(jsonPretty);
-                console.log("");
-            });
+                console.log("Error: " + error.message);
+                return;
+            }
+            let jsonPretty = JSON.stringify(response, null, 4);
+            console.log("Spoke: " + utterance);
+            console.log("");
+            console.log("Request:");
+            console.log(JSON.stringify(request, null, 4));
+            console.log("");
+            console.log("Response:");
+            console.log(jsonPretty);
+            console.log("");
         });
     });
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTAlexa} from "../lib/client/bst-alexa";
+import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
 
 program.version(Global.version());
 
@@ -58,45 +58,45 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        let speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
-        speaker.start(function (error: string) {
-            if (error !== undefined) {
-                process.exit(0);
-                return;
-            }
+        const speaker = new BSTVirtualAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        try {
+            speaker.start();
+        } catch (error) {
+            process.exit(0);
+            return;
+        }
 
-            if (options.userId) {
-                speaker.context().setUserID(options.userId);
-            }
+        if (options.userId) {
+            speaker.context().user().setID(options.userId);
+        }
 
-            if (options.accessToken) {
-                speaker.context().setAccessToken(options.accessToken);
-            }
+        if (options.accessToken) {
+            speaker.context().setAccessToken(options.accessToken);
+        }
 
-            try {
-                speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
-                    if (error) {
-                        console.log("Intended: " + intentName);
-                        console.log("");
-                        console.log("Error: " + error.message);
-                        return;
-                    }
-                    let jsonPretty = JSON.stringify(response, null, 4);
+        try {
+            speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
+                if (error) {
                     console.log("Intended: " + intentName);
                     console.log("");
-                    console.log("Request:");
-                    console.log(JSON.stringify(request, null, 4));
-                    console.log("");
-                    console.log("Response:");
-                    console.log(jsonPretty);
-                    console.log("");
-                });
-            } catch (e) {
-                console.error("Error with intent:");
-                console.error(e.message);
-                console.error();
-            }
-        });
+                    console.log("Error: " + error.message);
+                    return;
+                }
+                let jsonPretty = JSON.stringify(response, null, 4);
+                console.log("Intended: " + intentName);
+                console.log("");
+                console.log("Request:");
+                console.log(JSON.stringify(request, null, 4));
+                console.log("");
+                console.log("Response:");
+                console.log(jsonPretty);
+                console.log("");
+            });
+        } catch (e) {
+            console.error("Error with intent:");
+            console.error(e.message);
+            console.error();
+        }
     });
 
 // Forces help to be printed
