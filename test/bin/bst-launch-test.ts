@@ -110,7 +110,7 @@ describe("bst-launch", function() {
         it("Generates a launch request with Application ID", function(done) {
             process.argv = command("node bst-launch.js --appId 1234567890");
             mockery.registerMock("../lib/client/bst-virtual-alexa", {
-                BSTVirtualAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
                     this.start = function () {};
                     this.launched = function (callback: any) {};
@@ -124,7 +124,7 @@ describe("bst-launch", function() {
         it("Generates a launch request With Application ID Succinct Syntax", function(done) {
             process.argv = command("node bst-launch.js Hello -a 1234567890");
             mockery.registerMock("../lib/client/bst-virtual-alexa", {
-                BSTVirtualAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
                     this.start = function () {};
                     this.launched = function (callback: any) {};
@@ -139,7 +139,7 @@ describe("bst-launch", function() {
         it("Generates a launch request With access token", function(done) {
             process.argv = command("node bst-launch.js -a 1234567890 -t AccessToken");
             mockery.registerMock("../lib/client/bst-virtual-alexa", {
-                BSTVirtualAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
                     assert.equal(commander.accessToken, "AccessToken");
                     this.start = function () {};
@@ -161,7 +161,7 @@ describe("bst-launch", function() {
         it("Generates a launch request With user id", function(done) {
             process.argv = command("node bst-launch.js --userId 123456");
             mockery.registerMock("../lib/client/bst-virtual-alexa", {
-                BSTVirtualAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
                     assert.equal(commander.userId, "123456");
                     this.start = function () {};
@@ -188,7 +188,7 @@ describe("bst-launch", function() {
         it("Generates a launch request With user id abbreviated", function(done) {
             process.argv = command("node bst-utter.js -U 123456");
             mockery.registerMock("../lib/client/bst-virtual-alexa", {
-                BSTVirtualAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
                     assert.equal(commander.userId, "123456");
                     this.start = function () {};

@@ -91,7 +91,7 @@ describe("BSTVirtualAlexa", async function() {
                 "speechAssets/SampleUtterances.txt");
             speak.start();
             assert(true, "Start processed without exceptions");
-            process.chdir("../..");
+            process.chdir("../../..");
         });
 
         it("Start with defaults (intent schema and sample utterances)", function () {
