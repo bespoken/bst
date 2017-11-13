@@ -8,7 +8,7 @@ program.version(Global.version());
 program
     .usage("[options] <Intent> [SlotName=SlotValue...]")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to send to - defaults to current proxied skill")
-    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./speechAssets/InteractionModel.json")
+    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./models/en-US.json")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")

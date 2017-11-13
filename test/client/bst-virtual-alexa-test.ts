@@ -121,7 +121,7 @@ describe("BSTVirtualAlexa", async function() {
 
         it("Initializes with specified files", function () {
             const speak = new BSTVirtualAlexa("http://localhost:9000",
-                "test/resources/interactionModel/speechAssets/InteractionModel.json");
+                "test/resources/interactionModel/models/en-US.json");
             speak.start();
             assert(true, "Start processed without exceptions");
         });

@@ -9,7 +9,7 @@ import * as fs from "fs";
 export class BSTVirtualAlexa {
     public static DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
     public static DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";
-    public static DefaultInteractionModelLocation = "speechAssets/InteractionModel.json";
+    public static DefaultInteractionModelLocation = "models/en-US.json";
 
     private virtualAlexa: VirtualAlexa = null;
     private interactionModelProvided: boolean = false;
@@ -36,8 +36,8 @@ export class BSTVirtualAlexa {
                        private sampleUtterancesFile?: string,
                        private applicationID?: string) {
         if ((intentSchemaFile || sampleUtterancesFile) && interactionModel) {
-            console.error("Interaction Model and Intent Schema Files shouldn't be sent together. Chose one of those");
-            throw new Error("Interaction Model and Intent Schema Files shouldn't be sent together.");
+            console.error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
+            throw new Error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
         }
 
         if (!this.interactionModel) {
