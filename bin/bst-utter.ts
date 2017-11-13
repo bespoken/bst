@@ -8,6 +8,7 @@ program.version(Global.version());
 program
     .usage("[options] <utterance>")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
+    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./speechAssets/InteractionModel.json")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")
@@ -31,7 +32,8 @@ program
 
         // Just by casting program to options, we can get all the options which are set on it
         const options: any = program;
-        let url = options.url;
+        const url = options.url;
+        const interactionModel = options.model;
         const intentSchemaPath = options.intents;
         const samplesPath = options.samples;
         const applicationID = options.appId;
@@ -52,7 +54,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTVirtualAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID);
 
         try {
             speaker.start();
@@ -76,7 +78,7 @@ program
                 console.log("Error: " + error.message);
                 return;
             }
-            let jsonPretty = JSON.stringify(response, null, 4);
+            const jsonPretty = JSON.stringify(response, null, 4);
             console.log("Spoke: " + utterance);
             console.log("");
             console.log("Request:");

@@ -67,6 +67,7 @@ describe("BSTVirtualAlexa", async function() {
         describe("BSTAlexa Without Config", function() {
             it("#start()", function () {
                 const speak = new BSTVirtualAlexa("http://localhost:9000",
+                    null,
                     "test/resources/speechAssets/IntentSchema.json",
                     "test/resources/speechAssets/SampleUtterances.txt");
                 speak.start();
@@ -74,7 +75,7 @@ describe("BSTVirtualAlexa", async function() {
             });
         });
 
-        it("Start with defaults", function () {
+        it("Start with defaults (intent schema and sample utterances)", function () {
             process.chdir("test/resources");
             const speak = new BSTVirtualAlexa("http://localhost:9000");
             speak.start();
@@ -82,10 +83,45 @@ describe("BSTVirtualAlexa", async function() {
             process.chdir("../..");
         });
 
+        it("Use provided models even when default is present in folder", function () {
+            process.chdir("test/resources/allSpeechModels");
+            const speak = new BSTVirtualAlexa("http://localhost:9000",
+                null,
+                "speechAssets/IntentSchema.json",
+                "speechAssets/SampleUtterances.txt");
+            speak.start();
+            assert(true, "Start processed without exceptions");
+            process.chdir("../..");
+        });
+
+        it("Start with defaults (intent schema and sample utterances)", function () {
+            process.chdir("test/resources");
+            const speak = new BSTVirtualAlexa("http://localhost:9000");
+            speak.start();
+            assert(true, "Start processed without exceptions");
+            process.chdir("../..");
+        });
+
+        it("Start with defaults (interaction model)", function () {
+            process.chdir("test/resources/interactionModel");
+            const speak = new BSTVirtualAlexa("http://localhost:9000");
+            speak.start();
+            assert(true, "Start processed without exceptions");
+            process.chdir("../../..");
+        });
+
         it("Initializes with specified files", function () {
             const speak = new BSTVirtualAlexa("http://localhost:9000",
+                null,
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
+            speak.start();
+            assert(true, "Start processed without exceptions");
+        });
+
+        it("Initializes with specified files", function () {
+            const speak = new BSTVirtualAlexa("http://localhost:9000",
+                "test/resources/interactionModel/speechAssets/InteractionModel.json");
             speak.start();
             assert(true, "Start processed without exceptions");
         });
@@ -93,6 +129,7 @@ describe("BSTVirtualAlexa", async function() {
         it("Initializes with application ID", function () {
             this.timeout(5000);
             const speak = new BSTVirtualAlexa("http://localhost:9000",
+                null,
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt",
                 "1234567890J");
@@ -103,6 +140,7 @@ describe("BSTVirtualAlexa", async function() {
         it("Initializing after setting the application ID initialize with application ID", function () {
             this.timeout(5000);
             const speak = new BSTVirtualAlexa("http://localhost:9000",
+                null,
                 "test/resources/speechAssets/IntentSchema.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
             speak.start();
@@ -110,7 +148,7 @@ describe("BSTVirtualAlexa", async function() {
             assert(speak.context().applicationID(), "1234567890J");
         });
 
-        it("Initializes with error", function (done) {
+        it("Initializes with error (Intent Schema provided not present)", function (done) {
             let errorReceived = false;
             sandbox.stub(console, "error", function(data: Buffer) {
                 if (!errorReceived && data.toString().startsWith("Error loading")) {
@@ -119,13 +157,34 @@ describe("BSTVirtualAlexa", async function() {
             });
 
             const speak = new BSTVirtualAlexa("http://localhost:9000",
+                null,
                 "test/resources/speechAssets/Intent.json",
                 "test/resources/speechAssets/SampleUtterances.txt");
             try {
                 speak.start();
             } catch (error) {
                 assert(error);
-                assert.equal(error.message, "ENOENT: no such file or directory, open 'test/resources/speechAssets/Intent.json'");
+                assert.equal(error.message, "Error loading Intent Schema, file not found");
+                assert(errorReceived);
+                done();
+            }
+        });
+
+        it("Initializes with error (Interaction Model provided not present)", function (done) {
+            let errorReceived = false;
+            sandbox.stub(console, "error", function(data: Buffer) {
+                if (!errorReceived && data.toString().startsWith("Error loading")) {
+                    errorReceived = true;
+                }
+            });
+
+            const speak = new BSTVirtualAlexa("http://localhost:9000",
+                "test/resources/speechAssets/Intent.json");
+            try {
+                speak.start();
+            } catch (error) {
+                assert(error);
+                assert.equal(error.message, "Error loading Interaction Model, file not found");
                 assert(errorReceived);
                 done();
             }

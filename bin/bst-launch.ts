@@ -15,7 +15,7 @@ program
     .action(function () {
         // Just by casting program to options, we can get all the options which are set on it
         const options: any = program;
-        let url = options.url;
+        const url = options.url;
         const applicationID = options.appId;
 
         if (process.argv.some( arg => arg === "-h" || arg === "--help")) {
@@ -40,7 +40,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTVirtualAlexa(url, null, null, applicationID);
+        const speaker = new BSTVirtualAlexa(url, null, null, null, applicationID);
         try {
             speaker.start();
         } catch (error) {
@@ -62,7 +62,7 @@ program
                 return;
             }
 
-            let jsonPretty = JSON.stringify(response, null, 4);
+            const jsonPretty = JSON.stringify(response, null, 4);
             console.log("Request:");
             console.log(JSON.stringify(request, null, 4));
             console.log("");

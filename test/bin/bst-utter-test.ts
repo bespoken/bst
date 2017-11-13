@@ -245,7 +245,7 @@ describe("bst-utter", function() {
 
             let messageReceived = false;
             sandbox.stub(console, "error", function(message: string) {
-                if (message !== undefined && message.indexOf("Cause: ") !== -1) {
+                if (message !== undefined && message.indexOf("Error loading Interaction model") !== -1) {
                     messageReceived = true;
                 }
             });

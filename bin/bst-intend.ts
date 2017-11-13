@@ -8,6 +8,7 @@ program.version(Global.version());
 program
     .usage("[options] <Intent> [SlotName=SlotValue...]")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to send to - defaults to current proxied skill")
+    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./speechAssets/InteractionModel.json")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")
@@ -16,10 +17,10 @@ program
     .description("Creates an intent request based on the specified intent and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
-        let intentName = program.args[0];
-        let slots: {[id: string]: string} = {};
+        const intentName = program.args[0];
+        const slots: {[id: string]: string} = {};
         for (let i = 1; i < program.args.length; i++ ) {
-            let slotArg = program.args[i];
+            const slotArg = program.args[i];
             if (typeof slotArg !== "string") {
                 continue;
             }
@@ -31,20 +32,21 @@ program
                 return;
             }
 
-            let slotName = slotArg.split("=")[0];
-            let slotValue = slotArg.split("=")[1];
+            const slotName = slotArg.split("=")[0];
+            const slotValue = slotArg.split("=")[1];
             slots[slotName] = slotValue;
         }
 
         // Just by casting program to options, we can get all the options which are set on it
-        let options: any = program;
-        let url = options.url;
-        let intentSchemaPath = options.intents;
-        let samplesPath = options.samples;
-        let applicationID = options.appId;
+        const options: any = program;
+        const url = options.url;
+        const interactionModel = options.model;
+        const intentSchemaPath = options.intents;
+        const samplesPath = options.samples;
+        const applicationID = options.appId;
 
         if (options.url === undefined) {
-            let proxyProcess = Global.running();
+            const proxyProcess = Global.running();
             if (proxyProcess === null) {
                 console.log("No URL specified and no proxy is currently running");
                 console.log("");
@@ -58,7 +60,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTVirtualAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID);
         try {
             speaker.start();
         } catch (error) {
@@ -82,7 +84,7 @@ program
                     console.log("Error: " + error.message);
                     return;
                 }
-                let jsonPretty = JSON.stringify(response, null, 4);
+                const jsonPretty = JSON.stringify(response, null, 4);
                 console.log("Intended: " + intentName);
                 console.log("");
                 console.log("Request:");
