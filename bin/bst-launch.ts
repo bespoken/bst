@@ -15,7 +15,7 @@ program
     .action(function () {
         // Just by casting program to options, we can get all the options which are set on it
         const options: any = program;
-        const url = options.url;
+        let url = options.url;
         const applicationID = options.appId;
 
         if (process.argv.some( arg => arg === "-h" || arg === "--help")) {

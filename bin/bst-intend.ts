@@ -39,7 +39,7 @@ program
 
         // Just by casting program to options, we can get all the options which are set on it
         const options: any = program;
-        const url = options.url;
+        let url = options.url;
         const interactionModel = options.model;
         const intentSchemaPath = options.intents;
         const samplesPath = options.samples;
