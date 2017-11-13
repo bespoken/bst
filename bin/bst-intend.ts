@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTAlexa} from "../lib/client/bst-alexa";
+import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
 
 program.version(Global.version());
 
 program
     .usage("[options] <Intent> [SlotName=SlotValue...]")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to send to - defaults to current proxied skill")
+    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./models/en-US.json")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")
@@ -16,10 +17,10 @@ program
     .description("Creates an intent request based on the specified intent and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
-        let intentName = program.args[0];
-        let slots: {[id: string]: string} = {};
+        const intentName = program.args[0];
+        const slots: {[id: string]: string} = {};
         for (let i = 1; i < program.args.length; i++ ) {
-            let slotArg = program.args[i];
+            const slotArg = program.args[i];
             if (typeof slotArg !== "string") {
                 continue;
             }
@@ -31,20 +32,21 @@ program
                 return;
             }
 
-            let slotName = slotArg.split("=")[0];
-            let slotValue = slotArg.split("=")[1];
+            const slotName = slotArg.split("=")[0];
+            const slotValue = slotArg.split("=")[1];
             slots[slotName] = slotValue;
         }
 
         // Just by casting program to options, we can get all the options which are set on it
-        let options: any = program;
+        const options: any = program;
         let url = options.url;
-        let intentSchemaPath = options.intents;
-        let samplesPath = options.samples;
-        let applicationID = options.appId;
+        const interactionModel = options.model;
+        const intentSchemaPath = options.intents;
+        const samplesPath = options.samples;
+        const applicationID = options.appId;
 
         if (options.url === undefined) {
-            let proxyProcess = Global.running();
+            const proxyProcess = Global.running();
             if (proxyProcess === null) {
                 console.log("No URL specified and no proxy is currently running");
                 console.log("");
@@ -58,45 +60,45 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        let speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
-        speaker.start(function (error: string) {
-            if (error !== undefined) {
-                process.exit(0);
-                return;
-            }
+        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID);
+        try {
+            speaker.start();
+        } catch (error) {
+            process.exit(0);
+            return;
+        }
 
-            if (options.userId) {
-                speaker.context().setUserID(options.userId);
-            }
+        if (options.userId) {
+            speaker.context().user().setID(options.userId);
+        }
 
-            if (options.accessToken) {
-                speaker.context().setAccessToken(options.accessToken);
-            }
+        if (options.accessToken) {
+            speaker.context().setAccessToken(options.accessToken);
+        }
 
-            try {
-                speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
-                    if (error) {
-                        console.log("Intended: " + intentName);
-                        console.log("");
-                        console.log("Error: " + error.message);
-                        return;
-                    }
-                    let jsonPretty = JSON.stringify(response, null, 4);
+        try {
+            speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
+                if (error) {
                     console.log("Intended: " + intentName);
                     console.log("");
-                    console.log("Request:");
-                    console.log(JSON.stringify(request, null, 4));
-                    console.log("");
-                    console.log("Response:");
-                    console.log(jsonPretty);
-                    console.log("");
-                });
-            } catch (e) {
-                console.error("Error with intent:");
-                console.error(e.message);
-                console.error();
-            }
-        });
+                    console.log("Error: " + error.message);
+                    return;
+                }
+                const jsonPretty = JSON.stringify(response, null, 4);
+                console.log("Intended: " + intentName);
+                console.log("");
+                console.log("Request:");
+                console.log(JSON.stringify(request, null, 4));
+                console.log("");
+                console.log("Response:");
+                console.log(jsonPretty);
+                console.log("");
+            });
+        } catch (e) {
+            console.error("Error with intent:");
+            console.error(e.message);
+            console.error();
+        }
     });
 
 // Forces help to be printed

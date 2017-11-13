@@ -1,20 +1,21 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTAlexa} from "../lib/client/bst-alexa";
+import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
 
 program.version(Global.version());
 
 program
     .usage("[options] <utterance>")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
+    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./models/en-US.json")
     .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
     .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")
     .option("-U, --userId <user-id>", "Sets the user id to the specified value")
     .option("-t, --accessToken <accessToken>", "Sets the access token for emulating a user with a linked account")
     .description("Creates an intent request based on the specified utterance and sends it to your skill")
-    .action(function () {
+    .action( function () {
         // To handle utterances with multiple words, we need to look at the args
         let utterance: string = "";
         for (let i = 0; i < program.args.length; i++ ) {
@@ -32,6 +33,7 @@ program
         // Just by casting program to options, we can get all the options which are set on it
         const options: any = program;
         let url = options.url;
+        const interactionModel = options.model;
         const intentSchemaPath = options.intents;
         const samplesPath = options.samples;
         const applicationID = options.appId;
@@ -52,39 +54,39 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTAlexa(url, intentSchemaPath, samplesPath, applicationID);
+        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID);
 
-        speaker.start(function (error: string) {
-            if (error !== undefined) {
-                process.exit(0);
-                return;
-            }
+        try {
+            speaker.start();
+        } catch (error) {
+            process.exit(0);
+            return;
+        }
 
-            if (options.userId) {
-                speaker.context().setUserID(options.userId);
-            }
+        if (options.userId) {
+            speaker.context().user().setID(options.userId);
+        }
 
-            if (options.accessToken) {
-                speaker.context().setAccessToken(options.accessToken);
-            }
+        if (options.accessToken) {
+            speaker.context().setAccessToken(options.accessToken);
+        }
 
-            speaker.spoken(utterance, function(error: any, response: any, request: any) {
-                if (error) {
-                    console.log("Spoke: " + utterance);
-                    console.log("");
-                    console.log("Error: " + error.message);
-                    return;
-                }
-                let jsonPretty = JSON.stringify(response, null, 4);
+        speaker.spoken(utterance, function(error: any, response: any, request: any) {
+            if (error) {
                 console.log("Spoke: " + utterance);
                 console.log("");
-                console.log("Request:");
-                console.log(JSON.stringify(request, null, 4));
-                console.log("");
-                console.log("Response:");
-                console.log(jsonPretty);
-                console.log("");
-            });
+                console.log("Error: " + error.message);
+                return;
+            }
+            const jsonPretty = JSON.stringify(response, null, 4);
+            console.log("Spoke: " + utterance);
+            console.log("");
+            console.log("Request:");
+            console.log(JSON.stringify(request, null, 4));
+            console.log("");
+            console.log("Response:");
+            console.log(jsonPretty);
+            console.log("");
         });
     });
 

@@ -5,13 +5,13 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import {SinonSandbox} from "sinon";
 
-let globalModule = {
+const globalModule = {
     Global: {
         initializeCLI: async function () {
 
         },
         running : function() {
-            let p = new BSTProcess();
+            const p = new BSTProcess();
             p.port = 9999;
             return p;
         },
@@ -21,21 +21,20 @@ let globalModule = {
         }
     }
 };
-let BSTAlexa: any;
+let BSTVirtualAlexa: any;
 let sandbox: SinonSandbox = null;
 
 describe("bst-intend", function() {
     beforeEach(function () {
-         BSTAlexa = function () {
-            this.start = function (ready: Function) {
-                ready();
+        BSTVirtualAlexa = function () {
+            this.start = function () {
             };
         };
 
         mockery.enable({ useCleanCache: true, warnOnReplace: false, warnOnUnregistered: false });
         mockery.registerMock("../lib/core/global", globalModule);
-        mockery.registerMock("../lib/client/bst-alexa", {
-            BSTAlexa: BSTAlexa
+        mockery.registerMock("../lib/client/bst-virtual-alexa", {
+            BSTVirtualAlexa: BSTVirtualAlexa
         });
 
         sandbox = sinon.sandbox.create();
@@ -51,7 +50,7 @@ describe("bst-intend", function() {
         it("Intend Simple", function(done) {
             process.argv = command("node bst-intend.js HelloIntent");
 
-            BSTAlexa.prototype.intended = function (intentName: string, slots: any, callback: Function) {
+            BSTVirtualAlexa.prototype.intended = function (intentName: string, slots: any, callback: Function) {
                 assert.equal(intentName, "HelloIntent");
                 callback(null, "Response: Here is a response");
             };
@@ -67,7 +66,7 @@ describe("bst-intend", function() {
 
         it("Intend No Match", function(done) {
             process.argv = command("node bst-intend.js Hello");
-            BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
+            BSTVirtualAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
                 throw Error("No intent matching: " + intent);
             };
 
@@ -82,7 +81,7 @@ describe("bst-intend", function() {
 
         it("Intend With Slot", function(done) {
             process.argv = command("node bst-intend.js Hello Test=Test1");
-            BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
+            BSTVirtualAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
                 assert.equal(slots["Test"], "Test1");
                 done();
             };
@@ -109,7 +108,7 @@ describe("bst-intend", function() {
 
         it("Intend With Multiple Slots", function(done) {
             process.argv = command("node bst-intend.js Hello Test=Test1 Test2=TestValue");
-            BSTAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
+            BSTVirtualAlexa.prototype.intended = function (intent: string, slots: any, callback: Function) {
                 assert.equal(slots["Test"], "Test1");
                 assert.equal(slots["Test2"], "TestValue");
                 done();
@@ -118,10 +117,10 @@ describe("bst-intend", function() {
             NodeUtil.load("../../bin/bst-intend.js");
         });
 
-        it("Intends With Application ID", function(done) {
+        it("Intends With Application ID long version", function(done) {
             process.argv = command("node bst-intend.js HelloIntent --appId 1234567890");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
                     this.start = function () {};
                     done();
@@ -131,10 +130,10 @@ describe("bst-intend", function() {
             NodeUtil.load("../../bin/bst-intend.js");
         });
 
-        it("Intends With Application ID", function(done) {
+        it("Intends With Application ID short version", function(done) {
             process.argv = command("node bst-intend.js HelloIntent -a 1234567890");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     assert.equal(applicationID, "1234567890");
                     this.start = function () {};
                     done();
@@ -146,11 +145,18 @@ describe("bst-intend", function() {
 
         it("Intends With access token", function(done) {
             process.argv = command("node bst-intend.js Hello -a 1234567890 -t AccessToken");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
                     assert.equal(commander.accessToken, "AccessToken");
                     this.start = function () {};
+                    this.context = function() {
+                        return {
+                            setAccessToken: function (token: string) {
+                                assert.equal(token, "AccessToken");
+                            }
+                        };
+                    };
                     done();
                 }
             });
@@ -161,11 +167,23 @@ describe("bst-intend", function() {
 
         it("Intends With user id", function(done) {
             process.argv = command("node bst-intend.js Hello --userId 1234");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (skillURL: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string) {
                     const commander = require("commander");
                     assert.equal(commander.userId, "1234");
                     this.start = function () {};
+                    this.context = function() {
+                        return {
+                            user: function () {
+                                return {
+                                    setID: function (userId: string) {
+                                        assert.equal(userId, "1234");
+                                    }
+
+                                };
+                            }
+                        };
+                    };
                     done();
                 }
             });
@@ -176,16 +194,12 @@ describe("bst-intend", function() {
 
         it("Speaks With Custom URL", function(done) {
             process.argv = command("node bst-intend.js HelloIntent --url https://proxy.bespoken.tools");
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function (url: string) {
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (url: string) {
                     this.url = url;
-                    this.start = function(ready: Function) {
-                        assert.equal(this.url, "https://proxy.bespoken.tools");
-                        ready();
-                        done();
-                    };
-
-                    this.spoken = function (utterance: string, callback: any) {};
+                    this.start = function() {};
+                    assert.equal(this.url, "https://proxy.bespoken.tools");
+                    done();
                 }
             });
 
@@ -195,11 +209,11 @@ describe("bst-intend", function() {
         it("Has no interaction model", function(done) {
             process.argv = command("node bst-intend.js HelloIntend");
 
-            mockery.registerMock("../lib/client/bst-alexa", {
-                BSTAlexa: function() {
-                    this.start = function (ready: Function) {
-                        ready("No interaction model found");
-                    };
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (url: string) {
+                    this.url = url;
+                    this.start = function () { throw new Error(); };
+                    assert.equal(this.url, "http://localhost:9999");
 
                     this.intended = function () {
                         assert(false);
@@ -240,6 +254,6 @@ describe("bst-intend", function() {
     });
 });
 
-let command = function (command: string): Array<string> {
+const command = function (command: string): Array<string> {
     return command.split(" ");
 };
