@@ -29,7 +29,7 @@ The intend command will return the full request and response of the interaction 
 By default, the system will:
 
 * Use the Interaction Model in the models folder under the current working directory
-* If there's no Interaction Model, use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
+* If there's no Interaction Model, it will use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
 * Use the service currently running via the `bst proxy` command
 
 If no service is currently running via bst proxy, and HTTP endpoint can be specified with the `--url` option:
@@ -44,13 +44,12 @@ By default, we look for:
 
 * `./models/en-US.json`
 
-Example:
+"Example With Alternative Locale:"
+
 ```
-$ bst intend HelloIntent -m model/en-UK.json
+$ bst intend HelloIntent -m models/en-UK.json
 ```
 
-The format of these files is the same as they are entered in the Alexa Skill configuration.
-
-The Interaction Model is a JSON file.
+These files are JSON, and typically defined by the ASK CLI tool from Amazon.
 
 An example of these file can be found [here](https://github.com/alexa/skill-sample-nodejs-fact/blob/en-US/models/en-US.json).

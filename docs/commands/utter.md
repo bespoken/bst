@@ -29,7 +29,7 @@ The utter command will return the full request and response of the interaction w
 By default, the system will:
 
 * Use the Interaction Model in the models folder under the current working directory
-* If there's no Interaction Model, use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
+* If there's no Interaction Model, it will use the Intent Model and Sample Utterances in the speechAssets folder under the current working directory
 * Use the service currently running via the `bst proxy` command
 
 If no service is currently running via bst proxy, and HTTP endpoint can be specified with the `--url` option:
@@ -44,19 +44,18 @@ By default, we look for:
 
 * `./models/en-US.json`
 
-Example:
+"Example With Alternative Locale:"
 ```
 $ bst utter Hello World -m models/en-UK.json
 ```
 
-The format of these file is the same as the one entered in the Alexa Skill configuration.
+These files are JSON, and typically defined by the ASK CLI tool from Amazon.
 
-The Interaction Model is a JSON file.
 An example of these file can be found [here](https://github.com/alexa/skill-sample-nodejs-fact/blob/en-US/models/en-US.json).
 
 ## Working With Slots
 
-Slot handling is transparent, we check your defined slots and samples and extract them. To send an utterance that uses slots, just write the utterance following one of your samples formats.
+Slot handling is automatic - we check for defined slots and samples and extract them. To send an utterance that uses slots, just write it as you would say it.
 
 For example, if the sample utterance was defined as:
 ```
