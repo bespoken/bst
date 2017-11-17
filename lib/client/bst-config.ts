@@ -55,13 +55,13 @@ export class BSTConfig {
         this.commit();
     }
 
-    public updateSilentEchoToken(silentEchoToken: string): void {
-        this.configuration.silentEchoToken = silentEchoToken;
+    public updateVirtualDeviceToken(virtualDeviceToken: string): void {
+        this.configuration.virtualDeviceToken = virtualDeviceToken;
         this.commit();
     }
 
-    public silentEchoToken(): string {
-        return this.configuration.silentEchoToken;
+    public virtualDeviceToken(): string {
+        return this.configuration.virtualDeviceToken;
     }
 
     public commit() {
