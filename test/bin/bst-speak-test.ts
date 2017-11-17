@@ -47,8 +47,8 @@ describe("bst-speak", function() {
         it("Send message without token warning", function() {
             return new Promise((resolve, reject) => {
                 process.argv = command("node bst-speak.js Hello");
-                mockery.registerMock("../lib/external/silent-echo", {
-                    SilentEchoClient: {
+                mockery.registerMock("../lib/external/virtual-device", {
+                    VirtualDeviceClient: {
                         speak: function() {
                             return {
                                 transcript: "Response"
@@ -88,8 +88,8 @@ describe("bst-speak", function() {
             return new Promise((resolve, reject) => {
                 let tokenErrorWasPrinted = false;
                 process.argv = command("node bst-speak.js Hello");
-                mockery.registerMock("../lib/external/silent-echo", {
-                    SilentEchoClient: {
+                mockery.registerMock("../lib/external/virtual-device", {
+                    VirtualDeviceClient: {
                         speak: function() {
                             throw new Error("Token Required");
                         },
@@ -123,8 +123,8 @@ describe("bst-speak", function() {
             return new Promise((resolve, reject) => {
 
                 process.argv = command("node bst-speak.js --token Token Hello");
-                mockery.registerMock("../lib/external/silent-echo", {
-                    SilentEchoClient: {
+                mockery.registerMock("../lib/external/virtual-device", {
+                    VirtualDeviceClient: {
                         speak: function() {
                             return {
                                 transcript: "Response"

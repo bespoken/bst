@@ -1,25 +1,25 @@
-import {ISilentResult, SilentEcho} from "silent-echo-sdk";
+import {IVirtualDeviceResult, VirtualDevice} from "virtual-device-sdk";
 import {Global} from "../core/global";
 
-export class SilentEchoClient {
-    public static speak(utterance: string, token?: string): Promise<ISilentResult> {
+export class VirtualDeviceClient {
+    public static speak(utterance: string, token?: string): Promise<IVirtualDeviceResult> {
         if (token) {
             if (Global.config()) {
-                Global.config().updateSilentEchoToken(token);
+                Global.config().updateVirtualDeviceToken(token);
             }
         }
 
-        const tokenToUse = token ? token : Global.config().silentEchoToken();
+        const tokenToUse = token ? token : Global.config().virtualDeviceToken();
 
         if (!tokenToUse) {
             throw new Error("Token Required");
         }
 
-        const silentEcho = new SilentEcho(tokenToUse);
-        return silentEcho.message(utterance);
+        const virtualDevice = new VirtualDevice(tokenToUse);
+        return virtualDevice.message(utterance);
     }
 
-    public static renderResult(result: ISilentResult): string {
+    public static renderResult(result: IVirtualDeviceResult): string {
         let stringResult = "";
         if (result.transcript) {
             stringResult = "Transcript:\n";

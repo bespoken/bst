@@ -1,20 +1,20 @@
 import * as assert from "assert";
 import * as mockery from "mockery";
 import * as sinon from "sinon";
-import {SilentEchoClient} from "../../lib/external/silent-echo";
+import {VirtualDeviceClient} from "../../lib/external/virtual-device";
 
 let messageParam: string;
 let constructorToken: string;
-describe("SilentEchoClient", function() {
+describe("VirtualDeviceClient", function() {
     let sandbox: sinon.SinonSandbox = null;
 
     const globalModule = {
         Global: {
             config: function () {
                 return {
-                    updateSilentEchoToken: () => {
+                    updateVirtualDeviceToken: () => {
                     },
-                    silentEchoToken: () => {
+                    virtualDeviceToken: () => {
                     },
                 };
             },
@@ -38,10 +38,10 @@ describe("SilentEchoClient", function() {
 
     describe("Speak", function () {
         it("Throws error when no token provided", async function () {
-            const SilentEchoClient = require("../../lib/external/silent-echo").SilentEchoClient;
+            const VirtualDeviceClient = require("../../lib/external/virtual-device").VirtualDeviceClient;
 
             try {
-                await SilentEchoClient.speak("Hello world");
+                await VirtualDeviceClient.speak("Hello world");
             } catch (error) {
                 assert.equal(error.message, "Token Required");
             }
@@ -52,19 +52,19 @@ describe("SilentEchoClient", function() {
             const globalClone = Object.assign({}, globalModule);
             globalClone.Global.config = function () {
                 return {
-                    silentEchoToken: () => "Token",
-                    updateSilentEchoToken: () => {
+                    virtualDeviceToken: () => "Token",
+                    updateVirtualDeviceToken: () => {
                     },
                 };
             };
 
             mockery.registerMock("../core/global", globalClone);
-            mockery.registerMock("silent-echo-sdk", {
-                SilentEcho: SilentEcho,
+            mockery.registerMock("virtual-device-sdk", {
+                VirtualDevice: VirtualDevice,
             });
 
-            const SilentEchoClient = require("../../lib/external/silent-echo").SilentEchoClient;
-            await SilentEchoClient.speak("Hello world");
+            const VirtualDeviceClient = require("../../lib/external/virtual-device").VirtualDeviceClient;
+            await VirtualDeviceClient.speak("Hello world");
             assert.equal(constructorToken, "Token");
             assert.equal(messageParam, "Hello world");
         });
@@ -75,20 +75,20 @@ describe("SilentEchoClient", function() {
             const globalClone = Object.assign({}, globalModule);
             globalClone.Global.config = function () {
                 return {
-                    silentEchoToken: () => "Token",
-                    updateSilentEchoToken: (token?: string) => {
+                    virtualDeviceToken: () => "Token",
+                    updateVirtualDeviceToken: (token?: string) => {
                         savedToken = token;
                     },
                 };
             };
 
             mockery.registerMock("../core/global", globalClone);
-            mockery.registerMock("silent-echo-sdk", {
-                SilentEcho: SilentEcho,
+            mockery.registerMock("virtual-device-sdk", {
+                VirtualDevice: VirtualDevice,
             });
 
-            const SilentEchoClient = require("../../lib/external/silent-echo").SilentEchoClient;
-            await SilentEchoClient.speak("Hello world", "newToken");
+            const VirtualDeviceClient = require("../../lib/external/virtual-device").VirtualDeviceClient;
+            await VirtualDeviceClient.speak("Hello world", "newToken");
             assert.equal(savedToken, "newToken");
             assert.equal(constructorToken, "newToken");
             assert.equal(messageParam, "Hello world");
@@ -101,12 +101,12 @@ describe("SilentEchoClient", function() {
             };
 
             mockery.registerMock("../core/global", globalClone);
-            mockery.registerMock("silent-echo-sdk", {
-                SilentEcho: SilentEcho,
+            mockery.registerMock("virtual-device-sdk", {
+                VirtualDevice: VirtualDevice,
             });
 
-            const SilentEchoClient = require("../../lib/external/silent-echo").SilentEchoClient;
-            await SilentEchoClient.speak("Hello world", "newToken");
+            const VirtualDeviceClient = require("../../lib/external/virtual-device").VirtualDeviceClient;
+            await VirtualDeviceClient.speak("Hello world", "newToken");
             assert.equal(constructorToken, "newToken");
             assert.equal(messageParam, "Hello world");
         });
@@ -114,28 +114,28 @@ describe("SilentEchoClient", function() {
 
     describe("renderResult", function () {
         it("Renders Transcript correctly", function () {
-            const silentEchoResponse = {
+            const virtualDeviceResponse = {
                 transcript: "Transcript Text",
             } as any;
 
             let expectedRenderedResult = "Transcript:\nTranscript Text\n\n";
 
-            assert.equal(SilentEchoClient.renderResult(silentEchoResponse), expectedRenderedResult);
+            assert.equal(VirtualDeviceClient.renderResult(virtualDeviceResponse), expectedRenderedResult);
         });
 
         it("Renders Stream correctly", function () {
-            const silentEchoResponse = {
+            const virtualDeviceResponse = {
                 streamURL: "https://stream.url",
             } as any;
 
             let expectedRenderedResult = "Stream:\nhttps://stream.url\n\n";
 
-            assert.equal(SilentEchoClient.renderResult(silentEchoResponse), expectedRenderedResult);
+            assert.equal(VirtualDeviceClient.renderResult(virtualDeviceResponse), expectedRenderedResult);
 
         });
 
         describe("Renders Card correctly", function () {
-            const silentEchoResponse = {
+            const virtualDeviceResponse = {
                 card: {
                     mainTitle: "Title"
                 },
@@ -144,31 +144,31 @@ describe("SilentEchoClient", function() {
             let expectedRenderedResult = "Card:\nTitle\n";
 
             it("Renders Title", function () {
-                assert.equal(SilentEchoClient.renderResult(silentEchoResponse), expectedRenderedResult);
+                assert.equal(VirtualDeviceClient.renderResult(virtualDeviceResponse), expectedRenderedResult);
             });
 
             it("Renders SubTitle", function () {
-                silentEchoResponse.card.subTitle = "SubTitle";
+                virtualDeviceResponse.card.subTitle = "SubTitle";
                 expectedRenderedResult += "SubTitle\n";
-                assert.equal(SilentEchoClient.renderResult(silentEchoResponse), expectedRenderedResult);
+                assert.equal(VirtualDeviceClient.renderResult(virtualDeviceResponse), expectedRenderedResult);
             });
 
             it("Renders TextField", function () {
-                silentEchoResponse.card.textField = "TextField";
+                virtualDeviceResponse.card.textField = "TextField";
                 expectedRenderedResult += "TextField\n";
-                assert.equal(SilentEchoClient.renderResult(silentEchoResponse), expectedRenderedResult);
+                assert.equal(VirtualDeviceClient.renderResult(virtualDeviceResponse), expectedRenderedResult);
             });
 
             it("Renders ImageUrl", function () {
-                silentEchoResponse.card.imageURL = "http://image.url";
+                virtualDeviceResponse.card.imageURL = "http://image.url";
                 expectedRenderedResult += "http://image.url\n";
-                assert.equal(SilentEchoClient.renderResult(silentEchoResponse), expectedRenderedResult);
+                assert.equal(VirtualDeviceClient.renderResult(virtualDeviceResponse), expectedRenderedResult);
             });
         });
     });
 });
 
-class SilentEcho {
+class VirtualDevice {
     public constructor(token: string) {
         constructorToken = token;
     }
