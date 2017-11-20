@@ -14,6 +14,7 @@ program
     .option("-a, --appId <application-id>", "The application ID for the skill")
     .option("-U, --userId <user-id>", "Sets the user id to the specified value")
     .option("-t, --accessToken <accessToken>", "Sets the access token for emulating a user with a linked account")
+    .option("-n, --newSession", "Starts a new session")
     .description("Creates an intent request based on the specified intent and sends it to your skill")
     .action(function () {
         // To handle utterances with multiple words, we need to look at the args
@@ -44,6 +45,7 @@ program
         const intentSchemaPath = options.intents;
         const samplesPath = options.samples;
         const applicationID = options.appId;
+        const newSession = options.newSession;
 
         if (options.url === undefined) {
             const proxyProcess = Global.running();
@@ -61,6 +63,7 @@ program
         }
 
         const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID);
+
         try {
             speaker.start();
         } catch (error) {
@@ -77,10 +80,18 @@ program
         }
 
         try {
+            if (newSession) {
+                speaker.deleteSession();
+            }
+
             speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
                 if (error) {
                     console.log("Intended: " + intentName);
-                    console.log("");
+                    if (request) {
+                        console.log("Request:");
+                        console.log(JSON.stringify(request, null, 4));
+                        console.log("");
+                    }
                     console.log("Error: " + error.message);
                     return;
                 }

@@ -2,6 +2,12 @@ import {Global} from "../core/global";
 import {SkillContext, VirtualAlexa} from "virtual-alexa";
 import * as fs from "fs";
 
+interface SavedSession {
+    id: string;
+    attributes: {
+        [id: string]: any
+    };
+}
 /**
  * Programmatic interface for interacting with the Virtual Alexa.
  *
@@ -21,6 +27,37 @@ export class BSTVirtualAlexa {
         IntentSchema: "Intent Schema",
         SampleUtterances: "Sample Utterances"
     };
+
+    private saveSession(): void {
+        if (Global.config()) {
+            const session = this.virtualAlexa.context().session();
+            if (!session) {
+                Global.config().deleteSession();
+                return;
+            }
+
+            const savedSession: SavedSession = {
+                id: session.id(),
+                attributes: session.attributes(),
+            };
+
+            Global.config().saveSession(savedSession);
+        }
+    }
+
+    public deleteSession(): void {
+        Global.config().deleteSession();
+    }
+
+    private loadSession(): void {
+        if (Global.config()) {
+            const savedSession = Global.config().loadSession() as SavedSession;
+            if (savedSession) {
+                this.virtualAlexa.context().session().setID(savedSession.id);
+                this.virtualAlexa.context().session().updateAttributes(savedSession.attributes);
+            }
+        }
+    }
 
     /**
      * Creates a new Alexa emulator
@@ -151,8 +188,9 @@ export class BSTVirtualAlexa {
     public spoken(phrase: string, callback?: (error: any, response: any, request: any) => void): BSTVirtualAlexa {
         let request: any;
         this.virtualAlexa.filter((generatedRequest) => { request = generatedRequest; });
-
+        this.loadSession();
         this.virtualAlexa.utter(phrase).then((payload) => {
+            this.saveSession();
             if (callback !== undefined && callback !== null) {
                     callback(null, payload, request);
             }
@@ -173,8 +211,9 @@ export class BSTVirtualAlexa {
     public intended(intentName: string, slots?: {[id: string]: string}, callback?: (error: any, response: any, request: any) => void): BSTVirtualAlexa {
         let request: any;
         this.virtualAlexa.filter((generatedRequest) => { request = generatedRequest; });
-
+        this.loadSession();
         this.virtualAlexa.intend(intentName, slots).then((payload) => {
+            this.saveSession();
             if (callback !== undefined && callback !== null) {
                 callback(null, payload, request);
             }
@@ -195,7 +234,8 @@ export class BSTVirtualAlexa {
         this.virtualAlexa.filter((generatedRequest) => { request = generatedRequest; });
 
         this.virtualAlexa.launch().then(payload => {
-                callback(null, payload, request);
+            this.saveSession();
+            callback(null, payload, request);
         }).catch(error => {
             callback(error, null, request);
         });
