@@ -206,6 +206,28 @@ describe("bst-intend", function() {
             NodeUtil.load("../../bin/bst-intend.js");
         });
 
+        it("Speaks after cleaning session", function(done) {
+            process.argv = command("node bst-intend.js Hello --newSession");
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function () {
+                    this.start = function () {
+                    };
+                    let sessionRemoved = false;
+                    this.deleteSession = function () {
+                        sessionRemoved = true;
+                    };
+
+                    this.intended = function () {
+                        assert(sessionRemoved);
+                        done();
+                    };
+
+                }
+            });
+
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
         it("Has no interaction model", function(done) {
             process.argv = command("node bst-intend.js HelloIntend");
 
