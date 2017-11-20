@@ -55,8 +55,8 @@ export class BSTConfig {
         this.commit();
     }
 
-    public updateSilentEchoToken(silentEchoToken: string): void {
-        this.configuration.silentEchoToken = silentEchoToken;
+    public updateVirtualDeviceToken(virtualDeviceToken: string): void {
+        this.configuration.virtualDeviceToken = virtualDeviceToken;
         this.commit();
     }
 
@@ -79,8 +79,8 @@ export class BSTConfig {
         return JSON.parse(data.toString());
     }
 
-    public silentEchoToken(): string {
-        return this.configuration.silentEchoToken;
+    public virtualDeviceToken(): string {
+        return this.configuration.virtualDeviceToken;
     }
 
     public commit() {

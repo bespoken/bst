@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {SilentEchoClient} from "../lib/external/silent-echo";
+import {VirtualDeviceClient} from "../lib/external/virtual-device";
 
 program.version(Global.version());
 
@@ -38,9 +38,9 @@ Global.initializeCLI().then(
                 const options: any = program;
                 const token = options.token;
 
-                let silentEchoResponse;
+                let virtualDeviceResponse;
                 try {
-                    silentEchoResponse = await SilentEchoClient.speak(utterance, token);
+                    virtualDeviceResponse = await VirtualDeviceClient.speak(utterance, token);
                 } catch (error) {
                     if (error.message === "Token Required") {
                         console.log("You need a token for this option to work, get it here:");
@@ -63,7 +63,7 @@ Global.initializeCLI().then(
                     console.log("Your token is saved, you can now use this command without providing a token");
                 }
 
-                console.log(SilentEchoClient.renderResult(silentEchoResponse));
+                console.log(VirtualDeviceClient.renderResult(virtualDeviceResponse));
             });
 
         program.parse(process.argv);
