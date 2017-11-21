@@ -193,6 +193,28 @@ describe("bst-utter", function() {
             NodeUtil.load("../../bin/bst-utter.js");
         });
 
+        it("Speaks after cleaning session", function(done) {
+            process.argv = command("node bst-utter.js Hello --newSession");
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function () {
+                    this.start = function () {
+                    };
+                    let sessionRemoved = false;
+                    this.deleteSession = function () {
+                        sessionRemoved = true;
+                    };
+
+                    this.spoken = function (utterance: string, callback: any) {
+                        assert(sessionRemoved);
+                        done();
+                    };
+
+                }
+            });
+
+            NodeUtil.load("../../bin/bst-utter.js");
+        });
+
         it("Speaks One Word With Verbose", function(done) {
             process.argv = command("node bst-utter.js Hello");
             mockery.registerMock("../lib/client/bst-virtual-alexa", {

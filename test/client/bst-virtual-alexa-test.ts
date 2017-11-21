@@ -23,7 +23,16 @@ let globalModule = {
                 },
                 updateApplicationID: function (id) {
                     applicationID = id;
-                }
+                },
+                loadSession: function () {
+                    return null;
+                },
+                saveSession: function () {
+
+                },
+                deleteSession: function () {
+
+                },
             };
         },
         running : function() {
@@ -266,4 +275,101 @@ describe("BSTVirtualAlexa", async function() {
             });
         });
      });
+
+    describe("Manages Session", function () {
+        let session;
+        let oldSession;
+        beforeEach(function () {
+            process.chdir("test/resources");
+
+            globalModule.Global.config = function () {
+                return {
+                    configuration: {
+                        lambdaDeploy: {},
+                    },
+                    save: function () {
+
+                    },
+                    applicationID: function() {
+                        return applicationID;
+                    },
+                    updateApplicationID: function (id) {
+                        applicationID = id;
+                    },
+                    loadSession: function () {
+                        oldSession = Object.assign({}, session);
+                    },
+                    saveSession: function () {
+                        session = {
+                            id: "sessionId",
+                            attributes: {
+                                "STATE": "_TEST_STATE",
+                            }
+                        };
+                    },
+                    deleteSession: function () {
+                        session = null;
+                    },
+                };
+            };
+
+            mockery.enable({useCleanCache: true});
+            mockery.warnOnUnregistered(false);
+            mockery.registerMock("../core/global", globalModule);
+            BSTVirtualAlexa = require("../../lib/client/bst-virtual-alexa").BSTVirtualAlexa;
+
+            lambdaServer = new LambdaServer("exampleProject/ExampleLambda.js", 10000);
+            lambdaServer.start();
+        });
+
+        afterEach(function () {
+            process.chdir("../..");
+            lambdaServer.stop();
+            mockery.deregisterAll();
+            mockery.disable();
+        });
+
+        it("Saves on launch", function (done) {
+            alexa = new BSTVirtualAlexa("http://localhost:10000");
+            alexa.start();
+
+            alexa.launched(function (error: any, response: any) {
+                assert.deepEqual(session, {
+                    id: "sessionId",
+                    attributes: {
+                        "STATE": "_TEST_STATE",
+                    }
+                });
+                done();
+            });
+
+        });
+
+        it("Loads on intent", function (done) {
+            alexa = new BSTVirtualAlexa("http://localhost:10000");
+            alexa.start();
+
+            alexa.intended(null, null, function (error: any, response: any) {
+                assert.deepEqual(oldSession, {
+                    id: "sessionId",
+                    attributes: {
+                        "STATE": "_TEST_STATE",
+                    }
+                });
+                done();
+            });
+
+        });
+
+
+        it("Removes on delete", function () {
+            alexa = new BSTVirtualAlexa("http://localhost:10000");
+            alexa.start();
+
+            alexa.deleteSession();
+            assert.equal(session, null);
+
+        });
+
+    });
 });
