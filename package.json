@@ -20,9 +20,9 @@
     "properties-reader": "0.0.15",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "virtual-device-sdk": "^1.0.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.3.8",
+    "virtual-device-sdk": "^1.0.0",
     "winston": "^2.4.0"
   },
   "devDependencies": {
