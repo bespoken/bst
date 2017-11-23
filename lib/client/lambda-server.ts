@@ -132,7 +132,6 @@ export class LambdaServer {
 
             handlerFunction = handlerFunction ? handlerFunction : this.functionName ? this.functionName : "handler";
             lambda[handlerFunction](bodyJSON, context, function(error: Error, result: any) {
-                // We get the error from here without exception
                 context.done(error, result);
             });
         } catch (e) {
