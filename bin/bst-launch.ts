@@ -2,6 +2,7 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
+import * as chalk from "chalk";
 
 program.version(Global.version());
 
@@ -58,16 +59,16 @@ program
 
         speaker.launched(function (errorInLaunch: any, response: any, request: any) {
             if (errorInLaunch) {
-                console.log("Error: " + errorInLaunch);
+                console.error(chalk.red("Error: " + errorInLaunch));
                 return;
             }
 
             const jsonPretty = JSON.stringify(response, null, 4);
             console.log("Request:");
-            console.log(JSON.stringify(request, null, 4));
+            console.log(chalk.blue(JSON.stringify(request, null, 4)));
             console.log("");
             console.log("Response:");
-            console.log(jsonPretty);
+            console.log(chalk.cyan(jsonPretty));
             console.log("");
         });
     });

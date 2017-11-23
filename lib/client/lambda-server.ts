@@ -4,6 +4,7 @@ import {ServerResponse} from "http";
 import {Server} from "http";
 import {LoggingHelper} from "../core/logging-helper";
 import {ModuleManager} from "./module-manager";
+import * as chalk from "chalk";
 
 let Logger = "BST-LAMBDA";
 
@@ -37,6 +38,7 @@ export class LambdaServer {
         let self = this;
 
         this.moduleManager = new ModuleManager(process.cwd());
+
         this.moduleManager.start();
 
         this.server = http.createServer();
@@ -133,11 +135,7 @@ export class LambdaServer {
                 context.done(error, result);
             });
         } catch (e) {
-            if (e.stack) {
-                console.error(e.stack);
-            } else {
-                console.error(e);
-            }
+            console.error(chalk.red(e.toString()));
             context.fail(e);
         }
     }
