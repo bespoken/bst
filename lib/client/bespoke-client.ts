@@ -7,6 +7,7 @@ import {LoggingHelper} from "../core/logging-helper";
 import {KeepAlive} from "./keep-alive";
 import {StringUtil} from "../core/string-util";
 import {HTTPBuffer} from "../core/http-buffer";
+import * as chalk from "chalk";
 
 const Logger = "BST-CLIENT";
 
@@ -95,7 +96,7 @@ export class BespokeClient {
 
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
+        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.blue(StringUtil.prettyPrintJSON(request.body)));
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
@@ -114,12 +115,18 @@ export class BespokeClient {
                     } else {
                         payload = httpBuffer.body().toString();
                     }
-                    LoggingHelper.verbose(Logger, "Payload:\n" + payload);
+
+                    // Errors managed by us
+                    if (payload.indexOf("Unhandle exception") !== -1 || payload.indexOf("Error: ") !== -1) {
+                        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.red(payload));
+                    } else {
+                        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.cyan(payload));
+                    }
                     self.socketHandler.send(httpBuffer.raw().toString(), request.id());
                 }
             } else if (error !== null && error !== undefined) {
                 if (error === NetworkErrorType.CONNECTION_REFUSED) {
-                    LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                    LoggingHelper.error(Logger, chalk.red("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?"));
                 }
 
                 const errorMessage = "BST Proxy - Local Forwarding Error\n" + message;

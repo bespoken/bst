@@ -2,6 +2,7 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
+import * as chalk from "chalk";
 
 program.version(Global.version());
 
@@ -78,25 +79,21 @@ program
         }
 
         speaker.spoken(utterance, function(error: any, response: any, request: any) {
-            if (error) {
-                console.log("Spoke: " + utterance);
+            console.log("Spoke: " + utterance);
+            console.log("");
+            if (request) {
+                console.log("Request:");
+                console.log(chalk.blue(JSON.stringify(request, null, 4)));
                 console.log("");
-                if (request) {
-                    console.log("Request:");
-                    console.log(JSON.stringify(request, null, 4));
-                    console.log("");
-                }
-                console.log("Error: " + error.message);
+            }
+
+            if (error) {
+                console.log(chalk.red("Error: " + error.message));
                 return;
             }
             const jsonPretty = JSON.stringify(response, null, 4);
-            console.log("Spoke: " + utterance);
-            console.log("");
-            console.log("Request:");
-            console.log(JSON.stringify(request, null, 4));
-            console.log("");
             console.log("Response:");
-            console.log(jsonPretty);
+            console.log(chalk.cyan(jsonPretty));
             console.log("");
         });
     });

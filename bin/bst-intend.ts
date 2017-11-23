@@ -2,6 +2,7 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
+import * as chalk from "chalk";
 
 program.version(Global.version());
 
@@ -85,29 +86,26 @@ program
             }
 
             speaker.intended(intentName, slots, function(error: any, response: any, request: any) {
+                console.log("Intended: " + intentName);
+                console.log("");
+                if (request) {
+                    console.log("Request:");
+                    console.log(chalk.blue(JSON.stringify(request, null, 4)));
+                    console.log("");
+                }
+
                 if (error) {
-                    console.log("Intended: " + intentName);
-                    if (request) {
-                        console.log("Request:");
-                        console.log(JSON.stringify(request, null, 4));
-                        console.log("");
-                    }
-                    console.log("Error: " + error.message);
+                    console.log(chalk.red("Error: " + error.message));
                     return;
                 }
                 const jsonPretty = JSON.stringify(response, null, 4);
-                console.log("Intended: " + intentName);
-                console.log("");
-                console.log("Request:");
-                console.log(JSON.stringify(request, null, 4));
-                console.log("");
                 console.log("Response:");
-                console.log(jsonPretty);
+                console.log(chalk.cyan(jsonPretty));
                 console.log("");
             });
         } catch (e) {
-            console.error("Error with intent:");
-            console.error(e.message);
+            console.error(chalk.red("Error with intent:"));
+            console.error(chalk.red(e.message));
             console.error();
         }
     });
