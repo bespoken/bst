@@ -77,7 +77,7 @@ describe("bst-launch", function() {
                 }
             });
 
-            sandbox.stub(console, "log", function(data: Buffer) {
+            sandbox.stub(console, "error", function(data: Buffer) {
                 if (data && data.indexOf("Error:") !== -1) {
                     done();
                 }
