@@ -148,6 +148,7 @@ gulp.task('typedoc', function () {
             excludePrivate: true,
             excludeNotExported: true,
             excludeExternals: true,
+            ignoreCompilerErrors: true,
             mode: 'file',
             name: 'Bespoken',
             readme: 'docs/api_readme.md',
