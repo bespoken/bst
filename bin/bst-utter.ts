@@ -2,7 +2,7 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
-import * as chalk from "chalk";
+const chalk =  require("chalk");
 
 program.version(Global.version());
 
@@ -83,7 +83,7 @@ program
             console.log("");
             if (request) {
                 console.log("Request:");
-                console.log(chalk.blue(JSON.stringify(request, null, 4)));
+                console.log(chalk.hex("#ff6633")(JSON.stringify(request, null, 4)));
                 console.log("");
             }
 
