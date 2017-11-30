@@ -7,6 +7,9 @@ export class LoggingHelper {
     private static verboseEnabled: boolean = false;
     private static logger: LoggerInstance = null;
 
+    public static REQUEST_COLOR: string = "#ff6633";
+    public static LINK_COLOR: string = "#ff6633";
+
     public static setVerbose(enableVerbose: boolean) {
         LoggingHelper.verboseEnabled = enableVerbose;
 

@@ -96,7 +96,7 @@ export class BespokeClient {
 
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex("#ff6633")(StringUtil.prettyPrintJSON(request.body)));
+        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(StringUtil.prettyPrintJSON(request.body)));
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
