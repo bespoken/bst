@@ -2,7 +2,8 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
-import * as chalk from "chalk";
+import {LoggingHelper} from "../lib/core/logging-helper";
+const chalk =  require("chalk");
 
 program.version(Global.version());
 
@@ -83,7 +84,7 @@ program
             console.log("");
             if (request) {
                 console.log("Request:");
-                console.log(chalk.blue(JSON.stringify(request, null, 4)));
+                console.log(chalk.hex(LoggingHelper.REQUEST_COLOR)(JSON.stringify(request, null, 4)));
                 console.log("");
             }
 

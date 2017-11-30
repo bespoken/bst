@@ -4,7 +4,7 @@ import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
 import {BSTProxy} from "../lib/client/bst-proxy";
 import {URLMangler} from "../lib/client/url-mangler";
-import * as chalk from "chalk";
+const chalk =  require("chalk");
 
 let handleOptions = function(proxy: BSTProxy, options: any) {
     if (options.bstHost) {
@@ -41,16 +41,16 @@ program
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
             console.log("Your public URL for accessing your local service with bespoken-key in the query:");
-            console.log(chalk.blue(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey())));
+            console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey())));
             console.log("");
         } else {
             console.log("Your public URL for accessing your local service:");
-            console.log(chalk.blue(URLMangler.manglePipeToPath(Global.config().sourceID())));
+            console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID())));
             console.log("");
         }
 
         console.log("Your URL for viewing requests/responses sent to your service:");
-        console.log(chalk.blue(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
+        console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
 
@@ -72,16 +72,16 @@ program
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
             console.log("Your public URL for accessing your local service with bespoken-key in the query:");
-            console.log(chalk.blue(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey())));
+            console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey())));
             console.log("");
         } else {
             console.log("Your public URL for accessing your local service:");
-            console.log(chalk.blue(URLMangler.manglePipeToPath(Global.config().sourceID())));
+            console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID())));
             console.log("");
         }
 
         console.log("Your URL for viewing requests/responses sent to your service:");
-        console.log(chalk.blue(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
+        console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile, functionName);
@@ -102,16 +102,16 @@ program
             console.log("You are in secure mode, requests must include the bespoken-key in the query or the headers");
             console.log("");
             console.log("Your URL for Fulfillment configuration with bespoken-key in the query:");
-            console.log(chalk.blue(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey())));
+            console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID(), Global.config().secretKey())));
             console.log("");
         } else {
             console.log("Your URL for Fulfillment configuration:");
-            console.log(chalk.blue(URLMangler.manglePipeToPath(Global.config().sourceID())));
+            console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID())));
             console.log("");
         }
 
         console.log("Your URL for viewing your function data:");
-        console.log(chalk.blue(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
+        console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
         console.log("Copy and paste this to your browser to view your transaction history and summary data.");
         console.log("");
 

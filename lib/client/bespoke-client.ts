@@ -7,7 +7,7 @@ import {LoggingHelper} from "../core/logging-helper";
 import {KeepAlive} from "./keep-alive";
 import {StringUtil} from "../core/string-util";
 import {HTTPBuffer} from "../core/http-buffer";
-import * as chalk from "chalk";
+const chalk =  require("chalk");
 
 const Logger = "BST-CLIENT";
 
@@ -96,7 +96,7 @@ export class BespokeClient {
 
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.blue(StringUtil.prettyPrintJSON(request.body)));
+        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(StringUtil.prettyPrintJSON(request.body)));
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
