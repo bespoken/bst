@@ -19,9 +19,11 @@ export class BespokeClient {
     public onConnect: (error?: any) => void = null;
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
+    private static RECONNECT_MAX_RETRIES: number = 3;
     private keepAlive: KeepAlive;
     private socketHandler: SocketHandler;
     private shuttingDown: boolean = false;
+    private reconnectRetries: number = 0;
 
     constructor(public nodeID: string,
                 private host: string,
@@ -30,12 +32,8 @@ export class BespokeClient {
                 private targetPort: number,
                 private secretKey?: string) {}
 
-    public connect(onConnect?: (error?: any) => void): void {
+    private attemptConnection() {
         const self = this;
-
-        if (onConnect !== undefined && onConnect !== null) {
-            this.onConnect = onConnect;
-        }
 
         this.socketHandler = SocketHandler.connect(this.host, this.port,
             function(error: any) {
@@ -46,12 +44,28 @@ export class BespokeClient {
                 self.messageReceived(data, messageID);
             }
         );
+    }
+    public connect(onConnect?: (error?: any) => void): void {
+        const self = this;
+
+        if (onConnect !== undefined && onConnect !== null) {
+            this.onConnect = onConnect;
+        }
+
+        this.attemptConnection();
 
         // If the socket gets closed, probably server-side issue
         // We do not do anything in this case other than
         this.socketHandler.onCloseCallback = function() {
             if (!self.shuttingDown) {
                 LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
+            }
+
+            if (self.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
+                self.reconnectRetries++;
+                LoggingHelper.error(Logger, "Attempting to reconnect in " + self.reconnectRetries + " seconds");
+                self.attemptConnection();
+            } else {
                 LoggingHelper.error(Logger, "Check your network settings - and try connecting again.");
                 LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
                 LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
@@ -140,13 +154,20 @@ export class BespokeClient {
     }
 
     private connected(error?: any): void {
-        if (error !== undefined && error !== null) {
+        if (error) {
             LoggingHelper.error(Logger, "Unable to connect to: " + this.host + ":" + this.port);
-            this.shutdown();
-            if (this.onConnect !== undefined && this.onConnect !== null) {
-                this.onConnect(error);
+            if (this.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
+                this.reconnectRetries++;
+                LoggingHelper.error(Logger, "Attempting to reconnect in " + this.reconnectRetries + " seconds");
+                this.attemptConnection();
+            } else {
+                this.shutdown();
+                if (this.onConnect) {
+                    this.onConnect(error);
+                }
             }
         } else {
+            this.reconnectRetries = 0;
             LoggingHelper.info(Logger, "Connected - " + this.host + ":" + this.port);
             // As soon as we connect, we send our ID
             const messageJSON = {"id": this.nodeID};
