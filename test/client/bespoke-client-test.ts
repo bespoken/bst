@@ -10,7 +10,7 @@ import {HTTPClient} from "../../lib/core/http-client";
 
 let keepAlive: KeepAlive = null;
 class MockBespokeClient extends BespokeClient {
-    protected newKeepAlive(handler: SocketHandler): KeepAlive {
+    public newKeepAlive(handler: SocketHandler): KeepAlive {
         keepAlive = new KeepAlive(handler);
         keepAlive.pingPeriod = 20;
         keepAlive.warningThreshold = 10;

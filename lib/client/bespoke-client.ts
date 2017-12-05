@@ -34,9 +34,12 @@ export class BespokeClient {
                 private targetPort: number,
                 private secretKey?: string) {}
 
-    private attemptConnection() {
+    public attemptConnection(): void {
         const self = this;
-
+        if (this.socketHandler) {
+            // trying to ensure we don't end with
+            this.socketHandler.disconnect();
+        }
         this.socketHandler = SocketHandler.connect(this.host, this.port,
             function(error: any) {
                 self.connected(error);
@@ -48,6 +51,7 @@ export class BespokeClient {
         );
 
 
+
         // If the socket gets closed, probably server-side issue
         // We do not do anything in this case other than
         this.socketHandler.onCloseCallback = function() {
@@ -55,10 +59,12 @@ export class BespokeClient {
                 LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
             }
 
-            if (self.reconnectRetries < this.RECONNECT_MAX_RETRIES) {
+            if (self.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
                 self.reconnectRetries++;
                 LoggingHelper.error(Logger, "Attempting to reconnect in " + self.reconnectRetries + " seconds");
-                self.attemptConnection();
+                setTimeout(function () {
+                    self.attemptConnection();
+                }, self.reconnectRetries * 1000);
             } else {
                 LoggingHelper.error(Logger, "Check your network settings - and try connecting again.");
                 LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
@@ -66,16 +72,10 @@ export class BespokeClient {
                 self.shutdown();
             }
         };
-    }
-    public connect(onConnect?: (error?: any) => void): void {
-        const self = this;
 
-        if (onConnect !== undefined && onConnect !== null) {
-            this.onConnect = onConnect;
+        if (this.keepAlive) {
+            this.keepAlive.stop();
         }
-
-        this.attemptConnection();
-
 
         this.keepAlive = this.newKeepAlive(this.socketHandler);
         this.keepAlive.start(function () {
@@ -86,8 +86,16 @@ export class BespokeClient {
         });
     }
 
+    public connect(onConnect?: (error?: any) => void): void {
+        if (onConnect !== undefined && onConnect !== null) {
+            this.onConnect = onConnect;
+        }
+
+        this.attemptConnection();
+    }
+
     // Factory method for testability
-    protected newKeepAlive(handler: SocketHandler): KeepAlive {
+    public newKeepAlive(handler: SocketHandler): KeepAlive {
         return new KeepAlive(handler);
     }
 
@@ -163,7 +171,10 @@ export class BespokeClient {
             if (this.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
                 this.reconnectRetries++;
                 LoggingHelper.error(Logger, "Attempting to reconnect in " + this.reconnectRetries + " seconds");
-                this.attemptConnection();
+                const self = this;
+                setTimeout(function () {
+                    self.attemptConnection();
+                }, this.reconnectRetries * 1000);
                 if (this.onReconnect) {
                     this.onReconnect(error);
                 }
