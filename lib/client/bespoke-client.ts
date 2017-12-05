@@ -17,9 +17,11 @@ const Logger = "BST-CLIENT";
  */
 export class BespokeClient {
     public onConnect: (error?: any) => void = null;
+    public onReconnect: (error?: any) => void = null;
+
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
-    private static RECONNECT_MAX_RETRIES: number = 3;
+    public static RECONNECT_MAX_RETRIES: number = 3;
     private keepAlive: KeepAlive;
     private socketHandler: SocketHandler;
     private shuttingDown: boolean = false;
@@ -44,15 +46,7 @@ export class BespokeClient {
                 self.messageReceived(data, messageID);
             }
         );
-    }
-    public connect(onConnect?: (error?: any) => void): void {
-        const self = this;
 
-        if (onConnect !== undefined && onConnect !== null) {
-            this.onConnect = onConnect;
-        }
-
-        this.attemptConnection();
 
         // If the socket gets closed, probably server-side issue
         // We do not do anything in this case other than
@@ -61,7 +55,7 @@ export class BespokeClient {
                 LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
             }
 
-            if (self.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
+            if (self.reconnectRetries < this.RECONNECT_MAX_RETRIES) {
                 self.reconnectRetries++;
                 LoggingHelper.error(Logger, "Attempting to reconnect in " + self.reconnectRetries + " seconds");
                 self.attemptConnection();
@@ -72,6 +66,16 @@ export class BespokeClient {
                 self.shutdown();
             }
         };
+    }
+    public connect(onConnect?: (error?: any) => void): void {
+        const self = this;
+
+        if (onConnect !== undefined && onConnect !== null) {
+            this.onConnect = onConnect;
+        }
+
+        this.attemptConnection();
+
 
         this.keepAlive = this.newKeepAlive(this.socketHandler);
         this.keepAlive.start(function () {
@@ -160,6 +164,9 @@ export class BespokeClient {
                 this.reconnectRetries++;
                 LoggingHelper.error(Logger, "Attempting to reconnect in " + this.reconnectRetries + " seconds");
                 this.attemptConnection();
+                if (this.onReconnect) {
+                    this.onReconnect(error);
+                }
             } else {
                 this.shutdown();
                 if (this.onConnect) {
@@ -202,6 +209,8 @@ export class BespokeClient {
 
         // Do not disconnect until keep alive has stopped
         //  Otherwise it may try to push data through the socket
+        this.reconnectRetries = BespokeClient.RECONNECT_MAX_RETRIES;
+
         this.socketHandler.disconnect();
 
         if (callback !== undefined && callback !== null) {

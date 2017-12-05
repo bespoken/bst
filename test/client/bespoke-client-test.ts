@@ -26,104 +26,18 @@ describe("BespokeClient", function() {
     const nodeMajorVersion = parseInt(process.version.substr(1, 2), 10);
     const testPort = 9000 + nodeMajorVersion;
 
-    describe("KeepAlive failed", function() {
-        it("Fails", function(done) {
-            this.timeout(8000);
-            const nodeManager = new NodeManager(testPort);
-            let count = 0;
-            (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
-                count++;
-                if (count < 10) {
-                    node.socketHandler.send(Global.KeepAliveMessage);
-                }
-            };
-
-            const client = new MockBespokeClient("JPKg", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
-            nodeManager.start();
-            client.connect();
-
-            const originalCallback = (<any> keepAlive).onFailureCallback;
-            let failureCount = 0;
-            (<any> keepAlive).onFailureCallback = function () {
-                originalCallback();
-                failureCount++;
-            };
-
-            setTimeout(function () {
-                if (failureCount > 2) {
-                    try {
-                        assert(false, "Too many failures received");
-                    } catch (error) {
-                        done(error);
-                        return;
-                    }
-                }
-
-                client.shutdown(function () {
-                    nodeManager.stop(function () {
-                        done();
-                    });
-                });
-
-            }, 1000);
-        });
-
-    });
-
-    describe("KeepAlive worked", function() {
-        // we need to give this time to retry shutdown then close
-        this.timeout(8000);
-        it("Gets lots of keep alives", function() {
-            return new Promise((resolve, reject) => {
-                const nodeManager = new NodeManager(testPort);
-                let count = 0;
-                (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
-                    count++;
-                    node.socketHandler.send(Global.KeepAliveMessage);
-                };
-
-                const client = new MockBespokeClient("JPKf", "localhost", testPort, "localhost", testPort + 1);
-                nodeManager.start();
-                client.connect();
-
-                let originalCallback = (<any> keepAlive).onFailureCallback;
-                (<any> keepAlive).onFailureCallback = function () {
-                    originalCallback();
-                    assert(false, "This callback should not be hit");
-                };
-
-                // Let everything run for one second and ensure no errors are received
-                setTimeout(function () {
-                    // Mac and Linux generate more events than windows due threading in windows
-
-                    if ((process.platform.includes("win") &&  count < 8) ||
-                        (!process.platform.includes("win") && count < 40)) {
-                        try {
-                            assert(false, "Not enough keep alives received");
-                        } catch (error) {
-                            reject(error);
-                            return;
-                        }
-                    }
-
-                    client.shutdown(function () {
-                        nodeManager.stop(function () {
-
-                            resolve();
-                        });
-                    });
-                }, 1000);
-            });
-
-        });
-    });
-
     describe("#connect()", function() {
         it("Fails to connect", function() {
             return new Promise(resolve => {
                 this.timeout(8000);
                 const client = new BespokeClient("JPKa", "localhost", 9000, "localhost", 9000 );
+                let reconnectAttempts = 0;
+                client.onReconnect = function (error: any) {
+                    reconnectAttempts++;
+                };
+
                 client.onConnect = function (error: any) {
+                    assert.equal(reconnectAttempts, BespokeClient.RECONNECT_MAX_RETRIES, "Not enough reconnects");
                     assert(error);
                     resolve();
                 };
@@ -256,5 +170,100 @@ describe("BespokeClient", function() {
         });
     });
 
+    describe("KeepAlive failed", function() {
+        it("Fails", function(done) {
+            this.timeout(8000);
+            const nodeManager = new NodeManager(testPort);
+            let count = 0;
+            (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
+
+                count++;
+                if (count < 10) {
+                    node.socketHandler.send(Global.KeepAliveMessage);
+                }
+            };
+
+            BespokeClient.RECONNECT_MAX_RETRIES = 0;
+            const client = new MockBespokeClient("JPKg", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
+            nodeManager.start();
+            client.connect();
+
+            const originalCallback = (<any> keepAlive).onFailureCallback;
+            let failureCount = 0;
+            (<any> keepAlive).onFailureCallback = function () {
+                originalCallback();
+                failureCount++;
+
+            };
+
+            setTimeout(function () {
+                if (failureCount > 2) {
+                    try {
+                        assert(false, "Too many failures received");
+                    } catch (error) {
+                        done(error);
+                        return;
+                    }
+                }
+
+                client.shutdown(function () {
+                    nodeManager.stop(function () {
+                        BespokeClient.RECONNECT_MAX_RETRIES = 3;
+
+                        done();
+                    });
+                });
+
+            }, 1000);
+        });
+
+    });
+
+    describe("KeepAlive worked", function() {
+        // we need to give this time to retry shutdown then close
+        this.timeout(8000);
+        it("Gets lots of keep alives", function() {
+            return new Promise((resolve, reject) => {
+                const nodeManager = new NodeManager(testPort);
+                let count = 0;
+                (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
+                    count++;
+                    node.socketHandler.send(Global.KeepAliveMessage);
+                };
+
+                const client = new MockBespokeClient("JPKf", "localhost", testPort, "localhost", testPort + 1);
+                nodeManager.start();
+                client.connect();
+
+                let originalCallback = (<any> keepAlive).onFailureCallback;
+                (<any> keepAlive).onFailureCallback = function () {
+                    originalCallback();
+                    assert(false, "This callback should not be hit");
+                };
+
+                // Let everything run for one second and ensure no errors are received
+                setTimeout(function () {
+                    // Mac and Linux generate more events than windows due threading in windows
+
+                    if ((process.platform.includes("win") &&  count < 8) ||
+                        (!process.platform.includes("win") && count < 40)) {
+                        try {
+                            assert(false, "Not enough keep alives received");
+                        } catch (error) {
+                            reject(error);
+                            return;
+                        }
+                    }
+
+                    client.shutdown(function () {
+                        nodeManager.stop(function () {
+                            resolve();
+                        });
+                    });
+                }, 1000);
+            });
+
+        });
+    });
 
 });
