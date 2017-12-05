@@ -19,6 +19,10 @@ class MockBespokeClient extends BespokeClient {
     }
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Much of the testing for this class is done by NodeManager, the other side of its interface
 // These tests related to the keep alive, which are tricky to write
 // I believe they are worth it because this is critical functionality to our robustness
@@ -171,50 +175,53 @@ describe("BespokeClient", function() {
     });
 
     describe("KeepAlive failed", function() {
-        it("Fails", function(done) {
+        it("Fails", function() {
             this.timeout(8000);
-            const nodeManager = new NodeManager(testPort);
-            let count = 0;
-            (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
+            return new Promise(async (resolve, reject) => {
+                const nodeManager = new NodeManager(testPort);
+                let failureCount = 0;
 
-                count++;
-                if (count < 10) {
-                    node.socketHandler.send(Global.KeepAliveMessage);
-                }
-            };
+                let count = 0;
+                (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
 
-            BespokeClient.RECONNECT_MAX_RETRIES = 0;
-            const client = new MockBespokeClient("JPKg", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
-            nodeManager.start();
-            client.connect();
+                    count++;
+                    if (count < 10) {
+                        node.socketHandler.send(Global.KeepAliveMessage);
+                        const originalCallback = (<any> keepAlive).onFailureCallback;
+                        (<any> keepAlive).onFailureCallback = function () {
+                            originalCallback();
+                            failureCount++;
 
-            const originalCallback = (<any> keepAlive).onFailureCallback;
-            let failureCount = 0;
-            (<any> keepAlive).onFailureCallback = function () {
-                originalCallback();
-                failureCount++;
-
-            };
-
-            setTimeout(function () {
-                if (failureCount > 2) {
-                    try {
-                        assert(false, "Too many failures received");
-                    } catch (error) {
-                        done(error);
-                        return;
+                        };
                     }
-                }
+                };
 
-                client.shutdown(function () {
-                    nodeManager.stop(function () {
-                        BespokeClient.RECONNECT_MAX_RETRIES = 3;
+                BespokeClient.RECONNECT_MAX_RETRIES = 0;
+                const client = new MockBespokeClient("JPKg", "127.0.0.1", testPort, "127.0.0.1", testPort + 1);
+                nodeManager.start();
+                client.connect();
 
-                        done();
+                setTimeout(function () {
+                    if (failureCount > 2) {
+                        try {
+                            assert(false, "Too many failures received");
+                        } catch (error) {
+                            reject(error);
+                            return;
+                        }
+                    }
+
+                    client.shutdown(function () {
+                        nodeManager.stop(function () {
+                            BespokeClient.RECONNECT_MAX_RETRIES = 3;
+
+                            resolve();
+                        });
                     });
-                });
 
-            }, 1000);
+                }, 1000);
+            });
+
         });
 
     });
@@ -222,8 +229,8 @@ describe("BespokeClient", function() {
     describe("KeepAlive worked", function() {
         // we need to give this time to retry shutdown then close
         this.timeout(8000);
-        it("Gets lots of keep alives", function() {
-            return new Promise((resolve, reject) => {
+        it("Gets lots of keep alives", async function() {
+            return new Promise(async (resolve, reject) => {
                 const nodeManager = new NodeManager(testPort);
                 let count = 0;
                 (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
@@ -235,6 +242,8 @@ describe("BespokeClient", function() {
                 nodeManager.start();
                 client.connect();
 
+                // We give time to stablish connection and set keepAlive
+                await sleep(100);
                 let originalCallback = (<any> keepAlive).onFailureCallback;
                 (<any> keepAlive).onFailureCallback = function () {
                     originalCallback();

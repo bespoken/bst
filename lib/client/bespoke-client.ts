@@ -39,6 +39,11 @@ export class BespokeClient {
         if (this.socketHandler) {
             this.socketHandler.disconnect();
         }
+
+        if (this.keepAlive) {
+            this.keepAlive.stop();
+        }
+
         this.socketHandler = SocketHandler.connect(this.host, this.port,
             function(error: any) {
                 self.connected(error);
@@ -71,18 +76,6 @@ export class BespokeClient {
                 self.shutdown();
             }
         };
-
-        if (this.keepAlive) {
-            this.keepAlive.stop();
-        }
-
-        this.keepAlive = this.newKeepAlive(this.socketHandler);
-        this.keepAlive.start(function () {
-            LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
-            LoggingHelper.error(Logger, "Check your network settings - and maybe try connecting again.");
-            LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
-            LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
-        });
     }
 
     public connect(onConnect?: (error?: any) => void): void {
@@ -165,12 +158,13 @@ export class BespokeClient {
     }
 
     private connected(error?: any): void {
+        const self = this;
+
         if (error) {
             LoggingHelper.error(Logger, "Unable to connect to: " + this.host + ":" + this.port);
             if (this.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
                 this.reconnectRetries++;
                 LoggingHelper.error(Logger, "Attempting to reconnect in " + this.reconnectRetries + " seconds");
-                const self = this;
                 setTimeout(function () {
                     self.attemptConnection();
                 }, this.reconnectRetries * 1000);
@@ -194,6 +188,14 @@ export class BespokeClient {
             if (this.onConnect !== undefined  && this.onConnect !== null) {
                 this.onConnect();
             }
+
+            this.keepAlive = this.newKeepAlive(this.socketHandler);
+            this.keepAlive.start(function () {
+                LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
+                LoggingHelper.error(Logger, "Check your network settings - and maybe try connecting again.");
+                LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+                LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+            });
         }
     }
 
@@ -215,7 +217,9 @@ export class BespokeClient {
         //  We normally print info on close, but not in this case
         this.shuttingDown = true;
 
-        this.keepAlive.stop();
+        if (this.keepAlive) {
+            this.keepAlive.stop();
+        }
 
         // Do not disconnect until keep alive has stopped
         //  Otherwise it may try to push data through the socket
