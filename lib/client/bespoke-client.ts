@@ -37,7 +37,6 @@ export class BespokeClient {
     public attemptConnection(): void {
         const self = this;
         if (this.socketHandler) {
-            // trying to ensure we don't end with
             this.socketHandler.disconnect();
         }
         this.socketHandler = SocketHandler.connect(this.host, this.port,
