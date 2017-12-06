@@ -37,6 +37,7 @@ export class NodeManager {
                 if (initialConnection) {
                     let connectData: any = null;
                     try {
+                        console.log("Supposely first message", message);
                         connectData = JSON.parse(message);
                     } catch (e) {
                         // We just drop it the payload is not correct

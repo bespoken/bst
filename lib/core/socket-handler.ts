@@ -94,7 +94,7 @@ export class SocketHandler {
             if (badMessage) {
                 LoggingHelper.error(Logger, "Bad message received: " + dataString);
             } else {
-                LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
+                LoggingHelper.info(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
                 this.onMessage(message, messageID);
             }
 
@@ -114,7 +114,7 @@ export class SocketHandler {
             return;
         }
 
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message));
+        LoggingHelper.info(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message.toString()));
 
         // If no message ID is specified, just grab a timestamp
         if (messageID === undefined || messageID === null) {
