@@ -179,20 +179,28 @@ describe("BespokeClient", function() {
             this.timeout(8000);
             return new Promise(async (resolve, reject) => {
                 const nodeManager = new NodeManager(testPort);
+                let wasFailureFunctionOverwritten = false;
                 let failureCount = 0;
 
                 let count = 0;
                 (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
 
-                    count++;
-                    if (count < 10) {
-                        node.socketHandler.send(Global.KeepAliveMessage);
+                    // We overwrite the failure callback on first keepAlive to ensure keepAlive is already populated                                                                                                                                                                                                                                                                                                                                                                                                                      
+                    if (!wasFailureFunctionOverwritten) {
                         const originalCallback = (<any> keepAlive).onFailureCallback;
                         (<any> keepAlive).onFailureCallback = function () {
                             originalCallback();
+                            console.log("Adding a failure :(");
                             failureCount++;
 
                         };
+                        wasFailureFunctionOverwritten = true;
+                    }
+
+
+                    count++;
+                    if (count < 10) {
+                        node.socketHandler.send(Global.KeepAliveMessage);
                     }
                 };
 
