@@ -87,7 +87,7 @@ export class BespokeClient {
     }
 
     // Factory method for testability
-    public newKeepAlive(handler: SocketHandler): KeepAlive {
+    protected newKeepAlive(handler: SocketHandler): KeepAlive {
         return new KeepAlive(handler);
     }
 
