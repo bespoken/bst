@@ -7,6 +7,7 @@ import {LoggingHelper} from "../core/logging-helper";
 import {KeepAlive} from "./keep-alive";
 import {StringUtil} from "../core/string-util";
 import {HTTPBuffer} from "../core/http-buffer";
+const chalk =  require("chalk");
 
 const Logger = "BST-CLIENT";
 
@@ -16,11 +17,15 @@ const Logger = "BST-CLIENT";
  */
 export class BespokeClient {
     public onConnect: (error?: any) => void = null;
+    public onReconnect: (error?: any) => void = null;
+
     public onError: (errorType: NetworkErrorType, message: string) => void;
 
+    public static RECONNECT_MAX_RETRIES: number = 3;
     private keepAlive: KeepAlive;
     private socketHandler: SocketHandler;
     private shuttingDown: boolean = false;
+    private reconnectRetries: number = 0;
 
     constructor(public nodeID: string,
                 private host: string,
@@ -29,11 +34,14 @@ export class BespokeClient {
                 private targetPort: number,
                 private secretKey?: string) {}
 
-    public connect(onConnect?: (error?: any) => void): void {
+    public attemptConnection(): void {
         const self = this;
+        if (this.socketHandler) {
+            this.socketHandler.disconnect();
+        }
 
-        if (onConnect !== undefined && onConnect !== null) {
-            this.onConnect = onConnect;
+        if (this.keepAlive) {
+            this.keepAlive.stop();
         }
 
         this.socketHandler = SocketHandler.connect(this.host, this.port,
@@ -46,25 +54,36 @@ export class BespokeClient {
             }
         );
 
+
+
         // If the socket gets closed, probably server-side issue
         // We do not do anything in this case other than
         this.socketHandler.onCloseCallback = function() {
             if (!self.shuttingDown) {
                 LoggingHelper.error(Logger, "Socket closed by bst server: " + self.host + ":" + self.port);
+            }
+
+            if (self.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
+                self.reconnectRetries++;
+                LoggingHelper.error(Logger, "Attempting to reconnect in " + self.reconnectRetries + " seconds");
+                setTimeout(function () {
+                    self.attemptConnection();
+                }, self.reconnectRetries * 1000);
+            } else {
                 LoggingHelper.error(Logger, "Check your network settings - and try connecting again.");
                 LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
                 LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
                 self.shutdown();
             }
         };
+    }
 
-        this.keepAlive = this.newKeepAlive(this.socketHandler);
-        this.keepAlive.start(function () {
-            LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
-            LoggingHelper.error(Logger, "Check your network settings - and maybe try connecting again.");
-            LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
-            LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
-        });
+    public connect(onConnect?: (error?: any) => void): void {
+        if (onConnect !== undefined && onConnect !== null) {
+            this.onConnect = onConnect;
+        }
+
+        this.attemptConnection();
     }
 
     // Factory method for testability
@@ -95,7 +114,7 @@ export class BespokeClient {
 
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        LoggingHelper.verbose(Logger, "Payload:\n" + StringUtil.prettyPrintJSON(request.body));
+        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(StringUtil.prettyPrintJSON(request.body)));
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
@@ -114,12 +133,18 @@ export class BespokeClient {
                     } else {
                         payload = httpBuffer.body().toString();
                     }
-                    LoggingHelper.verbose(Logger, "Payload:\n" + payload);
+
+                    // Errors managed by us
+                    if (payload.indexOf("Unhandle exception") !== -1 || payload.indexOf("Error: ") !== -1) {
+                        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.red(payload));
+                    } else {
+                        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.cyan(payload));
+                    }
                     self.socketHandler.send(httpBuffer.raw().toString(), request.id());
                 }
             } else if (error !== null && error !== undefined) {
                 if (error === NetworkErrorType.CONNECTION_REFUSED) {
-                    LoggingHelper.error(Logger, "CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?");
+                    LoggingHelper.error(Logger, chalk.red("CLIENT Connection Refused, Port " + self.targetPort + ". Is your server running?"));
                 }
 
                 const errorMessage = "BST Proxy - Local Forwarding Error\n" + message;
@@ -133,13 +158,27 @@ export class BespokeClient {
     }
 
     private connected(error?: any): void {
-        if (error !== undefined && error !== null) {
+        const self = this;
+
+        if (error) {
             LoggingHelper.error(Logger, "Unable to connect to: " + this.host + ":" + this.port);
-            this.shutdown();
-            if (this.onConnect !== undefined && this.onConnect !== null) {
-                this.onConnect(error);
+            if (this.reconnectRetries < BespokeClient.RECONNECT_MAX_RETRIES) {
+                this.reconnectRetries++;
+                LoggingHelper.error(Logger, "Attempting to reconnect in " + this.reconnectRetries + " seconds");
+                setTimeout(function () {
+                    self.attemptConnection();
+                }, this.reconnectRetries * 1000);
+                if (this.onReconnect) {
+                    this.onReconnect(error);
+                }
+            } else {
+                this.shutdown();
+                if (this.onConnect) {
+                    this.onConnect(error);
+                }
             }
         } else {
+            this.reconnectRetries = 0;
             LoggingHelper.info(Logger, "Connected - " + this.host + ":" + this.port);
             // As soon as we connect, we send our ID
             const messageJSON = {"id": this.nodeID};
@@ -149,6 +188,14 @@ export class BespokeClient {
             if (this.onConnect !== undefined  && this.onConnect !== null) {
                 this.onConnect();
             }
+
+            this.keepAlive = this.newKeepAlive(this.socketHandler);
+            this.keepAlive.start(function () {
+                LoggingHelper.error(Logger, "Socket not communicating with bst server: " + self.socketHandler.remoteEndPoint());
+                LoggingHelper.error(Logger, "Check your network settings - and maybe try connecting again.");
+                LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+                LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+            });
         }
     }
 
@@ -170,10 +217,14 @@ export class BespokeClient {
         //  We normally print info on close, but not in this case
         this.shuttingDown = true;
 
-        this.keepAlive.stop();
+        if (this.keepAlive) {
+            this.keepAlive.stop();
+        }
 
         // Do not disconnect until keep alive has stopped
         //  Otherwise it may try to push data through the socket
+        this.reconnectRetries = BespokeClient.RECONNECT_MAX_RETRIES;
+
         this.socketHandler.disconnect();
 
         if (callback !== undefined && callback !== null) {

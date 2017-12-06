@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
-import {BSTAlexa} from "../lib/client/bst-alexa";
+import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
+import {LoggingHelper} from "../lib/core/logging-helper";
+const chalk =  require("chalk");
 
 program.version(Global.version());
 
@@ -40,35 +42,35 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTAlexa(url, null, null, applicationID);
-        speaker.start(function (error: string) {
-            if (error) {
-                process.exit(0);
+        const speaker = new BSTVirtualAlexa(url, null, null, null, applicationID);
+        try {
+            speaker.start();
+        } catch (error) {
+            process.exit(0);
+            return;
+        }
+
+        if (options.userId) {
+            speaker.context().user().setID(options.userId);
+        }
+
+        if (options.accessToken) {
+            speaker.context().setAccessToken(options.accessToken);
+        }
+
+        speaker.launched(function (errorInLaunch: any, response: any, request: any) {
+            if (errorInLaunch) {
+                console.error(chalk.red("Error: " + errorInLaunch));
                 return;
             }
 
-            if (options.userId) {
-                speaker.context().setUserID(options.userId);
-            }
-
-            if (options.accessToken) {
-                speaker.context().setAccessToken(options.accessToken);
-            }
-
-            speaker.launched(function (errorInLaunch: any, response: any, request: any) {
-                if (errorInLaunch) {
-                    console.log("Error: " + errorInLaunch.message);
-                    return;
-                }
-
-                let jsonPretty = JSON.stringify(response, null, 4);
-                console.log("Request:");
-                console.log(JSON.stringify(request, null, 4));
-                console.log("");
-                console.log("Response:");
-                console.log(jsonPretty);
-                console.log("");
-            });
+            const jsonPretty = JSON.stringify(response, null, 4);
+            console.log("Request:");
+            console.log(chalk.hex(LoggingHelper.REQUEST_COLOR)(JSON.stringify(request, null, 4)));
+            console.log("");
+            console.log("Response:");
+            console.log(chalk.cyan(jsonPretty));
+            console.log("");
         });
     });
 

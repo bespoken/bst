@@ -1,7 +1,6 @@
 import {LoggingHelper} from "./logging-helper";
 import {BSTConfig} from "../client/bst-config";
 import {BSTProcess} from "../client/bst-config";
-const chalk = require("chalk");
 
 export class Global {
     public static MessageDelimiter = "4772616365";
@@ -15,16 +14,6 @@ export class Global {
     private static _cli: boolean = false;
 
     public static async initializeCLI(): Promise<void> {
-        // Replace console.error so it prints in a different color
-        let originalError = console.error;
-        console.error = function(message) {
-            if (message !== undefined) {
-                originalError(chalk.red(message));
-            } else {
-                originalError();
-            }
-        };
-
         Global.initialize(true);
         await Global.loadConfig();
     }

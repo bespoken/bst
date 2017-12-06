@@ -55,13 +55,32 @@ export class BSTConfig {
         this.commit();
     }
 
-    public updateSilentEchoToken(silentEchoToken: string): void {
-        this.configuration.silentEchoToken = silentEchoToken;
+    public updateVirtualDeviceToken(virtualDeviceToken: string): void {
+        this.configuration.virtualDeviceToken = virtualDeviceToken;
         this.commit();
     }
 
-    public silentEchoToken(): string {
-        return this.configuration.silentEchoToken;
+    public deleteSession(): void {
+        if (fs.existsSync(BSTConfig.sessionPath())) {
+            fs.unlinkSync(BSTConfig.sessionPath());
+        }
+    }
+
+    public saveSession(session: any): void {
+        const sessionBuffer = new Buffer(JSON.stringify(session, null, 4) + "\n");
+        fs.writeFileSync(BSTConfig.sessionPath(), sessionBuffer);
+    }
+
+    public loadSession(): any {
+        if (!fs.existsSync(BSTConfig.sessionPath())) {
+            return null;
+        }
+        const data = fs.readFileSync(BSTConfig.sessionPath());
+        return JSON.parse(data.toString());
+    }
+
+    public virtualDeviceToken(): string {
+        return this.configuration.virtualDeviceToken;
     }
 
     public commit() {
@@ -79,6 +98,10 @@ export class BSTConfig {
 
     private static configPath(): string {
         return BSTConfig.configDirectory() + "/config";
+    }
+
+    private static sessionPath(): string {
+        return BSTConfig.configDirectory() + "/session";
     }
 
     /**

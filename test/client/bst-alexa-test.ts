@@ -388,7 +388,7 @@ describe("BSTAlexa", async function() {
 
         describe("#playbackFinished()", function() {
             it("Audio Item Finished", function (done) {
-               let count = 0;
+                let count = 0;
                 alexa.on("response", function (response: any, request: any) {
                     count++;
                     if (count === 5) {
