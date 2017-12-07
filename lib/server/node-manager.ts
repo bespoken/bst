@@ -32,16 +32,23 @@ export class NodeManager {
         this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
             let node: Node = null;
-            let socketHandler = new SocketHandler(socket, function(message: string, messageID?: number) {
+            let socketHandler = new SocketHandler(socket, function(message: string | Buffer, messageID?: number) {
                 // We do special handling when we first connect
+                let strMessage: string = "";
+                if (typeof message !== "string") {
+                    strMessage = message.toString();
+                } else {
+                    strMessage = message;
+                }
+
                 if (initialConnection) {
                     let connectData: any = null;
                     try {
-                        console.log("Supposely first message", message);
-                        connectData = JSON.parse(message);
+                        console.log("Supposely first message", strMessage);
+                        connectData = JSON.parse(strMessage);
                     } catch (e) {
                         // We just drop it the payload is not correct
-                        LoggingHelper.error(Logger, "Error on parsing initial message: " + message);
+                        LoggingHelper.error(Logger, "Error on parsing initial message: " + strMessage);
                         socketHandler.disconnect();
                         return;
                     }
@@ -58,7 +65,7 @@ export class NodeManager {
 
                     // Capture the connection
                     Statistics.instance().record(node.id, AccessType.CONNECT);
-                } else if (message === Global.KeepAliveMessage) {
+                } else if (strMessage === Global.KeepAliveMessage) {
                     NodeManager.onKeepAliveReceived(node);
 
                 } else if (node.handlingRequest()) {

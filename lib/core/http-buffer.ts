@@ -34,13 +34,13 @@ export class HTTPBuffer {
 
         if (this._headers === undefined) {
             // Scan for \r\n\r\n  - indicates the end of the headers
-            let endIndex = BufferUtil.scan(this._rawContent, [13, 10, 13, 10]);
+            const endIndex = BufferUtil.scan(this._rawContent, [13, 10, 13, 10]);
             if (endIndex !== -1) {
-                let headerBuffer = this._rawContent.slice(0, endIndex);
+                const headerBuffer = this._rawContent.slice(0, endIndex);
                 this.parseHeaders(headerBuffer.toString());
 
                 if (endIndex + 4 < this._rawContent.length) {
-                    let bodyPart = this._rawContent.slice((endIndex + 4));
+                    const bodyPart = this._rawContent.slice((endIndex + 4));
                     this.appendBody(bodyPart);
                 }
             }
@@ -59,9 +59,9 @@ export class HTTPBuffer {
         if (!this._complete) {
             // If we have the headers, then check the body
             if (this._headers !== undefined) {
-                let chunked = this.hasHeader("Transfer-Encoding") && this.header("Transfer-Encoding").toLowerCase() === "chunked";
+                const chunked = this.hasHeader("Transfer-Encoding") && this.header("Transfer-Encoding").toLowerCase() === "chunked";
                 if (chunked && this._rawBody !== undefined) {
-                    let chunks = this.parseChunks();
+                    const chunks = this.parseChunks();
                     // Only store the chunks if they are finalized
                     if (chunks !== null && chunks.length > 0 && chunks[chunks.length - 1].lastChunk()) {
                         this._chunks = chunks;
@@ -164,7 +164,7 @@ export class HTTPBuffer {
         // Keep looping until we either hit the final chunk (zero-length)
         //  Or we get an incomplete chunk
         while (true) {
-            let chunk = HTTPChunk.parse(body);
+            const chunk = HTTPChunk.parse(body);
             if (chunk !== null) {
                 chunks.push(chunk);
             } else {
@@ -192,24 +192,25 @@ export class HTTPBuffer {
 
     private parseHeaders(headersString: string): void {
         this._headers = {};
-        let lines: Array<string> = headersString.split("\n");
+        const lines: Array<string> = headersString.split("\n");
+        console.info("Lines received: ", lines);
         // This is a response if it starts with HTTP
         if (lines[0].startsWith("HTTP")) {
             this._statusLine = lines[0];
-            let statusLineParts: Array<string> = this._statusLine.split(" ");
+            const statusLineParts: Array<string> = this._statusLine.split(" ");
             this._statusCode = parseInt(statusLineParts[1]);
         } else {
             this._requestLine = lines[0];
-            let requestLineParts: Array<string> = this._requestLine.split(" ");
+            const requestLineParts: Array<string> = this._requestLine.split(" ");
             this._method = requestLineParts[0];
             this._uri = requestLineParts[1];
         }
 
         // Handle the headers
         for (let i = 1; i < lines.length; i++) {
-            let headerLine: string = lines[i];
-            let headerParts: Array<string> = headerLine.split(":");
-            let key = headerParts[0];
+            const headerLine: string = lines[i];
+            const headerParts: Array<string> = headerLine.split(":");
+            const key = headerParts[0];
             this._headers[key] = headerParts[1].trim();
         }
     }

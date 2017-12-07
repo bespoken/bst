@@ -36,69 +36,7 @@ export class TCPClient {
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
         client.on("data", function(incommingData: Buffer) {
-            const receivedData =  incommingData.toString();
-            const httpResponseCode = receivedData.substr(9, 3);
-            // On Redirect we need to write data again to correct location
-            console.log("httpResponseCode", httpResponseCode);
-            if (httpResponseCode === "302") {
-                const splitResponse = receivedData.split("Location: ");
-                if (splitResponse.length === 1) {
-                    // 302 but no location, use the callback to continue flow
-                    callback(incommingData, null, null);
-                    return;
-                }
-
-                const fullLocationUri = splitResponse[1].split("\r\n")[0];
-
-                let isHttps = false;
-                if (fullLocationUri.startsWith("https")) {
-                    // we need to change HTTP to HTTPS
-                    isHttps = true;
-                }
-                const locationWithoutProtocol = fullLocationUri.split("//")[1];
-                console.log(locationWithoutProtocol, "locationWithoutProtocol");
-                const splittedUri = locationWithoutProtocol.split("/");
-                const newLocation = splittedUri[0];
-                const splittedPath = splittedUri.slice(1);
-                splittedPath.splice(0, 0, "");
-                const newPath = splittedPath.join("/");
-                console.log("newLocation", newLocation);
-                console.log("path", newPath);
-                client.destroy();
-                const splitRequestData = requestData.split("\r\n");
-                console.log("splittedRequestData", splitRequestData);
-                const requestDataHttpLine = splitRequestData[0];
-                console.log("requestDataHttpLine", requestDataHttpLine);
-
-                const splittedHttpLine = requestDataHttpLine.split(" ");
-                console.log("splittedHttpLine", splittedHttpLine);
-
-                splittedHttpLine.splice(1, 1, newPath);
-                // if (isHttps) {
-                //    splittedHttpLine[2] = splittedHttpLine[2].replace("HTTP", "HTTPS");
-                // }
-                console.log("splittedHttpLine", splittedHttpLine);
-                const newHttpLine = splittedHttpLine.join(" ");
-                console.log("newHttpLine", newHttpLine);
-                splitRequestData.splice(0, 1, newHttpLine);
-
-                const modifiedRequest = splitRequestData.join("\r\n");
-                console.log("modifiedRequest", modifiedRequest);
-
-                // this case only happens on context of redirection
-                let newPort = port;
-                if (port === 80 && isHttps) {
-                    newPort = 443;
-                }
-                client.connect(newPort, newLocation, function () {
-                    // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
-                    client.write(modifiedRequest);
-                });
-                return;
-            }
-
-            console.log("Data from the client :", receivedData);
-
+            console.log("Data Incomming from server", incommingData);
             callback(incommingData, null, null);
         });
 

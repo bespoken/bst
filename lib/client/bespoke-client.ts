@@ -128,10 +128,11 @@ export class BespokeClient {
                 if (httpBuffer.complete()) {
                     LoggingHelper.info(Logger, "ResponseReceived ID: " + request.id());
                     let payload: string = null;
+                    const bodyToString = httpBuffer.body().toString();
                     if (httpBuffer.isJSON()) {
-                        payload = StringUtil.prettyPrintJSON(httpBuffer.body().toString());
+                        payload = StringUtil.prettyPrintJSON(bodyToString);
                     } else {
-                        payload = httpBuffer.body().toString();
+                        payload = bodyToString;
                     }
 
                     // Errors managed by us
@@ -140,7 +141,7 @@ export class BespokeClient {
                     } else {
                         LoggingHelper.verbose(Logger, "Payload:\n" + chalk.cyan(payload));
                     }
-                    self.socketHandler.send(httpBuffer.raw().toString(), request.id());
+                    self.socketHandler.send(httpBuffer.raw(), request.id());
                 }
             } else if (error !== null && error !== undefined) {
                 if (error === NetworkErrorType.CONNECTION_REFUSED) {

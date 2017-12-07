@@ -19,11 +19,11 @@ export class Node {
         return (Object.keys(this.requests).length > 0);
     }
 
-    public onReply(message: string, messageID: number): void {
-        let self = this;
+    public onReply(message: string | Buffer, messageID: number): void {
+        const self = this;
         console.log("NODE " + this.id + " MSG-ID: " + messageID + " ReplyReceived");
 
-        let request = this.requests[messageID];
+        const request = this.requests[messageID];
         if (request === null) {
             LoggingHelper.info(Logger, "No matching messageID for reply: " + messageID);
         } else {
