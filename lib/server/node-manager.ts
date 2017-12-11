@@ -124,7 +124,6 @@ export class NodeManager {
                 LoggingHelper.info(Logger, "STOPPED");
                 callback();
             }
-
         });
     }
 }

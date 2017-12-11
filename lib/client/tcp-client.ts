@@ -15,7 +15,6 @@ export class TCPClient {
     public transmit(host: string, port: number, requestData: string, callback: TCPClientCallback) {
         let self = this;
         let client = new net.Socket();
-        console.log("Full data (this should only be request)", requestData);
         LoggingHelper.info(Logger, "Forwarding " + host + ":" + port);
 
         client.on("error", function (e: any) {

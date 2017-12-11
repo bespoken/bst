@@ -32,8 +32,9 @@ describe("BespokeClient", function() {
 
     describe("#connect()", function() {
         it("Fails to connect", function() {
-            return new Promise(resolve => {
-                this.timeout(8000);
+            this.timeout(13000);
+
+            return new Promise((resolve, reject) => {
                 const client = new BespokeClient("JPKa", "localhost", 9000, "localhost", 9000 );
                 let reconnectAttempts = 0;
                 client.onReconnect = function (error: any) {
@@ -41,9 +42,13 @@ describe("BespokeClient", function() {
                 };
 
                 client.onConnect = function (error: any) {
-                    assert.equal(reconnectAttempts, BespokeClient.RECONNECT_MAX_RETRIES, "Not enough reconnects");
-                    assert(error);
-                    resolve();
+                    try {
+                        assert.equal(reconnectAttempts, BespokeClient.RECONNECT_MAX_RETRIES, "Not enough reconnects");
+                        assert(error);
+                        resolve();
+                    } catch (assertErr) {
+                        reject(assertErr);
+                    }
                 };
                 client.connect();
             });
