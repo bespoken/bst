@@ -193,7 +193,6 @@ export class HTTPBuffer {
     private parseHeaders(headersString: string): void {
         this._headers = {};
         const lines: Array<string> = headersString.split("\n");
-        console.info("Lines received: ", lines);
         // This is a response if it starts with HTTP
         if (lines[0].startsWith("HTTP")) {
             this._statusLine = lines[0];

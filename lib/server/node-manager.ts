@@ -7,7 +7,7 @@ import {Global} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
 import {Statistics, AccessType} from "./statistics";
 
-let Logger = "NODEMGR";
+const Logger = "NODEMGR";
 
 export interface OnConnectCallback {
     (node: Node): void;
@@ -28,11 +28,11 @@ export class NodeManager {
     }
 
     public start (callback?: () => void) {
-        let self = this;
+        const self = this;
         this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
             let node: Node = null;
-            let socketHandler = new SocketHandler(socket, function(message: string | Buffer, messageID?: number) {
+            const socketHandler = new SocketHandler(socket, function(message: string | Buffer, messageID?: number) {
                 // We do special handling when we first connect
                 let strMessage: string = "";
                 if (typeof message !== "string") {
@@ -44,7 +44,6 @@ export class NodeManager {
                 if (initialConnection) {
                     let connectData: any = null;
                     try {
-                        console.log("Supposely first message", strMessage);
                         connectData = JSON.parse(strMessage);
                     } catch (e) {
                         // We just drop it the payload is not correct
@@ -113,7 +112,7 @@ export class NodeManager {
      */
     public stop (callback: () => void): void {
         for (let key of Object.keys(this.nodes)) {
-            let node: Node = this.node(key);
+            const node: Node = this.node(key);
             node.socketHandler.disconnect();
             LoggingHelper.info(Logger, "NODE CLOSING: " + node.id);
         }

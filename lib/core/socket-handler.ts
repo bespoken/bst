@@ -99,9 +99,9 @@ export class SocketHandler {
                 LoggingHelper.error(Logger, "Bad message received: " + dataString);
             } else {
                 if (typeof message === "string") {
-                    LoggingHelper.info(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
+                    LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
                 } else {
-                    LoggingHelper.info(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: < Binary Data >");
+                    LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: < Binary Data >");
                 }
                 this.onMessage(message, messageID);
             }
@@ -122,14 +122,13 @@ export class SocketHandler {
             return;
         }
 
-        LoggingHelper.info(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message.toString()));
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message.toString()));
 
         // If no message ID is specified, just grab a timestamp
         if (messageID === undefined || messageID === null) {
             messageID = new Date().getTime();
         }
         // Use TOKEN as message delimiter
-        console.log("TypeOf Message", typeof message);
         if (typeof message === "string") {
             message = message + messageID + Global.MessageDelimiter;
         } else {
