@@ -34,8 +34,8 @@ export class TCPClient {
 
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
-        client.on("data", function(incommingData: Buffer) {
-            callback(incommingData, null, null);
+        client.on("data", function(incomingData: Buffer) {
+            callback(incomingData, null, null);
         });
 
         // Add a 'close' event handler for the client socket
