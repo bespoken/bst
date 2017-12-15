@@ -8,6 +8,7 @@ import {LambdaServer} from "../../lib/client/lambda-server";
 import * as request from "request";
 import {IncomingMessage} from "http";
 import {Global} from "../../lib/core/global";
+import {SocketMessage} from "../../lib/core/socket-handler";
 
 describe("BespokeServerTest", function() {
     before(() => {
@@ -31,7 +32,7 @@ describe("BespokeServerTest", function() {
                 // Dummy response from a non-existent HTTP service
                 let response = "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\n";
                 response += JSON.stringify({"data": "test"});
-                (<any> bespokeClient).socketHandler.send(response, webhookRequest.id());
+                (<any> bespokeClient).socketHandler.send(new SocketMessage(response, webhookRequest.id()));
             };
 
             bespokeClient.connect(function () {
