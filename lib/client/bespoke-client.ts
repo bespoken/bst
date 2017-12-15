@@ -1,5 +1,5 @@
 import {Global} from "../core/global";
-import {SocketHandler} from "../core/socket-handler";
+import {SocketHandler, SocketMessage} from "../core/socket-handler";
 import {WebhookRequest} from "../core/webhook-request";
 import {TCPClient} from "./tcp-client";
 import {NetworkErrorType} from "../core/global";
@@ -49,8 +49,8 @@ export class BespokeClient {
                 self.connected(error);
             },
 
-            function(data: string, messageID?: number) {
-                self.messageReceived(data, messageID);
+            function(socketMessage: SocketMessage) {
+                self.messageReceived(socketMessage);
             }
         );
 
@@ -107,14 +107,19 @@ export class BespokeClient {
 
             if (!secretKeyValidated) {
                 const errorMessage = "Unauthorized request";
-                this.socketHandler.send(HTTPBuffer.errorResponse(errorMessage).raw().toString(), request.id());
+                this.socketHandler.send(new SocketMessage(HTTPBuffer.errorResponse(errorMessage).raw(), request.id()));
                 return;
             }
         }
 
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(StringUtil.prettyPrintJSON(request.body)));
+        try {
+            JSON.parse(request.body);
+            LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(StringUtil.prettyPrintJSON(request.body)));
+        } catch (error) {
+            LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)("< Binary data >"));
+        }
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
@@ -132,7 +137,8 @@ export class BespokeClient {
                     if (httpBuffer.isJSON()) {
                         payload = StringUtil.prettyPrintJSON(bodyToString);
                     } else {
-                        payload = bodyToString;
+                        // Check for non printable characters
+                        payload = /[\x00-\x1F]/.test(bodyToString) ? "< Binary data >" : bodyToString;
                     }
 
                     // Errors managed by us
@@ -141,7 +147,7 @@ export class BespokeClient {
                     } else {
                         LoggingHelper.verbose(Logger, "Payload:\n" + chalk.cyan(payload));
                     }
-                    self.socketHandler.send(httpBuffer.raw(), request.id());
+                    self.socketHandler.send(new SocketMessage(httpBuffer.raw(), request.id()));
                 }
             } else if (error !== null && error !== undefined) {
                 if (error === NetworkErrorType.CONNECTION_REFUSED) {
@@ -149,7 +155,7 @@ export class BespokeClient {
                 }
 
                 const errorMessage = "BST Proxy - Local Forwarding Error\n" + message;
-                self.socketHandler.send(HTTPBuffer.errorResponse(errorMessage).raw().toString(), request.id());
+                self.socketHandler.send(new SocketMessage(HTTPBuffer.errorResponse(errorMessage).raw(), request.id()));
 
                 if (self.onError != null) {
                     self.onError(error, message);
@@ -185,7 +191,7 @@ export class BespokeClient {
             const messageJSON = {"id": this.nodeID};
             const message = JSON.stringify(messageJSON);
 
-            this.socketHandler.send(message);
+            this.socketHandler.send(new SocketMessage(message));
             if (this.onConnect !== undefined  && this.onConnect !== null) {
                 this.onConnect();
             }
@@ -200,14 +206,14 @@ export class BespokeClient {
         }
     }
 
-    private messageReceived (message: string, messageID?: number) {
+    private messageReceived (socketMessage: SocketMessage) {
         // First message we get back is an ack
-        if (message.indexOf("ACK") !== -1) {
+        if (socketMessage.contains("ACK")) {
 
-        } else if (message.indexOf(Global.KeepAliveMessage) !== -1) {
+        } else if (socketMessage.contains(Global.KeepAliveMessage)) {
             this.keepAlive.received();
         } else {
-            this.onWebhookReceived(WebhookRequest.fromString(this.socketHandler.socket, message, messageID));
+            this.onWebhookReceived(WebhookRequest.fromString(this.socketHandler.socket, socketMessage.asString(), socketMessage.getMessageID()));
         }
     }
 

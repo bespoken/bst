@@ -1,7 +1,7 @@
 import * as net from "net";
 import {Node} from "./node";
 import {Socket} from "net";
-import {SocketHandler} from "../core/socket-handler";
+import {SocketHandler, SocketMessage} from "../core/socket-handler";
 import {Server} from "net";
 import {Global} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
@@ -32,14 +32,9 @@ export class NodeManager {
         this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
             let node: Node = null;
-            const socketHandler = new SocketHandler(socket, function(message: string | Buffer, messageID?: number) {
+            const socketHandler = new SocketHandler(socket, function(socketMessage: SocketMessage) {
                 // We do special handling when we first connect
-                let strMessage: string = "";
-                if (typeof message !== "string") {
-                    strMessage = message.toString();
-                } else {
-                    strMessage = message;
-                }
+                const strMessage: string = socketMessage.asString();
 
                 if (initialConnection) {
                     let connectData: any = null;
@@ -55,7 +50,7 @@ export class NodeManager {
                     node = new Node(connectData.id, socketHandler);
                     self.nodes[node.id] = node;
 
-                    socketHandler.send("ACK");
+                    socketHandler.send(new SocketMessage("ACK"));
                     initialConnection = false;
 
                     if (self.onConnect != null) {
@@ -69,7 +64,7 @@ export class NodeManager {
 
                 } else if (node.handlingRequest()) {
                     // Handle the case where the data received is a reply from the node to data sent to it
-                    node.onReply(message, messageID);
+                    node.onReply(socketMessage);
                 }
             });
 
@@ -102,7 +97,7 @@ export class NodeManager {
 
     private static onKeepAliveReceived(node: Node): void {
         // Reply with the same message on a Keep Alive
-        node.socketHandler.send(Global.KeepAliveMessage);
+        node.socketHandler.send(new SocketMessage(Global.KeepAliveMessage));
     }
 
     /**

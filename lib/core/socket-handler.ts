@@ -16,7 +16,7 @@ export class SocketHandler {
     public onCloseCallback: () => void = null;
     private connected: boolean = true;
 
-    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (message: string | Buffer, messageID?: number) => void): SocketHandler {
+    public static connect(host: string, port: number, onConnect: (error?: any) => void, onMessage: (socketMessage: SocketMessage) => void): SocketHandler {
         let socket = new net.Socket();
         let handler = new SocketHandler(socket, onMessage);
         handler.connected = false;
@@ -34,7 +34,7 @@ export class SocketHandler {
         return handler;
     }
 
-    public constructor (public socket: Socket, private onMessage: (message: string | Buffer, sequenceNumber?: number) => void) {
+    public constructor (public socket: Socket, private onMessage: (socketMessage: SocketMessage) => void) {
         let self = this;
 
         // Set this as instance variable to make it easier to test
@@ -72,7 +72,6 @@ export class SocketHandler {
      */
     private handleData(data: Buffer): void {
         if (data !== null) {
-            // this.buffer += dataString;
             this.buffer = Buffer.concat([this.buffer, data]);
         }
 
@@ -82,10 +81,8 @@ export class SocketHandler {
 
         if (delimiterIndex > -1) {
             const messageIDIndex = delimiterIndex - Global.MessageIDLength;
-            let badMessage = false;
-            if (messageIDIndex < 0) {
-                badMessage = true;
-            }
+
+            let badMessage: boolean = messageIDIndex < 0;
 
             const message = this.buffer.slice(0, messageIDIndex);
             // Grab the message ID - it precedes the delimiter
@@ -98,12 +95,12 @@ export class SocketHandler {
             if (badMessage) {
                 LoggingHelper.error(Logger, "Bad message received: " + dataString);
             } else {
-                if (typeof message === "string") {
-                    LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: " + StringUtil.prettyPrint(message));
-                } else {
-                    LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: < Binary Data >");
-                }
-                this.onMessage(message, messageID);
+                const socketMessage = new SocketMessage(message, messageID);
+
+                LoggingHelper.debug(Logger, "DATA READ " + this.remoteEndPoint() + " ID: " + messageID +  " MSG: "
+                    + StringUtil.prettyPrint(socketMessage.messageForLogging()));
+
+                this.onMessage(socketMessage);
             }
 
             this.buffer = this.buffer.slice(delimiterIndex + Global.MessageDelimiter.length);
@@ -115,26 +112,17 @@ export class SocketHandler {
         }
     }
 
-    public send(message: string | Buffer, messageID?: number) {
+    public send(socketMessage: SocketMessage) {
         // If the socket was already closed, do not write anything
         if (this.socket === null) {
-            LoggingHelper.warn(Logger, "Writing message to closed socket: " + messageID);
+            LoggingHelper.warn(Logger, "Writing message to closed socket: " + socketMessage.getMessageID());
             return;
         }
 
-        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + messageID + " " + StringUtil.prettyPrint(message.toString()));
+        const dataSent = socketMessage.isString() ? socketMessage.asString() : "< Binary Data >";
+        LoggingHelper.debug(Logger, "DATA SENT " + this.remoteEndPoint() + " SEQUENCE: " + socketMessage.getMessageID() + " " + StringUtil.prettyPrint(dataSent));
 
-        // If no message ID is specified, just grab a timestamp
-        if (messageID === undefined || messageID === null) {
-            messageID = new Date().getTime();
-        }
-        // Use TOKEN as message delimiter
-        if (typeof message === "string") {
-            message = message + messageID + Global.MessageDelimiter;
-        } else {
-            message = Buffer.concat([message, Buffer.from(messageID.toString()), Buffer.from(Global.MessageDelimiter)]);
-        }
-        this.socket.write(message, null);
+        this.socket.write(socketMessage.getFullMessage(), null);
     }
 
     public remoteAddress (): string {
@@ -160,3 +148,42 @@ export class SocketHandler {
     }
 }
 
+export class SocketMessage {
+    private message: Buffer = Buffer.from("");
+    public constructor(message: string | Buffer, private sequenceNumber?: number) {
+        if (typeof message === "string") {
+            this.message = Buffer.concat([this.message, Buffer.from(message)]);
+        } else {
+            this.message = Buffer.concat([this.message, message]);
+        }
+    }
+
+    public getMessageID(): number {
+        return this.sequenceNumber ? this.sequenceNumber : new Date().getTime();
+    }
+
+    public asString(): string {
+        return this.message.toString();
+    }
+
+    public isString(): boolean {
+        return !/[\x00-\x1F]/.test(this.asString());
+    }
+
+    public messageForLogging(): string {
+        return this.isString() ? this.asString() : "< Binary Data>";
+    }
+
+    public getMessage() {
+        return this.message;
+    }
+
+    public getFullMessage() {
+        const messageID = this.getMessageID();
+        return Buffer.concat([this.message, Buffer.from(messageID.toString()), Buffer.from(Global.MessageDelimiter)]);
+    }
+
+    public contains(stringToFind: string) {
+        return this.asString().indexOf(stringToFind) > -1;
+    }
+}

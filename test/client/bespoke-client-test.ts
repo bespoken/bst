@@ -5,7 +5,7 @@ import {Node} from "../../lib/server/node";
 import {NodeManager} from "../../lib/server/node-manager";
 import {Global} from "../../lib/core/global";
 import {KeepAlive} from "../../lib/client/keep-alive";
-import {SocketHandler} from "../../lib/core/socket-handler";
+import {SocketHandler, SocketMessage} from "../../lib/core/socket-handler";
 import {HTTPClient} from "../../lib/core/http-client";
 
 let keepAlive: KeepAlive = null;
@@ -205,7 +205,7 @@ describe("BespokeClient", function() {
 
                     count++;
                     if (count < 10) {
-                        node.socketHandler.send(Global.KeepAliveMessage);
+                        node.socketHandler.send(new SocketMessage(Global.KeepAliveMessage));
                     }
                 };
 
@@ -248,7 +248,7 @@ describe("BespokeClient", function() {
                 let count = 0;
                 (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
                     count++;
-                    node.socketHandler.send(Global.KeepAliveMessage);
+                    node.socketHandler.send(new SocketMessage(Global.KeepAliveMessage));
                 };
 
                 const client = new MockBespokeClient("JPKf", "localhost", testPort, "localhost", testPort + 1);
