@@ -114,6 +114,15 @@ export class WebhookRequest {
         return this.extractNodeIdFromRequest(this.rawContents.toString());
     }
 
+    public isJSON(): boolean {
+        try {
+            JSON.parse(this.body);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     public toString(): string {
         return this.method + " " + this.uri;
     }

@@ -37,15 +37,14 @@ export class NodeManager {
                 const strMessage: string = socketMessage.asString();
 
                 if (initialConnection) {
-                    let connectData: any = null;
-                    try {
-                        connectData = JSON.parse(strMessage);
-                    } catch (e) {
+                     if (!socketMessage.isJSON()) {
                         // We just drop it the payload is not correct
                         LoggingHelper.error(Logger, "Error on parsing initial message: " + strMessage);
                         socketHandler.disconnect();
                         return;
                     }
+
+                    const connectData = socketMessage.asJSON();
 
                     node = new Node(connectData.id, socketHandler);
                     self.nodes[node.id] = node;

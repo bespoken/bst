@@ -114,12 +114,10 @@ export class BespokeClient {
 
         // Print out the contents of the request body to the console
         LoggingHelper.info(Logger, "RequestReceived: " + request.toString() + " ID: " + request.id());
-        try {
-            JSON.parse(request.body);
-            LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(StringUtil.prettyPrintJSON(request.body)));
-        } catch (error) {
-            LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)("< Binary data >"));
-        }
+
+        const bodyToPrint = request.isJSON() ? StringUtil.prettyPrintJSON(request.body) : "< Binary data >";
+
+        LoggingHelper.verbose(Logger, "Payload:\n" + chalk.hex(LoggingHelper.REQUEST_COLOR)(bodyToPrint));
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();

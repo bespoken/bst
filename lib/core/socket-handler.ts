@@ -170,6 +170,19 @@ export class SocketMessage {
         return !/[\x00-\x1F]/.test(this.asString());
     }
 
+    public isJSON(): boolean {
+        try {
+            JSON.parse(this.asString());
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    public asJSON() {
+        return JSON.parse(this.asString());
+    }
+
     public messageForLogging(): string {
         return this.isString() ? this.asString() : "< Binary Data>";
     }
