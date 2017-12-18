@@ -1,7 +1,7 @@
 // import * as assert from "assert";
 
 import {Global} from "../../lib/core/global";
-import {SocketHandler} from "../../lib/core/socket-handler";
+import {SocketHandler, SocketMessage} from "../../lib/core/socket-handler";
 import * as net from "net";
 import {Socket} from "net";
 import {KeepAlive} from "../../lib/client/keep-alive";
@@ -52,7 +52,7 @@ describe("KeepAlive", function() {
                     console.log("Count: " + count);
 
                     if (count < 10) {
-                        serverSocket.send(Global.KeepAliveMessage);
+                        serverSocket.send(new SocketMessage(Global.KeepAliveMessage));
                     } else {
                         // serverSocket.disconnect();
                     }

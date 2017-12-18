@@ -12,7 +12,7 @@ export class TCPClient {
     public onCloseCallback: () => void;
     public constructor (public id: string) {}
 
-    public transmit(host: string, port: number, data: string, callback: TCPClientCallback) {
+    public transmit(host: string, port: number, requestData: string, callback: TCPClientCallback) {
         let self = this;
         let client = new net.Socket();
         LoggingHelper.info(Logger, "Forwarding " + host + ":" + port);
@@ -28,14 +28,14 @@ export class TCPClient {
 
         client.connect(port, host, function () {
             // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client
-            client.write(data);
+            client.write(requestData);
         });
 
 
         // Add a 'data' event handler for the client socket
         // data is what the server sent to this socket
-        client.on("data", function(data: Buffer) {
-            callback(data, null, null);
+        client.on("data", function(incomingData: Buffer) {
+            callback(incomingData, null, null);
         });
 
         // Add a 'close' event handler for the client socket

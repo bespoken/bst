@@ -1,4 +1,4 @@
-import {SocketHandler} from "../core/socket-handler";
+import {SocketHandler, SocketMessage} from "../core/socket-handler";
 import {WebhookRequest} from "../core/webhook-request";
 import {LoggingHelper} from "../core/logging-helper";
 
@@ -12,24 +12,24 @@ export class Node {
     public forward(request: WebhookRequest): void {
         console.log("NODE " + this.id + " MSG-ID: " + request.id() + " Forwarding");
         this.requests[request.id()] = request;
-        this.socketHandler.send(request.toTCP(), request.id());
+        this.socketHandler.send(new SocketMessage(request.toTCP(), request.id()));
     }
 
     public handlingRequest(): boolean {
         return (Object.keys(this.requests).length > 0);
     }
 
-    public onReply(message: string, messageID: number): void {
-        let self = this;
-        console.log("NODE " + this.id + " MSG-ID: " + messageID + " ReplyReceived");
+    public onReply(socketMessage: SocketMessage): void {
+        const self = this;
+        console.log("NODE " + this.id + " MSG-ID: " + socketMessage.getMessageID() + " ReplyReceived");
 
-        let request = this.requests[messageID];
+        const request = this.requests[socketMessage.getMessageID()];
         if (request === null) {
-            LoggingHelper.info(Logger, "No matching messageID for reply: " + messageID);
+            LoggingHelper.info(Logger, "No matching messageID for reply: " + socketMessage.getMessageID());
         } else {
-            delete self.requests[messageID];
+            delete self.requests[socketMessage.getMessageID()];
             try {
-                request.sourceSocket.write(message);
+                request.sourceSocket.write(socketMessage.getMessage());
             } catch (e) {
                 LoggingHelper.error(Logger, "Error writing: " + e);
             }

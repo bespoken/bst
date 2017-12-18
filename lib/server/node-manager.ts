@@ -1,13 +1,13 @@
 import * as net from "net";
 import {Node} from "./node";
 import {Socket} from "net";
-import {SocketHandler} from "../core/socket-handler";
+import {SocketHandler, SocketMessage} from "../core/socket-handler";
 import {Server} from "net";
 import {Global} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
 import {Statistics, AccessType} from "./statistics";
 
-let Logger = "NODEMGR";
+const Logger = "NODEMGR";
 
 export interface OnConnectCallback {
     (node: Node): void;
@@ -28,27 +28,28 @@ export class NodeManager {
     }
 
     public start (callback?: () => void) {
-        let self = this;
+        const self = this;
         this.server = net.createServer(function(socket: Socket) {
             let initialConnection = true;
             let node: Node = null;
-            let socketHandler = new SocketHandler(socket, function(message: string, messageID?: number) {
+            const socketHandler = new SocketHandler(socket, function(socketMessage: SocketMessage) {
                 // We do special handling when we first connect
+                const strMessage: string = socketMessage.asString();
+
                 if (initialConnection) {
-                    let connectData: any = null;
-                    try {
-                        connectData = JSON.parse(message);
-                    } catch (e) {
+                     if (!socketMessage.isJSON()) {
                         // We just drop it the payload is not correct
-                        LoggingHelper.error(Logger, "Error on parsing initial message: " + message);
+                        LoggingHelper.error(Logger, "Error on parsing initial message: " + strMessage);
                         socketHandler.disconnect();
                         return;
                     }
 
+                    const connectData = socketMessage.asJSON();
+
                     node = new Node(connectData.id, socketHandler);
                     self.nodes[node.id] = node;
 
-                    socketHandler.send("ACK");
+                    socketHandler.send(new SocketMessage("ACK"));
                     initialConnection = false;
 
                     if (self.onConnect != null) {
@@ -57,12 +58,12 @@ export class NodeManager {
 
                     // Capture the connection
                     Statistics.instance().record(node.id, AccessType.CONNECT);
-                } else if (message === Global.KeepAliveMessage) {
+                } else if (strMessage === Global.KeepAliveMessage) {
                     NodeManager.onKeepAliveReceived(node);
 
                 } else if (node.handlingRequest()) {
                     // Handle the case where the data received is a reply from the node to data sent to it
-                    node.onReply(message, messageID);
+                    node.onReply(socketMessage);
                 }
             });
 
@@ -95,7 +96,7 @@ export class NodeManager {
 
     private static onKeepAliveReceived(node: Node): void {
         // Reply with the same message on a Keep Alive
-        node.socketHandler.send(Global.KeepAliveMessage);
+        node.socketHandler.send(new SocketMessage(Global.KeepAliveMessage));
     }
 
     /**
@@ -105,7 +106,7 @@ export class NodeManager {
      */
     public stop (callback: () => void): void {
         for (let key of Object.keys(this.nodes)) {
-            let node: Node = this.node(key);
+            const node: Node = this.node(key);
             node.socketHandler.disconnect();
             LoggingHelper.info(Logger, "NODE CLOSING: " + node.id);
         }
@@ -117,7 +118,6 @@ export class NodeManager {
                 LoggingHelper.info(Logger, "STOPPED");
                 callback();
             }
-
         });
     }
 }

@@ -2,7 +2,7 @@ import * as TypeMoq from "typemoq";
 import * as assert from "assert";
 import * as net from "net";
 
-import {SocketHandler} from "../../lib/core/socket-handler";
+import {SocketHandler, SocketMessage} from "../../lib/core/socket-handler";
 import {Socket} from "net";
 import {Global} from "../../lib/core/global";
 import {BufferUtil} from "../../lib/core/buffer-util";
@@ -22,10 +22,10 @@ describe("SocketHandlerTest", function() {
 
     describe("Send", function() {
         it("Sends Simple Payload", function(done) {
-            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
-            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
-                assert.equal("TEST", message);
+            const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
+                assert.equal("TEST", message.asString());
                 done();
             });
 
@@ -33,11 +33,11 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends No Message ID Payload", function(done) {
-            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
             // Second message is received buy not the first
-            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
-                assert.equal(message, "TESTB");
+            const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
+                assert.equal(message.asString(), "TESTB");
                 done();
             });
 
@@ -46,11 +46,11 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends Bad Message ID Payload", function(done) {
-            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
             // Second message is received buy not the first
-            let socketHandler = new SocketHandler(mockSocket.object, function(message: string) {
-                assert.equal(message, "TESTB");
+            const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
+                assert.equal(message.asString(), "TESTB");
                 done();
             });
 
@@ -61,43 +61,43 @@ describe("SocketHandlerTest", function() {
 
 
         it("Sends Multiple Payloads At Once", function(done) {
-            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
             let count = 0;
-            let socketHandler = new SocketHandler(mockSocket.object, function(message: string, messageID: number) {
+            const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
                 count++;
                 if (count === 1) {
-                    assert.equal((messageID + "").length, 13);
-                    assert.equal("TEST", message);
+                    assert.equal((message.getMessageID() + "").length, 13);
+                    assert.equal("TEST", message.asString());
                 } else {
-                    assert.equal("TEST2", message);
+                    assert.equal("TEST2", message.asString());
                     done();
                 }
             });
-            let data = "TEST" + new Date().getTime() + Global.MessageDelimiter + "TEST2" + new Date().getTime() + Global.MessageDelimiter;
+            const data = "TEST" + new Date().getTime() + Global.MessageDelimiter + "TEST2" + new Date().getTime() + Global.MessageDelimiter;
             socketHandler.onDataCallback(BufferUtil.fromString(data));
         });
 
         it("Sends Broken Up Payloads", function(done) {
-            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
             let count = 0;
-            let socketHandler = new SocketHandler(mockSocket.object, function(message: string, messageID: number) {
+            const socketHandler = new SocketHandler(mockSocket.object, function(socketMessage: SocketMessage) {
                 count++;
                 if (count === 1) {
-                    assert.equal(message, "Test]}}");
-                    assert.equal(messageID, 1234567890124);
+                    assert.equal(socketMessage.asString(), "Test]}}");
+                    assert.equal(socketMessage.getMessageID(), 1234567890124);
                 } else {
-                    assert.equal(message, "BlobBlob2");
-                    assert.equal(messageID, 1234567890123);
+                    assert.equal(socketMessage.asString(), "BlobBlob2");
+                    assert.equal(socketMessage.getMessageID(), 1234567890123);
                     done();
                 }
             });
 
-            let payload1 = "Test]}}123456789012447726";
-            let payload2 = "16365";
-            let payload3 = "Blob";
-            let payload4 = "Blob212345678901234772616365";
+            const payload1 = "Test]}}123456789012447726";
+            const payload2 = "16365";
+            const payload3 = "Blob";
+            const payload4 = "Blob212345678901234772616365";
 
             socketHandler.onDataCallback(BufferUtil.fromString(payload1));
             socketHandler.onDataCallback(BufferUtil.fromString(payload2));
@@ -106,27 +106,27 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends More Broken Up Payloads", function(done) {
-            let mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
 
             let count = 0;
-            let socketHandler = new SocketHandler(mockSocket.object, function(message: string, messageID: number) {
+            const socketHandler = new SocketHandler(mockSocket.object, function(socketMessage: SocketMessage) {
                 count++;
                 if (count === 1) {
-                    assert.equal(message, "Test");
-                    assert.equal(messageID, 1234567890123);
+                    assert.equal(socketMessage.asString(), "Test");
+                    assert.equal(socketMessage.getMessageID(), 1234567890123);
                 } else {
-                    assert.equal(message, "BlobBlob2");
-                    assert.equal(messageID, 1234567890124);
+                    assert.equal(socketMessage.asString(), "BlobBlob2");
+                    assert.equal(socketMessage.getMessageID(), 1234567890124);
                     done();
                 }
             });
 
-            let payload1 = "Test1234567890123";
-            let payload2 = "4772616365";
-            let payload3 = "Blob";
-            let payload4 = "Blob2123456";
-            let payload5 = "78901244772";
-            let payload6 = "616365";
+            const payload1 = "Test1234567890123";
+            const payload2 = "4772616365";
+            const payload3 = "Blob";
+            const payload4 = "Blob2123456";
+            const payload5 = "78901244772";
+            const payload6 = "616365";
 
             socketHandler.onDataCallback(BufferUtil.fromString(payload1));
             socketHandler.onDataCallback(BufferUtil.fromString(payload2));
@@ -139,7 +139,7 @@ describe("SocketHandlerTest", function() {
 
     describe("#newSocket", function () {
         it("Sends callback on failure to connect", function (done) {
-            let client = new net.Socket();
+            const client = new net.Socket();
 
             SocketHandler.connect("localhost", 10001,
                 function (error: any) {
@@ -157,8 +157,8 @@ describe("SocketHandlerTest", function() {
 
     describe("#close", function() {
         it("Sends callback on close", function (done) {
-            let client = new net.Socket();
-            let socketHandler = SocketHandler.connect("localhost", 10001,
+            const client = new net.Socket();
+            const socketHandler = SocketHandler.connect("localhost", 10001,
                 function (error: any) {
                     assert(error);
                     done();
@@ -175,9 +175,9 @@ describe("SocketHandlerTest", function() {
         });
 
         it("No error when no callback registered on close", function (done) {
-            let client = new net.Socket();
+            const client = new net.Socket();
             client.connect(10000, "localhost", function () {
-                new SocketHandler(client, function (message: string) {
+                new SocketHandler(client, function (message: any) {
 
                 });
 
@@ -189,14 +189,14 @@ describe("SocketHandlerTest", function() {
             });
         });
         it("No error on send after disconnect", function (done) {
-            let client = new net.Socket();
+            const client = new net.Socket();
             client.connect(10000, "localhost", function () {
-                let handler = new SocketHandler(client, function (message: string) {
+                const handler = new SocketHandler(client, function (message: SocketMessage) {
 
                 });
 
                 handler.disconnect();
-                handler.send("No error on this");
+                handler.send(new SocketMessage("No error on this"));
 
                 setTimeout(function () {
                     done();

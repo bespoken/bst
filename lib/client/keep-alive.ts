@@ -1,4 +1,4 @@
-import {SocketHandler} from "../core/socket-handler";
+import {SocketHandler, SocketMessage} from "../core/socket-handler";
 import {Global} from "../core/global";
 
 const KeepAlivePeriod = 30000; // Ping every 30 seconds
@@ -49,7 +49,7 @@ export class KeepAlive {
 
         this.timeout = setTimeout(function () {
             if (!self.stopped) {
-                self.socket.send(Global.KeepAliveMessage);
+                self.socket.send(new SocketMessage(Global.KeepAliveMessage));
                 self.keepAlive();
             }
         }, this.pingPeriod);
