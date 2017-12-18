@@ -28,7 +28,7 @@ deployment:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker build -f docker/Dockerfile -t bespoken/bst:$CIRCLE_TAG .
       - docker push bespoken/bst:$CIRCLE_TAG
-      - ./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET
+      - ./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET --default-region us-west-1
       - ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - ./hyper pull bespoken/bst:$CIRCLE_TAG
       - ./hyper rm -f bst || true
