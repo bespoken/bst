@@ -44,3 +44,26 @@ deployment:
         --restart=always
         -P bespoken/bst:$CIRCLE_TAG
       - ./hyper fip attach -f 199.245.58.242 bst
+
+  bst-dev-server:
+    tag: /bst-dev-.*/
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker build -f docker/Dockerfile -t bespoken/bst:$CIRCLE_TAG .
+      - docker push bespoken/bst:$CIRCLE_TAG
+      - ./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET --default-region us-west-1
+      - ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - ./hyper pull bespoken/bst:$CIRCLE_TAG
+      - ./hyper rm -f bst-dev || true
+      - >
+        ./hyper run
+        -e AWS_ACCESS_KEY_ID=$PROD_AWS_ACCESS_KEY_ID
+        -e AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY
+        -e SSL_CERT="$SSL_CERT"
+        -e SSL_KEY="$SSL_KEY"
+        -d
+        --name bst-dev
+        --size s4
+        --restart=always
+        -P bespoken/bst:$CIRCLE_TAG
+      - ./hyper fip attach -f 199.245.58.199 bst-dev
