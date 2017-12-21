@@ -54,7 +54,7 @@ deployment:
       - ./hyper config --accesskey $HYPER_KEY --secretkey $HYPER_SECRET --default-region us-west-1
       - ./hyper login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - ./hyper pull bespoken/bst:$CIRCLE_TAG
-      - ./hyper rm -f bst || true
+      - ./hyper rm -f bst-dev || true
       - >
         ./hyper run
         -e AWS_ACCESS_KEY_ID=$PROD_AWS_ACCESS_KEY_ID
@@ -62,8 +62,8 @@ deployment:
         -e SSL_CERT="$SSL_CERT"
         -e SSL_KEY="$SSL_KEY"
         -d
-        --name bst
+        --name bst-dev
         --size s4
         --restart=always
         -P bespoken/bst-dev:$CIRCLE_TAG
-      - ./hyper fip attach -f 199.245.58.199 bst
+      - ./hyper fip attach -f 199.245.58.199 bst-dev
