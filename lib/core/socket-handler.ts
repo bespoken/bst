@@ -75,9 +75,7 @@ export class SocketHandler {
             this.buffer = Buffer.concat([this.buffer, data]);
         }
 
-        const dataString = this.buffer.toString();
-
-        const delimiterIndex = dataString.indexOf(Global.MessageDelimiter);
+        const delimiterIndex = this.buffer.indexOf(Global.MessageDelimiter);
 
         if (delimiterIndex > -1) {
             const messageIDIndex = delimiterIndex - Global.MessageIDLength;
@@ -86,14 +84,14 @@ export class SocketHandler {
 
             const message = this.buffer.slice(0, messageIDIndex);
             // Grab the message ID - it precedes the delimiter
-            const messageIDString = dataString.slice(delimiterIndex - Global.MessageIDLength, delimiterIndex);
+            const messageIDString = this.buffer.slice(delimiterIndex - Global.MessageIDLength, delimiterIndex).toString();
             const messageID: number = parseInt(messageIDString);
             if (isNaN(messageID) || (messageID + "").length < 13) {
                 badMessage = true;
             }
 
             if (badMessage) {
-                LoggingHelper.error(Logger, "Bad message received: " + dataString);
+                LoggingHelper.error(Logger, "Bad message received: " + this.buffer.toString());
             } else {
                 const socketMessage = new SocketMessage(message, messageID);
 

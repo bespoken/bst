@@ -1,5 +1,4 @@
 import * as querystring from "querystring";
-import {BufferUtil} from "./buffer-util";
 import {Socket} from "net";
 
 export class WebhookRequest {
@@ -7,12 +6,14 @@ export class WebhookRequest {
     public method: string;
     public uri: string;
     public body: string;
+    public rawBody: Buffer;
     public queryParameters: {[id: string]: string | string[]} = {};
     public headers: { [id: string]: string };
     private requestID: number;
 
     public constructor(public sourceSocket?: Socket) {
         this.rawContents = new Buffer("");
+        this.rawBody = new Buffer("");
         this.body = "";
         this.requestID = new Date().getTime();
         if (this.sourceSocket === undefined) {
@@ -20,42 +21,42 @@ export class WebhookRequest {
         }
     }
 
-    public static fromString(sourceSocket: Socket, payload: string, id?: number): WebhookRequest {
-        let webhookRequest = new WebhookRequest(sourceSocket);
-        webhookRequest.append(BufferUtil.fromString(payload));
+    public static fromBuffer(sourceSocket: Socket, payload: Buffer, id?: number): WebhookRequest {
+        const webhookRequest = new WebhookRequest(sourceSocket);
+        webhookRequest.append(payload);
         webhookRequest.requestID = id;
         return webhookRequest;
     }
 
     public append(data: Buffer) {
         this.rawContents = Buffer.concat([this.rawContents, data]);
-
         if (this.headers == null) {
             this.headers = {};
-            let contentsString: string = this.rawContents.toString();
-            let endIndex = contentsString.indexOf("\r\n\r\n");
+            const endIndex = this.rawContents.indexOf("\r\n\r\n");
             if (endIndex !== -1) {
-                this.parseHeaders(contentsString.substr(0, endIndex));
+                this.parseHeaders(this.rawContents.slice(0, endIndex).toString());
 
-                if (endIndex + 4 < contentsString.length) {
-                    let bodyPart: string = contentsString.substr((endIndex + 4));
+                if (endIndex + 4 < this.rawContents.length) {
+                    const bodyPart: Buffer = this.rawContents.slice((endIndex + 4));
                     this.appendBody(bodyPart);
                 }
             }
         } else {
-            this.appendBody(data.toString());
+            this.appendBody(data);
         }
     }
 
-    public appendBody(bodyPart: string) {
-        this.body += bodyPart;
+    public appendBody(bodyPart: Buffer) {
+        this.rawBody = Buffer.concat([this.rawBody, bodyPart]);
+        this.body += bodyPart.toString();
     }
 
     public done(): boolean {
         if (this.method === "GET") {
             return true;
         }
-        return (this.body.length === this.contentLength());
+
+        return (this.rawBody.length === this.contentLength());
     }
 
     public contentLength(): number {

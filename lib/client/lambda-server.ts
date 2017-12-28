@@ -103,6 +103,7 @@ export class LambdaServer {
             path = this.file;
         } else {
             if (onlyUrl !== "/") {
+
                 // verify that path does not contain more than one '.' or node_modules anywhere
                 if (/(.*\..*\.)|(.*node_modules)/.test(onlyUrl)) {
                     context.fail(Error(`LambdaServer input url should not contain more than '.' or node_modules.  found: ${onlyUrl}`));
@@ -118,6 +119,7 @@ export class LambdaServer {
                 return;
             }
         }
+
         LoggingHelper.debug(Logger, "Invoking Lambda: " + path);
 
         const lambda = this.moduleManager.module(path);
