@@ -10,6 +10,10 @@ program.version(Global.version());
 program
     .usage("[options]")
     .option("-u, --url <alexa-skill-url>", "The URL of the Alexa skill to speak to - defaults to current proxied skill")
+    .option("-l, --locale <locale>", "The locale expected for the Alexa skill - defaults to en-US")
+    .option("-m, --model <interaction-model-path>", "Path to the interaction model file - defaults to ./models/en-US.json")
+    .option("-i, --intents <intent-schema-path>", "Path to the intent schema file - defaults to ./speechAssets/IntentSchema.json")
+    .option("-s, --samples <sample-utterances-path>", "Path to the sample utterances file - defaults to ./speechAssets/SampleUtterances.txt")
     .option("-a, --appId <application-id>", "The application ID for the skill")
     .option("-U, --userId <user-id>", "Sets the user id to the specified value")
     .option("-t, --accessToken <accessToken>", "Sets the access token for emulating a user with a linked account")
@@ -18,7 +22,11 @@ program
         // Just by casting program to options, we can get all the options which are set on it
         const options: any = program;
         let url = options.url;
+        const interactionModel = options.model;
+        const intentSchemaPath = options.intents;
+        const samplesPath = options.samples;
         const applicationID = options.appId;
+        const locale = options.locale;
 
         if (process.argv.some( arg => arg === "-h" || arg === "--help")) {
             program.outputHelp();
@@ -42,7 +50,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTVirtualAlexa(url, null, null, null, applicationID, null);
+        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID, locale);
         try {
             speaker.start();
         } catch (error) {
