@@ -1,0 +1,30 @@
+{
+  "intents": [
+    {"name": "Test",
+      "samples": ["Test", "Test2"]
+    },
+    {"name": "Another Test",
+      "samples": ["Another Test", "Another"]},
+    {"name": "HelloIntent",
+      "samples": ["Hello"]},
+    {"name": "PlayIntent",
+      "samples": []},
+    {"name": "ErrorIntent",
+      "samples": ["Have I Erred"]},
+    {"name": "AMAZON.HelpIntent",
+      "samples": []},
+    {"name": "WithSlot",
+      "samples": ["With Slot {SlotName}"],
+      "slots": [
+        {"name": "SlotName", "type": "SLOT_TYPE"}
+      ]
+    },
+    {"name": "WithMultiSlot",
+      "samples": [],
+      "slots": [
+        {"name": "SlotName", "type": "SLOT_TYPE"},
+        {"name": "SlotName2", "type": "SLOT_TYPE2"}
+      ]
+    }
+  ]
+}

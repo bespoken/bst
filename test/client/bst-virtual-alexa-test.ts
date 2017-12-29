@@ -119,6 +119,14 @@ describe("BSTVirtualAlexa", async function() {
             process.chdir("../../..");
         });
 
+        it("Start with defaults (locale change default)", function () {
+            process.chdir("test/resources/nonUSModel");
+            const speak = new BSTVirtualAlexa("http://localhost:9000", null, null, null, null, "de-DE");
+            speak.start();
+            assert(true, "Start processed without exceptions");
+            process.chdir("../../..");
+        });
+
         it("Initializes with specified files", function () {
             const speak = new BSTVirtualAlexa("http://localhost:9000",
                 null,

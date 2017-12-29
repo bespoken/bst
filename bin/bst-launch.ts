@@ -42,7 +42,7 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTVirtualAlexa(url, null, null, null, applicationID);
+        const speaker = new BSTVirtualAlexa(url, null, null, null, applicationID, null);
         try {
             speaker.start();
         } catch (error) {
