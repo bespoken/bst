@@ -155,8 +155,6 @@ export class BSTEncode {
             (<any> options.headers).filterVolume = this._configuration.filterVolume + "";
         }
 
-        console.log("OPtions: ", options);
-
         let responseData = "";
         const request = https.request(options, function (response: IncomingMessage) {
             if (response.statusCode !== 200) {
