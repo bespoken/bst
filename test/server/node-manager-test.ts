@@ -33,7 +33,7 @@ describe("NodeManager", function() {
                         done();
                     });
                 };
-                client.transmit("localhost", 9000, "{1234567890123" + Global.MessageDelimiter, function () {
+                client.transmit("localhost", 9000, Buffer.from("{1234567890123" + Global.MessageDelimiter), function () {
                     assert(false, "This should not be reached - no data should be sent back.");
                 });
             });

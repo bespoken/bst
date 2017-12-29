@@ -4,7 +4,7 @@
 
 import {FileUtil} from "../core/file-util";
 import * as path from "path";
-import * as http from "http";
+import * as https from "https";
 import {IncomingMessage} from "http";
 const AWS = require("aws-sdk");
 
@@ -156,7 +156,7 @@ export class BSTEncode {
         }
 
         let responseData = "";
-        const request = http.request(options, function (response: IncomingMessage) {
+        const request = https.request(options, function (response: IncomingMessage) {
             if (response.statusCode !== 200) {
                 callback(new Error(response.statusMessage), null);
             } else {

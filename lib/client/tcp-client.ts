@@ -12,7 +12,7 @@ export class TCPClient {
     public onCloseCallback: () => void;
     public constructor (public id: string) {}
 
-    public transmit(host: string, port: number, requestData: string, callback: TCPClientCallback) {
+    public transmit(host: string, port: number, requestData: Buffer, callback: TCPClientCallback) {
         let self = this;
         let client = new net.Socket();
         LoggingHelper.info(Logger, "Forwarding " + host + ":" + port);

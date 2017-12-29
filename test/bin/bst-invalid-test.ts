@@ -66,7 +66,7 @@ describe("bst commands", function() {
         mockery.disable();
     });
 
-    this.timeout(2000);
+    this.timeout(3000);
 
     describe("Invalid deploy command", function() {
         it("Prints error with invalid command", function(done) {

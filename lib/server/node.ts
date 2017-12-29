@@ -12,7 +12,7 @@ export class Node {
     public forward(request: WebhookRequest): void {
         console.log("NODE " + this.id + " MSG-ID: " + request.id() + " Forwarding");
         this.requests[request.id()] = request;
-        this.socketHandler.send(new SocketMessage(request.toTCP(), request.id()));
+        this.socketHandler.send(new SocketMessage(request.rawContents, request.id()));
     }
 
     public handlingRequest(): boolean {

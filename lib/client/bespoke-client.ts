@@ -121,7 +121,7 @@ export class BespokeClient {
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
-        tcpClient.transmit(self.targetDomain, self.targetPort, request.toTCP(), function(data: Buffer, error: NetworkErrorType, message: string) {
+        tcpClient.transmit(self.targetDomain, self.targetPort, request.rawContents, function(data: Buffer, error: NetworkErrorType, message: string) {
 
             if (data != null) {
                 // Grab the body of the response payload
@@ -211,7 +211,7 @@ export class BespokeClient {
         } else if (socketMessage.contains(Global.KeepAliveMessage)) {
             this.keepAlive.received();
         } else {
-            this.onWebhookReceived(WebhookRequest.fromString(this.socketHandler.socket, socketMessage.asString(), socketMessage.getMessageID()));
+            this.onWebhookReceived(WebhookRequest.fromBuffer(this.socketHandler.socket, socketMessage.getMessage(), socketMessage.getMessageID()));
         }
     }
 
