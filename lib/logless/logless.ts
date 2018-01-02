@@ -7,6 +7,12 @@ import {LogType} from "./logless-context";
  * Before you integrate the code, you will need to a key. You get it from [the Bespoken Dashboard](https://apps.bespoken.io/dashboard).
  * Once integrated, this is where your logs and data will be viewable.
  *
+ * Install the dependency
+ *
+ * <pre><code>
+ *     $npm install bespoken-tools --save
+ * </code></pre>
+ *
  * To use it with Lambdas, simply wrap your function handler, like so:
  * <pre><code>
  *     var bst = require('bespoken-tools');
