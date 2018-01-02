@@ -71,7 +71,8 @@ export class BSTVirtualAlexa {
                        private interactionModel?: string,
                        private intentSchemaFile?: string,
                        private sampleUtterancesFile?: string,
-                       private applicationID?: string) {
+                       private applicationID?: string,
+                       private locale?: string) {
         if ((intentSchemaFile || sampleUtterancesFile) && interactionModel) {
             console.error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
             throw new Error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
@@ -134,6 +135,15 @@ export class BSTVirtualAlexa {
     private validateFilesAndBuild(): VirtualAlexa {
         const builder = VirtualAlexa.Builder().applicationID(this.applicationID).skillURL(this.skillURL);
         let usingInteractionModel = false;
+
+        if (this.locale) {
+            builder.locale(this.locale);
+            if (!this.interactionModelProvided) {
+                // If we don't have an interaction Model and have a locale, search in the default models/<locale>.json location
+                this.interactionModel = this.interactionModel.replace("en-US", this.locale);
+            }
+        }
+
         if (!(this.interactionModelProvided || this.intentSchemaProvided)) {
             // No model provided, we check if default files exists
             if (fs.existsSync(this.interactionModel)) {
