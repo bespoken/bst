@@ -106,13 +106,19 @@ export class WebhookRequest {
         return nodeValue;
     }
 
-    private extractNodeIdFromRequest(tcpString: string) {
-        return tcpString.replace("/?node-id=" + this.nodeID(), "/");
+    private removeBespokenQueries(httpLine: string): string {
+        return httpLine.replace("&node-id=" + this.nodeID(), "")
+            .replace("node-id=" + this.nodeID(), "")
+            .replace("&bespoken-key=" + this.nodeID(), "")
+            .replace("bespoken-key=" + this.nodeID(), "")
+            .replace("? HTTP", " HTTP"); // in case the only parameters were bespoken ones
     }
 
-    // Turns the webhook HTTP request into straight TCP payload
-    public toTCP (): string {
-        return this.extractNodeIdFromRequest(this.rawContents.toString());
+    public requestWithoutBespokenData(): Buffer {
+        const firstLineBreak = this.rawContents.indexOf("\n");
+        const httpLine = this.rawContents.slice(0, firstLineBreak).toString();
+        return Buffer.concat([Buffer.from(this.removeBespokenQueries(httpLine)),
+            this.rawContents.slice(firstLineBreak)]);
     }
 
     public isJSON(): boolean {

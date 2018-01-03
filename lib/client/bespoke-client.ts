@@ -121,7 +121,7 @@ export class BespokeClient {
 
         const tcpClient = new TCPClient(request.id() + "");
         const httpBuffer = new HTTPBuffer();
-        tcpClient.transmit(self.targetDomain, self.targetPort, request.rawContents, function(data: Buffer, error: NetworkErrorType, message: string) {
+        tcpClient.transmit(self.targetDomain, self.targetPort, request.requestWithoutBespokenData(), function(data: Buffer, error: NetworkErrorType, message: string) {
 
             if (data != null) {
                 // Grab the body of the response payload
