@@ -1,6 +1,9 @@
 This tutorial shows you how to get started using our Virtual Alexa emulator with Node.js and Javascript.
 
-The purpose of the emulator is to enable unit- and functional-testing of Alexa skills,
+*Please note - our Virtual Alexa project has replaced the BSTAlexa classes.*
+They are still available, and [you can read about them here](tutorial_bst_emulator_nodejs) but will be deprecated in an upcoming version.
+
+The purpose of the emulator is to enable unit-testing and functional-testing of Alexa skills,
 allowing one to:
 
 * Emulate the complex behavior of the Alexa service, without an Alexa device or any manual interaction
