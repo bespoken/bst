@@ -1,5 +1,8 @@
 This tutorial shows you how to get started using our BST Alexa emulator with Node.js and Javascript.  
 
+*Please note - our [Virtual Alexa project](https://github.com/bespoken/virtual-alexa) has replaced the BSTAlexa classes.*  
+[You can read our tutorial on Virtual Alexa here](tutorial_alexa_unit_testing). This API will be deprecated in a future version.
+
 The purpose of the emulator is to enable unit- and functional-testing of Alexa Skills, 
 allowing one to:
 
