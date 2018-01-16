@@ -20,7 +20,7 @@ pages:
     - Local Java Server: tutorials/tutorial_local_server_java.md
     - Python & Flask-Ask: tutorials/tutorial_flask_ask_python.md
     - Unit-Testing Alexa: tutorials/tutorial_alexa_unit_testing.md
-    - Unit-Testing Alexa (OLD): tutorials/tutorial_bst_emulator_nodejs.md
+    - BST Alexa Emulator (OLD): tutorials/tutorial_bst_emulator_nodejs.md
 - Tutorials for Actions on Google:
     - With Cloud Functions: tutorials/tutorial_cloud_function.md
     - With API.AI: tutorials/tutorial_configuring_api_ai.md
