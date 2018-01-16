@@ -29,7 +29,7 @@ We are using Mocha for tests, and Chai for assertions.
 
 There are lots of other fine testing frameworks out there - for an example that uses Jest, [look here](https://github.com/bespoken/giftionary/blob/master/test/index.test.js).
 
-## Adding the bst module
+## Adding the Virtual Alexa module
 At the top of your test, include:
 ```
 const vax = require("virtual-alexa");
