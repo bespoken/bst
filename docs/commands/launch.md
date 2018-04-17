@@ -1,6 +1,6 @@
 
 ## Overview
-The launch command send a launch request to your service as if it was comming from alexa itself.
+The launch command sends a launch request to your service as if it was coming from alexa itself.
 
 To start using it, you will need to support the "LaunchRequest" event on your handler for the received Intents in your service.
 
@@ -17,7 +17,7 @@ By default, the system will use the service currently running via the `bst proxy
 
 ## Working without using the proxy
 
-If no service is currently running via bst proxy, and HTTP endpoint can be specified with the `--url` option:
+If no service is currently running via bst proxy, an HTTP endpoint can be specified with the `--url` option:
 ```
 $ bst launch --url https://my.skill.com/skill/path
 ```
