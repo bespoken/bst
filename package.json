@@ -57,7 +57,7 @@
     "tslint": "^3.13.0",
     "typedoc": "^0.9.0",
     "typemoq": "^0.3.2",
-    "typescript": "^2.5.3"
+    "typescript": "2.6.2"
   },
   "engines": {
     "node": ">=4.3.2"
