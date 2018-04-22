@@ -133,9 +133,13 @@ export class LambdaServer {
             }
 
             handlerFunction = handlerFunction ? handlerFunction : this.functionName ? this.functionName : "handler";
-            lambda[handlerFunction](bodyJSON, context, function(error: Error, result: any) {
+            Promise.resolve(lambda[handlerFunction](bodyJSON, context, function (error: Error, result: any) {
                 context.done(error, result);
-            });
+            })).then((result: any) => {
+                if (result) {
+                    context.done(null, result);
+                }
+            }, (error: Error) => context.done(error));
         } catch (e) {
             console.error(chalk.red(e.toString()));
             context.fail(e);
