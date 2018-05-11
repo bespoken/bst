@@ -2,6 +2,7 @@ import * as http from "http";
 import {IncomingMessage} from "http";
 import {ServerResponse} from "http";
 import {Server} from "http";
+import {AddressInfo} from "net";
 import {LoggingHelper} from "../core/logging-helper";
 import {ModuleManager} from "./module-manager";
 const chalk =  require("chalk");
@@ -62,7 +63,7 @@ export class LambdaServer {
         });
 
         this.server.on("listening", function () {
-            LoggingHelper.debug(Logger, "LambdaServer started on port: " + self.server.address().port.toString());
+            LoggingHelper.debug(Logger, "LambdaServer started on port: " + (self.server.address() as AddressInfo).port.toString());
             if (callback !== undefined && callback !== null) {
                 callback();
             }
