@@ -92,6 +92,14 @@ describe("BSTVirtualAlexa", async function() {
             process.chdir("../..");
         });
 
+        it("Start with defaults and non english model", function () {
+            process.chdir("test/resources/nonUSModel");
+            const speak = new BSTVirtualAlexa("http://localhost:9000");
+            speak.start(true);
+            assert(true, "Start processed without exceptions");
+            process.chdir("../../..");
+        });
+
         it("Use provided models even when default is present in folder", function () {
             process.chdir("test/resources/allSpeechModels");
             const speak = new BSTVirtualAlexa("http://localhost:9000",
