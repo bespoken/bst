@@ -52,7 +52,7 @@ program
 
         const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID, locale);
         try {
-            speaker.start();
+            speaker.start(true);
         } catch (error) {
             process.exit(0);
             return;
