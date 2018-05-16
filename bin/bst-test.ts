@@ -7,20 +7,9 @@ const skillTesting = require("skill-testing-ml");
 program.version(Global.version());
 
 program
-    .usage("[options] <test-file>")
-    .option("-e, --endtoend", "Run end-to-end tests")
+    .usage("[options] [test-file]")
     .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them")
-    .action( function () {
-        console.log("Running action");
-        const testCLI = new skillTesting.CLI();
-        testCLI.run().then(() => {
-            console.log("DONE WIHT TEST");
-        });
-    });
+    .parse(process.argv);
 
-program.parse(process.argv);
-
-// const testCLI = new skillTesting.CLI();
-// testCLI.run().then(() => {
-//     console.log("DONE");
-// });
+const testCLI = new skillTesting.CLI();
+testCLI.run();
