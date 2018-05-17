@@ -159,6 +159,49 @@ describe("bst-speak", function() {
                 NodeUtil.load("../../bin/bst-speak.js");
             });
         });
+
+        it("Send message with locale and voiceId options", function() {
+            return new Promise((resolve, reject) => {
+
+                process.argv = command("node bst-speak.js --token Token --locale en-AU --voiceID Nicole Hello");
+                mockery.registerMock("../lib/external/virtual-device", {
+                    VirtualDeviceClient: {
+                        speak: function(utterance: string, token: string, locale?: string, voiceID?: string) {
+                            assert.equal(locale, "en-AU");
+                            assert.equal(voiceID, "Nicole");
+                            return {
+                                transcript: "Response"
+                            };
+                        },
+                        renderResult: function (result: any) {
+                            try {
+                                assert.equal(result.transcript, "Response");
+                            } catch (error) {
+                                reject(error);
+                            }
+                            return "Response Rendered";
+                        },
+                    }
+                });
+
+                let flagResponse = false;
+                let flagToken = false;
+                sandbox.stub(console, "log", function(data: Buffer) {
+                    if (data !== undefined && data.includes(tokenWarning)) {
+                        flagToken = true;
+                    }
+
+                    if (data !== undefined && data.includes("Response Rendered")) {
+                        flagResponse = true;
+                    }
+
+                    if (flagResponse && flagToken) {
+                        resolve();
+                    }
+                });
+                NodeUtil.load("../../bin/bst-speak.js");
+            });
+        });
     });
 });
 
