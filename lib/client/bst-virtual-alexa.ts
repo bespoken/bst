@@ -7,6 +7,8 @@ interface SavedSession {
     attributes: {
         [id: string]: any
     };
+    locale: string;
+    userId: string;
 }
 /**
  * Programmatic interface for interacting with the Virtual Alexa.
@@ -40,6 +42,8 @@ export class BSTVirtualAlexa {
             const savedSession: SavedSession = {
                 id: session.id(),
                 attributes: session.attributes(),
+                locale: this.locale,
+                userId: this.userId
             };
 
             Global.config().saveSession(savedSession);
@@ -73,7 +77,8 @@ export class BSTVirtualAlexa {
                        private intentSchemaFile?: string,
                        private sampleUtterancesFile?: string,
                        private applicationID?: string,
-                       private locale?: string) {
+                       private locale?: string,
+                       private userId?: string) {
         if ((intentSchemaFile || sampleUtterancesFile) && interactionModel) {
             console.error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
             throw new Error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
