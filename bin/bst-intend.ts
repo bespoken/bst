@@ -66,7 +66,7 @@ program
 
             url = "http://localhost:" + proxyProcess.port;
         }
-        const savedSession = Global.config().loadSession();
+        const savedSession = Global.config().loadSession() || {};
         const localeToUse = locale ? locale : savedSession.locale;
         const userIdToUse = userId ? userId : savedSession.userId;
 

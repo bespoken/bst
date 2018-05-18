@@ -290,7 +290,7 @@ describe("bst-intend", function() {
             });
 
 
-            NodeUtil.load("../../bin/bst-utter.js");
+            NodeUtil.load("../../bin/bst-intend.js");
         });
 
         it("Speaks With locale stored in session", function(done) {
@@ -309,7 +309,32 @@ describe("bst-intend", function() {
             });
 
 
-            NodeUtil.load("../../bin/bst-utter.js");
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
+        it("Speaks with no session", function(done) {
+            loadSession = function () {
+                return null;
+            };
+            mockery.registerMock("../lib/core/global", globalModule);
+            process.argv = command("node bst-intend.js HelloIntend");
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function () {
+                    this.start = function() {};
+
+                    this.spoken = function (utterance: string, callback: any) {
+                        assert.equal(utterance, "HelloIntend");
+                    };
+                    done();
+                }
+            });
+
+            sandbox.stub(console, "log", function(data: Buffer) {
+                if (data !== undefined && data.indexOf("Response:") !== -1) {
+                    done();
+                }
+            });
+            NodeUtil.load("../../bin/bst-intend.js");
         });
 
         it("Has No Process", function(done) {

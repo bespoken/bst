@@ -16,7 +16,7 @@ var testStatus;
 // Runs each test file as its own process using spawn
 // We use the testStatus variable to track if any of the processes had failing tests
 gulp.task('test-suite-run', ['build'], function() {
-    return gulp.src(['test/**/*-test.js'])
+    return gulp.src(['test/**/bst-intend-test.js'])
         .pipe(
             tap(function(file, t) {
                 const testFile = path.relative(process.cwd(), file.path);
