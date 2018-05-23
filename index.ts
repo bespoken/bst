@@ -7,7 +7,5 @@ export {BSTAlexaEvents} from "./lib/client/bst-alexa";
 export {BSTEncode} from "./lib/client/bst-encode";
 export {BSTProxy} from "./lib/client/bst-proxy";
 export {IEncoderConfig} from "./lib/client/bst-encode";
-export {LambdaFunction} from "./lib/logless/logless";
 export {LambdaServer} from "./lib/client/lambda-server";
-export {Logless} from "./lib/logless/logless";
-export {LogType, LoglessContext} from "./lib/logless/logless-context";
+export {LambdaFunction, Logless, LogType} from "logless-client";
