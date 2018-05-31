@@ -27,24 +27,34 @@ program
     .command("sleep <location>", "Instructs bst to sleep using specified location")
     .command("deploy <lambda>", "Deploys a lambda")
     .command("speak <utterance>", "Sends your message to your virtual alexa device")
-    .command("test", "Runs tests - by default runs with emulator");
+    .command("test [testPattern]", "Runs tests - by default runs all tests scripts found");
+
+// We don't initialize when running tests - perhaps for other cases as well?
+// For hooking into CI, we do not want to keep creating new configurations
+const skipInitialize = process.argv.length >= 3 && process.argv[2] === "test";
+if (skipInitialize) {
+    program.parse(process.argv);
+} else {
+    Global.initializeCLI().then(
+        () => {
+            program.parse(process.argv);
+        }
+    ).catch((error) => {
+        // Request to create pipe or source failed
+        if (error.code === "ETIMEDOUT") {
+            LoggingHelper.error(Logger, "Could not establish connection." +
+                " Please check your network connection and try again.");
+        } else {
+            LoggingHelper.error(Logger, "Something went wrong. Please check your network connection and try again.");
+        }
+        LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
+        LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
+        LoggingHelper.prepareForFileLoggingAndDisableConsole("bst-debug.log");
+        LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
+        LoggingHelper.error(Logger, error);
+    });
+}
 
 
-Global.initializeCLI().then(
-    () => program.parse(process.argv)
-).catch((error) => {
-    // Request to create pipe or source failed
-    if (error.code === "ETIMEDOUT") {
-        LoggingHelper.error(Logger, "Could not establish connection." +
-            " Please check your network connection and try again.");
-    } else {
-        LoggingHelper.error(Logger, "Something went wrong. Please check your network connection and try again.");
-    }
-    LoggingHelper.error(Logger, "If the issue persists, contact us at Bespoken:");
-    LoggingHelper.error(Logger, "\thttps://gitter.im/bespoken/bst");
-    LoggingHelper.prepareForFileLoggingAndDisableConsole("bst-debug.log");
-    LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
-    LoggingHelper.error(Logger, error);
-});
 
 
