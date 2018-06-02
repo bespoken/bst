@@ -12,4 +12,7 @@ program
     .parse(process.argv);
 
 const testCLI = new skillTesting.CLI();
-testCLI.run(process.argv);
+testCLI.run(process.argv).then((success) => {
+    const exitCode = success ? 0 : 1;
+    return process.exit(exitCode);
+});
