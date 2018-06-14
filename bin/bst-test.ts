@@ -13,6 +13,5 @@ program
 
 const testCLI = new skillTesting.CLI();
 testCLI.run(process.argv).then((success) => {
-    const exitCode = success ? 0 : 1;
-    return process.exit(exitCode);
+    process.exitCode = success ? 0 : 1;
 });
