@@ -8,7 +8,8 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "stripInternal": true,
-    "target": "ES6"
+    "target": "es5",
+    "lib": ["es6", "dom"]
   },
   "include": [
     "bin/**/*.ts",

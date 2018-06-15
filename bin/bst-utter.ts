@@ -43,6 +43,7 @@ program
         const applicationID = options.appId;
         const locale = options.locale;
         const newSession = options.newSession;
+        const userId = options.userId;
 
         if (options.url === undefined) {
             const proxyProcess = Global.running();
@@ -60,7 +61,11 @@ program
             url = "http://localhost:" + proxyProcess.port;
         }
 
-        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID, locale);
+        const savedSession = Global.config().loadSession() || {};
+        const localeToUse = locale ? locale : savedSession.locale;
+        const userIdToUse = userId ? userId : savedSession.userId;
+
+        const speaker = new BSTVirtualAlexa(url, interactionModel, intentSchemaPath, samplesPath, applicationID, localeToUse, userIdToUse);
 
         try {
             speaker.start();
@@ -69,8 +74,8 @@ program
             return;
         }
 
-        if (options.userId) {
-            speaker.context().user().setID(options.userId);
+        if (userIdToUse) {
+            speaker.context().user().setID(userIdToUse);
         }
 
         if (options.accessToken) {
