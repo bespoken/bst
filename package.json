@@ -40,7 +40,7 @@
     "@types/winston": "^2.3.6",
     "@types/wrench": "0.0.28",
     "codecov": "^2.3.0",
-    "coveralls": "^2.13.3",
+    "coveralls": "^3.0.1",
     "cross-spawn": "^5.1.0",
     "dotenv": "^2.0.0",
     "gulp": "^3.9.1",
