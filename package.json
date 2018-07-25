@@ -23,7 +23,7 @@
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "uuid": "3.0.0",
-    "virtual-alexa": "^0.6.3",
+    "virtual-alexa": "^0.6.12",
     "virtual-device-sdk": "^1.0.0",
     "winston": "^2.4.0"
   },

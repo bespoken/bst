@@ -242,9 +242,8 @@ describe("BSTVirtualAlexa", async function() {
 
             it("Speak non-grammar phrase", function (done) {
                 alexa.spoken("Dumb", function (error: any, response: any) {
-                    assert(response.output === undefined);
-                    assert(response.success);
-                    assert.equal(response.intent, "Test");
+                    assert(error !== undefined);
+                    assert(error.message, "Unable to match utterance: Dumb to an intent. Try a different utterance, or explicitly set the intent");
                     done();
                 });
             });
