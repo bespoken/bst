@@ -11,11 +11,6 @@ dependencies:
     - chmod +x hyper
     - ./hyper --help
 
-general:
-  branches:
-    only:
-      - master
-
 deployment:
   codecov:
     branch: master
