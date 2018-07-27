@@ -2,7 +2,7 @@ FROM bespoken/nodejs
 
 MAINTAINER John Kelvie
 
-EXPOSE 5000 443
+EXPOSE 80 443
 
 WORKDIR /opt
 
@@ -20,4 +20,4 @@ RUN npm -version
 
 RUN npm install
 
-CMD node bin/bst-server.js start 443 5000
+CMD node bin/bst-server.js start 443 80
