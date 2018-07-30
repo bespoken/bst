@@ -25,7 +25,6 @@ program
     .command("intend <intent> [SlotName=SlotValue...]", "Sends the specified intent to your service")
     .command("utter <utterance>", "Sends an intent with the specified utterance to your service")
     .command("sleep <location>", "Instructs bst to sleep using specified location")
-    .command("deploy <lambda>", "Deploys a lambda")
     .command("speak <utterance>", "Sends your message to your virtual alexa device")
     .command("test [testPattern]", "Runs tests - by default runs all tests scripts found");
 

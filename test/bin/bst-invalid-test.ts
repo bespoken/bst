@@ -68,24 +68,6 @@ describe("bst commands", function() {
 
     this.timeout(3000);
 
-    describe("Invalid deploy command", function() {
-        it("Prints error with invalid command", function(done) {
-            process.argv = command("node bst-deploy.js foo");
-            resultPattern = "unknown command";
-            mochaDone = done;
-            setTimeout(checkResult, 1000);
-            NodeUtil.load("../../bin/bst-deploy.js");
-        });
-
-        it("Prints error with missing mandatory arg", function(done) {
-            process.argv = command("node bst-deploy.js lambda");
-            resultPattern = "missing required argument lambda-folder";
-            mochaDone = done;
-            setTimeout(checkResult, 1000);
-            NodeUtil.load("../../bin/bst-deploy.js");
-        });
-    });
-
     describe("Invalid proxy command", function() {
         beforeEach(function () {
             let mockProxy: any = {

@@ -13,7 +13,6 @@ pages:
     - bst intend: commands/intend.md
     - bst utter: commands/utter.md
     - bst speak: commands/speak.md
-    - bst deploy: commands/deploy.md
 - API Reference: api_nav.md
 - Tutorials for Alexa Skills:
     - Node.js Lambda: tutorials/tutorial_lambda_nodejs.md
