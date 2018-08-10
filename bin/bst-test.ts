@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as program from "commander";
 import {Global} from "../lib/core/global";
+import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
 
 const skillTesting = require("skill-testing-ml");
 
@@ -13,5 +14,6 @@ program
 
 const testCLI = new skillTesting.CLI();
 testCLI.run(process.argv).then((success) => {
+    BstStatistics.instance().record(BstCommand.test);
     process.exitCode = success ? 0 : 1;
 });

@@ -1,7 +1,14 @@
 import * as http from "http";
 import * as https from "https";
 
-const SECURE_SOURCE_API_END_POINT = process.env.SECURE_SOURCE_API_END_POINT || true;
+const getSecureSourceApiEndPoint = () => {
+    const envValue = process.env.SECURE_SOURCE_API_END_POINT;
+    if (envValue && envValue === "false") {
+        return false;
+    }
+    return true;
+};
+const SECURE_SOURCE_API_END_POINT = getSecureSourceApiEndPoint();
 export const SOURCE_API_URL = process.env.SOURCE_API_URL || "source-api-dev";
 
 export class BstStatistics {
@@ -123,7 +130,8 @@ export const BstCommand = {
     intend: "intend",
     speak: "speak",
     proxy: "proxy",
-    test: "test"
+    test: "test",
+    launch: "launch"
 };
 
 export const BstEvent = {
