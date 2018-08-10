@@ -3,9 +3,8 @@ import {WebhookManager} from "./webhook-manager";
 import {WebhookRequest} from "../core/webhook-request";
 import {HTTPHelper} from "../core/http-helper";
 import {Global} from "../core/global";
-import {Statistics, AccessType} from "./statistics";
 import {LoggingHelper} from "../core/logging-helper";
-
+import {BstStatistics, BstCommand, BstEvent} from "../statistics/bst-statistics";
 const Logger = "BSPKD";
 
 export class BespokeServer {
@@ -16,6 +15,7 @@ export class BespokeServer {
     public constructor (private webhookPort: number, private nodePort: number) {}
 
     public start (started?: () => void): void {
+        BstStatistics.instance().start();
         let self = this;
         console.error("AWS_KEY: " + process.env["AWS_ACCESS_KEY_ID"]);
 
@@ -45,7 +45,7 @@ export class BespokeServer {
                     webhookRequest.nodeID();
                 } catch (error) {
                     HTTPHelper.respond(webhookRequest.sourceSocket, 400, error.message);
-                    Statistics.instance().record(null, AccessType.REQUEST_DROPPED);
+                    BstStatistics.instance().record(BstCommand.proxy, BstEvent.dropped);
                     return;
                 }
 
@@ -63,13 +63,13 @@ export class BespokeServer {
                         HTTPHelper.respond(webhookRequest.sourceSocket, 404, "Node is not active: " + webhookRequest.nodeID());
 
                         // Capture the request was not forwarded
-                        Statistics.instance().record(webhookRequest.nodeID(), AccessType.REQUEST_DROPPED);
+                        BstStatistics.instance().record(BstCommand.proxy, BstEvent.dropped, webhookRequest.nodeID());
                     } else {
                         LoggingHelper.info(Logger, "Forwarded: " + webhookRequest.nodeID());
                         node.forward(webhookRequest);
 
                         // Capture the request was forwarded
-                        Statistics.instance().record(node.id, AccessType.REQUEST_FORWARDED);
+                        BstStatistics.instance().record(BstCommand.proxy, BstEvent.forwarded, node.id);
                     }
                 }
             }
@@ -83,6 +83,7 @@ export class BespokeServer {
     }
 
     public stop(callback: () => void): void {
+        BstStatistics.instance().stop();
         // Use a counter to see that both callbacks have completed
         // The beauty of Node - use non-synchronized counter variables like this safely :-)
         let count = 0;
