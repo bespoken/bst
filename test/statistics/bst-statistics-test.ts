@@ -3,6 +3,15 @@ import {BstStatistics, BstCommand, BstEvent, SOURCE_API_URL} from "../../lib/sta
 import * as nock from "nock";
 
 describe("BstStatistics", function() {
+
+    afterEach(function (done) {
+        nock.cleanAll();
+        if (!nock.isActive()) {
+            nock.activate();
+        }
+        done();
+    });
+
     describe("#record()", function() {
         it("send bst stats to source api", function(done) {
             nock(`https://${SOURCE_API_URL}`)
@@ -16,6 +25,20 @@ describe("BstStatistics", function() {
 
             BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, undefined, function(error) {
                 assert(!error);
+                done();
+            });
+        });
+
+        it("source api call fails", function(done) {
+            nock(`https://${SOURCE_API_URL}`)
+                .persist()
+                .post("/v1/postBstStats", (body: any) => {
+                    return true;
+                })
+                .replyWithError("something bad happened");
+
+            BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, undefined, function(error) {
+                assert(error);
                 done();
             });
         });

@@ -1,6 +1,8 @@
+import * as http from "http";
 import * as https from "https";
 
-export const SOURCE_API_URL = "source-api-dev";
+const SECURE_SOURCE_API_END_POINT = process.env.SECURE_SOURCE_API_END_POINT || true;
+export const SOURCE_API_URL = process.env.SOURCE_API_URL || "source-api-dev";
 
 export class BstStatistics {
     static FLUSH_TIME = 10000;
@@ -77,21 +79,30 @@ export class StatisticsContext {
                 "Connection": "keep-alive"
             }
         };
-        const httpRequest = https.request(options);
 
-        httpRequest.on("error", function(error: any) {
-            console.error(error.toString());
-            if (flushed !== undefined) {
+        const functionCallback = function(response) {
+            response.on("data", function (chunk: Buffer) {
+                responseData = Buffer.concat([responseData, chunk]);
+            });
+            response.on("end", function () {
+                if (flushed !== undefined && flushed !== null) {
+                    flushed();
+                }
+            });
+        };
+
+        let responseData: Buffer = new Buffer("");
+        const httpRequest = SECURE_SOURCE_API_END_POINT ?
+            https.request(options, functionCallback) :
+            http.request(options, functionCallback);
+
+        httpRequest.on("error", function (error: any) {
+            if (flushed !== undefined && flushed !== null) {
                 flushed(error);
             }
         });
-
-        httpRequest.setNoDelay(true);
-        httpRequest.end(dataAsString, null, function () {
-            if (flushed !== undefined) {
-                flushed();
-            }
-        });
+        httpRequest.write(dataAsString);
+        httpRequest.end();
     }
 }
 
