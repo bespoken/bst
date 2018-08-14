@@ -19,7 +19,8 @@ export class BSTConfig {
      * Loads the configuration
      * Done all synchronously as this is done first thing at startup and everything waits on it
      */
-    public static async load(createConfigFileIfNeeded: boolean = true): Promise<BSTConfig> {
+    public static async load(createConfigFileIfNeeded?: boolean): Promise<BSTConfig> {
+        createConfigFileIfNeeded = createConfigFileIfNeeded || true;
         if (createConfigFileIfNeeded) {
             await BSTConfig.bootstrapIfNeeded();
         }
