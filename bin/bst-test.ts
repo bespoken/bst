@@ -7,13 +7,20 @@ const skillTesting = require("skill-testing-ml");
 
 program.version(Global.version());
 
-program
-    .usage("[test-pattern-regex]")
-    .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them")
-    .parse(process.argv);
+Global.initializeCLI().then(() => {
 
-const testCLI = new skillTesting.CLI();
-testCLI.run(process.argv).then((success) => {
-    BstStatistics.instance().record(BstCommand.test);
-    process.exitCode = success ? 0 : 1;
+    program
+        .usage("[test-pattern-regex]")
+        .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them")
+        .parse(process.argv);
+
+    const testCLI = new skillTesting.CLI();
+    testCLI.run(process.argv).then((success) => {
+        let nodeId = undefined;
+        if (Global.config() && Global.config().secretKey && Global.config().secretKey()) {
+            nodeId = Global.config().secretKey();
+        }
+        BstStatistics.instance().record(BstCommand.test, undefined, nodeId);
+        process.exitCode = success ? 0 : 1;
+    });
 });
