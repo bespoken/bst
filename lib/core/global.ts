@@ -13,13 +13,13 @@ export class Global {
     private static _configuration: BSTConfig = null;
     private static _cli: boolean = false;
 
-    public static async initializeCLI(): Promise<void> {
+    public static async initializeCLI(createConfigFileIfNeeded: boolean = true): Promise<void> {
         Global.initialize(true);
-        await Global.loadConfig();
+        await Global.loadConfig(createConfigFileIfNeeded);
     }
 
-    public static async loadConfig(): Promise<void> {
-        const config = await BSTConfig.load();
+    public static async loadConfig(createConfigFileIfNeeded: boolean = true): Promise<void> {
+        const config = await BSTConfig.load(createConfigFileIfNeeded);
         Global._configuration = config;
     }
 

@@ -7,7 +7,7 @@ const skillTesting = require("skill-testing-ml");
 
 program.version(Global.version());
 
-Global.initializeCLI().then(() => {
+Global.initializeCLI(false).then(() => {
 
     program
         .usage("[test-pattern-regex]")
