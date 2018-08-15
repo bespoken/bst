@@ -2,6 +2,7 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {VirtualDeviceClient} from "../lib/external/virtual-device";
+import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
 
 program.version(Global.version());
 
@@ -62,7 +63,11 @@ Global.initializeCLI().then(
                 if (token) {
                     console.log("Your token is saved, you can now use this command without providing a token");
                 }
-
+                let nodeId = undefined;
+                if (Global.config() && Global.config().secretKey && Global.config().secretKey()) {
+                    nodeId = Global.config().secretKey();
+                }
+                BstStatistics.instance().record(BstCommand.speak, undefined, nodeId);
                 console.log(VirtualDeviceClient.renderResult(virtualDeviceResponse));
             });
 

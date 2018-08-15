@@ -1,6 +1,7 @@
 import {Global} from "../core/global";
 import {SkillContext, VirtualAlexa} from "virtual-alexa";
 import * as fs from "fs";
+import {BstStatistics, BstCommand} from "../statistics/bst-statistics";
 
 interface SavedSession {
     id: string;
@@ -21,6 +22,7 @@ export class BSTVirtualAlexa {
     private interactionModelProvided: boolean = false;
     private sampleUtterancesProvided: boolean = false;
     private intentSchemaProvided: boolean = false;
+    private nodeId: string;
 
     private static FileTypes = {
         InterationModel: "Interaction Model",
@@ -186,6 +188,10 @@ export class BSTVirtualAlexa {
      */
     public start(): void {
         this.virtualAlexa = this.validateFilesAndBuild();
+        const globalConfig = Global.config();
+        if (globalConfig && globalConfig.configuration && globalConfig.configuration.secretKey) {
+            this.nodeId = globalConfig.configuration.secretKey;
+        }
     }
 
     /**
@@ -207,7 +213,7 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
-
+        BstStatistics.instance().record(BstCommand.utter, undefined, this.nodeId);
         return this;
     }
 
@@ -230,7 +236,7 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
-
+        BstStatistics.instance().record(BstCommand.intend, undefined, this.nodeId);
         return this;
     }
 
@@ -249,6 +255,8 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
+
+        BstStatistics.instance().record(BstCommand.launch, undefined, this.nodeId);
         return this;
     }
 }

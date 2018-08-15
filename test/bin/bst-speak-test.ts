@@ -10,9 +10,9 @@ describe("bst-speak", function() {
 
     let globalModule = {
         Global: {
-            initializeCLI: async function () {
+            initializeCLI: sinon.spy(async function () {
 
-            },
+            }),
             config: function () {
                 return { sourceID: () => "mySource" };
             },
@@ -35,6 +35,7 @@ describe("bst-speak", function() {
         mockery.warnOnReplace(false);
         mockery.registerMock("../lib/core/global", globalModule);
         sandbox = sinon.sandbox.create();
+        globalModule.Global.initializeCLI.reset();
     });
 
     afterEach(function () {
@@ -157,6 +158,34 @@ describe("bst-speak", function() {
                     }
                 });
                 NodeUtil.load("../../bin/bst-speak.js");
+            });
+        });
+
+        it("call initializeCLI with default", function() {
+            return new Promise((resolve, reject) => {
+
+                process.argv = command("node bst-speak.js --token Token Hello");
+                mockery.registerMock("../lib/external/virtual-device", {
+                    VirtualDeviceClient: {
+                        speak: function() {
+                            return {
+                                transcript: "Response"
+                            };
+                        },
+                        renderResult: function (result: any) {
+                            try {
+                                assert.equal(result.transcript, "Response");
+                            } catch (error) {
+                                reject(error);
+                            }
+                            return "Response Rendered";
+                        },
+                    }
+                });
+
+                NodeUtil.load("../../bin/bst-speak.js");
+                assert.equal(globalModule.Global.initializeCLI.getCall(0).args[0], undefined);
+                resolve();
             });
         });
     });

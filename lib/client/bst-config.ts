@@ -19,11 +19,17 @@ export class BSTConfig {
      * Loads the configuration
      * Done all synchronously as this is done first thing at startup and everything waits on it
      */
-    public static async load(): Promise<BSTConfig> {
-        await BSTConfig.bootstrapIfNeeded();
+    public static async load(createConfigFileIfNeeded?: boolean): Promise<BSTConfig> {
+        createConfigFileIfNeeded = createConfigFileIfNeeded || true;
+        if (createConfigFileIfNeeded) {
+            await BSTConfig.bootstrapIfNeeded();
+        }
 
-        let data = fs.readFileSync(BSTConfig.configPath());
-        let config = JSON.parse(data.toString());
+        let config = undefined;
+        if (fs.existsSync(BSTConfig.configPath())) {
+            let data = fs.readFileSync(BSTConfig.configPath());
+            config = JSON.parse(data.toString());
+        }
 
         let bstConfig = new BSTConfig();
         bstConfig.loadFromJSON(config);
