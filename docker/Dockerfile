@@ -2,7 +2,7 @@ FROM bespoken/nodejs
 
 MAINTAINER John Kelvie
 
-EXPOSE 5000 443
+EXPOSE 80 443
 
 WORKDIR /opt
 
