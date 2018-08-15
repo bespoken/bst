@@ -40,6 +40,7 @@ deployment:
         -e AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY
         -e SSL_CERT="$SSL_CERT"
         -e SSL_KEY="$SSL_KEY"
+        -e SOURCE_API_URL="$SOURCE_API_URL_PROD"
         -d
         --name bst
         --size s4
@@ -63,6 +64,7 @@ deployment:
         -e AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY
         -e SSL_CERT="$SSL_CERT"
         -e SSL_KEY="$SSL_KEY"
+        -e SOURCE_API_URL="$SOURCE_API_URL_DEV"
         -d
         --name bst-dev
         --size s4
