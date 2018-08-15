@@ -14,11 +14,11 @@ dependencies:
 general:
   branches:
     only:
-      - master
+      - deployBstServer
 
 deployment:
   codecov:
-    branch: master
+    branch: deployBstServer
     commands:
       - npm run codecov
 
