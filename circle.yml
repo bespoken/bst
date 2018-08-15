@@ -3,6 +3,8 @@ machine:
     version: 6.9.2
   services:
     - docker
+  environment:
+    SKIP_STATISTICS: "true"
 
 dependencies:
   pre:

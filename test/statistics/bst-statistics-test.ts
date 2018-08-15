@@ -3,8 +3,12 @@ import {BstStatistics, BstCommand, BstEvent, SOURCE_API_URL} from "../../lib/sta
 import * as nock from "nock";
 
 describe("BstStatistics", function() {
+    beforeEach(function() {
+        process.env.SKIP_STATISTICS = "false";
+    });
 
     afterEach(function (done) {
+        process.env.SKIP_STATISTICS = "true";
         nock.cleanAll();
         if (!nock.isActive()) {
             nock.activate();
@@ -14,6 +18,7 @@ describe("BstStatistics", function() {
 
     describe("#record()", function() {
         it("send bst stats to source api", function(done) {
+
             nock(`https://${SOURCE_API_URL}`)
                 .persist()
                 .post("/v1/postBstStats", (body: any) => {

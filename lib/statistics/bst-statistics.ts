@@ -9,7 +9,7 @@ const getSecureSourceApiEndPoint = () => {
     return true;
 };
 const SECURE_SOURCE_API_END_POINT = getSecureSourceApiEndPoint();
-export const SOURCE_API_URL = process.env.SOURCE_API_URL || "source-api-dev";
+export const SOURCE_API_URL = process.env.SOURCE_API_URL || "source-api.bespoken.tools";
 
 export class BstStatistics {
     static FLUSH_TIME = 10000;
@@ -74,6 +74,9 @@ export class StatisticsContext {
     }
 
     public transmit(logBatch: any, flushed?: (error?: Error) => void)  {
+        if (process.env.SKIP_STATISTICS === "true") {
+            return;
+        }
         const dataAsString = JSON.stringify({bstStats: logBatch});
         const dataLength = Buffer.byteLength(dataAsString);
         const options = {
@@ -104,10 +107,14 @@ export class StatisticsContext {
             http.request(options, functionCallback);
 
         httpRequest.on("error", function (error: any) {
+            if (process.env.DISPLAY_STATISTICS_ERROR) {
+                console.log("error", error);
+            }
             if (flushed !== undefined && flushed !== null) {
                 flushed(error);
             }
         });
+        httpRequest.setNoDelay(true);
         httpRequest.write(dataAsString);
         httpRequest.end();
     }
