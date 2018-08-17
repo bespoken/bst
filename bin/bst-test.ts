@@ -11,11 +11,21 @@ Global.initializeCLI(false).then(() => {
 
     program
         .usage("[test-pattern-regex]")
-        .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them")
-        .parse(process.argv);
+        .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them");
 
+    skillTesting.ConfigurationKeys.forEach(element => {
+        program.option(`--${element.key} <${element.key}>`, element.text);
+    });
+    program.parse(process.argv);
+
+    const configurationOverrides = {};
+    skillTesting.ConfigurationKeys.forEach(element => {
+        if (program[element.key]) {
+            configurationOverrides[element.key] = program[element.key];
+        }
+    });
     const testCLI = new skillTesting.CLI();
-    testCLI.run(process.argv).then((success) => {
+    testCLI.run(process.argv, configurationOverrides).then((success) => {
         let nodeId = undefined;
         if (Global.config() && Global.config().secretKey && Global.config().secretKey()) {
             nodeId = Global.config().secretKey();
