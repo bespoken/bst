@@ -5,7 +5,7 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import {SinonSandbox} from "sinon";
 
-describe("bst-speak", function() {
+describe("bst-test", function() {
 
     let globalModule = {
         Global: {
@@ -54,11 +54,52 @@ describe("bst-speak", function() {
                                 run: async function () {
                                 }
                             };
-                        }
+                        },
+                        ConfigurationKeys: [
+                            {
+                                key: "platform",
+                                text: "Set platform"
+                            },
+                            {
+                                key: "type",
+                                text: "Set type"
+                            }
+                        ]
                 });
                 NodeUtil.load("../../bin/bst-test.js");
                 assert.equal(globalModule.Global.initializeCLI.getCall(0).args[0], false);
                 resolve();
+            });
+        });
+
+        it("call with parameters", function() {
+            return new Promise((resolve, reject) => {
+                const mockRun = function(a, b){
+                    assert.equal(b.platform, "google");
+                    resolve();
+                };
+                const mockCli = function() {
+                    return {
+                        run: mockRun
+                    };
+                };
+                const skillTestingMock = {
+                    CLI: mockCli,
+                    ConfigurationKeys: [
+                        {
+                            key: "platform",
+                            text: "Set platform"
+                        },
+                        {
+                            key: "type",
+                            text: "Set type"
+                        }
+                    ]
+                };
+                mockery.registerMock("skill-testing-ml", skillTestingMock);
+                process.argv = command("node bst-test.js --platform google");
+                NodeUtil.load("../../bin/bst-test.js");
+                assert.equal(globalModule.Global.initializeCLI.getCall(0).args[0], false);
             });
         });
     });
