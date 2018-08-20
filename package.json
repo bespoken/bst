@@ -22,10 +22,10 @@
     "properties-reader": "0.0.15",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "skill-testing-ml": "^0.5.23",
+    "skill-testing-ml": "^0.5.24",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.3.8",
-    "virtual-device-sdk": "^1.0.0",
+    "virtual-device-sdk": "^1.5.1",
     "winston": "^2.4.0"
   },
   "devDependencies": {
