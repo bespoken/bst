@@ -2,6 +2,15 @@
 import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
+import * as updateNotifier from "update-notifier";
+
+updateNotifier({
+    pkg: {
+        name: "bespoken-tools",
+        version: Global.version()
+    },
+    updateCheckInterval: 0
+}).notify();
 
 let Logger = "BST";
 

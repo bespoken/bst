@@ -23,6 +23,7 @@
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "skill-testing-ml": "^0.5.24",
+    "update-notifier": "^2.5.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.3.8",
     "virtual-device-sdk": "^1.5.1",
