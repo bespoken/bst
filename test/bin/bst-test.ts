@@ -36,6 +36,12 @@ const globalModule = {
     }
 };
 
+const npmClient = {
+    NpmClient: {
+        getLastVersion: async function () {},
+    },
+};
+
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
 
@@ -46,6 +52,7 @@ describe("bst", function() {
         mockery.enable();
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/core/global", globalModule);
+        mockery.registerMock("../lib/external/npm", npmClient);
 
         sandbox = sinon.sandbox.create();
     });
