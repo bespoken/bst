@@ -4,18 +4,19 @@ import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
 import * as updateNotifier from "update-notifier";
 
+console.log("");
+console.log("BST: v" + Global.version() + "  Node: " + process.version);
+
+console.log(updateNotifier);
 updateNotifier({
     pkg: {
         name: "bespoken-tools",
         version: Global.version()
     },
     updateCheckInterval: 0
-}).notify();
+}).notify({ defer: false });
 
 let Logger = "BST";
-
-console.log("BST: v" + Global.version() + "  Node: " + process.version);
-console.log("");
 
 let nodeMajorVersion = parseInt(process.version.substr(1, 2));
 
