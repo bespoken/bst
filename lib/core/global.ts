@@ -13,15 +13,15 @@ export class Global {
     private static _configuration: BSTConfig = null;
     private static _cli: boolean = false;
 
-    public static async initializeCLI(createConfigFileIfNeeded?: boolean): Promise<void> {
-        createConfigFileIfNeeded = createConfigFileIfNeeded || true;
+    public static async initializeCLI(createSource?: boolean): Promise<void> {
+        createSource = createSource === undefined ? true : createSource;
         Global.initialize(true);
-        await Global.loadConfig(createConfigFileIfNeeded);
+        await Global.loadConfig(createSource);
     }
 
-    public static async loadConfig(createConfigFileIfNeeded?: boolean): Promise<void> {
-        createConfigFileIfNeeded = createConfigFileIfNeeded || true;
-        const config = await BSTConfig.load(createConfigFileIfNeeded);
+    public static async loadConfig(createSource?: boolean): Promise<void> {
+        createSource = createSource === undefined ? true : createSource;
+        const config = await BSTConfig.load(createSource);
         Global._configuration = config;
     }
 
@@ -47,6 +47,10 @@ export class Global {
     public static version(): string {
        return BSTConfig.getBstVersion();
     }
+
+    public static messages(): any {
+        return Global._configuration.getMessages();
+     }
 }
 
 export enum NetworkErrorType {

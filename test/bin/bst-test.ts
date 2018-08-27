@@ -21,6 +21,10 @@ const globalModule = {
                 },
                 sourceID() {
                     return "sourceID";
+                },
+                bstMessages: {
+                    customMessages: [],
+                    tips: []
                 }
             };
         },
@@ -33,8 +37,15 @@ const globalModule = {
         version: function () {
             return "0.0.0";
         },
+        messages: function() {
+            return undefined;
+        }
     }
 };
+
+const updateNotifier = () => ({
+    notify: () => {}
+});
 
 describe("bst", function() {
     let sandbox: SinonSandbox = null;
@@ -46,6 +57,7 @@ describe("bst", function() {
         mockery.enable();
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/core/global", globalModule);
+        mockery.registerMock("update-notifier", updateNotifier);
 
         sandbox = sinon.sandbox.create();
     });
