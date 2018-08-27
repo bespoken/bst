@@ -21,6 +21,10 @@ const globalModule = {
                 },
                 sourceID() {
                     return "sourceID";
+                },
+                bstMessages: {
+                    customMessages: [],
+                    tips: []
                 }
             };
         },
@@ -33,6 +37,9 @@ const globalModule = {
         version: function () {
             return "0.0.0";
         },
+        messages: function() {
+            return undefined;
+        }
     }
 };
 

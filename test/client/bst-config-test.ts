@@ -50,6 +50,9 @@ describe("BSTConfig", function() {
         mockery.registerMock("../external/spokes", {
             SpokesClient: SpokesClient,
         });
+        mockery.registerMock("../external/messages", {
+            BstMessages: BstMessages,
+        });
 
         BSTConfig = require("../../lib/client/bst-config").BSTConfig;
     });
@@ -394,4 +397,14 @@ class SpokesClient {
             proxy: true
         };
     }
+}
+
+
+class BstMessages {
+    public callService() {
+        return {
+            customMessages: [],
+            tips: [],
+        };
+    };
 }
