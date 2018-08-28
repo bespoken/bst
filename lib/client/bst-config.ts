@@ -22,8 +22,7 @@ export class BSTConfig {
      *    createSource: call source api to create a soruce
      */
     public static async load(createSource?: boolean): Promise<BSTConfig> {
-        createSource = createSource === undefined ? true : createSource;
-
+        createSource = typeof createSource === "undefined" ? true : createSource;
         await BSTConfig.bootstrapIfNeeded(createSource);
 
 
@@ -139,7 +138,7 @@ export class BSTConfig {
      *   createSource: call source api to create a source
      */
     private static async bootstrapIfNeeded(createSource?: boolean): Promise<void> {
-        createSource = createSource === undefined ? true : createSource;
+        createSource = typeof createSource === "undefined" ? true : createSource;
         let directory = BSTConfig.configDirectory();
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory);
@@ -160,13 +159,12 @@ export class BSTConfig {
             // If config exists but doesn't have sourceID update it
             let data = fs.readFileSync(BSTConfig.configPath());
             let config = JSON.parse(data.toString());
-
             if (createSource && (!config.sourceID || !config.version)) {
                 await BSTConfig.updateConfig(config);
             }
 
-            if (config.messages) {
-                const difference = (new Date()).getTime() - config.messages.fetched;
+            if (config.bstMessages && config.bstMessages.fetched) {
+                const difference = (new Date()).getTime() - config.bstMessages.fetched;
                 // If the messages where older than a day, we will fetch again
                 if (difference > 1000 * 3600 * 24) {
                     config.bstMessages = await this.fetchMessages();
@@ -195,17 +193,13 @@ export class BSTConfig {
     private static async createConfig(nodeID?: string, sourceID?: string): Promise<any> {
         const lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
         const pipeInfo = await BSTConfig.createExternalResources(nodeID, sourceID);
-        const bstMessages = new BstMessages();
-        const messages = await bstMessages.callService();
+        const bstMessages = await this.fetchMessages();
         return {
             "sourceID": pipeInfo.endPoint.name,
             "secretKey": pipeInfo.uuid,
             "lambdaDeploy": lambdaConfig,
             "version": this.getBstVersion(),
-            "bstMessages": {
-                messages,
-                fetched: new Date().toISOString(),
-            }
+            "bstMessages": bstMessages,
         };
     }
 

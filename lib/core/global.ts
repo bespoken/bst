@@ -14,13 +14,13 @@ export class Global {
     private static _cli: boolean = false;
 
     public static async initializeCLI(createSource?: boolean): Promise<void> {
-        createSource = createSource === undefined ? true : createSource;
+        createSource = typeof createSource === "undefined" ? true : createSource;
         Global.initialize(true);
         await Global.loadConfig(createSource);
     }
 
     public static async loadConfig(createSource?: boolean): Promise<void> {
-        createSource = createSource === undefined ? true : createSource;
+        createSource = typeof createSource === "undefined" ? true : createSource;
         const config = await BSTConfig.load(createSource);
         Global._configuration = config;
     }
