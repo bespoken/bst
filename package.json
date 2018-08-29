@@ -3,7 +3,7 @@
   "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "2.0.9",
+  "version": "2.0.16",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js"
@@ -22,7 +22,7 @@
     "properties-reader": "0.0.15",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "skill-testing-ml": "^0.5.24",
+    "skill-testing-ml": "^0.5.25",
     "update-notifier": "^2.5.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.3.8",
