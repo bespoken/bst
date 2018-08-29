@@ -4,6 +4,12 @@ import {Global} from "../lib/core/global";
 import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
 
 const skillTesting = require("skill-testing-ml");
+const skippedOptions = [
+    "jest.collectCoverageFrom",
+    "jest.moduleFileExtensions",
+    "jest.testPathIgnorePatterns",
+    "jest.testMatch"
+];
 
 program.version(Global.version());
 
@@ -12,7 +18,7 @@ Global.initializeCLI(false).then(() => {
         .usage("[test-pattern-regex]")
         .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them");
 
-    const options = skillTesting.ConfigurationKeys.sort((itemA, itemB) => {
+    const options = skillTesting.ConfigurationKeys.filter(item => skippedOptions.indexOf(item.key) === -1).sort((itemA, itemB) => {
         if (itemA.key < itemB.key) return -1;
         if (itemA.key > itemB.key) return 1;
         return 0;
