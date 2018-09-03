@@ -73,8 +73,8 @@ jobs:
 
   codecov:
     machine: true
-        environment:
-          - SKIP_STATISTICS: "true"
+    environment:
+      - SKIP_STATISTICS: "true"
     working_directory: ~/circleci-deployment
     steps:
       - attach_workspace:
