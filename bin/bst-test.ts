@@ -18,11 +18,25 @@ Global.initializeCLI(false).then(() => {
         .usage("[test-pattern-regex]")
         .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them");
 
-    const options = skillTesting.ConfigurationKeys.filter(item => skippedOptions.indexOf(item.key) === -1).sort((itemA, itemB) => {
+    const optionsFiltered = skillTesting.ConfigurationKeys.filter(item => skippedOptions.indexOf(item.key) === -1);
+    let regultarOptions = [];
+    let jestOptions = [];
+    for (let i = 0; i < optionsFiltered.length; i++) {
+        if (optionsFiltered[i].key.startsWith("jest")) {
+            jestOptions.push(optionsFiltered[i]);
+        } else {
+            regultarOptions.push(optionsFiltered[i]);
+        }
+    }
+    const sortByKey = (itemA, itemB) => {
         if (itemA.key < itemB.key) return -1;
         if (itemA.key > itemB.key) return 1;
         return 0;
-    });
+    };
+    regultarOptions = regultarOptions.sort(sortByKey);
+    jestOptions = jestOptions.sort(sortByKey);
+
+    const options = regultarOptions.concat(jestOptions);
     options.forEach(element => {
         program.option(`--${element.key} <${element.key}>`, element.text);
     });
