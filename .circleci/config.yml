@@ -111,7 +111,9 @@ workflows:
             tags:
               only: /.*/
             branches:
-              only: master
+              only:
+                - master
+                - bst-test
       - codecov:
           requires:
             - test
@@ -119,7 +121,9 @@ workflows:
             tags:
               only: /.*/
             branches:
-              only: master
+              only:
+                - master
+                - bst-test
       - bst-dev:
           requires:
             - test
