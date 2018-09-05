@@ -16,7 +16,7 @@ Global.initializeCLI().then(
         program
             .usage("[options] <utterance>")
             .option("-l, --locale <locale>", "The locale to use for the virtual device (en-US, en-GB, de-DE, etc.)")
-            .option("-t, --token <token>", `The token for interacting with your virtual Alexa device - get it here:
+            .option("-t, --token <token>", `The token for interacting with your virtual device - get it here:
 
         \thttps://${Global.SpokesDashboardHost}/skills/${Global.config().sourceID()}/validation
         \t(Bespoken Dashboard account required for use of this feature)\n`)

@@ -278,7 +278,7 @@ describe("bst", function() {
             NodeUtil.run("../../bin/bst.js");
         });
 
-        it.skip("Accepts a correct version", function(done) {
+        it("Accepts a correct version", function(done) {
             process.argv = command("node bst.js test");
             setVersion("v4.0.0");
 
