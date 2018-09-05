@@ -5,8 +5,7 @@ import {SocketHandler, SocketMessage} from "../core/socket-handler";
 import {Server} from "net";
 import {Global} from "../core/global";
 import {LoggingHelper} from "../core/logging-helper";
-import {Statistics, AccessType} from "./statistics";
-
+import {BstStatistics, BstCommand, BstEvent} from "../statistics/bst-statistics";
 const Logger = "NODEMGR";
 
 export interface OnConnectCallback {
@@ -57,7 +56,7 @@ export class NodeManager {
                     }
 
                     // Capture the connection
-                    Statistics.instance().record(node.id, AccessType.CONNECT);
+                    BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, node.id);
                 } else if (strMessage === Global.KeepAliveMessage) {
                     NodeManager.onKeepAliveReceived(node);
 

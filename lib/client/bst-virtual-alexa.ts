@@ -1,6 +1,7 @@
 import {Global} from "../core/global";
 import {SkillContext, VirtualAlexa} from "virtual-alexa";
 import * as fs from "fs";
+import {BstStatistics, BstCommand} from "../statistics/bst-statistics";
 
 interface SavedSession {
     id: string;
@@ -24,6 +25,7 @@ export class BSTVirtualAlexa {
     private interactionModelProvided: boolean = false;
     private sampleUtterancesProvided: boolean = false;
     private intentSchemaProvided: boolean = false;
+    private nodeId: string;
 
     private static FileTypes = {
         InterationModel: "Interaction Model",
@@ -150,7 +152,6 @@ export class BSTVirtualAlexa {
             }
         }
 
-
         if (!(this.interactionModelProvided || this.intentSchemaProvided)) {
             // No model provided, we check if default files exists
             if (fs.existsSync(this.interactionModel)) {
@@ -186,6 +187,7 @@ export class BSTVirtualAlexa {
             this.validateJsonFiles(this.intentSchemaFile, BSTVirtualAlexa.FileTypes.IntentSchema);
             builder.intentSchemaFile(this.intentSchemaFile).sampleUtterancesFile(this.sampleUtterancesFile);
         }
+
         return builder.create();
     }
 
@@ -194,6 +196,10 @@ export class BSTVirtualAlexa {
      */
     public start(createdEmptyInteractionModelIfNeeded?: boolean): void {
         this.virtualAlexa = this.validateFilesAndBuild(createdEmptyInteractionModelIfNeeded);
+        const globalConfig = Global.config();
+        if (globalConfig && globalConfig.configuration && globalConfig.configuration.secretKey) {
+            this.nodeId = globalConfig.configuration.secretKey;
+        }
     }
 
     /**
@@ -215,7 +221,7 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
-
+        BstStatistics.instance().record(BstCommand.utter, undefined, this.nodeId);
         return this;
     }
 
@@ -238,7 +244,7 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
-
+        BstStatistics.instance().record(BstCommand.intend, undefined, this.nodeId);
         return this;
     }
 
@@ -257,6 +263,8 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
+
+        BstStatistics.instance().record(BstCommand.launch, undefined, this.nodeId);
         return this;
     }
 }

@@ -4,6 +4,7 @@ import {LoggingHelper} from "../core/logging-helper";
 import {LambdaConfig} from "./lambda-config";
 import {SourceNameGenerator} from "../external/source-name-generator";
 import {SpokesClient} from "../external/spokes";
+import {BstMessages} from "../external/messages";
 
 const Logger = "CONFIG";
 const BSTDirectoryName = ".bst";
@@ -18,16 +19,39 @@ export class BSTConfig {
     /**
      * Loads the configuration
      * Done all synchronously as this is done first thing at startup and everything waits on it
+     *    createSource: call source api to create a soruce
      */
-    public static async load(): Promise<BSTConfig> {
-        await BSTConfig.bootstrapIfNeeded();
+    public static async load(createSource?: boolean): Promise<BSTConfig> {
+        createSource = typeof createSource === "undefined" ? true : createSource;
+        await BSTConfig.bootstrapIfNeeded(createSource);
 
-        let data = fs.readFileSync(BSTConfig.configPath());
-        let config = JSON.parse(data.toString());
+
+        let config = undefined;
+        if (fs.existsSync(BSTConfig.configPath())) {
+            let data = fs.readFileSync(BSTConfig.configPath());
+            config = JSON.parse(data.toString());
+        }
 
         let bstConfig = new BSTConfig();
         bstConfig.loadFromJSON(config);
         return bstConfig;
+    }
+
+    public getMessages(): any {
+        const bstMessages = this.configuration.bstMessages;
+        if (!bstMessages) return undefined;
+        const messages = bstMessages.messages;
+        if (!messages) return undefined;
+        const result: any = {};
+        if (messages.customMessages && messages.customMessages.length) {
+            const randomMessage = Math.floor(Math.random() * messages.customMessages.length);
+            result.customMessage = messages.customMessages[randomMessage];
+        }
+        if (messages.tips && messages.tips.length) {
+            const randomTip = Math.floor(Math.random() * messages.tips.length);
+            result.tip = messages.tips[randomTip];
+        }
+        return result;
     }
 
     public save() {
@@ -57,6 +81,11 @@ export class BSTConfig {
 
     public updateVirtualDeviceToken(virtualDeviceToken: string): void {
         this.configuration.virtualDeviceToken = virtualDeviceToken;
+        this.commit();
+    }
+
+    public updateMessages(messages: any[]): void {
+        this.configuration.messages = messages;
         this.commit();
     }
 
@@ -106,8 +135,10 @@ export class BSTConfig {
 
     /**
      * Creates a new configuration file if one does not exist
+     *   createSource: call source api to create a source
      */
-    private static async bootstrapIfNeeded(): Promise<void> {
+    private static async bootstrapIfNeeded(createSource?: boolean): Promise<void> {
+        createSource = typeof createSource === "undefined" ? true : createSource;
         let directory = BSTConfig.configDirectory();
         if (!fs.existsSync(directory)) {
             fs.mkdirSync(directory);
@@ -116,18 +147,32 @@ export class BSTConfig {
         if (!fs.existsSync(BSTConfig.configPath())) {
             LoggingHelper.info(Logger, "No configuration. Creating one: " + BSTConfig.configPath());
 
-            // Create the config file if it does not yet exist
-            let configJSON = await BSTConfig.createConfig();
+            let configJSON: any = {};
+            if (createSource) {
+                // Create the config file if it does not yet exist
+                configJSON = await BSTConfig.createConfig();
+            }
 
+            configJSON.bstMessages = await this.fetchMessages();
             BSTConfig.saveConfig(configJSON);
         } else {
             // If config exists but doesn't have sourceID update it
             let data = fs.readFileSync(BSTConfig.configPath());
             let config = JSON.parse(data.toString());
-
-            if (!config.sourceID || !config.version) {
+            if (createSource && (!config.sourceID || !config.version)) {
                 await BSTConfig.updateConfig(config);
             }
+
+            if (config.bstMessages && config.bstMessages.fetched) {
+                const difference = (new Date()).getTime() - config.bstMessages.fetched;
+                // If the messages where older than a day, we will fetch again
+                if (difference > 1000 * 3600 * 24) {
+                    config.bstMessages = await this.fetchMessages();
+                }
+            } else {
+                config.bstMessages = await this.fetchMessages();
+            }
+            BSTConfig.saveConfig(config);
         }
     }
 
@@ -138,7 +183,6 @@ export class BSTConfig {
         config.secretKey = generatedConfig.secretKey;
         config.version = generatedConfig.version;
         delete config.nodeID;
-        BSTConfig.saveConfig(config);
     }
 
     private static saveConfig(config: any) {
@@ -149,12 +193,13 @@ export class BSTConfig {
     private static async createConfig(nodeID?: string, sourceID?: string): Promise<any> {
         const lambdaConfig = LambdaConfig.defaultConfig().lambdaDeploy;
         const pipeInfo = await BSTConfig.createExternalResources(nodeID, sourceID);
-
+        const bstMessages = await this.fetchMessages();
         return {
             "sourceID": pipeInfo.endPoint.name,
             "secretKey": pipeInfo.uuid,
             "lambdaDeploy": lambdaConfig,
             "version": this.getBstVersion(),
+            "bstMessages": bstMessages,
         };
     }
 
@@ -220,6 +265,23 @@ export class BSTConfig {
         const pipe = await this.createSpokesPipe(sourceData.id, sourceData.key);
         return pipe;
     }
+
+    private static async fetchMessages(): Promise<any> {
+        try {
+            const bstMessages = new BstMessages();
+            const messages = await bstMessages.callService();
+            return {
+                messages,
+                fetched: new Date().getTime(),
+            };
+        } catch (error) {
+            if (process.env.DISPLAY_INTERNAL_ERROR) {
+                console.log("error", error);
+            }
+        }
+        return undefined;
+    }
+
 }
 
 export class BSTProcess {
