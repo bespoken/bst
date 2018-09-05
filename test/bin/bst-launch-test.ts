@@ -13,7 +13,11 @@ describe("bst-launch", function() {
 
             },
             config: function () {
-                return {};
+                return {
+                    loadSession: function () {
+                        return {};
+                    }
+                };
             },
             running : function() {
                 let p = new BSTProcess();

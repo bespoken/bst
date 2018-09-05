@@ -2,7 +2,7 @@ import {IVirtualDeviceResult, VirtualDevice} from "virtual-device-sdk";
 import {Global} from "../core/global";
 
 export class VirtualDeviceClient {
-    public static speak(utterance: string, token?: string): Promise<IVirtualDeviceResult> {
+    public static speak(utterance: string, token?: string, locale?: string, voiceID?: string): Promise<IVirtualDeviceResult> {
         if (token) {
             if (Global.config()) {
                 Global.config().updateVirtualDeviceToken(token);
@@ -15,7 +15,7 @@ export class VirtualDeviceClient {
             throw new Error("Token Required");
         }
 
-        const virtualDevice = new VirtualDevice(tokenToUse);
+        const virtualDevice = new VirtualDevice(tokenToUse, locale, voiceID);
         return virtualDevice.message(utterance);
     }
 

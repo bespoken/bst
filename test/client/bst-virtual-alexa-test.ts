@@ -92,6 +92,14 @@ describe("BSTVirtualAlexa", async function() {
             process.chdir("../..");
         });
 
+        it("Start with defaults and non english model", function () {
+            process.chdir("test/resources/nonUSModel");
+            const speak = new BSTVirtualAlexa("http://localhost:9000");
+            speak.start(true);
+            assert(true, "Start processed without exceptions");
+            process.chdir("../../..");
+        });
+
         it("Use provided models even when default is present in folder", function () {
             process.chdir("test/resources/allSpeechModels");
             const speak = new BSTVirtualAlexa("http://localhost:9000",
@@ -234,9 +242,8 @@ describe("BSTVirtualAlexa", async function() {
 
             it("Speak non-grammar phrase", function (done) {
                 alexa.spoken("Dumb", function (error: any, response: any) {
-                    assert(response.output === undefined);
-                    assert(response.success);
-                    assert.equal(response.intent, "Test");
+                    assert(error !== undefined);
+                    assert(error.message, "Unable to match utterance: Dumb to an intent. Try a different utterance, or explicitly set the intent");
                     done();
                 });
             });

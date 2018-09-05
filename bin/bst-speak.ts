@@ -19,6 +19,8 @@ Global.initializeCLI().then(
 
         \thttps://${Global.SpokesDashboardHost}/skills/${Global.config().sourceID()}/validation
         \t(Bespoken Dashboard account required for use of this feature)\n`)
+            .option("-l, --locale <locale>", "The locale to use for the virtual device (en-US, en-GB, de-DE, etc.)")
+            .option("-v, --voiceID <voiceID>", "The AWS Polly voice ID to use for generating speech")
             .description("Speaks to your virtual Alexa device")
             .action(async function () {
                 // To handle utterances with multiple words, we need to look at the args
@@ -38,10 +40,12 @@ Global.initializeCLI().then(
                 // Just by casting program to options, we can get all the options which are set on it
                 const options: any = program;
                 const token = options.token;
+                const locale = options.locale;
+                const voiceID = options.voiceID;
 
                 let virtualDeviceResponse;
                 try {
-                    virtualDeviceResponse = await VirtualDeviceClient.speak(utterance, token);
+                    virtualDeviceResponse = await VirtualDeviceClient.speak(utterance, token, locale, voiceID);
                 } catch (error) {
                     if (error.message === "Token Required") {
                         console.log("You need a token for this option to work, get it here:");

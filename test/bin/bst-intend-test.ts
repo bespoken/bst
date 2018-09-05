@@ -5,6 +5,9 @@ import {NodeUtil} from "../../lib/core/node-util";
 import {BSTProcess} from "../../lib/client/bst-config";
 import {SinonSandbox} from "sinon";
 
+let loadSession = function () {
+    return {};
+};
 const globalModule = {
     Global: {
         initializeCLI: async function () {
@@ -18,6 +21,11 @@ const globalModule = {
 
         version: function () {
             return "0.0.0";
+        },
+        config: function () {
+            return {
+                loadSession
+            };
         }
     }
 };
@@ -248,6 +256,84 @@ describe("bst-intend", function() {
                 done();
             });
 
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
+        it("Speaks With user id stored in session", function(done) {
+            loadSession = function () {
+                return {
+                    userId: "123456",
+                };
+            };
+            mockery.registerMock("../lib/core/global", globalModule);
+            process.argv = command("node bst-intend.js HelloIntend");
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string, locale: string, userId: string) {
+                    assert.equal(userId, "123456");
+                    this.start = function () {};
+                    this.spoken = function (utterance: string, callback: any) {};
+
+                    this.context = function() {
+                        return {
+                            user: function () {
+                                return {
+                                    setID: function (userId: string) {
+                                        assert.equal(userId, "123456");
+                                    }
+
+                                };
+                            }
+                        };
+                    };
+                    done();
+                }
+            });
+
+
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
+        it("Speaks With locale stored in session", function(done) {
+            loadSession = function () {
+                return {
+                    locale: "de-DE",
+                };
+            };
+            mockery.registerMock("../lib/core/global", globalModule);
+            process.argv = command("node bst-intend.js HelloIntend");
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string, locale: string, userId: string) {
+                    assert.equal(locale, "de-DE");
+                    done();
+                }
+            });
+
+
+            NodeUtil.load("../../bin/bst-intend.js");
+        });
+
+        it("Speaks with no session", function(done) {
+            loadSession = function () {
+                return null;
+            };
+            mockery.registerMock("../lib/core/global", globalModule);
+            process.argv = command("node bst-intend.js HelloIntend");
+            mockery.registerMock("../lib/client/bst-virtual-alexa", {
+                BSTVirtualAlexa: function () {
+                    this.start = function() {};
+
+                    this.spoken = function (utterance: string, callback: any) {
+                        assert.equal(utterance, "HelloIntend");
+                    };
+                    done();
+                }
+            });
+
+            sandbox.stub(console, "log", function(data: Buffer) {
+                if (data !== undefined && data.indexOf("Response:") !== -1) {
+                    done();
+                }
+            });
             NodeUtil.load("../../bin/bst-intend.js");
         });
 

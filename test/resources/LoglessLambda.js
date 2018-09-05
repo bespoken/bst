@@ -1,3 +1,4 @@
+import {Logless} from "logless-client";
 
 exports.handler = Logless.capture("JPK", function (event, context) {
     // Create an instance of the HelloWorld skill.

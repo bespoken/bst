@@ -8,6 +8,8 @@ interface SavedSession {
     attributes: {
         [id: string]: any
     };
+    locale: string;
+    userId: string;
 }
 /**
  * Programmatic interface for interacting with the Virtual Alexa.
@@ -17,6 +19,7 @@ export class BSTVirtualAlexa {
     public static DefaultIntentSchemaLocation = "speechAssets/IntentSchema.json";
     public static DefaultSampleUtterancesLocation = "speechAssets/SampleUtterances.txt";
     public static DefaultInteractionModelLocation = "models/en-US.json";
+    static DefaultInteractionModel = { interactionModel: { languageModel: { invocationName: "", intents: [] }}};
 
     private virtualAlexa: VirtualAlexa = null;
     private interactionModelProvided: boolean = false;
@@ -41,6 +44,8 @@ export class BSTVirtualAlexa {
             const savedSession: SavedSession = {
                 id: session.id(),
                 attributes: session.attributes(),
+                locale: this.locale,
+                userId: this.userId
             };
 
             Global.config().saveSession(savedSession);
@@ -74,7 +79,8 @@ export class BSTVirtualAlexa {
                        private intentSchemaFile?: string,
                        private sampleUtterancesFile?: string,
                        private applicationID?: string,
-                       private locale?: string) {
+                       private locale?: string,
+                       private userId?: string) {
         if ((intentSchemaFile || sampleUtterancesFile) && interactionModel) {
             console.error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
             throw new Error("The Interaction Model and Intent Schema Files should not both be specified. It should be one or the other.");
@@ -134,7 +140,7 @@ export class BSTVirtualAlexa {
         }
     }
 
-    private validateFilesAndBuild(): VirtualAlexa {
+    private validateFilesAndBuild(createdEmptyInteractionModelIfNeeded: boolean): VirtualAlexa {
         const builder = VirtualAlexa.Builder().applicationID(this.applicationID).skillURL(this.skillURL);
         let usingInteractionModel = false;
 
@@ -150,7 +156,7 @@ export class BSTVirtualAlexa {
             // No model provided, we check if default files exists
             if (fs.existsSync(this.interactionModel)) {
                 usingInteractionModel = true;
-            } else if (!(fs.existsSync(this.intentSchemaFile) && fs.existsSync(this.sampleUtterancesFile))) {
+            } else if (!(fs.existsSync(this.intentSchemaFile) && fs.existsSync(this.sampleUtterancesFile)) && !createdEmptyInteractionModelIfNeeded) {
                 // Model don't exist in default locations
                 console.error("Error loading Interaction model, no file provided and none found in default locations");
                 throw new Error("Error loading Interaction model, no file provided and none found in default locations");
@@ -175,6 +181,8 @@ export class BSTVirtualAlexa {
         if (usingInteractionModel) {
             this.validateJsonFiles(this.interactionModel, BSTVirtualAlexa.FileTypes.InterationModel);
             builder.interactionModelFile(this.interactionModel);
+        } else if (createdEmptyInteractionModelIfNeeded) {
+            builder.interactionModel(BSTVirtualAlexa.DefaultInteractionModel);
         } else {
             this.validateJsonFiles(this.intentSchemaFile, BSTVirtualAlexa.FileTypes.IntentSchema);
             builder.intentSchemaFile(this.intentSchemaFile).sampleUtterancesFile(this.sampleUtterancesFile);
@@ -186,8 +194,8 @@ export class BSTVirtualAlexa {
     /**
      * Start the emulator
      */
-    public start(): void {
-        this.virtualAlexa = this.validateFilesAndBuild();
+    public start(createdEmptyInteractionModelIfNeeded?: boolean): void {
+        this.virtualAlexa = this.validateFilesAndBuild(createdEmptyInteractionModelIfNeeded);
         const globalConfig = Global.config();
         if (globalConfig && globalConfig.configuration && globalConfig.configuration.secretKey) {
             this.nodeId = globalConfig.configuration.secretKey;
