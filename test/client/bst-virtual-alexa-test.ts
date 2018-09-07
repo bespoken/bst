@@ -73,7 +73,7 @@ describe("BSTVirtualAlexa", async function() {
             sandbox.restore();
         });
 
-        describe("BSTAlexa Without Config", function() {
+        describe("BSTVirtualAlexa Without Config", function() {
             it("#start()", function () {
                 const speak = new BSTVirtualAlexa("http://localhost:9000",
                     null,
