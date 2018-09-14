@@ -6,11 +6,6 @@ import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
 
 program.version(Global.version());
 
-// Forces help to be printed
-if (process.argv.slice(2).length === 0) {
-    program.outputHelp();
-}
-
 Global.initializeCLI().then(
     () => {
         program
@@ -75,7 +70,12 @@ Global.initializeCLI().then(
                 console.log(VirtualDeviceClient.renderResult(virtualDeviceResponse));
             });
 
-        program.parse(process.argv);
+
+        // Forces help to be printed
+        if (process.argv.slice(2).length === 0) {
+            program.outputHelp();
+        } else {
+            program.parse(process.argv);
+        }
     }
 );
-
