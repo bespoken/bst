@@ -66,7 +66,7 @@ Global.initializeCLI().then(
                 if (Global.config() && Global.config().secretKey && Global.config().secretKey()) {
                     nodeId = Global.config().secretKey();
                 }
-                BstStatistics.instance().record(BstCommand.speak, undefined, nodeId);
+                BstStatistics.instance().record(BstCommand.speak, undefined, nodeId, Global.version());
                 console.log(VirtualDeviceClient.renderResult(virtualDeviceResponse));
             });
 

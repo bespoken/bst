@@ -221,7 +221,7 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
-        BstStatistics.instance().record(BstCommand.utter, undefined, this.nodeId);
+        BstStatistics.instance().record(BstCommand.utter, undefined, this.nodeId, Global.version());
         return this;
     }
 
@@ -244,7 +244,7 @@ export class BSTVirtualAlexa {
         }).catch(error => {
             callback(error, null, request);
         });
-        BstStatistics.instance().record(BstCommand.intend, undefined, this.nodeId);
+        BstStatistics.instance().record(BstCommand.intend, undefined, this.nodeId, Global.version());
         return this;
     }
 
@@ -264,7 +264,7 @@ export class BSTVirtualAlexa {
             callback(error, null, request);
         });
 
-        BstStatistics.instance().record(BstCommand.launch, undefined, this.nodeId);
+        BstStatistics.instance().record(BstCommand.launch, undefined, this.nodeId, Global.version());
         return this;
     }
 }
