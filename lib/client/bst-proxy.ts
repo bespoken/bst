@@ -165,7 +165,7 @@ export class BSTProxy {
             this.functionServer.start(callback);
         }
 
-        BstStatistics.instance().record(BstCommand.proxy, undefined, Global.config().secretKey(), Global.version());
+        BstStatistics.instance().record(BstCommand.proxy, undefined, this.proxySecretKey, Global.version());
         return this;
     }
 
