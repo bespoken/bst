@@ -123,7 +123,7 @@ export class StatisticsContext {
 export class BstStat {
     public _timestamp: Date;
 
-    public constructor(public command: string, public event?: string, public nodeId?: string, version?: string) {
+    public constructor(public command: string, public event?: string, public nodeId?: string, public version?: string) {
         this._timestamp = new Date();
     }
 

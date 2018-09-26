@@ -5,6 +5,8 @@ import {Global} from "../core/global";
 import {BSTConfig} from "./bst-config";
 import {FunctionServer} from "./function-server";
 import {LoggingHelper} from "../core/logging-helper";
+import {BstStatistics, BstCommand} from "../statistics/bst-statistics";
+
 
 export enum ProxyType {
     GOOGLE_CLOUD_FUNCTION,
@@ -163,6 +165,7 @@ export class BSTProxy {
             this.functionServer.start(callback);
         }
 
+        BstStatistics.instance().record(BstCommand.proxy, undefined, Global.config().secretKey(), Global.version());
         return this;
     }
 
