@@ -56,7 +56,7 @@ export class NodeManager {
                     }
 
                     // Capture the connection
-                    BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, node.id, Global.version());
+                    BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, node.id);
                 } else if (strMessage === Global.KeepAliveMessage) {
                     NodeManager.onKeepAliveReceived(node);
 
