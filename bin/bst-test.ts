@@ -62,7 +62,7 @@ Global.initializeCLI(false).then(() => {
         if (Global.config() && Global.config().secretKey && Global.config().secretKey()) {
             nodeId = Global.config().secretKey();
         }
-        BstStatistics.instance().record(BstCommand.test, undefined, nodeId);
+        BstStatistics.instance().record(BstCommand.test, undefined, nodeId, Global.version());
         process.exitCode = success ? 0 : 1;
     });
 });

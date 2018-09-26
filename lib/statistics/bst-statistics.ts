@@ -40,8 +40,8 @@ export class BstStatistics {
         clearInterval(this.timer);
     }
 
-    record(command: string, event?: string, nodeId?: string, flushed?: (error?: Error) => void) {
-        this.statisticsContext.record(command, event, nodeId);
+    record(command: string, event?: string, nodeId?: string, version?: string, flushed?: (error?: Error) => void) {
+        this.statisticsContext.record(command, event, nodeId, version);
         if (!this.timer) {
             this.statisticsContext.flush(flushed);
         }
@@ -51,8 +51,8 @@ export class BstStatistics {
 export class StatisticsContext {
     private _queue: Array<BstStat> = [];
 
-    public record(command: string, event?: string, nodeId?: string) {
-        this._queue.push(new BstStat(command, event, nodeId));
+    public record(command: string, event?: string, nodeId?: string, version?: string) {
+        this._queue.push(new BstStat(command, event, nodeId, version));
     }
 
     public flush(flushed?: (error?: Error) => void) {
@@ -123,7 +123,7 @@ export class StatisticsContext {
 export class BstStat {
     public _timestamp: Date;
 
-    public constructor(public command: string, public event?: string, public nodeId?: string) {
+    public constructor(public command: string, public event?: string, public nodeId?: string, public version?: string) {
         this._timestamp = new Date();
     }
 

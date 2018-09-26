@@ -28,7 +28,7 @@ describe("BstStatistics", function() {
                     return {bstStats: requestBody.bstStats.length};
                 });
 
-            BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, undefined, function(error) {
+            BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, undefined, "2.0.0", function(error) {
                 assert(!error);
                 done();
             });
@@ -42,7 +42,7 @@ describe("BstStatistics", function() {
                 })
                 .replyWithError("something bad happened");
 
-            BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, undefined, function(error) {
+            BstStatistics.instance().record(BstCommand.proxy, BstEvent.connect, undefined, "2.0.0", function(error) {
                 assert(error);
                 done();
             });
