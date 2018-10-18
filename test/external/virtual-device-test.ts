@@ -47,6 +47,29 @@ describe("VirtualDeviceClient", function() {
             }
         });
 
+        it("Throws error if error is sent", async function () {
+            const globalClone = Object.assign({}, globalModule);
+            globalClone.Global.config = function () {
+                return {
+                    virtualDeviceToken: () => "Token",
+                    updateVirtualDeviceToken: () => {
+                    },
+                };
+            };
+
+            mockery.registerMock("../core/global", globalClone);
+            mockery.registerMock("virtual-device-sdk", {
+                VirtualDevice: ExceptionThrowingVirtualDevice,
+            });
+
+            const VirtualDeviceClient = require("../../lib/external/virtual-device").VirtualDeviceClient;
+            try {
+                await VirtualDeviceClient.speak("Hello world");
+            } catch (error) {
+                assert.equal(error.message, "Something broke");
+            }
+        });
+
         it("Works when token exists on config", async function () {
 
             const globalClone = Object.assign({}, globalModule);
@@ -175,5 +198,15 @@ class VirtualDevice {
 
     public message = (utterance: string) => {
         messageParam = utterance;
+    }
+}
+
+class ExceptionThrowingVirtualDevice {
+    public constructor(token: string) {
+        constructorToken = token;
+    }
+
+    public message = (utterance: string) => {
+        throw new Error("Something broke");
     }
 }

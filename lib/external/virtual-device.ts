@@ -2,7 +2,7 @@ import {IVirtualDeviceResult, VirtualDevice} from "virtual-device-sdk";
 import {Global} from "../core/global";
 
 export class VirtualDeviceClient {
-    public static speak(utterance: string, token?: string, locale?: string, voiceID?: string): Promise<IVirtualDeviceResult> {
+    public static async speak(utterance: string, token?: string, locale?: string, voiceID?: string): Promise<IVirtualDeviceResult> {
         if (token) {
             if (Global.config()) {
                 Global.config().updateVirtualDeviceToken(token);
@@ -16,7 +16,12 @@ export class VirtualDeviceClient {
         }
 
         const virtualDevice = new VirtualDevice(tokenToUse, locale, voiceID);
-        return virtualDevice.message(utterance);
+        try {
+            // We need to await here in order to trigger correctly the exception
+            return await virtualDevice.message(utterance);
+        } catch (error) {
+            throw error;
+        }
     }
 
     public static renderResult(result: IVirtualDeviceResult): string {
