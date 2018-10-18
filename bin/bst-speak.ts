@@ -3,6 +3,7 @@ import * as program from "commander";
 import {Global} from "../lib/core/global";
 import {VirtualDeviceClient} from "../lib/external/virtual-device";
 import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
+import {LoggingHelper} from "../lib/core/logging-helper";
 
 program.version(Global.version());
 
@@ -52,11 +53,17 @@ Global.initializeCLI().then(
                         console.log();
                         console.log("\tbst speak --token <ProvidedToken> <Speech to try>");
                         console.log();
-                        process.exit(0);
-                        return;
+
+                    } else {
+                        // Error is comming from virtual device sdk, we output it
+                        const Logger = "BST";
+                        console.log("Sorry, something went wrong. Please try again in a few minutes.");
+                        LoggingHelper.prepareForFileLoggingAndDisableConsole("bst-debug.log");
+                        LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
+                        LoggingHelper.error(Logger, error);
                     }
-                    // Different issue, we throw to be catch by the general error handler.
-                    throw error;
+                    process.exit(0);
+                    return;
                 }
 
                 if (token) {
