@@ -119,8 +119,8 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
 				<p>We can the utilize the <a href="classes/lambdaserver.html">LambdaServer</a> to automatically start and stop a NodeJS/Lambda-based skill
 				within our test.</p>
 				<p>To do this, simply start the <a href="classes/lambdaserver.html">LambdaServer</a> on an open port and point it at your Lambda file:</p>
-				<pre><code>let <span class="hljs-keyword">server</span> = <span class="hljs-keyword">new</span> bst.LambdaServer(<span class="hljs-string">'./lib/index.js'</span>, <span class="hljs-number">10000</span>, <span class="hljs-keyword">true</span>);
-<span class="hljs-keyword">server</span>.start();
+				<pre><code><span class="hljs-keyword">let</span> server = <span class="hljs-keyword">new</span> bst.<span class="hljs-constructor">LambdaServer('.<span class="hljs-operator">/</span><span class="hljs-params">lib</span><span class="hljs-operator">/</span><span class="hljs-params">index</span>.<span class="hljs-params">js</span>', 10000, <span class="hljs-params">true</span>)</span>;
+server.start<span class="hljs-literal">()</span>;
 </code></pre><p>The last parameter, true, enables verbose debugging. This prints out all the requests and responses from the skill to the console.</p>
 				<p>This will typically reside within our beforeEach block, similar to the the <a href="classes/bstalexa.html">BSTAlexa</a> initialization:</p>
 				<pre><code>beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(done)</span> </span>{
