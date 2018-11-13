@@ -16,7 +16,7 @@ program.version(Global.version());
 Global.initializeCLI(false).then(() => {
     program
         .usage("[test-pattern-regex]")
-        .description("Runs unit-tests for a skill - automatically searches for YML test files and runs them");
+        .description("Runs unit or end-to-end tests for a skill - automatically searches for YML test files and runs them");
 
     const optionsFiltered = skillTesting.ConfigurationKeys.filter(item => skippedOptions.indexOf(item.key) === -1);
     let regultarOptions = [];
