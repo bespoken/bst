@@ -25,10 +25,13 @@ console.log(chalk.green("BST: v" + Global.version() + "  Node: " + process.versi
 updateNotifier({
     pkg: {
         name: "bespoken-tools",
-        version: Global.version()
+        version: Global.version(),
     },
     updateCheckInterval: 0
-}).notify({ defer: false });
+}).notify({
+    defer: false,
+    isGlobal: true,
+});
 
 let Logger = "BST";
 
