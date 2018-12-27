@@ -55,14 +55,7 @@ Global.initializeCLI().then(
                         console.log();
 
                     } else {
-                        let displayMessage = "";
-                        if (Object.prototype.toString.call(ex) === "[object String]") {
-                            displayMessage = ex;
-                        } else if (ex.error) {
-                            displayMessage = ex.error;
-                        } else {
-                            displayMessage = "Sorry, something went wrong. Please try again in a few minutes.";
-                        }
+                        let displayMessage = getError(ex);
                         // Error is comming from virtual device sdk, we output it
                         const Logger = "BST";
                         console.log(displayMessage);
@@ -94,3 +87,33 @@ Global.initializeCLI().then(
         }
     }
 );
+
+function getError(ex: any) {
+    let objectError = undefined;
+    if (ex === Object(ex)) {
+        objectError = tryParse(ex.message) || ex.message;
+    } else {
+        objectError = tryParse(ex) || ex;
+    }
+
+    if (typeof(objectError) === "string") {
+        return objectError;
+    } else if (typeof(objectError) === "object") {
+        if (objectError.error) {
+            if (typeof(objectError.error) === "string") {
+                return objectError.error;
+            } else if (Array.isArray(objectError.error)) {
+                return objectError.error.join(", ");
+            }
+        }
+        return "Sorry, something went wrong. Please try again in a few minutes";
+    }
+}
+
+function tryParse(object: any) {
+    try {
+        return JSON.parse(object);
+    } catch (error) {
+        return undefined;
+    }
+}

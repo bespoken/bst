@@ -231,6 +231,49 @@ describe("bst-speak", function() {
                 resolve();
             });
         });
+
+        it("Display error from virtual device", function() {
+            return new Promise((resolve, reject) => {
+                let tokenErrorWasPrinted = true;
+                process.argv = command("node bst-speak.js Hello");
+                mockery.registerMock("../lib/external/virtual-device", {
+                    VirtualDeviceClient: {
+                        speak: function() {
+                            const errorResponse = { error: "error from virtual device" };
+                            throw new Error(JSON.stringify(errorResponse));
+                        },
+                        renderResult: function () {
+                          return "";
+                        },
+                    }
+                });
+
+                mockery.registerMock("../lib/core/logging-helper", {
+                    LoggingHelper: {
+                        prepareForFileLoggingAndDisableConsole: function() {},
+                        error: function () {},
+                    }
+                });
+
+                sandbox.stub(process, "exit", function(exitCode: number) {
+                    try {
+                        assert.equal(exitCode, 0);
+                        assert.equal(true, tokenErrorWasPrinted,  "Error was not printed");
+                    } catch (error) {
+                        reject(error);
+                    }
+                    resolve();
+                });
+
+                sandbox.stub(console, "log", function(data: Buffer) {
+                    const initialString = "error from virtual device";
+                    if (data !== undefined && data.indexOf(initialString) !== -1) {
+                        tokenErrorWasPrinted = true;
+                    }
+                });
+                NodeUtil.load("../../bin/bst-speak.js");
+            });
+        });
     });
 });
 
