@@ -42,8 +42,8 @@ Global.initializeCLI().then(
                 let virtualDeviceResponse;
                 try {
                     virtualDeviceResponse = await VirtualDeviceClient.speak(utterance, token, locale, voiceID);
-                } catch (error) {
-                    if (error.message === "Token Required") {
+                } catch (ex) {
+                    if (ex.message === "Token Required") {
                         console.log("You need a token for this option to work, get it here:");
                         console.log();
                         console.log("\thttps://" + Global.SpokesDashboardHost + "/skills/" + Global.config().sourceID() + "/validation");
@@ -55,12 +55,13 @@ Global.initializeCLI().then(
                         console.log();
 
                     } else {
+                        let displayMessage = getError(ex);
                         // Error is comming from virtual device sdk, we output it
                         const Logger = "BST";
-                        console.log("Sorry, something went wrong. Please try again in a few minutes.");
+                        console.log(displayMessage);
                         LoggingHelper.prepareForFileLoggingAndDisableConsole("bst-debug.log");
                         LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
-                        LoggingHelper.error(Logger, error);
+                        LoggingHelper.error(Logger, ex);
                     }
                     process.exit(0);
                     return;
@@ -86,3 +87,33 @@ Global.initializeCLI().then(
         }
     }
 );
+
+function getError(ex: any) {
+    let objectError = undefined;
+    if (ex === Object(ex)) {
+        objectError = tryParse(ex.message) || ex.message;
+    } else {
+        objectError = tryParse(ex) || ex;
+    }
+
+    if (typeof(objectError) === "string") {
+        return objectError;
+    } else if (typeof(objectError) === "object") {
+        if (objectError.error) {
+            if (typeof(objectError.error) === "string") {
+                return objectError.error;
+            } else if (Array.isArray(objectError.error)) {
+                return objectError.error.join(", ");
+            }
+        }
+        return "Sorry, something went wrong. Please try again in a few minutes";
+    }
+}
+
+function tryParse(object: any) {
+    try {
+        return JSON.parse(object);
+    } catch (error) {
+        return undefined;
+    }
+}
