@@ -41,9 +41,22 @@ deploy-steps: &deploy-steps
 
 version: 2
 jobs:
+  build:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/circleci-deployment
+    steps:
+      - attach_workspace:
+          at: ~/circleci-deployment
+      - checkout
+      - run: npm install
+      - run: npm run build
+      - persist_to_workspace:
+          root: .
+          paths: .
   test:
     docker:
-      - image: circleci/node:6
+      - image: circleci/node:8
     working_directory: ~/circleci-deployment
     steps:
       - attach_workspace:
@@ -68,7 +81,8 @@ jobs:
           root: .
           paths: .
   bst-dev:
-    machine: true
+    docker:
+      - image: circleci/node:8
     environment:
       - TYPE_OF_DEPLOY: dev
       - SKIP_STATISTICS: "true"
@@ -90,27 +104,9 @@ workflows:
   version: 2
   test-n-deploy:
     jobs:
-      - test:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only:
-                - master
-                - bst-test
-      - codecov:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only:
-                - master
-                - bst-test
       - bst-dev:
           requires:
-            - test
+            - build
           filters:
             tags:
               only: /bst-dev-.*/
