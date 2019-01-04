@@ -98,9 +98,9 @@ workflows:
       - bst-dev:
           requires:
             - test
-          # filters:
-          #   tags:
-          #     only: /bst-dev-.*/
+          filters:
+            tags:
+              only: migrate-ecs
           #   branches:
           #     ignore: /.*/
       # - bst-server:
