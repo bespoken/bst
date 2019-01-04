@@ -59,6 +59,7 @@ jobs:
     environment:
       - TYPE_OF_DEPLOY: dev
       - SKIP_STATISTICS: "true"
+      - CIRCLE_TAG: "test" # just for testing, remove later!
 
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
@@ -98,9 +99,9 @@ workflows:
       - bst-dev:
           requires:
             - test
-          filters:
-            tags:
-              only: migrate-ecs
+          # filters:
+          #   tags:
+          #     only: /bst-dev-.*/
           #   branches:
           #     ignore: /.*/
       # - bst-server:
