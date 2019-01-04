@@ -4,6 +4,7 @@ deploy-steps: &deploy-steps
   - run:
       name: Build Docker
       command: |
+        printenv
         docker login -u $DOCKER_USER -p $DOCKER_PASS
         docker build -f docker/Dockerfile -t bespoken/bst:$CIRCLE_TAG .
         docker push bespoken/bst:$CIRCLE_TAG
@@ -80,33 +81,33 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only:
-                - master
-                - bst-test
-      - codecov:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              only:
-                - master
-                - bst-test
+      #       branches:
+      #         only:
+      #           - master
+      #           - bst-test
+      # - codecov:
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /.*/
+      #       branches:
+      #         only:
+      #           - master
+      #           - bst-test
       - bst-dev:
           requires:
             - test
-          filters:
-            tags:
-              only: /bst-dev-.*/
-            branches:
-              ignore: /.*/
-      - bst-server:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /bst-server-.*/
-            branches:
-              ignore: /.*/
+          # filters:
+          #   tags:
+          #     only: /bst-dev-.*/
+          #   branches:
+          #     ignore: /.*/
+      # - bst-server:
+      #     requires:
+      #       - test
+      #     filters:
+      #       tags:
+      #         only: /bst-server-.*/
+      #       branches:
+      #         ignore: /.*/
