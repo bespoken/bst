@@ -16,7 +16,7 @@ deploy-steps: &deploy-steps
         docker login -u $DOCKER_USER -p $DOCKER_PASS
         docker pull bespoken/bst:test
         docker stop $(docker ps -aq)
-        docker run -d --env-file .env -p 443:443 -p 5000:5000 bespoken/bst:test tail -f /dev/null
+        docker run -d --env-file .env -p 443:443 -p 5000:5000 bespoken/bst:edgar tail -f /dev/null
         '
 
   # - run:
@@ -65,7 +65,7 @@ jobs:
     environment:
       - TYPE_OF_DEPLOY: dev
       - SKIP_STATISTICS: "true"
-      - CIRCLE_TAG: "test" # just for testing, remove later!
+      - CIRCLE_TAG: "edgar" # just for testing, remove later!
 
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
