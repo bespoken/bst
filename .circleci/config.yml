@@ -52,7 +52,6 @@ jobs:
     environment:
       - TYPE_OF_DEPLOY: dev
       - SKIP_STATISTICS: "true"
-      - CIRCLE_TAG: "edgar" # just for testing, remove later!
 
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
@@ -75,33 +74,31 @@ workflows:
           filters:
             tags:
               only: /.*/
-      #       branches:
-      #         only:
-      #           - master
-      #           - bst-test
-      # - codecov:
-      #     requires:
-      #       - test
-      #     filters:
-      #       tags:
-      #         only: /.*/
-      #       branches:
-      #         only:
-      #           - master
-      #           - bst-test
+            branches:
+              only:
+                - master
+      - codecov:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only:
+                - master
       - bst-dev:
           requires:
             - test
-          # filters:
-          #   tags:
-          #     only: /bst-dev-.*/
-          #   branches:
-          #     ignore: /.*/
-      # - bst-server:
-      #     requires:
-      #       - test
-      #     filters:
-      #       tags:
-      #         only: /bst-server-.*/
-      #       branches:
-      #         ignore: /.*/
+          filters:
+            tags:
+              only: /bst-dev-.*/
+            branches:
+              ignore: /.*/
+      - bst-server:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /bst-server-.*/
+            branches:
+              ignore: /.*/
