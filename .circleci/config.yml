@@ -13,24 +13,11 @@ deploy-steps: &deploy-steps
         echo -e $EC2_SSL_KEY > bst-server.pem
         chmod 400 bst-server.pem
         ssh -i bst-server.pem ec2-user@ec2-18-232-68-210.compute-1.amazonaws.com '
-        docker login -u $DOCKER_USER -p $DOCKER_PASS
-        docker pull bespoken/bst:test
+        docker login -u \$DOCKER_USER -p \$DOCKER_PASS
+        docker pull bespoken/bst:\$CIRCLE_TAG
         docker stop $(docker ps -aq)
-        docker run -d --env-file .env -p 443:443 -p 5000:5000 bespoken/bst:edgar tail -f /dev/null
+        docker run -d --env-file .env -p 443:443 -p 5000:5000 bespoken/bst:\$CIRCLE_TAG tail -f /dev/null
         '
-
-  # - run:
-  #     name: Deploy container
-  #     command: |
-  #       if [ "$TYPE_OF_DEPLOY" == "server" ]; then
-  #         ./hyper rm -f bst || true
-  #         ./hyper run -e AWS_ACCESS_KEY_ID=$PROD_AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY -e SSL_CERT="$SSL_CERT" -e SSL_KEY="$SSL_KEY" -e SOURCE_API_URL="$SOURCE_API_URL_PROD" -d --name bst --size s4 --restart=always -P bespoken/bst:$CIRCLE_TAG
-  #         ./hyper fip attach -f 199.245.58.242 bst
-  #       else
-  #         ./hyper rm -f bst-dev || true
-  #         ./hyper run -e AWS_ACCESS_KEY_ID=$PROD_AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$PROD_AWS_SECRET_ACCESS_KEY -e SSL_CERT="$SSL_CERT" -e SSL_KEY="$SSL_KEY" -e SOURCE_API_URL="$SOURCE_API_URL_DEV" -d --name bst-dev --size s4 --restart=always -P bespoken/bst:$CIRCLE_TAG
-  #         ./hyper fip attach -f 199.245.58.199 bst-dev
-  #       fi
 
 version: 2
 jobs:
