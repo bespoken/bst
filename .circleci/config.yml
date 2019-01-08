@@ -74,18 +74,12 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only:
-                - master
       - codecov:
           requires:
             - test
           filters:
             tags:
               only: /.*/
-            branches:
-              only:
-                - master
       - bst-dev:
           requires:
             - test
