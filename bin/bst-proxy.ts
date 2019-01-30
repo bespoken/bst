@@ -49,11 +49,6 @@ program
             console.log("");
         }
 
-        console.log("Your URL for viewing requests/responses sent to your service:");
-        console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
-        console.log("Copy and paste this to your browser to view your transaction history and summary data.");
-        console.log("");
-
         let proxy: BSTProxy = BSTProxy.http(port);
         handleOptions(proxy, options);
         proxy.start();
@@ -80,10 +75,6 @@ program
             console.log("");
         }
 
-        console.log("Your URL for viewing requests/responses sent to your service:");
-        console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
-        console.log("Copy and paste this to your browser to view your transaction history and summary data.");
-        console.log("");
         let proxy: BSTProxy = BSTProxy.lambda(lambdaFile, functionName);
         handleOptions(proxy, options);
         proxy.start();
@@ -109,11 +100,6 @@ program
             console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.manglePipeToPath(Global.config().sourceID())));
             console.log("");
         }
-
-        console.log("Your URL for viewing your function data:");
-        console.log(chalk.hex(LoggingHelper.LINK_COLOR)(URLMangler.mangleNoPath(Global.config().sourceID(), Global.config().secretKey())));
-        console.log("Copy and paste this to your browser to view your transaction history and summary data.");
-        console.log("");
 
         let proxy: BSTProxy = BSTProxy.cloudFunction(functionFile, functionName);
         handleOptions(proxy, options);
