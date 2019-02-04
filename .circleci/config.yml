@@ -60,7 +60,6 @@ jobs:
     machine: true
     environment:
       - TYPE_OF_DEPLOY: server
-      - SKIP_STATISTICS: "true"
 
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
