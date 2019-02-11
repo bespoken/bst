@@ -22,11 +22,11 @@
     <a href="https://www.npmjs.com/package/bespoken-tools">
         <img alt="NPM Version" class="badge" src="https://img.shields.io/npm/v/bespoken-tools.svg">
     </a>
-    <a href="http://docs.bespoken.io/">
+    <a href="https://read.bespoken.io">
         <img alt="Read The Docs" class="badge" src="https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat">
     </a>
     <a href="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
-        <img alt="Read The Docs" class="badge" src="https://badges.gitter.im/bespoken/bst.svg">
+        <img alt="Contact us" class="badge" src="https://badges.gitter.im/bespoken/bst.svg">
     </a>
 </p>
 
@@ -40,11 +40,11 @@ With Bespoken, develop faster and better. Do not slow-down for:
 
 The command-line tools include:
 
-* [Proxy](http://docs.bespoken.io/en/latest/commands/proxy) - Easily debug Alexa requests by having them send directly to your laptop
-* [Launch](http://docs.bespoken.io/en/latest/commands/launch) - Send a Launch Request to your Alexa skill
-* [Utter](http://docs.bespoken.io/en/latest/commands/utter) and [Intend](http://docs.bespoken.io/en/latest/commands/intend) - Send intents and utterances to your Alexa skill
-* [Speak](http://docs.bespoken.io/en/latest/commands/speak) - Send a request directly an Alexa Virtual Device - uses the "real" Alexa! Magic!
-* [Deploy](http://docs.bespoken.io/en/latest/commands/deploy) - One-command deployment of Lambda functions
+* [Test](https://read.bespoken.io/unit-testing/getting-started/#run-your-tests) - Test your voice application with minimum code required using YAML files
+* [Proxy](https://read.bespoken.io/cli/commands/#proxy) - Easily debug Alexa requests by having them send directly to your laptop
+* [Launch](https://read.bespoken.io/cli/commands/#launch) - Send a Launch Request to your Alexa skill
+* [Utter](https://read.bespoken.io/cli/commands/#utter) and [Intend](https://read.bespoken.io/cli/commands/#intend) - Send intents and utterances to your Alexa skill
+* [Speak](https://read.bespoken.io/cli/commands/#proxy) - Send a request directly an Alexa Virtual Device - uses the "real" Alexa! Magic!
 
 The library provides:
 
@@ -66,7 +66,7 @@ For use of the Bespoken library (including Logless and the Emulator):
 $ npm install bespoken-tools --save
 ```
 
-For additional help, see [Getting Started](http://docs.bespoken.io/en/latest/getting_started)
+For additional help, see [Getting Started](https://read.bespoken.io/cli/getting-started/)
 
 ## Tutorials For Alexa Skills
 * [Nodejs Lambda Tutorial](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_nodejs)
