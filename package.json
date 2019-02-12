@@ -89,7 +89,8 @@
     "codecov": "gulp codecov",
     "coveralls": "gulp coveralls",
     "preversion": "gulp build && gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "postinstall": "npm link jest-html-reporters"
   },
   "types": "index.d.ts"
 }
