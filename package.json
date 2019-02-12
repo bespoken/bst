@@ -90,7 +90,7 @@
     "coveralls": "gulp coveralls",
     "preversion": "gulp build && gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags",
-    "postinstall": "npm link jest-html-reporters"
+    "postinstall": "npm link --local jest-html-reporters"
   },
   "types": "index.d.ts"
 }
