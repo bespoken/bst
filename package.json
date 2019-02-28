@@ -88,7 +88,7 @@
     "coverage": "gulp coverage",
     "codecov": "gulp codecov",
     "coveralls": "gulp coveralls",
-    "preversion": "gulp build && gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
+    "xpreversion": "gulp build && gulp docs && git add docs/api && git commit -m 'Updated generated API docs'",
     "postversion": "git push && git push --tags"
   },
   "types": "index.d.ts"
