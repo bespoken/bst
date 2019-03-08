@@ -23,7 +23,7 @@ describe("WebhookManager", function() {
                 assert.equal(request.nodeID(), 10);
                 assert.equal((request.id() + "").length, 13);
                 assert.equal(request.body, "Test");
-                manager.stop(function () {
+                manager.stop().then(() => {
                     done();
                 });
             };
@@ -46,7 +46,7 @@ describe("WebhookManager", function() {
                 assert.equal((request.id() + "").length, 13);
                 assert.equal(request.body, "Test");
                 if (count === 2) {
-                    manager.stop(function () {
+                    manager.stop().then(() => {
                         done();
                     });
                 }

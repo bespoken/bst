@@ -15,11 +15,12 @@ describe("bst-server", function() {
 
     describe("start command", function() {
         it("Starts", function(done) {
-            process.argv = command("node bst-server.js start 4000 5000");
+            process.argv = command("node bst-server.js start 4000 5000 80");
             mockery.registerMock("../lib/server/bespoke-server", {
-                BespokeServer: function (port: number, port2: number) {
+                BespokeServer: function (port: number, ports: number[]) {
                     assert.equal(port, 4000);
-                    assert.equal(port2, 5000);
+                    assert.equal(ports[0], 5000);
+                    assert.equal(ports[1], 80);
 
                     this.start = function () {
                         done();
