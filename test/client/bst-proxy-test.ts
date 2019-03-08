@@ -63,7 +63,6 @@ describe("BSTProxy", async function() {
         const Global = require("../../lib/core/global").Global;
         await Global.initializeCLI();
         BespokeServer = require("../../lib/server/bespoke-server").BespokeServer;
-        
     });
 
     describe("#http()", function() {
