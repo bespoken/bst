@@ -67,9 +67,9 @@ describe("BSTProxy", async function() {
 
     describe("#http()", function() {
         it("Starts and Stops Correctly", function (done) {
-            const server = new BespokeServer(4000, [80]);
+            const server = new BespokeServer(4000, [5001]);
             server.start().then(() => {
-                const proxy = BSTProxy.http(5000).bespokenServer("localhost", 80);
+                const proxy = BSTProxy.http(5000).bespokenServer("localhost", 5001);
                 proxy.start(function () {
                     let count = 0;
                     const bothDone = function () {
