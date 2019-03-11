@@ -76,7 +76,7 @@ export class BespokeServer {
     public async stop(): Promise<void> {
         BstStatistics.instance().stop();
 
-        LoggingHelper.info(Logger, "BespkoenServer STOP");
+        LoggingHelper.info(Logger, "BespokenServer STOP");
         process.removeListener("uncaughtException", this.uncaughtExceptionHandler);
         process.removeListener("unhandledRejection", this.uncaughtExceptionHandler);
         await this.nodeManager.stop();

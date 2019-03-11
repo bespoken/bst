@@ -16,12 +16,12 @@ describe("BespokeServerTest", function() {
         delete process.env.SSL_CERT;
     });
 
-    describe.only("ReceiveWebhook", function() {
+    describe("ReceiveWebhook", function() {
         it("Connects and Receives Callback", function(done) {
             this.timeout(2000);
             // Start the server - try this new-fangled asyncawait library as I'm tired of all the callbacks
             //  in my unit tests
-            let server = new BespokeServer(8010, [9010]);
+            const server = new BespokeServer(8010, [9010]);
             server.start();
 
             // Connect a client
