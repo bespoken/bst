@@ -12,11 +12,11 @@ deploy-steps: &deploy-steps
       command: |
         echo -e $EC2_SSL_KEY > bst-server.pem
         chmod 400 bst-server.pem
-        ssh -i bst-server.pem ec2-user@ec2-18-232-68-210.compute-1.amazonaws.com "
+        ssh -i bst-server.pem $BST_CONTAINER "
         docker login -u $DOCKER_USER -p $DOCKER_PASS
         docker pull bespoken/bst:$CIRCLE_TAG
         docker stop \$(docker ps -aq)
-        docker run -d --env-file .env -p 443:443 -p 5000:5000 bespoken/bst:$CIRCLE_TAG
+        docker run -d --env-file .env -p 443:443 -p 5000:5000 -p 80:80 bespoken/bst:$CIRCLE_TAG
         "
 
 version: 2
@@ -52,7 +52,7 @@ jobs:
     environment:
       - TYPE_OF_DEPLOY: dev
       - SKIP_STATISTICS: "true"
-
+      - BST_CONTAINER: ec2-user@ec2-35-153-68-76.compute-1.amazonaws.com
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
 
@@ -60,7 +60,7 @@ jobs:
     machine: true
     environment:
       - TYPE_OF_DEPLOY: server
-
+      - BST_CONTAINER: ec2-user@ec2-18-232-68-210.compute-1.amazonaws.com
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
 
