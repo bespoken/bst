@@ -183,7 +183,7 @@ describe("BespokeClient", function() {
         it("Fails", function() {
             this.timeout(8000);
             return new Promise(async (resolve, reject) => {
-                const nodeManager = new NodeManager(testPort);
+                const nodeManager = new NodeManager([testPort]);
                 let wasFailureFunctionOverwritten = false;
                 let failureCount = 0;
 
@@ -225,7 +225,7 @@ describe("BespokeClient", function() {
                     }
 
                     client.shutdown(function () {
-                        nodeManager.stop(function () {
+                        nodeManager.stop().then(() => {
                             BespokeClient.RECONNECT_MAX_RETRIES = 3;
 
                             resolve();
@@ -244,7 +244,7 @@ describe("BespokeClient", function() {
         this.timeout(8000);
         it("Gets lots of keep alives", async function() {
             return new Promise(async (resolve, reject) => {
-                const nodeManager = new NodeManager(testPort);
+                const nodeManager = new NodeManager([testPort]);
                 let count = 0;
                 (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
                     count++;
@@ -278,7 +278,7 @@ describe("BespokeClient", function() {
                     }
 
                     client.shutdown(function () {
-                        nodeManager.stop(function () {
+                        nodeManager.stop().then (() => {
                             resolve();
                         });
                     });

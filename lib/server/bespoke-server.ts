@@ -12,29 +12,19 @@ export class BespokeServer {
     private webhookManager: WebhookManager;
     private uncaughtExceptionHandler: (err: Error) => void;
 
-    public constructor (private webhookPort: number, private nodePort: number) {}
+    public constructor (private webhookPort: number, private nodePorts: number[]) {}
 
-    public start (started?: () => void): void {
+    public async start (): Promise<void> {
         BstStatistics.instance().start();
         let self = this;
         console.error("AWS_KEY: " + process.env["AWS_ACCESS_KEY_ID"]);
 
-        let count = 0;
-        // Make sure both NodeManager and WebhookManager have started
-        let callbackCounter = function () {
-            count++;
-            if (count === 2) {
-                if (started !== undefined && started !== null) {
-                    started();
-                }
-            }
-        };
-
-        this.nodeManager = new NodeManager(this.nodePort);
-        this.nodeManager.start(callbackCounter);
+        this.nodeManager = new NodeManager(this.nodePorts);
+        await this.nodeManager.start();
 
         this.webhookManager = new WebhookManager(this.webhookPort);
-        this.webhookManager.start(callbackCounter);
+        await this.webhookManager.start();
+
         this.webhookManager.onWebhookReceived = function(webhookRequest: WebhookRequest) {
             // Check if this is a ping
             if (webhookRequest.isPing()) {
@@ -80,23 +70,17 @@ export class BespokeServer {
         };
 
         process.on("uncaughtException", this.uncaughtExceptionHandler);
+        process.on("unhandledRejection", this.uncaughtExceptionHandler);
     }
 
-    public stop(callback: () => void): void {
+    public async stop(): Promise<void> {
         BstStatistics.instance().stop();
-        // Use a counter to see that both callbacks have completed
-        // The beauty of Node - use non-synchronized counter variables like this safely :-)
-        let count = 0;
-        let callbackFunction = function () {
-            count++;
-            if (count === 2) {
-                callback();
-            }
-        };
 
+        LoggingHelper.info(Logger, "BespokenServer STOP");
         process.removeListener("uncaughtException", this.uncaughtExceptionHandler);
-        this.nodeManager.stop(callbackFunction);
-        this.webhookManager.stop(callbackFunction);
+        process.removeListener("unhandledRejection", this.uncaughtExceptionHandler);
+        await this.nodeManager.stop();
+        await this.webhookManager.stop();
     }
 
 }

@@ -21,21 +21,19 @@ export class WebhookManager {
         this.host = "0.0.0.0";
     }
 
-    public start(started?: () => void): void {
-        let self = this;
-
+    public start(): Promise<void> {
         let socketIndex = 0;
 
-        const connectFunction = function(socket) {
+        const connectFunction = (socket) => {
             let webhookRequest = new WebhookRequest(socket);
             socketIndex++;
             let socketKey = socketIndex;
-            self.socketMap[socketIndex] = socket;
+            this.socketMap[socketIndex] = socket;
 
-            socket.on("data", function(data: Buffer) {
+            socket.on("data", (data: Buffer) => {
                 webhookRequest.append(data);
                 if (webhookRequest.done()) {
-                    self.onWebhookReceived(webhookRequest);
+                    this.onWebhookReceived(webhookRequest);
 
                     // The calling socket just seems to stay open some times
                     //  Would like to force it closed but don't know when to do it
@@ -45,8 +43,8 @@ export class WebhookManager {
                 }
             });
 
-            socket.on("close", function () {
-                delete self.socketMap[socketKey];
+            socket.on("close", () => {
+                delete this.socketMap[socketKey];
             });
 
         };
@@ -68,25 +66,25 @@ export class WebhookManager {
             this.server.on("secureConnection", connectFunction);
         }
 
-        this.server.on("listening", function () {
-            if (started !== undefined && started !== null) {
-                started();
-            }
+        return new Promise((resolve, reject) => {
+            this.server.on("listening", () => {
+                LoggingHelper.info(Logger, "Webhook Listening on " + this.host + ":" + this.port);
+                resolve();
+            });
         });
-        LoggingHelper.info(Logger, "Listening on " + this.host + ":" + this.port);
     }
 
-    public stop (callback?: () => void): void {
+    public stop (): Promise<void> {
         let self: WebhookManager = this;
         for (let key in self.socketMap) {
             let socket = self.socketMap[key];
             socket.end();
         }
 
-        this.server.close(function () {
-            if (callback !== undefined && callback !== null) {
-                callback();
-            }
+        return new Promise((resolve, reject) => {
+            this.server.close(function () {
+                resolve();
+            });
         });
     }
 }

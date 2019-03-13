@@ -46,7 +46,7 @@ export class BSTProxy {
 
     private isSecure: boolean = false;
     private bespokenHost: string = "proxy.bespoken.tools";
-    private bespokenPort: number = 5000;
+    private bespokenPort: number = 80;
     private functionFile: string;
     private functionName: string;
     private httpPort: number;

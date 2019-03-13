@@ -9,12 +9,12 @@ import {Global} from "../../lib/core/global";
 describe("NodeManager", function() {
     describe("Connect", function() {
         it("Connected And Received Data", function(done) {
-            let nodeManager = new NodeManager(9000);
+            let nodeManager = new NodeManager([9000]);
             let client = new BespokeClient("JPK", "localhost", 9000, "localhost", 9001);
 
             nodeManager.onConnect = function (node: Node) {
                 assert.equal("127.0.0.1", node.socketHandler.remoteAddress());
-                nodeManager.stop(function() {
+                nodeManager.stop().then(() => {
                     done();
                 });
             };
@@ -24,12 +24,12 @@ describe("NodeManager", function() {
         });
 
         it("Connected And Sends Bad Data", function(done) {
-            let nodeManager = new NodeManager(9000);
-            nodeManager.start(function () {
+            let nodeManager = new NodeManager([9000]);
+            nodeManager.start().then(() => {
                 let client = new TCPClient("MYID");
                 client.onCloseCallback = function () {
                     // This should get called
-                    nodeManager.stop(function() {
+                    nodeManager.stop().then(() => {
                         done();
                     });
                 };
@@ -40,7 +40,7 @@ describe("NodeManager", function() {
         });
 
         it("Removes Node From Node Hash On Client Close", function(done) {
-            let nodeManager = new NodeManager(9000);
+            let nodeManager = new NodeManager([9000]);
             let client = new BespokeClient("JPK", "localhost", 9000, "localhost", 9001);
 
             nodeManager.onConnect = function (node: Node) {
@@ -53,7 +53,7 @@ describe("NodeManager", function() {
 
             nodeManager.onNodeRemoved = function () {
                 assert.equal(Object.keys((<any> nodeManager).nodes).length, 0);
-                nodeManager.stop(function() {
+                nodeManager.stop().then(() => {
                     done();
                 });
             };
@@ -65,10 +65,10 @@ describe("NodeManager", function() {
 
     describe("Close", function() {
         it("Closed Successfully", function (done) {
-            let nodeManager = new NodeManager(9000);
+            let nodeManager = new NodeManager([9000]);
 
-            nodeManager.start(function() {
-                nodeManager.stop(function () {
+            nodeManager.start().then(() => {
+                nodeManager.stop().then(() => {
                     done();
                 });
             });

@@ -48,7 +48,7 @@ describe("SamplesUtterances", function() {
 
         it("Passes error when bad file with no sample", function(done) {
             SampleUtterances.fromFile("test/alexa/resources/SampleUtterancesNoUtterance.txt", function (utterances: SampleUtterances, error?: string) {
-                assert.equal(error, "Invalid sample utterance: AnotherTest");
+                assert.equal(error.trim(), "Invalid sample utterance: AnotherTest");
                 done();
             });
         });
