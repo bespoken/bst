@@ -369,9 +369,9 @@ class SourceNameGenerator {
             id,
                 secretKey: "unit-test" + id,
             };
-    };
+    }
 
-    public createDashboardSource () {};
+    public createDashboardSource () {}
 }
 
 class SpokesClient {
@@ -406,5 +406,5 @@ class BstMessages {
             customMessages: [],
             tips: [],
         };
-    };
+    }
 }
