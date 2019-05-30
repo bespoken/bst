@@ -65,4 +65,3 @@ export class ModuleManager {
         this.watcher.close();
     }
 }
-    

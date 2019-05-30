@@ -74,7 +74,7 @@ describe("bst-test", function() {
 
         it("call with parameters", function() {
             return new Promise((resolve, reject) => {
-                const mockRun = function(a, b){
+                const mockRun = function(a, b) {
                     assert.equal(b.platform, "google");
                     resolve();
                 };

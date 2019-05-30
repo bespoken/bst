@@ -37,7 +37,7 @@ export class SpokesClient {
         }
 
         return false;
-    };
+    }
 
     public async createPipe(): Promise<any> {
         const options = {

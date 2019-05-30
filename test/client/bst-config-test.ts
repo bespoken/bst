@@ -129,7 +129,7 @@ describe("BSTConfig", function() {
             };
 
             // We overwrite the file
-            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            let configBuffer = Buffer.from(JSON.stringify(oldConfiguration, null, 4) + "\n");
             fs.writeFileSync("test/resources/.bst/config", configBuffer);
 
             let config = await BSTConfig.load();
@@ -159,7 +159,7 @@ describe("BSTConfig", function() {
             };
 
             // We overwrite the file
-            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            let configBuffer = Buffer.from(JSON.stringify(oldConfiguration, null, 4) + "\n");
             fs.writeFileSync("test/resources/.bst/config", configBuffer);
 
             let config = await BSTConfig.load();
@@ -190,7 +190,7 @@ describe("BSTConfig", function() {
             };
 
             // We overwrite the file
-            let configBuffer = new Buffer(JSON.stringify(oldConfiguration, null, 4) + "\n");
+            let configBuffer = Buffer.from(JSON.stringify(oldConfiguration, null, 4) + "\n");
             fs.writeFileSync("test/resources/.bst/config", configBuffer);
 
             let config = await BSTConfig.load();
@@ -369,9 +369,9 @@ class SourceNameGenerator {
             id,
                 secretKey: "unit-test" + id,
             };
-    };
+    }
 
-    public createDashboardSource () {};
+    public createDashboardSource () {}
 }
 
 class SpokesClient {
@@ -406,5 +406,5 @@ class BstMessages {
             customMessages: [],
             tips: [],
         };
-    };
+    }
 }
