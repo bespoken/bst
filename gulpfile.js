@@ -95,6 +95,7 @@ const validateTestStatusAndExit = (doneFunction, typeOfProcess) => {
     console.log(message);
 
     if (testStatus !== 0) {
+        doneFunction();
         process.exit(1);
     } else {
         doneFunction();
