@@ -101,7 +101,7 @@ export class StatisticsContext {
             });
         };
 
-        let responseData: Buffer = new Buffer("");
+        let responseData: Buffer = Buffer.from("");
         const httpRequest = SECURE_SOURCE_API_END_POINT ?
             https.request(options, functionCallback) :
             http.request(options, functionCallback);

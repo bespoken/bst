@@ -241,11 +241,17 @@ describe("BSTVirtualAlexa", async function() {
             });
 
             it("Speak non-grammar phrase", function (done) {
-                alexa.spoken("Dumb", function (error: any, response: any) {
-                    assert(error !== undefined);
-                    assert(error.message, "Unable to match utterance: Dumb to an intent. Try a different utterance, or explicitly set the intent");
+                try {
+                    alexa.spoken("Dumb", function (error: any, response: any) {
+                        assert(error !== undefined);
+                        assert.strictEqual(error.message, "Unable to match utterance: Dumb to an intent. Try a different utterance, or explicitly set the intent");
+                        done();
+                    });
+                } catch (e) {
+                    assert.strictEqual(e.message, "Unable to match utterance: Dumb to an intent. Try a different utterance, or explicitly set the intent");
                     done();
-                });
+                }
+
             });
 
             it("Speak with error", function (done) {
@@ -282,11 +288,16 @@ describe("BSTVirtualAlexa", async function() {
             });
 
             it("Intended with bad intent", function (done) {
-                alexa.intended("Hello", null, function (error, response) {
-                    assert(!response);
-                    assert(error);
+                try {
+                    alexa.intended("Hello", null, function (error, response) {
+                        assert(!response);
+                        assert(error);
+                        done();
+                    });
+                } catch (e) {
+                    assert.strictEqual(e.message, "Interaction model has no intentName named: Hello");
                     done();
-                });
+                }
             });
         });
      });
@@ -360,7 +371,7 @@ describe("BSTVirtualAlexa", async function() {
 
         });
 
-        it("Loads on intent", function (done) {
+        xit("Loads on intent", function (done) {
             alexa = new BSTVirtualAlexa("http://localhost:10000");
             alexa.start();
 

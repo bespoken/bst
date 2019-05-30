@@ -190,7 +190,7 @@ describe("BespokeClient", function() {
                 let count = 0;
                 (<any> NodeManager).onKeepAliveReceived = function (node: Node) {
 
-                    // We overwrite the failure callback on first keepAlive to ensure keepAlive is already populated                                                                                                                                                                                                                                                                                                                                                                                                                      
+                    // We overwrite the failure callback on first keepAlive to ensure keepAlive is already populate
                     if (!wasFailureFunctionOverwritten) {
                         const originalCallback = (<any> keepAlive).onFailureCallback;
                         (<any> keepAlive).onFailureCallback = function () {

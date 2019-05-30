@@ -96,7 +96,7 @@ export class BSTConfig {
     }
 
     public saveSession(session: any): void {
-        const sessionBuffer = new Buffer(JSON.stringify(session, null, 4) + "\n");
+        const sessionBuffer = Buffer.from(JSON.stringify(session, null, 4) + "\n");
         fs.writeFileSync(BSTConfig.sessionPath(), sessionBuffer);
     }
 
@@ -113,7 +113,7 @@ export class BSTConfig {
     }
 
     public commit() {
-        let configBuffer = new Buffer(JSON.stringify(this.configuration, null, 4) + "\n");
+        let configBuffer = Buffer.from(JSON.stringify(this.configuration, null, 4) + "\n");
         fs.writeFileSync(BSTConfig.configPath(), configBuffer);
     }
 
@@ -186,7 +186,7 @@ export class BSTConfig {
     }
 
     private static saveConfig(config: any) {
-        let configBuffer = new Buffer(JSON.stringify(config, null, 4) + "\n");
+        let configBuffer = Buffer.from(JSON.stringify(config, null, 4) + "\n");
         fs.writeFileSync(BSTConfig.configPath(), configBuffer);
     }
 
@@ -332,7 +332,7 @@ export class BSTProcess {
         process.pid = pid;
 
         let json = process.json();
-        let jsonBuffer = new Buffer(JSON.stringify(json, undefined, 4) + "\n");
+        let jsonBuffer = Buffer.from(JSON.stringify(json, undefined, 4) + "\n");
 
         fs.writeFileSync(BSTProcess.processPath(), jsonBuffer);
         return process;

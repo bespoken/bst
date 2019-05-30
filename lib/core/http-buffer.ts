@@ -25,7 +25,7 @@ export class HTTPBuffer {
         const payload = "HTTP/1.1 500 Error\r\nContent-Type: text/plain\r\n"
             + "Content-Length: " + message.length + "\r\n\r\n"
             + message;
-        buffer.append(new Buffer(payload));
+        buffer.append(Buffer.from(payload));
         return buffer;
     }
 
