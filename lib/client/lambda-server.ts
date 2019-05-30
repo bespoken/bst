@@ -47,7 +47,7 @@ export class LambdaServer {
         this.server.on("request", function(request: IncomingMessage, response: ServerResponse) {
             self.requests.push(request);
 
-            let requestBody = new Buffer("");
+            let requestBody = Buffer.from("");
             request.on("data", function(chunk: Buffer) {
                 requestBody = Buffer.concat([requestBody, chunk]);
             });
@@ -195,6 +195,6 @@ class LambdaContext {
            "Content-Type": contentType
         });
 
-        this.response.end(new Buffer(bodyString));
+        this.response.end(Buffer.from(bodyString));
     }
 }

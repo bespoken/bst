@@ -22,7 +22,7 @@ describe("WebhookRequest", function() {
         it("Has lower-case headers", function (done) {
             const request = new WebhookRequest();
             const requestString = "POST /?node-id=JPK HTTP/1.1\r\nContent-Type: application/json\r\ncontent-length: 0\r\n\r\n";
-            request.append(new Buffer(requestString));
+            request.append(Buffer.from(requestString));
             assert.equal(request.contentLength(), 0);
             assert.equal(request.body.length, 0);
             assert.equal(request.rawContents.length, 82);
@@ -33,7 +33,7 @@ describe("WebhookRequest", function() {
         it("Has path", function (done) {
             const request = new WebhookRequest();
             const requestString = "POST /dev?node-id=JPK HTTP/1.1\r\nContent-Type: application/json\r\ncontent-length: 0\r\n\r\n";
-            request.append(new Buffer(requestString));
+            request.append(Buffer.from(requestString));
             assert.equal(request.contentLength(), 0);
             assert.equal(request.nodeID(), "JPK");
             done();

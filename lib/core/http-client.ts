@@ -32,7 +32,7 @@ export class HTTPClient {
             });
         };
         // Set up the request
-        let responseData: Buffer = new Buffer("");
+        let responseData: Buffer = Buffer.from("");
         let post_req = port === 443 ?
             https.request(post_options, functionCallback) :
             http.request(post_options, functionCallback);
@@ -61,7 +61,7 @@ export class HTTPClient {
         };
 
         // Set up the request
-        let responseData: Buffer = new Buffer("");
+        let responseData: Buffer = Buffer.from("");
         let request = http.request(options, function(response) {
             response.on("data", function (chunk: Buffer) {
                 responseData = Buffer.concat([responseData, chunk]);
