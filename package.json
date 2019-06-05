@@ -25,11 +25,11 @@
     "properties-reader": "0.0.15",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-    "skill-testing-ml": "~1.0.3",
+    "skill-testing-ml": "~1.0.5",
     "update-notifier": "^2.5.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.7.2",
-    "virtual-device-sdk": "^1.5.1",
+    "virtual-device-sdk": "^1.5.16",
     "winston": "^2.4.0"
   },
   "devDependencies": {

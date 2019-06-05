@@ -74,9 +74,11 @@ describe("bst-test", function() {
 
         it("call with parameters", function() {
             return new Promise((resolve, reject) => {
-                const mockRun = function(a, b) {
-                    assert.equal(b.platform, "google");
+                const mockRun = function(a, overrides) {
+                    assert.equal(overrides.client, "CLI");
+                    assert.equal(overrides.platform, "google");
                     resolve();
+                    return Promise.resolve();
                 };
                 const mockCli = function() {
                     return {

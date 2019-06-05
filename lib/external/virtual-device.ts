@@ -15,7 +15,12 @@ export class VirtualDeviceClient {
             throw new Error("Token Required");
         }
 
-        const virtualDevice = new VirtualDevice(tokenToUse, locale, voiceID);
+        const virtualDevice = new VirtualDevice({
+            client: "CLI",
+            locale,
+            token: tokenToUse,
+            voiceID,
+        });
         try {
             // We need to await here in order to trigger correctly the exception
             return await virtualDevice.message(utterance);
