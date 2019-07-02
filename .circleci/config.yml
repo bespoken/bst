@@ -63,35 +63,43 @@ jobs:
       - BST_CONTAINER: ec2-user@ec2-18-232-68-210.compute-1.amazonaws.com
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
+  
+  bst-client:
+    docker:
+      - image: circleci/node:8
+    environment:
+      - ASK_ACCESS_TOKEN: "fake"
+      - ASK_REFRESH_TOKEN: "fake"
+      - ASK_VENDOR_ID: "fake"
+      - ASK_SKILL_ID: "fake"
+      - VIRTUAL_DEVICE_TOKEN: "fake"
+    working_directory: ~/bst-client-deploy/skill-testing-ml
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "cf:77:b3:3a:08:72:b8:ad:bf:c4:11:97:3b:18:85:76"
+      - checkout
+      - run: git clone git@github.com:bespoken/skill-testing-ml.git
+      - run: mkdir ~/.ask && touch mkdir ~/.ask/cli_config
+      - run: cd skill-testing-ml && npm install
+      - run: cd skill-testing-ml && VERSION=$(npm --no-git-tag-version version patch | sed 's/v//')
+      - run: echo $VERSION
+      - run: cd skill-testing-ml && git add package.json
+      - run:
+          name: commit changes
+          command: |
+            cd skill-testing-ml
+            git commit -m "release: cut the $VERSION release"
+      - run: git tag $VERSION
 
 
 workflows:
   version: 2
   test-n-deploy:
     jobs:
-      - test:
+      - bst-client:
           filters:
             tags:
-              only: /.*/
-      - codecov:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /.*/
-      - bst-dev:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /bst-dev-.*/
-            branches:
-              ignore: /.*/
-      - bst-server:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /bst-server-.*/
+              only: /bst-client-test-.*/
             branches:
               ignore: /.*/
