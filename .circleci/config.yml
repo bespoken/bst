@@ -81,6 +81,7 @@ jobs:
       - checkout
       - run: git config --global user.email "edgar@bespoken.io"
       - run: git config --global user.name "Edgar"
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
       - run: git clone git@github.com:bespoken/skill-testing-ml.git
       - run: cd skill-testing-ml && npm install
       - run: cd skill-testing-ml && npm --no-git-tag-version version patch
