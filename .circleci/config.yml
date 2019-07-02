@@ -100,7 +100,8 @@ jobs:
             * update docs"
       - run: cd skill-testing-ml && git tag $VERSION
       - run: cd skill-testing-ml && git tag -l
-      - run: cd skill-testing-ml && git log --oneline
+      - run: cd skill-testing-ml && npm publish --tag beta
+      - run: cd skill-testing-ml && git push && git push --tags
 
 
 workflows:
