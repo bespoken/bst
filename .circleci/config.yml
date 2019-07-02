@@ -87,15 +87,20 @@ jobs:
       - run:
           name: get version
           command: |
-            echo 'export VERSION=$(node -pe "require('\''./../skill-testing-ml/package.json'\'').version")' >> $BASH_ENV
+            cd skill-testing-ml
+            SKILL_TESTING_VERSION=$(node -pe "require('./package.json').version")
+            echo "export VERSION=$SKILL_TESTING_VERSION" >> $BASH_ENV
       - run: echo $VERSION
-      - run: cd skill-testing-ml && git add package.json
+      - run: cd skill-testing-ml && git add package.json docs/* && git checkout .
       - run:
           name: commit changes
           command: |
-            cd skill-testing-ml && git commit -m "release: cut the $VERSION release"
+            cd skill-testing-ml
+            git commit -m "Version $VERSION" -m "* $VERSION
+            * update docs"
       - run: cd skill-testing-ml && git tag $VERSION
       - run: cd skill-testing-ml && git tag -l
+      - run: cd skill-testing-ml && git log --oneline
 
 
 workflows:
