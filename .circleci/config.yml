@@ -80,7 +80,6 @@ jobs:
             - "cf:77:b3:3a:08:72:b8:ad:bf:c4:11:97:3b:18:85:76"
       - checkout
       - run: git config --global user.email "$GITHUB_USER_EMAIL_RELEASE"
-      - run: echo $GITHUB_USER_EMAIL_RELEASE
       - run: git config --global user.name "$GITHUB_USER_NAME_RELEASE"
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
       - run: git clone git@github.com:bespoken/skill-testing-ml.git
@@ -116,37 +115,59 @@ jobs:
       - image: circleci/node:8
     working_directory: ~/bst-client
     environment:
-      - SKILL_TESTING_ML: dummy
+      - SKILL_TESTING_VERSION: 1.0.15
     steps:
       - add_ssh_keys:
           fingerprints:
             - "cf:77:b3:3a:08:72:b8:ad:bf:c4:11:97:3b:18:85:76"
-      - attach_workspace:
-          at: ~/bst-client/workspace
-      - run: cat workspace/new-env-vars >> $BASH_ENV
-      - run: echo $SKILL_TESTING_VERSION
-      # - checkout
-      # - run: rm -fr *
-      # - run: git config --global user.email "edgar@bespoken.io"
-      # - run: git config --global user.name "Edgar"
-      # - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
-      # - run: git clone git@github.com:bespoken/bst.git
-      # - run: cd bst && git rebase origin/master
-      # - run: cd bst && npm install
-      # - run: cd bst && git checkout .
-      # - run:
-      #     name: update skill testing ref
-      #     command: |
-      #       cd bst
-      #       REPLACE_PATTERN="s/\"skill-testing-ml\": \".*\"/\"skill-testing-ml\": \"~$SKILL_TESTING_ML\"/g"
-      #       sed -i -e "$REPLACE_PATTERN" package.json
-      # - run: cd bst && npm version patch
+      # - attach_workspace:
+      #     at: ~/bst-client/workspace
+      # - run: cat workspace/new-env-vars >> $BASH_ENV
+      # - run: echo $SKILL_TESTING_VERSION
+      - checkout
+      - run: rm -fr *
+      - run: git config --global user.email "$GITHUB_USER_EMAIL_RELEASE"
+      - run: git config --global user.name "$GITHUB_USER_NAME_RELEASE"
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
+      - run: git clone git@github.com:bespoken/bst.git
+      - run: cd bst && npm install
+      - run: cd bst && git checkout .
+      - run:
+          name: update skill testing ref
+          command: |
+            cd bst
+            REPLACE_PATTERN="s/\"skill-testing-ml\": \".*\"/\"skill-testing-ml\": \"~$SKILL_TESTING_VERSION\"/g"
+            sed -i -e "$REPLACE_PATTERN" package.json
+            git add package.json
+            git diff-index --quiet HEAD || git commit -m "update skill testing ref"
+      - run: cd bst && npm version patch
+      - run:
+          name: get version
+          command: |
+            cd bst
+            BST_VERSION=$(node -pe "require('./package.json').version")
+            echo "export BST_VERSION=$BST_VERSION" >> $BASH_ENV
+      - run: cd bst && git add package.json package-lock.json
+      - run:
+          name: commit changes
+          command: |
+            cd bst
+            git commit -m "Version $BST_VERSION" -m "* $BST_VERSION
+            * update skill testing"
       # - run: cd bst && npm publish --tag beta
 workflows:
   version: 2
   test-n-deploy:
     jobs:
       - skill-testing-release:
+          filters:
+            tags:
+              only: /bst-client-release-.*/
+            branches:
+              ignore: /.*/
+      - bst-client-release:
+          # requires:
+          #   - skill-testing-release
           filters:
             tags:
               only: /bst-client-test-.*/
