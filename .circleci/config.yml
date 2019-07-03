@@ -113,12 +113,12 @@ jobs:
           fingerprints:
             - "cf:77:b3:3a:08:72:b8:ad:bf:c4:11:97:3b:18:85:76"
       - checkout
+      - run: git checkout master
       - run: git config --global user.email "edgar@bespoken.io"
       - run: git config --global user.name "Edgar"
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
       - run: npm install && git checkout package-lock.json
       - run: npm version patch
-      - run: npm publish --tag beta
 
 
 workflows:
