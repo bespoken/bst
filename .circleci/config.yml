@@ -92,7 +92,7 @@ jobs:
             SKILL_TESTING_VERSION=$(node -pe "require('./package.json').version")
             echo "export VERSION=$SKILL_TESTING_VERSION" >> $BASH_ENV
       - run: echo $VERSION
-      - run: cd skill-testing-ml && git add package.json docs/* && git checkout .
+      - run: cd skill-testing-ml && git add package.json package-lock.json docs/*
       - run:
           name: commit changes
           command: |
@@ -101,15 +101,31 @@ jobs:
             * update docs"
       - run: cd skill-testing-ml && git tag $VERSION
       - run: cd skill-testing-ml && git tag -l
-      - run: cd skill-testing-ml && npm publish --tag beta
       - run: cd skill-testing-ml && git push && git push --tags
+      - run: cd skill-testing-ml && npm publish --tag beta
+
+  bst-client-bst:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/bst-client-deploy
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "cf:77:b3:3a:08:72:b8:ad:bf:c4:11:97:3b:18:85:76"
+      - checkout
+      - run: git config --global user.email "edgar@bespoken.io"
+      - run: git config --global user.name "Edgar"
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
+      - run: npm install
+      - run: npm version patch
+      - run: npm publish --tag beta
 
 
 workflows:
   version: 2
   test-n-deploy:
     jobs:
-      - bst-client:
+      - bst-client-bst:
           filters:
             tags:
               only: /bst-client-test-.*/
