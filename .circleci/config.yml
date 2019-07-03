@@ -116,7 +116,8 @@ jobs:
       - run: git config --global user.email "edgar@bespoken.io"
       - run: git config --global user.name "Edgar"
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
-      - run: npm install && git checkout package-lock.json
+      - run: git checkout master && git pull
+      - run: npm install && git add package-lock.json && git commit --amend --no-edit
       - run: npm version patch
       - run: npm publish --tag beta
 
