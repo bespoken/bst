@@ -123,7 +123,12 @@ jobs:
       - run: cd bst && git rebase origin/master
       - run: cd bst && npm install
       - run: cd bst && git checkout .
-      - run: cd bst && sed -i -e 's/"skill-testing-ml": ".*"/"skill-testing-ml": "~'$SKILL_TESTING_ML'"/g' package.json
+      - run:
+          name: update skill testing
+          command: |
+            cd bst
+            REPLACE_PATTERN="s/\"skill-testing-ml\": \".*\"/\"skill-testing-ml\": \"~$SKILL_TESTING_ML\"/g"
+            sed -i -e "$REPLACE_PATTERN" package.json
 
 workflows:
   version: 2
