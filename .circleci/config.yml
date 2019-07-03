@@ -117,8 +117,16 @@ jobs:
       - run: git config --global user.name "Edgar"
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
       - run: npm install && git checkout package-lock.json
-      - run: npm version patch
-      - run: npm publish --tag beta
+      - run: npm version --no-git-tag-version patch
+      - run:
+          name: get version
+          command: |
+            NEW_VERSION=$(node -pe "require('./package.json').version")
+            echo "export VERSION=$NEW_VERSION" >> $BASH_ENV
+      - run: echo $VERSION
+      - run: git tag $VERSION
+      - run: git tag -l
+      - run: git push && git push --tags
 
 
 workflows:

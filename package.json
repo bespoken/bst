@@ -90,8 +90,7 @@
     "coverage": "gulp coverage",
     "codecov": "gulp codecov",
     "coveralls": "gulp coveralls",
-    "preversion": "gulp build",
-    "postversion": "git push && git push --tags"
+    "preversion": "gulp build"
   },
   "types": "index.d.ts"
 }
