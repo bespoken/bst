@@ -123,24 +123,21 @@ jobs:
           at: ~/bst-client-release/workspace
       - run: cat workspace/new-env-vars >> $BASH_ENV
       - run: echo $SKILL_TESTING_VERSION
-      - run: rm -fr *
       - run: git config --global user.email "$GITHUB_USER_EMAIL_RELEASE"
       - run: git config --global user.name "$GITHUB_USER_NAME_RELEASE"
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
-      - run: git clone git@github.com:bespoken/bst.git
-      - run: cd bst && npm install
-      - run: cd bst && git checkout .
+      - run: npm install
+      - run: git checkout .
       - run:
           name: update skill testing ref
           command: |
-            cd bst
             REPLACE_PATTERN="s/\"skill-testing-ml\": \".*\"/\"skill-testing-ml\": \"~$SKILL_TESTING_VERSION\"/g"
             sed -i -e "$REPLACE_PATTERN" package.json
             git add package.json
             git diff-index --quiet HEAD || git commit -m "update skill testing ref"
-      - run: cd bst && npm version patch
-      - run: cd bst && git push && git push --tags
-      - run: cd bst && npm publish --tag beta
+      - run: npm version patch
+      - run: git push && git push --tags
+      - run: npm publish --tag beta
 workflows:
   version: 2
   test-n-deploy:
@@ -172,6 +169,8 @@ workflows:
             branches:
               ignore: /.*/
       - skill-testing-release:
+          requires:
+            - test
           filters:
             tags:
               only: /bst-client-.*/
