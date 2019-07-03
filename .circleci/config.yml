@@ -77,9 +77,10 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "$GITHUB_USER_FINGERPRINTS"
+            - "cf:77:b3:3a:08:72:b8:ad:bf:c4:11:97:3b:18:85:76"
       - checkout
       - run: git config --global user.email "$GITHUB_USER_EMAIL_RELEASE"
+      - run: echo $GITHUB_USER_EMAIL_RELEASE
       - run: git config --global user.name "$GITHUB_USER_NAME_RELEASE"
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
       - run: git clone git@github.com:bespoken/skill-testing-ml.git
