@@ -108,6 +108,8 @@ jobs:
     docker:
       - image: circleci/node:8
     working_directory: ~/bst-client-deploy
+    environment:
+      - SKILL_TESTING_ML: dummy
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -121,8 +123,7 @@ jobs:
       - run: cd bst && git rebase origin/master
       - run: cd bst && npm install
       - run: cd bst && git checkout .
-      - run: cd bst && npm version patch
-      - run: cd bst && npm publish --tag beta
+      - run: cd bst && sed -i -e 's/"skill-testing-ml": ".*"/"skill-testing-ml": "~'$SKILL_TESTING_ML'"/g' package.json
 
 workflows:
   version: 2
