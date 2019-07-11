@@ -3,7 +3,7 @@
   "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "2.3.35",
+  "version": "2.3.36",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js",
