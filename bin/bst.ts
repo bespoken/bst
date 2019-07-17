@@ -46,6 +46,8 @@ if (nodeMajorVersion < 4) {
     process.exit(1);
 }
 
+program.version("", "-v, --version");
+
 program
     .command("proxy <lambda|function|http>", "Proxies a Lambda, Google Cloud Function or HTTP service")
     .command("launch", "Sends a launch request to your service")
