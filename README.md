@@ -52,6 +52,11 @@ The library provides:
 * [BSTEncode](http://docs.bespoken.io/en/latest/api/classes/bstencode.html) - Encodes audio files for use in SSML without pesky ffmpeg
 * [Logless](http://docs.bespoken.io/en/latest/api/classes/logless.html) - Completely painless, serverless logging
 
+You can also use:
+
+* --version, -v - Indicates the current BST and Node versions
+* --help, -h - Shows usage information
+
 # Installation
 
 For use of the CLI:
