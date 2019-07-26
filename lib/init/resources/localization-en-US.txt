@@ -1,0 +1,9 @@
+# This is the localization file for en-US. Please, modify the values so that they align 
+# with your voice app responses for this locale
+
+testSuiteDescription: My first unit test suite
+firstTestName: Launch and ask for help
+launchPrompt: Welcome to MY VOICE APP NAME
+helpPrompt: What can I help you with?
+helpCardContent: What can I help you with?
+helpCardTitle: MY VOICE APP NAME

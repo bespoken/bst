@@ -1,0 +1,19 @@
+# This is the test file for your unit tests, feel free to copy and modify the template test 
+# for your voice app as many times as you want. On this same folder you'll also find a testing.json 
+# file, it contains global configurations for future test files you might create in the future.
+# You'll also find a folder called locales, it contains the localization files for all your supported
+# locales. Just put a value to each variable and they will be replaced here. Add, remove or modify 
+# as necessary.
+#
+# Find more info on https://read.bespoken.io/end-to-end/getting-started/
+---
+configuration:
+    description: testSuiteDescription
+
+---
+- test: firstTestName
+- LaunchRequest: launchPrompt
+- HelpIntent: # replace with the intent for help
+  - prompt: helpPrompt
+  - cardContent: helpCardContent
+  - cardTitle: helpCardTitle

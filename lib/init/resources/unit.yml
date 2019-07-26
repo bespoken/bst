@@ -1,0 +1,16 @@
+# This is the test file for your unit tests, feel free to copy and modify the template test 
+# for your voice app as many times as you want. On this same folder you'll also find a testing.json 
+# file, it contains global configurations for future test files you might create in the future.
+# 
+# Find more info on https://read.bespoken.io/end-to-end/getting-started/
+---
+configuration:
+    description: My first unit test suite
+
+---
+- test: Launch and ask for help
+- LaunchRequest: Welcome to MY VOICE APP NAME
+- AMAZON.HelpIntent: 
+  - prompt: What can I help you with?
+  - cardContent: What can I help you with?
+  - cardTitle: MY VOICE APP NAME

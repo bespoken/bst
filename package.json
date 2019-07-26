@@ -18,6 +18,7 @@
     "console-stamp": "^0.2.6",
     "continuation-local-storage": "^3.2.0",
     "express": "^4.16.2",
+    "inquirer": "^6.5.0",
     "jest-html-reporters": "^1.1.0",
     "logless-client": "0.0.1",
     "nock": "^9.6.0",
