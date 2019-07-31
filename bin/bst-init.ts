@@ -31,7 +31,7 @@ const questions = [
         type: "input",
         name: "projectName",
         message: "What's the name of your voice app?:",
-        default: "bstTestProject"
+        default: "voice hello world"
     },
     {
         type: "list",
@@ -65,8 +65,9 @@ program
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
         console.log(chalk.yellow("Please tell us:"));
         prompt(questions).then(answers => {
-            InitUtil.createFilesStructure(answers["type"], answers["platform"],
-                answers["locales"], answers["virtualDevice"]);
+            const initUtil = new InitUtil(answers["type"], answers["platform"],
+                answers["locales"], answers["projectName"], answers["virtualDevice"]);
+            initUtil.createFiles();
         });
     });
 

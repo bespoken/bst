@@ -1,9 +1,0 @@
-# This is the localization file. Please, modify the values so that they align 
-# with your voice app responses for this locale
-
-testSuiteDescription:
-firstTestName:
-launchPrompt:
-helpPrompt:
-helpCardContent:
-helpCardTitle:

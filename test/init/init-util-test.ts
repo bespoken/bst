@@ -15,9 +15,9 @@ describe("init util", function() {
         deleteFolderRecursive("test/init/temp");
     });
 
-    describe.only("createFilesStructure()", () => {
+    describe("createFilesStructure()", () => {
         it("create file structure for unit tests", async () => {
-            await InitUtil.createFilesStructure("unit", "alexa", "en-US");
+            await new InitUtil("unit", "alexa", "en-US", "hello world").createFiles();
 
             const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
             const existUnitTestingFile = fs.existsSync("test/unit/testing.json");
@@ -31,7 +31,7 @@ describe("init util", function() {
         });
 
         it("create file structure for e2e tests", async () => {
-            await InitUtil.createFilesStructure("e2e", "alexa", "en-US");
+            await new InitUtil("e2e", "alexa", "en-US", "hello world").createFiles();
 
             const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
             const existUnitTestingFile = fs.existsSync("test/unit/testing.json");
@@ -44,7 +44,7 @@ describe("init util", function() {
         });
 
         it("create file structure for unit and e2e tests", async () => {
-            await InitUtil.createFilesStructure("both", "alexa", "en-US");
+            await new InitUtil("both", "alexa", "en-US", "hello world").createFiles();
 
             const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
             const existUnitTestingFile = fs.existsSync("test/unit/testing.json");
@@ -57,17 +57,17 @@ describe("init util", function() {
         });
     });
 
-     function deleteFolderRecursive(path: string) {
+    function deleteFolderRecursive(path: string) {
         if (fs.existsSync(path)) {
-          fs.readdirSync(path).forEach(function(file, index) {
-            const curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-              deleteFolderRecursive(curPath);
-            } else { // delete file
-              fs.unlinkSync(curPath);
-            }
-          });
-          fs.rmdirSync(path);
+            fs.readdirSync(path).forEach(function(file, index) {
+                const curPath = path + "/" + file;
+                if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                    deleteFolderRecursive(curPath);
+                } else { // delete file
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(path);
         }
-      }
+    }
 });
