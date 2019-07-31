@@ -247,7 +247,8 @@ export class InitUtil {
         return new Promise((resolve, reject) => {
             fs.writeFile(path, toWrite, (err) => {
                 if (err) {
-                    return reject(err);
+                    reject(err);
+                    return;
                 }
                 resolve();
             });

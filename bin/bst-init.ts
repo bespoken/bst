@@ -10,14 +10,14 @@ const questions = [
     {
       type: "list",
       name: "type",
-      message: "Are you looking to create:",
+      message: "What type of tests are you creating - unit, end-to-end or both:",
       choices: [
         {
-            name: "unit tests",
+            name: "unit",
             value: "unit",
         },
         {
-            name: "e2e tests",
+            name: "end-to-end",
             value: "e2e",
         },
         {
@@ -30,16 +30,16 @@ const questions = [
     {
         type: "input",
         name: "projectName",
-        message: "What's the name of your voice app?:",
+        message: "Enter the name of your voice app:",
         default: "voice hello world"
     },
     {
         type: "list",
         name: "platform",
-        message: "Are you developing for alexa, google or both?",
+        message: "Are you developing for Alexa, Google, or both?",
         choices: [
-            "alexa",
-            "google",
+            "Alexa",
+            "Google",
             "both",
           ],
         default: "both",
@@ -47,13 +47,13 @@ const questions = [
     {
         type: "input",
         name: "locales",
-        message: "Does your voice app target multiple languages?\nIf so, please type your locales separated by a comma.\nType your locales:",
+        message: "Does your voice app target multiple languages?\nIf so, please enter your locales separated by a comma.\nEnter your locales:",
         default: "en-US",
     },
     {
         type: "input",
         name: "virtualDevice",
-        message: "For e2e tests, type in your virtual device token.\nIf you don't have one or are not sure just leave it blank.\nYou can create virtual devices here: https://apps.bespoken.io/dashboard/virtualdevice\nType in your token:",
+        message: "For end-to-end tests, we require a virtual device token.\nIf you don't have one or are not sure just leave it blank.\nYou can create virtual devices here: https://apps.bespoken.io/dashboard/virtualdevice\nEnter your token:",
         when: (answers: any) => ["e2e", "both"].indexOf(answers["type"]) > -1,
     },
 ];
@@ -65,7 +65,8 @@ program
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
         console.log(chalk.yellow("Please tell us:"));
         prompt(questions).then(answers => {
-            const initUtil = new InitUtil(answers["type"], answers["platform"],
+            const platform = answers["platform"] ? answers["platform"].toLowerCase() : "";
+            const initUtil = new InitUtil(answers["type"], platform,
                 answers["locales"], answers["projectName"], answers["virtualDevice"]);
             initUtil.createFiles();
         });
