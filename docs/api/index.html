@@ -98,8 +98,7 @@
             done();
         });
     });
-});
-</code></pre><p>We initialize the <a href="classes/bstalexa.html">BSTAlexa</a> in the beforeEach block, like so:</p>
+});</code></pre><p>We initialize the <a href="classes/bstalexa.html">BSTAlexa</a> in the beforeEach block, like so:</p>
 				<pre><code><span class="hljs-keyword">let</span> alexa = <span class="hljs-literal">null</span>;
 beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">done</span>) </span>{
     alexa = <span class="hljs-keyword">new</span> bst.BSTAlexa(<span class="hljs-string">'http://localhost:10000'</span>,
@@ -108,20 +107,17 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
     alexa.start(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
         done();
     });
-});
-</code></pre><p>And we cleanup:</p>
+});</code></pre><p>And we cleanup:</p>
 				<pre><code>afterEach(<span class="hljs-name">function</span> (<span class="hljs-name">done</span>) {
     alexa.stop(<span class="hljs-name">function</span> () {
         done()<span class="hljs-comment">;</span>
     })<span class="hljs-comment">;</span>
-})<span class="hljs-comment">;</span>
-</code></pre><h1 id="using-the-lambdaserver">Using the LambdaServer</h1>
+})<span class="hljs-comment">;</span></code></pre><h1 id="using-the-lambdaserver">Using the LambdaServer</h1>
 				<p>We can the utilize the <a href="classes/lambdaserver.html">LambdaServer</a> to automatically start and stop a NodeJS/Lambda-based skill
 				within our test.</p>
 				<p>To do this, simply start the <a href="classes/lambdaserver.html">LambdaServer</a> on an open port and point it at your Lambda file:</p>
-				<pre><code>let <span class="hljs-keyword">server</span> = <span class="hljs-keyword">new</span> bst.LambdaServer(<span class="hljs-string">'./lib/index.js'</span>, <span class="hljs-number">10000</span>, <span class="hljs-keyword">true</span>);
-<span class="hljs-keyword">server</span>.start();
-</code></pre><p>The last parameter, true, enables verbose debugging. This prints out all the requests and responses from the skill to the console.</p>
+				<pre><code><span class="hljs-keyword">let</span> server = <span class="hljs-keyword">new</span> bst.<span class="hljs-constructor">LambdaServer('.<span class="hljs-operator">/</span><span class="hljs-params">lib</span><span class="hljs-operator">/</span><span class="hljs-params">index</span>.<span class="hljs-params">js</span>', 10000, <span class="hljs-params">true</span>)</span>;
+server.start<span class="hljs-literal">()</span>;</code></pre><p>The last parameter, true, enables verbose debugging. This prints out all the requests and responses from the skill to the console.</p>
 				<p>This will typically reside within our beforeEach block, similar to the the <a href="classes/bstalexa.html">BSTAlexa</a> initialization:</p>
 				<pre><code>beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(done)</span> </span>{
     server = <span class="hljs-keyword">new</span> bst.LambdaServer(<span class="hljs-string">'./lib/index.js'</span>, <span class="hljs-number">10000</span>, <span class="hljs-literal">true</span>);
@@ -133,16 +129,14 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
             done();
         });
     });
-});
-</code></pre><p>And we shut it down at the end like so:</p>
+});</code></pre><p>And we shut it down at the end like so:</p>
 				<pre><code>afterEach(<span class="hljs-name">function</span>(<span class="hljs-name">done</span>) {
     alexa.stop(<span class="hljs-name">function</span> () {
         server.stop(<span class="hljs-name">function</span> () {
             done()<span class="hljs-comment">;</span>
         })<span class="hljs-comment">;</span>
     })<span class="hljs-comment">;</span>
-})<span class="hljs-comment">;</span>
-</code></pre><p><strong>It is very important to shutdown the server - otherwise it will go on listening on the port specified!</strong></p>
+})<span class="hljs-comment">;</span></code></pre><p><strong>It is very important to shutdown the server - otherwise it will go on listening on the port specified!</strong></p>
 				<h1 id="testing-events">Testing Events</h1>
 				<p>Listeners can be set on all the events listed <a href="classes/bstalexaevents.html">here</a>.</p>
 				<p>For example, to see that a track has begun playing,
@@ -153,8 +147,7 @@ beforeEach(<span class="hljs-function"><span class="hljs-keyword">function</span
     <span class="hljs-built_in">assert</span>.equal(audioItem.stream.token, <span class="hljs-string">'2'</span>);
 });
 
-alexa.audioItemFinished();
-</code></pre>
+alexa.audioItemFinished();</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -187,6 +180,9 @@ alexa.audioItemFinished();
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/bstproxy.html" class="tsd-kind-icon">BSTProxy</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/bstvirtualalexa.html" class="tsd-kind-icon">BSTVirtual<wbr>Alexa</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/lambdaserver.html" class="tsd-kind-icon">Lambda<wbr>Server</a>

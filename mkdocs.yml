@@ -1,9 +1,9 @@
 site_name: bespoken.io
 repo_url: https://github.com/bespoken/bst
 site_dir: 'site'
-strict: true
+strict: false
 google_analytics: ['UA-99287066-2', 'docs.bespoken.io']
-nav:
+pages:
 - Home: index.md
 - Getting Started: getting_started.md
 - Alexa Skill Configuration: alexa_skills_kit_configuration.md

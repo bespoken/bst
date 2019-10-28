@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}</title>
+{% extends "base.html" %}
+
+{% block site_meta %}
+    {{ super() }}
     <meta name="robots" content="noindex" />
-  </head>
-  <body>
-    {{ page.content }}
-  </body>
-</html>
+{% endblock %}
