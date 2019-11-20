@@ -10,7 +10,7 @@ const questions = [
     {
       type: "list",
       name: "type",
-      message: "What type of tests are you creating - unit, end-to-end or both:",
+      message: "What type of tests are you creating - unit, end-to-end:",
       choices: [
         {
             name: "unit",
@@ -20,12 +20,7 @@ const questions = [
             name: "end-to-end",
             value: "e2e",
         },
-        {
-            name: "both",
-            value: "both",
-        },
       ],
-      default: "both",
     },
     {
         type: "input",
@@ -36,13 +31,23 @@ const questions = [
     {
         type: "list",
         name: "platform",
-        message: "Are you developing for Alexa, Google, or both?",
+        message: "Are you developing for Alexa, Google?",
         choices: [
-            "Alexa",
-            "Google",
-            "both",
-          ],
-        default: "both",
+          {
+              name: "Alexa",
+              value: "alexa",
+          },
+          {
+              name: "Google",
+              value: "google",
+          },
+        ],
+    },
+    {
+        type: "input",
+        name: "handler",
+        message: "Please provide the name of your handler file (or leave blank for index.js):",
+        default: "index.js",
     },
     {
         type: "input",
@@ -54,7 +59,13 @@ const questions = [
         type: "input",
         name: "virtualDevice",
         message: "For end-to-end tests, we require a virtual device token.\nIf you don't have one or are not sure just leave it blank.\nYou can create virtual devices here: https://apps.bespoken.io/dashboard/virtualdevice\nEnter your token:",
-        when: (answers: any) => ["e2e", "both"].indexOf(answers["type"]) > -1,
+        when: (answers: any) => answers["type"].includes("e2e"),
+    },
+    {
+        type: "input",
+        name: "dialogFlow",
+        message: "Please provide the path to your Dialogflow directory\n(if you don't know what this is, please take a look at https://read.bespoken.io/unit-testing/guide-google/#configuration-google-specific):",
+        when: (answers: any) => answers["type"].includes("unit") && answers["platform"].includes("Alexa"),
     },
 ];
 
@@ -65,10 +76,10 @@ program
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
         console.log(chalk.yellow("Please tell us:"));
         prompt(questions).then(answers => {
-            const platform = answers["platform"] ? answers["platform"].toLowerCase() : "";
-            const initUtil = new InitUtil(answers["type"], platform,
-                answers["locales"], answers["projectName"], answers["virtualDevice"]);
+            const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow } = answers;
+            const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow);
             initUtil.createFiles();
+            console.log(chalk.green("\nThat's it! We've created your test files for you. To run them, simply type: `bst test`\nYou can learn more advanced topics about testing at https://read.bespoken.io"));
         });
     });
 

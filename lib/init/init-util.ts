@@ -5,25 +5,24 @@ export class InitUtil {
     private isMultilocale: boolean;
 
     constructor(
-        public type: string,
-        public platform: string,
-        public locales: string,
-        public projectName: string,
-        public virtualDeviceToken?: string
+        private type: string,
+        private platform: string,
+        private handler: string,
+        private locales: string,
+        private projectName: string,
+        private virtualDeviceToken?: string,
+        private dialogFlow?: string,
         ) {
         this.isMultilocale = locales.split(",").length > 1;
+        this.projectName = projectName || "voice hello world";
+        this.handler = handler || "index.js";
+        this.locales = locales || "en-US";
+        this.virtualDeviceToken = virtualDeviceToken || "[your virtual device token goes here]";
+        this.dialogFlow = dialogFlow || "Path to your Dialogflow directory. Read more at https://read.bespoken.io/unit-testing/guide-google/#configuration";
     }
 
     public async createFiles(): Promise<void> {
-        // utterances will change on unit test for google,
-        // if plaform both was selected, utterances will have google's form
-        const finalPlatform = ["both", "google"].indexOf(this.platform) > -1 ? "google" : this.platform;
-        if (this.type === "both") {
-            await this.createTestFilesForType("unit", finalPlatform);
-            await this.createTestFilesForType("e2e", finalPlatform);
-        } else {
-            await this.createTestFilesForType(this.type, finalPlatform);
-        }
+        await this.createTestFilesForType(this.type, this.platform);
     }
 
     private async createTestFilesForType(type: string, platform: string): Promise<void> {
@@ -39,7 +38,7 @@ export class InitUtil {
         await this.createMultilocaleFiles(type);
 
         const ymlContent = this.getYmlContent(type, platform);
-        const testingFileContent = this.getTestingJson(type);
+        const testingFileContent = this.getTestingJson();
         await this.writeFile(`${testFolder}/index.test.yml`, ymlContent);
         await this.writeFile(`${currentFolder}/test/${type}/testing.json`, JSON.stringify(testingFileContent, null, 4));
     }
@@ -164,20 +163,21 @@ export class InitUtil {
         };
     }
 
-    private getTestingJson(type: string): any {
+    private getTestingJson(): any {
         const testingJsonForUnit = {
-            handler: "relative or absolute path to your voice app entry point",
+            handler: this.handler,
             locales: this.locales,
         };
         const testingJsonForE2e = {
-            virtualDeviceToken: this.virtualDeviceToken || "[your virtual device token goes here]",
-            locales: this.locales,
+            virtualDeviceToken: this.virtualDeviceToken,
+            ...testingJsonForUnit,
             type: "e2e",
         };
         if (this.platform === "google") {
             testingJsonForUnit["platform"] = "google";
+            testingJsonForUnit["dialogFlow"] = this.dialogFlow;
         }
-        return type === "unit" ? testingJsonForUnit : testingJsonForE2e;
+        return this.type === "unit" ? testingJsonForUnit : testingJsonForE2e;
     }
 
     private getHeaderComment(type: string): string {
