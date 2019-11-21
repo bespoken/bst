@@ -65,7 +65,7 @@ const questions = [
         type: "input",
         name: "dialogFlow",
         message: "Please provide the path to your Dialogflow directory\n(if you don't know what this is, please take a look at https://read.bespoken.io/unit-testing/guide-google/#configuration-google-specific):",
-        when: (answers: any) => answers["type"].includes("unit") && answers["platform"].includes("Alexa"),
+        when: (answers: any) => answers["type"].includes("unit") && answers["platform"].includes("google"),
     },
 ];
 
