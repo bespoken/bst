@@ -30,7 +30,7 @@
     "update-notifier": "^2.5.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.7.2",
-    "virtual-device-sdk": "^1.5.16",
+    "virtual-device-sdk": "^1.6.2",
     "winston": "^2.4.0"
   },
   "devDependencies": {
