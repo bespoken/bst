@@ -56,7 +56,7 @@ program
     .command("sleep <location>", "Instructs bst to sleep using specified location")
     .command("speak <utterance>", "Sends your message to your virtual alexa device")
     .command("test [testPattern]", "Runs tests - by default runs all tests scripts found")
-    .command("init", "setup example project and configuration");
+    .command("init", "Setup example project and configuration");
 
 // We don't initialize when running tests - perhaps for other cases as well?
 // For hooking into CI, we do not want to keep creating new sources
@@ -82,6 +82,3 @@ Global.initializeCLI(createSource).then(
     LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
     LoggingHelper.error(Logger, error);
 });
-
-
-

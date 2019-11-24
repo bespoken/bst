@@ -21,7 +21,7 @@ describe("init util", function() {
 
             const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
             const existUnitTestingFile = fs.existsSync("test/unit/testing.json");
-            const existE2eTestFile = fs.existsSync("test/e2e/index.test.yml");
+            const existE2eTestFile = fs.existsSync("test/e2e/index.e2e.yml");
             const existE2eTestingFile = fs.existsSync("test/e2e/testing.json");
 
             assert.equal(existUnitTestFile, true);
@@ -35,7 +35,7 @@ describe("init util", function() {
 
             const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
             const existUnitTestingFile = fs.existsSync("test/unit/testing.json");
-            const existE2eTestFile = fs.existsSync("test/e2e/index.test.yml");
+            const existE2eTestFile = fs.existsSync("test/e2e/index.e2e.yml");
             const existE2eTestingFile = fs.existsSync("test/e2e/testing.json");
             assert.equal(existUnitTestFile, false);
             assert.equal(existUnitTestingFile, false);

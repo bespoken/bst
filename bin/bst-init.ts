@@ -48,6 +48,7 @@ const questions = [
         name: "handler",
         message: "Please provide the name of your handler file (or leave blank for index.js):",
         default: "index.js",
+        when: (answers: any) => answers["type"].includes("unit"),
     },
     {
         type: "input",
@@ -70,7 +71,7 @@ const questions = [
 ];
 
 program
-    .description("setup example project and configuration")
+    .description("Setup example project and configuration")
     .action(() => {
         console.log(chalk.yellow("Welcome to the bespoken tools CLI."));
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
@@ -79,7 +80,7 @@ program
             const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow } = answers;
             const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow);
             initUtil.createFiles();
-            console.log(chalk.green("\nThat's it! We've created your test files for you. To run them, simply type: `bst test`\nYou can learn more advanced topics about testing at https://read.bespoken.io"));
+            console.log(chalk.green("\nThat's it! We've created your test files for you. To run them, simply type:\n`bst test`\nLearn more about testing for voice at https://read.bespoken.io"));
         });
     });
 
