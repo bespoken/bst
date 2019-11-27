@@ -39,7 +39,8 @@ export class InitUtil {
 
         const ymlContent = this.getYmlContent(type, platform);
         const testingFileContent = this.getTestingJson();
-        await this.writeFile(`${testFolder}/index.test.yml`, ymlContent);
+        const preExtension = type === "unit" ? "test" : "e2e";
+        await this.writeFile(`${testFolder}/index.${preExtension}.yml`, ymlContent);
         await this.writeFile(`${currentFolder}/test/${type}/testing.json`, JSON.stringify(testingFileContent, null, 4));
     }
 
