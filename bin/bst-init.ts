@@ -80,7 +80,7 @@ program
             const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow } = answers;
             const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow);
             initUtil.createFiles();
-            console.log(chalk.green("\nThat's it! We've created your test files for you. To run them, simply type:\n`bst test`\nLearn more about testing for voice at https://read.bespoken.io"));
+            console.log(chalk.green("\nThat's it! We've created your voice app test files and you can find them under the \"test\" folder. To run them, simply type:\nbst test\nLearn more about testing for voice at https://read.bespoken.io"));
         });
     });
 
