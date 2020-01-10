@@ -12,6 +12,7 @@ export class InitUtil {
         private projectName: string,
         private virtualDeviceToken?: string,
         private dialogFlow?: string,
+        private testingExist?: boolean,
         ) {
         this.isMultilocale = locales.split(",").length > 1;
         this.projectName = projectName || "voice hello world";
@@ -19,10 +20,24 @@ export class InitUtil {
         this.locales = locales || "en-US";
         this.virtualDeviceToken = virtualDeviceToken || "[your virtual device token goes here]";
         this.dialogFlow = dialogFlow || "Path to your Dialogflow directory. Read more at https://read.bespoken.io/unit-testing/guide-google/#configuration";
+        this.testingExist = testingExist;
     }
 
     public async createFiles(): Promise<void> {
         await this.createTestFilesForType(this.type, this.platform);
+    }
+
+    public static isTestingJSONExists() {
+        const currentFolder = process.cwd();
+        return fs.existsSync(`${currentFolder}/testing.json`);
+    }
+
+    private getTesTingJSONName() {
+        let filename = "testing.json";
+        if (typeof this.testingExist !== "undefined") {
+            filename = this.testingExist ? filename : `testing${new Date().getTime()}.json`;
+        }
+        return filename;
     }
 
     private async createTestFilesForType(type: string, platform: string): Promise<void> {
@@ -41,7 +56,7 @@ export class InitUtil {
         const testingFileContent = this.getTestingJson();
         const preExtension = type === "unit" ? "test" : "e2e";
         await this.writeFile(`${testFolder}/index.${preExtension}.yml`, ymlContent);
-        await this.writeFile(`${currentFolder}/test/${type}/testing.json`, JSON.stringify(testingFileContent, null, 4));
+        await this.writeFile(`${currentFolder}/${this.getTesTingJSONName()}`, JSON.stringify(testingFileContent, null, 4));
     }
 
     private getYmlContent(type: string, platform: string): string {

@@ -68,6 +68,22 @@ const questions = [
         message: "Please provide the path to your Dialogflow directory\n(if you don't know what this is, please take a look at https://read.bespoken.io/unit-testing/guide-google/#configuration-google-specific):",
         when: (answers: any) => answers["type"].includes("unit") && answers["platform"].includes("google"),
     },
+    {
+        type: "list",
+        name: "testingExist",
+        message: "There is already a testing.json file in your location would you like to overwrite it?",
+        choices: [
+            {
+                name: "Yes",
+                value: true,
+            },
+            {
+                name: "No",
+                value: false,
+            },
+        ],
+        when: () => InitUtil.isTestingJSONExists(),
+    }
 ];
 
 program
@@ -77,10 +93,14 @@ program
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
         console.log(chalk.yellow("Please tell us:"));
         prompt(questions).then(answers => {
-            const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow } = answers;
-            const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow);
+            const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow, testingExist } = answers;
+            const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow, testingExist);
             initUtil.createFiles();
-            console.log(chalk.green("\nThat's it! We've created your voice app test files and you can find them under the \"test\" folder. To run them, simply type:\nbst test\nLearn more about testing for voice at https://read.bespoken.io"));
+            let commandToExectute = "bst test";
+            if (typeof testingExist !== "undefined" && !testingExist) {
+                commandToExectute = `bst test --config "location of the testing.json file"`;
+            }
+            console.log(chalk.green(`\nThat's it! We've created your voice app test files and you can find them under the \"test\" folder. To run them, simply type:\n${commandToExectute}\nLearn more about testing for voice at https://read.bespoken.io`));
         });
     });
 
