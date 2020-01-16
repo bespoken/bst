@@ -3,6 +3,7 @@ import { TestParser } from "skill-testing-ml";
 
 export class InitUtil {
     private isMultilocale: boolean;
+    private currentTime: number;
 
     constructor(
         private type: string,
@@ -15,6 +16,7 @@ export class InitUtil {
         private testingExist?: boolean,
         ) {
         this.isMultilocale = locales.split(",").length > 1;
+        this.currentTime = new Date().getTime();
         this.projectName = projectName || "voice hello world";
         this.handler = handler || "index.js";
         this.locales = locales || "en-US";
@@ -27,15 +29,15 @@ export class InitUtil {
         await this.createTestFilesForType(this.type, this.platform);
     }
 
-    public static isTestingJSONExists() {
+    public static isThereTestingJsonFile() {
         const currentFolder = process.cwd();
         return fs.existsSync(`${currentFolder}/testing.json`);
     }
 
-    private getTesTingJSONName() {
+    public getTesTingJSONName() {
         let filename = "testing.json";
         if (typeof this.testingExist !== "undefined") {
-            filename = this.testingExist ? filename : `testing${new Date().getTime()}.json`;
+            filename = this.testingExist ? filename : `testing${this.currentTime}.json`;
         }
         return filename;
     }

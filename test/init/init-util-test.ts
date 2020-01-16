@@ -15,7 +15,7 @@ describe("init util", function() {
         deleteFolderRecursive("test/init/temp");
     });
 
-    describe("testing.json never exists before", () => {
+    describe("testing.json does not exist", () => {
         it("create file structure for unit tests", async () => {
             await new InitUtil("unit", "alexa", "index.js", "en-US", "hello world").createFiles();
 
@@ -67,7 +67,7 @@ describe("init util", function() {
             });
         });
 
-        describe("user selects no overwrite current testing.json", () => {
+        describe("user decides not to overwrite his current testing.json file", () => {
             it("create file structure for unit tests", async () => {
                 await new InitUtil("unit", "alexa", "index.js", "en-US", "hello world", undefined, undefined, false).createFiles();
 

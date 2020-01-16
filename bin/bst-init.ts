@@ -82,7 +82,7 @@ const questions = [
                 value: false,
             },
         ],
-        when: () => InitUtil.isTestingJSONExists(),
+        when: () => InitUtil.isThereTestingJsonFile(),
     }
 ];
 
@@ -98,7 +98,7 @@ program
             initUtil.createFiles();
             let commandToExectute = "bst test";
             if (typeof testingExist !== "undefined" && !testingExist) {
-                commandToExectute = `bst test --config "location of the testing.json file"`;
+                commandToExectute = `bst test --config ${initUtil.getTesTingJSONName()}`;
             }
             console.log(chalk.green(`\nThat's it! We've created your voice app test files and you can find them under the \"test\" folder. To run them, simply type:\n${commandToExectute}\nLearn more about testing for voice at https://read.bespoken.io`));
         });
