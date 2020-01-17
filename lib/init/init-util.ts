@@ -212,6 +212,9 @@ export class InitUtil {
             ...testingJsonForUnit,
             type: "e2e",
         };
+
+        delete testingJsonForE2e.handler;
+
         if (this.platform === "google") {
             testingJsonForUnit["platform"] = "google";
             testingJsonForUnit["dialogFlow"] = this.dialogFlow;
