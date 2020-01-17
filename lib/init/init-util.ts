@@ -3,7 +3,7 @@ import { TestParser } from "skill-testing-ml";
 
 export class InitUtil {
     private isMultilocale: boolean;
-    private currentTime: number;
+    public lastTestingJSONFilename: string;
 
     constructor(
         private type: string,
@@ -16,7 +16,6 @@ export class InitUtil {
         private testingExist?: boolean,
         ) {
         this.isMultilocale = locales.split(",").length > 1;
-        this.currentTime = new Date().getTime();
         this.projectName = projectName || "voice hello world";
         this.handler = handler || "index.js";
         this.locales = locales || "en-US";
@@ -26,6 +25,7 @@ export class InitUtil {
     }
 
     public async createFiles(): Promise<void> {
+        this.lastTestingJSONFilename = this.getTesTingJSONName();
         await this.createTestFilesForType(this.type, this.platform);
     }
 
@@ -35,11 +35,32 @@ export class InitUtil {
     }
 
     public getTesTingJSONName() {
-        let filename = "testing.json";
-        if (typeof this.testingExist !== "undefined") {
-            filename = this.testingExist ? filename : `testing${this.currentTime}.json`;
+        const path = process.cwd();
+        let lastTestingJsonFile = "testing.json";
+        if (fs.existsSync(`${path}/${lastTestingJsonFile}`) && !this.testingExist) {
+            let lastCreatedTime = 0;
+            fs.readdirSync(path).forEach(file => {
+                const filePath = `${path}/${file}`;
+                const _file = fs.lstatSync(filePath);
+                if (_file.isFile() && file.match(/testing.*\.json/)) {
+                    const { birthtimeMs } = _file;
+                    if (birthtimeMs > lastCreatedTime) {
+                        lastCreatedTime = birthtimeMs;
+                        lastTestingJsonFile = file;
+                    }
+                }
+            });
+            const [, afterDash] = lastTestingJsonFile.split("_");
+            if (!afterDash) {
+                return "testing_01.json";
+            } else {
+                let [_index] = afterDash.split(".");
+                const index = parseInt(_index);
+                const newIndex = index < 9 ? `0${index + 1}` : index + 1;
+                return `testing_${newIndex}.json`;
+            }
         }
-        return filename;
+        return lastTestingJsonFile;
     }
 
     private async createTestFilesForType(type: string, platform: string): Promise<void> {
@@ -58,7 +79,7 @@ export class InitUtil {
         const testingFileContent = this.getTestingJson();
         const preExtension = type === "unit" ? "test" : "e2e";
         await this.writeFile(`${testFolder}/index.${preExtension}.yml`, ymlContent);
-        await this.writeFile(`${currentFolder}/${this.getTesTingJSONName()}`, JSON.stringify(testingFileContent, null, 4));
+        await this.writeFile(`${currentFolder}/${this.lastTestingJSONFilename}`, JSON.stringify(testingFileContent, null, 4));
     }
 
     private getYmlContent(type: string, platform: string): string {

@@ -92,13 +92,13 @@ program
         console.log(chalk.yellow("Welcome to the Bespoken CLI."));
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
         console.log(chalk.yellow("Please tell us:"));
-        prompt(questions).then(answers => {
+        prompt(questions).then(async (answers) => {
             const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow, testingExist } = answers;
             const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow, testingExist);
-            initUtil.createFiles();
+            await initUtil.createFiles();
             let commandToExectute = "bst test";
             if (typeof testingExist !== "undefined" && !testingExist) {
-                commandToExectute = `bst test --config ${initUtil.getTesTingJSONName()}`;
+                commandToExectute = `bst test --config ${initUtil.lastTestingJSONFilename}`;
             }
             console.log(chalk.green(`\nThat's it! We've created your voice app test files and you can find them under the \"test\" folder. To run them, simply type:\n${commandToExectute}\nLearn more about testing for voice at https://read.bespoken.io`));
         });
