@@ -3,6 +3,7 @@ import { TestParser } from "skill-testing-ml";
 
 export class InitUtil {
     private isMultilocale: boolean;
+    public lastTestingJSONFilename: string;
 
     constructor(
         private type: string,
@@ -12,6 +13,7 @@ export class InitUtil {
         private projectName: string,
         private virtualDeviceToken?: string,
         private dialogFlow?: string,
+        private testingExist?: boolean,
         ) {
         this.isMultilocale = locales.split(",").length > 1;
         this.projectName = projectName || "voice hello world";
@@ -19,10 +21,46 @@ export class InitUtil {
         this.locales = locales || "en-US";
         this.virtualDeviceToken = virtualDeviceToken || "[your virtual device token goes here]";
         this.dialogFlow = dialogFlow || "Path to your Dialogflow directory. Read more at https://read.bespoken.io/unit-testing/guide-google/#configuration";
+        this.testingExist = testingExist;
     }
 
     public async createFiles(): Promise<void> {
+        this.lastTestingJSONFilename = this.getTesTingJSONName();
         await this.createTestFilesForType(this.type, this.platform);
+    }
+
+    public static isThereTestingJsonFile() {
+        const currentFolder = process.cwd();
+        return fs.existsSync(`${currentFolder}/testing.json`);
+    }
+
+    public getTesTingJSONName() {
+        const path = process.cwd();
+        let lastTestingJsonFile = "testing.json";
+        if (fs.existsSync(`${path}/${lastTestingJsonFile}`) && !this.testingExist) {
+            let lastCreatedTime = 0;
+            fs.readdirSync(path).forEach(file => {
+                const filePath = `${path}/${file}`;
+                const _file = fs.lstatSync(filePath);
+                if (_file.isFile() && file.match(/testing.*\.json/)) {
+                    const { birthtimeMs } = _file;
+                    if (birthtimeMs > lastCreatedTime) {
+                        lastCreatedTime = birthtimeMs;
+                        lastTestingJsonFile = file;
+                    }
+                }
+            });
+            const [, afterDash] = lastTestingJsonFile.split("_");
+            if (!afterDash) {
+                return "testing_01.json";
+            } else {
+                let [_index] = afterDash.split(".");
+                const index = parseInt(_index);
+                const newIndex = index < 9 ? `0${index + 1}` : index + 1;
+                return `testing_${newIndex}.json`;
+            }
+        }
+        return lastTestingJsonFile;
     }
 
     private async createTestFilesForType(type: string, platform: string): Promise<void> {
@@ -41,7 +79,7 @@ export class InitUtil {
         const testingFileContent = this.getTestingJson();
         const preExtension = type === "unit" ? "test" : "e2e";
         await this.writeFile(`${testFolder}/index.${preExtension}.yml`, ymlContent);
-        await this.writeFile(`${currentFolder}/test/${type}/testing.json`, JSON.stringify(testingFileContent, null, 4));
+        await this.writeFile(`${currentFolder}/${this.lastTestingJSONFilename}`, JSON.stringify(testingFileContent, null, 4));
     }
 
     private getYmlContent(type: string, platform: string): string {
