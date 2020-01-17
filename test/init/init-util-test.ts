@@ -69,26 +69,31 @@ describe("init util", function() {
 
         describe("user decides not to overwrite his current testing.json file", () => {
             it("create file structure for unit tests", async () => {
+                fs.writeFileSync("testing.json", "");
                 await new InitUtil("unit", "alexa", "index.js", "en-US", "hello world", undefined, undefined, false).createFiles();
 
                 const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
                 const existE2eTestFile = fs.existsSync("test/e2e/index.e2e.yml");
                 const existTestingFile = fs.existsSync("testing.json");
-
+                const existTestingFile1 = fs.existsSync("testing_01.json");
                 assert.equal(existUnitTestFile, true);
                 assert.equal(existE2eTestFile, false);
-                assert.equal(existTestingFile, false);
+                assert.equal(existTestingFile, true);
+                assert.equal(existTestingFile1, true);
             });
 
             it("create file structure for e2e tests", async () => {
+                fs.writeFileSync("testing.json", "");
                 await new InitUtil("e2e", "alexa", "index.js", "en-US", "hello world", undefined, undefined, false).createFiles();
 
                 const existUnitTestFile = fs.existsSync("test/unit/index.test.yml");
                 const existE2eTestFile = fs.existsSync("test/e2e/index.e2e.yml");
                 const existTestingFile = fs.existsSync("testing.json");
+                const existTestingFile1 = fs.existsSync("testing_01.json");
                 assert.equal(existUnitTestFile, false);
                 assert.equal(existE2eTestFile, true);
-                assert.equal(existTestingFile, false);
+                assert.equal(existTestingFile, true);
+                assert.equal(existTestingFile1, true);
             });
         });
     });
