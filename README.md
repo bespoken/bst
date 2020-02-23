@@ -6,7 +6,7 @@
 
 <p align="center">
   Switch to BEAST mode<br>
-  Rampage through code/test iterations for Alexa and Lambda development
+  Develop, Debug, and Test Alexa skill and Google Actions Better and Faster
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ With Bespoken, develop faster and better. Do not slow-down for:
 
 * Time-consuming server deployments
 * Over-complicated and highly manual testing routines
-* Complex ffmpeg encoding and configuration
+* Time-intensive and error-prone regression and utterance testing
 
 The command-line tools include:
 
@@ -44,13 +44,7 @@ The command-line tools include:
 * [Proxy](https://read.bespoken.io/cli/commands/#proxy) - Easily debug Alexa requests by having them send directly to your laptop
 * [Launch](https://read.bespoken.io/cli/commands/#launch) - Send a Launch Request to your Alexa skill
 * [Utter](https://read.bespoken.io/cli/commands/#utter) and [Intend](https://read.bespoken.io/cli/commands/#intend) - Send intents and utterances to your Alexa skill
-* [Speak](https://read.bespoken.io/cli/commands/#proxy) - Send a request directly an Alexa Virtual Device - uses the "real" Alexa! Magic!
-
-The library provides:
-
-* [BSTAlexa](http://docs.bespoken.io/en/latest/api/classes/bstalexa.html) - Alexa emulator for unit-testing and functional-testing of your skills
-* [BSTEncode](http://docs.bespoken.io/en/latest/api/classes/bstencode.html) - Encodes audio files for use in SSML without pesky ffmpeg
-* [Logless](http://docs.bespoken.io/en/latest/api/classes/logless.html) - Completely painless, serverless logging
+* [Speak](https://read.bespoken.io/cli/commands/#speak) - Send a request directly an Alexa Virtual Device - uses the "real" Alexa! Magic!
 
 # Installation
 
@@ -60,28 +54,11 @@ For use of the CLI:
 $ npm install bespoken-tools -g
 ```
 
-For use of the Bespoken library (including Logless and the Emulator):
-
-```bash
-$ npm install bespoken-tools --save
-```
-
-For additional help, see [Getting Started](https://read.bespoken.io/cli/getting-started/)
-
-## Tutorials For Alexa Skills
-* [Nodejs Lambda Tutorial](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_nodejs)
-* [Java Server Tutorial](http://docs.bespoken.io/en/latest/tutorials/tutorial_local_server_java)
-* [Python & Flask-Ask](http://docs.bespoken.io/en/latest/tutorials/tutorial_flask_ask_python)
-* [Alexa Emulator Tutorial - Node.js](http://docs.bespoken.io/en/latest/tutorials/tutorial_bst_emulator_nodejs)
-
-## Tutorials For Actions on Google
-* [With Cloud Functions](http://docs.bespoken.io/en/latest/tutorials/tutorial_cloud_function)
-* [With API.AI](http://docs.bespoken.io/en/latest/tutorials/tutorial_configuring_api_ai)
-
-## Tutorials For General Lambdas
-* [Running Lambdas Locally](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_local)
-* [Debugging Lambdas Locally](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_debugger)
-* [Deploying Lambdas](http://docs.bespoken.io/en/latest/tutorials/tutorial_lambda_deploy)
+# Learn More
+* [Getting Started With The CLI](https://read.bespoken.io/cli/getting-started/)
+* [Unit-Testing](https://read.bespoken.io/unit-test/getting-started/) - Using our simple, expressive YAML test scripting syntax
+* [End-To-End Testing](https://read.bespoken.io/end-to-end/getting-started/) - Also uses our YAML syntax, but for end-to-end tests that use the real Alexa
+* [Virtual Alexa](https://github.com/bespoken/virtual-alexa) - The core component of our unit-testing - use this for programmatic unit tests
 
 ## Questions/Feedback?
 
