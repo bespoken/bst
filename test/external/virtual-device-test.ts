@@ -5,6 +5,8 @@ import {VirtualDeviceClient} from "../../lib/external/virtual-device";
 
 let messageParam: string;
 let constructorToken: string;
+let constructorClient: string;
+
 describe("VirtualDeviceClient", function() {
     let sandbox: sinon.SinonSandbox = null;
 
@@ -131,6 +133,7 @@ describe("VirtualDeviceClient", function() {
             const VirtualDeviceClient = require("../../lib/external/virtual-device").VirtualDeviceClient;
             await VirtualDeviceClient.speak("Hello world", "newToken");
             assert.equal(constructorToken, "newToken");
+            assert.equal(constructorClient, "CLI");
             assert.equal(messageParam, "Hello world");
         });
     });
@@ -192,8 +195,9 @@ describe("VirtualDeviceClient", function() {
 });
 
 class VirtualDevice {
-    public constructor(token: string) {
-        constructorToken = token;
+    public constructor(constructorObject: any) {
+        constructorToken = constructorObject.token;
+        constructorClient = constructorObject.client;
     }
 
     public message = (utterance: string) => {

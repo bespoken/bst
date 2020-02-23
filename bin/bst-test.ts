@@ -50,7 +50,9 @@ Global.initializeCLI(false).then(() => {
         }
     }
 
-    const configurationOverrides = {};
+    const configurationOverrides = {
+        client: "CLI",
+    };
     skillTesting.ConfigurationKeys.forEach(element => {
         if (program[element.key]) {
             configurationOverrides[element.key] = program[element.key];

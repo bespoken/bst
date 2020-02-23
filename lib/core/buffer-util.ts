@@ -7,7 +7,7 @@ export class BufferUtil {
     }
 
     public static fromString(s: string): Buffer {
-        return new Buffer(s);
+        return Buffer.from(s);
     }
 
     // Find the specified value within the buffer

@@ -75,7 +75,7 @@ describe("Alexa", function() {
         it("Handles error on bad URL", function(done) {
             this.timeout(5000);
             let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
-            alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (error: any){
+            alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (error: any) {
                 assert(error);
                 assert.equal(error.message, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
                 done();

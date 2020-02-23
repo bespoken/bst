@@ -46,6 +46,8 @@ if (nodeMajorVersion < 4) {
     process.exit(1);
 }
 
+program.version("", "-v, --version");
+
 program
     .command("proxy <lambda|function|http>", "Proxies a Lambda, Google Cloud Function or HTTP service")
     .command("launch", "Sends a launch request to your service")
@@ -53,7 +55,8 @@ program
     .command("utter <utterance>", "Sends an intent with the specified utterance to your service")
     .command("sleep <location>", "Instructs bst to sleep using specified location")
     .command("speak <utterance>", "Sends your message to your virtual alexa device")
-    .command("test [testPattern]", "Runs tests - by default runs all tests scripts found");
+    .command("test [testPattern]", "Runs tests - by default runs all tests scripts found")
+    .command("init", "Setup example project and configuration");
 
 // We don't initialize when running tests - perhaps for other cases as well?
 // For hooking into CI, we do not want to keep creating new sources
@@ -79,6 +82,3 @@ Global.initializeCLI(createSource).then(
     LoggingHelper.error(Logger, "Error using bst version: " + Global.version() + " on Node: " + process.version);
     LoggingHelper.error(Logger, error);
 });
-
-
-

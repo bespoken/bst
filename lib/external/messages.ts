@@ -22,5 +22,5 @@ export class BstMessages {
             }
         }
         return result;
-    };
+    }
 }

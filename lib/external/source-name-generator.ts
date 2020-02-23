@@ -8,7 +8,7 @@ export class SourceNameGenerator {
             timeout: 30000
         };
         return get(options);
-    };
+    }
 
     public async createDashboardSource(id: string, secretKey: string) {
         const options = {

@@ -183,4 +183,4 @@ export class AudioPlayer {
     public playing(): AudioItem {
         return this._playing;
     }
-};
+}

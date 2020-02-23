@@ -46,6 +46,11 @@ The command-line tools include:
 * [Utter](https://read.bespoken.io/cli/commands/#utter) and [Intend](https://read.bespoken.io/cli/commands/#intend) - Send intents and utterances to your Alexa skill
 * [Speak](https://read.bespoken.io/cli/commands/#speak) - Send a request directly an Alexa Virtual Device - uses the "real" Alexa! Magic!
 
+You can also use:
+
+* --version, -v - Indicates the current BST and Node versions
+* --help, -h - Shows usage information
+
 # Installation
 
 For use of the CLI:

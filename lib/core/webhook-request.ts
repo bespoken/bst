@@ -12,8 +12,8 @@ export class WebhookRequest {
     private requestID: number;
 
     public constructor(public sourceSocket?: Socket) {
-        this.rawContents = new Buffer("");
-        this.rawBody = new Buffer("");
+        this.rawContents = Buffer.from("");
+        this.rawBody = Buffer.from("");
         this.body = "";
         this.requestID = new Date().getTime();
         if (this.sourceSocket === undefined) {
