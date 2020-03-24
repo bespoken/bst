@@ -14,7 +14,7 @@ Global.initializeCLI().then(
             .option("-l, --locale <locale>", "The locale to use for the virtual device (en-US, en-GB, de-DE, etc.)")
             .option("-t, --token <token>", `The token for interacting with your virtual device - get it here:
 
-        \thttps://${Global.SpokesDashboardHost}/skills/${Global.config().sourceID()}/validation
+        \thttps://${Global.SpokesDashboardHost}
         \t(Bespoken Dashboard account required for use of this feature)\n`)
             .option("--voiceID <voiceID>", "The AWS Polly voice ID to use for generating speech")
             .description("Speaks to your virtual Alexa device")
@@ -46,7 +46,7 @@ Global.initializeCLI().then(
                     if (ex.message === "Token Required") {
                         console.log("You need a token for this option to work, get it here:");
                         console.log();
-                        console.log("\thttps://" + Global.SpokesDashboardHost + "/skills/" + Global.config().sourceID() + "/validation");
+                        console.log("\thttps://" + Global.SpokesDashboardHost);
                         console.log("\t(Bespoken Dashboard account required for use of this feature)");
                         console.log();
                         console.log("Then try again with:");
