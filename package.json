@@ -18,6 +18,7 @@
     "console-stamp": "^0.2.6",
     "continuation-local-storage": "^3.2.0",
     "express": "^4.16.2",
+    "https-proxy-agent": "^5.0.0",
     "inquirer": "^6.5.0",
     "jest-html-reporters": "^1.1.0",
     "logless-client": "0.0.1",
@@ -30,7 +31,7 @@
     "update-notifier": "^2.5.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.7.2",
-    "virtual-device-sdk": "^1.6.2",
+    "virtual-device-sdk": "^1.7.3-0",
     "winston": "^2.4.0"
   },
   "devDependencies": {
@@ -66,7 +67,7 @@
     "sinon": "^1.17.5",
     "ts-node": "^3.3.0",
     "tslint": "^5.16.0",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.17.3",
     "typemoq": "^0.3.2",
     "typescript": "3.4.5"
   },
