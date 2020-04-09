@@ -206,9 +206,9 @@ export class BespokeClient {
 
     private messageReceived (socketMessage: SocketMessage) {
         // First message we get back is an ack
-        if (socketMessage.is("ACK")) {
+        if (socketMessage.startsWith("ACK")) {
 
-        } else if (socketMessage.is(Global.KeepAliveMessage)) {
+        } else if (socketMessage.startsWith(Global.KeepAliveMessage)) {
             this.keepAlive.received();
         } else {
             this.onWebhookReceived(WebhookRequest.fromBuffer(this.socketHandler.socket, socketMessage.getMessage(), socketMessage.getMessageID()));
