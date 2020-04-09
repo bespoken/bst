@@ -197,4 +197,16 @@ export class SocketMessage {
     public contains(stringToFind: string) {
         return this.asString().indexOf(stringToFind) > -1;
     }
+
+    // Chops off the sequence number and message delimiter to find the raw payload and compare to the parameter
+    public is(stringToFind: string) {
+        const stringValue = this.asString();
+        const payloadLength = stringValue.length - (this.sequenceNumber + "").length - Global.MessageDelimiter.length;
+        if (payloadLength <= 0) {
+            return false;
+        }
+
+        const payload = stringValue.substr(0, payloadLength);
+        return payload === stringToFind;
+    }
 }
