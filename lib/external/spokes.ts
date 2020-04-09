@@ -1,5 +1,6 @@
 import {get, post} from "request-promise-native";
 import {LoggingHelper} from "../core/logging-helper";
+const HttpsProxyAgent = require("https-proxy-agent");
 
 const Logger = "SPOKES-CLIENT";
 
@@ -12,7 +13,7 @@ export class SpokesClient {
     }
 
     public async verifyUUIDisNew(): Promise<boolean> {
-        const options = {
+        const options: any = {
             uri: `https://api.bespoken.link/pipe/${ this._secretKey }`,
             headers: {
                 "x-access-token": "4772616365-46696f72656c6c61",
@@ -23,6 +24,12 @@ export class SpokesClient {
             json: true, // Automatically parses the JSON string in the response
             timeout: 30000
         };
+
+        const proxy = process.env.HTTPS_PROXY;
+
+        if (proxy) {
+            options.agent = new HttpsProxyAgent(proxy);
+        }
 
         try {
             await get(options);
@@ -40,7 +47,7 @@ export class SpokesClient {
     }
 
     public async createPipe(): Promise<any> {
-        const options = {
+        const options: any = {
             uri: "https://api.bespoken.link/pipe",
             headers: {
                 "x-access-token": "4772616365-46696f72656c6c61",
@@ -63,6 +70,13 @@ export class SpokesClient {
             json: true, // Automatically parses the JSON string in the response
             timeout: 30000
         };
+
+        const proxy = process.env.HTTPS_PROXY;
+
+        if (proxy) {
+            options.agent = new HttpsProxyAgent(proxy);
+        }
+
         const response = await post(options);
         // Spokes creates a endPointID but not return the endPoint name
         response.endPoint = {

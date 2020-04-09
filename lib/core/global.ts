@@ -8,7 +8,7 @@ export class Global {
     public static KeepAliveMessage = "KEEPALIVE";
     public static BespokeServerHost = "proxy.bespoken.tools";
     public static SpokesPipeDomain = "bespoken.link";
-    public static SpokesDashboardHost = "apps.bespoken.io/dashboard";
+    public static SpokesDashboardHost = "apps.bespoken.io";
 
     private static _configuration: BSTConfig = null;
     private static _cli: boolean = false;
