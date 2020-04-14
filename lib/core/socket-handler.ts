@@ -197,4 +197,9 @@ export class SocketMessage {
     public contains(stringToFind: string) {
         return this.asString().indexOf(stringToFind) > -1;
     }
+
+    // Chops off the sequence number and message delimiter to find the raw payload and compare to the parameter
+    public startsWith(stringToFind: string) {
+        return this.asString().startsWith(stringToFind);
+    }
 }

@@ -27,11 +27,11 @@ describe("BespokeServerTest", function() {
             // Connect a client
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, "localhost", 9011);
             (<any> bespokeClient).onWebhookReceived = function(webhookRequest: WebhookRequest) {
-                assert.equal("Test", webhookRequest.body);
+                assert.equal("BACK", webhookRequest.body);
 
                 // Dummy response from a non-existent HTTP service
                 let response = "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\n";
-                response += JSON.stringify({"data": "test"});
+                response += JSON.stringify({"data": "BACK"});
                 (<any> bespokeClient).socketHandler.send(new SocketMessage(response, webhookRequest.id()));
             };
 
