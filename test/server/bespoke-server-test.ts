@@ -27,7 +27,7 @@ describe("BespokeServerTest", function() {
             // Connect a client
             let bespokeClient = new BespokeClient("JPK", "localhost", 9010, "localhost", 9011);
             (<any> bespokeClient).onWebhookReceived = function(webhookRequest: WebhookRequest) {
-                assert.equal("BACK", webhookRequest.body);
+                assert.equal("Test", webhookRequest.body);
 
                 // Dummy response from a non-existent HTTP service
                 let response = "HTTP/1.1 200 OK\r\nContent-Length: 15\r\n\r\n";
@@ -40,7 +40,7 @@ describe("BespokeServerTest", function() {
                 webhookCaller.post("localhost", 8010, "/?node-id=JPK", "Test", function (data: Buffer) {
                     console.log("data: " + data.toString());
                     let json = JSON.parse(data.toString());
-                    assert.equal(json.data, "test");
+                    assert.equal(json.data, "BACK");
                     bespokeClient.shutdown(function () {
                         server.stop().then(() => {
                             done();
