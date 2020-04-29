@@ -305,6 +305,10 @@ describe("bst-intend", function() {
                 BSTVirtualAlexa: function (skillURL: any, interactionModel: any, intentSchemaFile: any, sampleUtterancesFile: any, applicationID: string, locale: string, userId: string) {
                     assert.equal(locale, "de-DE");
                     done();
+                    return {
+                        start: () => {},
+                        intended: () => {},
+                    };
                 }
             });
 
