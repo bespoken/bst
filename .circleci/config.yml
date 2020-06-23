@@ -38,7 +38,7 @@ jobs:
   codecov:
     machine: true
     environment:
-      - SKIP_STATISTICS: "true"
+      SKIP_STATISTICS: "true"
     working_directory: ~/circleci-deployment
     steps:
       - attach_workspace:
@@ -47,20 +47,11 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: .
-  bst-dev:
-    machine: true
-    environment:
-      - TYPE_OF_DEPLOY: dev
-      - SKIP_STATISTICS: "true"
-      - BST_CONTAINER: ec2-user@ec2-35-153-68-76.compute-1.amazonaws.com
-    working_directory: ~/circleci-deployment
-    steps: *deploy-steps
-
   bst-server:
     machine: true
     environment:
-      - TYPE_OF_DEPLOY: server
-      - BST_CONTAINER: ec2-user@ec2-18-232-68-210.compute-1.amazonaws.com
+      TYPE_OF_DEPLOY: server
+      BST_CONTAINER: ec2-user@ec2-35-153-68-76.compute-1.amazonaws.com
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
   
@@ -68,11 +59,11 @@ jobs:
     docker:
       - image: circleci/node:8
     environment:
-      - ASK_ACCESS_TOKEN: dummy
-      - ASK_REFRESH_TOKEN: dummy
-      - ASK_VENDOR_ID: dummy
-      - ASK_SKILL_ID: dummy
-      - VIRTUAL_DEVICE_TOKEN: dummy
+      ASK_ACCESS_TOKEN: dummy
+      ASK_REFRESH_TOKEN: dummy
+      ASK_VENDOR_ID: dummy
+      ASK_SKILL_ID: dummy
+      VIRTUAL_DEVICE_TOKEN: dummy
     working_directory: ~/skill-testing-release
     steps:
       - add_ssh_keys:
@@ -153,14 +144,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - bst-dev:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /bst-dev-.*/
-            branches:
-              ignore: /.*/
       - bst-server:
           requires:
             - test
