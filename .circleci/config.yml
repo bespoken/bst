@@ -51,7 +51,7 @@ jobs:
     machine: true
     environment:
       TYPE_OF_DEPLOY: server
-      BST_CONTAINER: ec2-user@ec2-35-153-68-76.compute-1.amazonaws.com
+      BST_CONTAINER: ec2-user@ec2-35-168-239-220.compute-1.amazonaws.com
     working_directory: ~/circleci-deployment
     steps: *deploy-steps
   
