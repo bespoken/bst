@@ -61,7 +61,7 @@ $ npm install bespoken-tools -g
 
 # Learn More
 * [Getting Started With The CLI](https://read.bespoken.io/cli/getting-started/)
-* [Unit-Testing](https://read.bespoken.io/unit-test/getting-started/) - Using our simple, expressive YAML test scripting syntax
+* [Unit-Testing](https://read.bespoken.io/unit-testing/getting-started/) - Using our simple, expressive YAML test scripting syntax
 * [End-To-End Testing](https://read.bespoken.io/end-to-end/getting-started/) - Also uses our YAML syntax, but for end-to-end tests that use the real Alexa
 * [Virtual Alexa](https://github.com/bespoken/virtual-alexa) - The core component of our unit-testing - use this for programmatic unit tests
 
