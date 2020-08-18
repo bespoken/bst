@@ -14,6 +14,7 @@ export class InitUtil {
         private virtualDeviceToken?: string,
         private dialogFlow?: string,
         private testingExist?: boolean,
+        private phoneNumber?: string,
         ) {
         this.isMultilocale = locales.split(",").length > 1;
         this.projectName = projectName || "voice hello world";
@@ -22,6 +23,7 @@ export class InitUtil {
         this.virtualDeviceToken = virtualDeviceToken || "[your virtual device token goes here]";
         this.dialogFlow = dialogFlow || "Path to your Dialogflow directory. Read more at https://read.bespoken.io/unit-testing/guide-google/#configuration";
         this.testingExist = testingExist;
+        this.phoneNumber = phoneNumber;
     }
 
     public async createFiles(): Promise<void> {
@@ -88,7 +90,10 @@ export class InitUtil {
         const configuration = {
             description: this.getTestSuiteDescription(type),
         };
-        const interactions = [this.getLaunchInteraction(type), this.getHelpInteraction(type, platform)];
+        const interactions = [this.getLaunchInteraction(type, platform)];
+        if (platform !== "twilio") {
+            interactions.push(this.getHelpInteraction(type, platform));
+        }
         const yamlObject = {
             configuration,
             "tests": [
@@ -130,7 +135,7 @@ export class InitUtil {
         return "Launch and ask for help";
     }
 
-    private getLaunchInteraction(type: string): object {
+    private getLaunchInteraction(type: string, platform?: string): object {
         let expected = "";
         let input = "";
         if (this.isMultilocale) {
@@ -141,18 +146,31 @@ export class InitUtil {
                 input = "LaunchRequest";
                 expected = `Welcome to ${this.projectName}`;
             } else if (type === "e2e") {
-                input = `open ${this.projectName}`;
-                expected = `Welcome to ${this.projectName}`;
+                if (platform === "twilio") {
+                    input = "$DIAL";
+                    expected = `Welcome to ${this.projectName}`;
+                } else {
+                    input = `open ${this.projectName}`;
+                    expected = `Welcome to ${this.projectName}`;
+                }
             }
         }
+        const expectedItems = [
+            {
+                "action": "prompt",
+                "operator": ":",
+                "value": expected,
+            },
+        ];
+        if (platform === "twilio") {
+            expectedItems.push({
+                "action": "set finishOnPhrase",
+                "operator": ":",
+                "value": "what can I help you with?",
+            });
+        }
         return {
-            "expected": [
-                {
-                    "action": "prompt",
-                    "operator": ":",
-                    "value": expected,
-                },
-            ],
+            "expected": expectedItems,
             input,
         };
     }
@@ -218,6 +236,9 @@ export class InitUtil {
         if (this.platform === "google") {
             testingJsonForUnit["platform"] = "google";
             testingJsonForUnit["dialogFlow"] = this.dialogFlow;
+        } else if (this.platform === "twilio") {
+            testingJsonForE2e["platform"] = "twilio";
+            testingJsonForE2e["phoneNumber"] = this.phoneNumber;
         }
         return this.type === "unit" ? testingJsonForUnit : testingJsonForE2e;
     }

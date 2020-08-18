@@ -25,7 +25,7 @@ const questions = [
     {
         type: "input",
         name: "projectName",
-        message: "Enter the name of your voice app:",
+        message: "Enter the name of your voice experience:",
         default: "voice hello world"
     },
     {
@@ -41,7 +41,18 @@ const questions = [
               name: "Google",
               value: "google",
           },
+          {
+            name: "IVR",
+            value: "twilio",
+          },
         ],
+    },
+    {
+        type: "input",
+        name: "phoneNumber",
+        message: "Please provide a valid phone number in the E.164 format to call to (e.g.: +14155552671):",
+        when: (answers: any) => answers["platform"].includes("twilio"),
+        validate: (input: any) => !!input,
     },
     {
         type: "input",
@@ -93,8 +104,10 @@ program
         console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
         console.log(chalk.yellow("Please tell us:"));
         prompt(questions).then(async (answers) => {
-            const { type, platform, handler, locales, projectName, virtualDevice, dialogFlow, testingExist } = answers;
-            const initUtil = new InitUtil(type, platform, handler, locales, projectName, virtualDevice, dialogFlow, testingExist);
+            const { type, platform, handler, locales, projectName,
+                virtualDevice, dialogFlow, testingExist, phoneNumber } = answers;
+            const initUtil = new InitUtil(type, platform, handler, locales,
+                projectName, virtualDevice, dialogFlow, testingExist, phoneNumber);
             await initUtil.createFiles();
             let commandToExectute = "bst test";
             if (typeof testingExist !== "undefined" && !testingExist) {
