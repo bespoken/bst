@@ -31,7 +31,7 @@ const questions = [
     {
         type: "list",
         name: "platform",
-        message: "Are you developing for Alexa, Google?",
+        message: "Are you developing for Alexa, Google, or an IVR system?",
         choices: [
           {
               name: "Alexa",
@@ -52,7 +52,10 @@ const questions = [
         name: "phoneNumber",
         message: "Please provide a valid phone number in the E.164 format to call to (e.g.: +14155552671):",
         when: (answers: any) => answers["platform"].includes("twilio"),
-        validate: (input: any) => !!input,
+        validate: (input: any) => {
+            if (!input) return false;
+            return /^\+*\d+$/.test(input);
+        },
     },
     {
         type: "input",
@@ -64,7 +67,7 @@ const questions = [
     {
         type: "input",
         name: "locales",
-        message: "Does your voice app target multiple languages?\nIf so, please enter your locales separated by a comma.\nEnter your locales:",
+        message: "Enter the locale for your tests.\nIf you are targeting multiple locales, please separate them by a comma:",
         default: "en-US",
     },
     {
