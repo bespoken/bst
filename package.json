@@ -27,7 +27,7 @@
     "properties-reader": "0.0.15",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-    "skill-testing-ml": "~1.2.41",
+    "skill-testing-ml": "~1.2.42",
     "update-notifier": "^2.5.0",
     "uuid": "3.0.0",
     "virtual-alexa": "^0.7.2",
