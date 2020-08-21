@@ -54,7 +54,7 @@ const questions = [
         when: (answers: any) => answers["platform"].includes("twilio"),
         validate: (input: any) => {
             if (!input) return false;
-            return /^\+*\d+$/.test(input);
+            return /^\+?[1-9]\d{1,14}$/.test(input);
         },
     },
     {
@@ -104,7 +104,7 @@ program
     .description("Setup example project and configuration")
     .action(() => {
         console.log(chalk.yellow("Welcome to the Bespoken CLI."));
-        console.log(chalk.yellow("We'll set up all you need for you to start testing your voice apps."));
+        console.log(chalk.yellow("We'll set up all you need for you to start testing your voice experiences."));
         console.log(chalk.yellow("Please tell us:"));
         prompt(questions).then(async (answers) => {
             const { type, platform, handler, locales, projectName,
