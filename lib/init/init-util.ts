@@ -248,8 +248,8 @@ export class InitUtil {
             "https://read.bespoken.io/end-to-end/getting-started/" :
             "https://read.bespoken.io/unit-testing/getting-started/";
         const multilocaleComment = `# This is the test file for your ${type} tests, feel free to copy and modify the template test
-# for your voice app as many times as you want. On this same folder you'll also find a testing.json
-# file, it contains global configurations for future test files you might create in the future.
+# as many times as you want. In this same folder, you'll also find a testing.json
+# file. It contains global configurations for future test files you might create in the future.
 # You'll also find a folder called locales, it contains the localization files for all your supported
 # locales. Just put a value to each variable and they will be replaced here. Add, remove or modify
 # as necessary.
@@ -257,8 +257,8 @@ export class InitUtil {
 # Find more info on ${link}
 `;
         const singlelocaleComment = `# This is the test file for your ${type} tests, feel free to copy and modify the template test
-# for your voice app as many times as you want. On this same folder you'll also find a testing.json
-# file, it contains global configurations for future test files you might create in the future.
+# as many times as you want. In this same folder, you'll also find a testing.json
+# file. It contains global configurations for future test files you might create in the future.
 #
 # Find more info on ${link}
 `;
