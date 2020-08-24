@@ -79,8 +79,8 @@ export class SocketHandler {
             try {
                 this.buffer = Buffer.concat([this.buffer, data]);
             } catch (e) {
-                console.error(`Buffer allocation error existing ${this.buffer.length} new: ${data.length} error: ${e.message}`)
-                return false;               
+                console.error(`Buffer allocation error existing ${this.buffer.length} new: ${data.length} error: ${e.message}`);
+                return false;
             }
         }
 
