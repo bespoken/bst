@@ -39,7 +39,11 @@ export class SocketHandler {
 
         // Set this as instance variable to make it easier to test
         this.onDataCallback = function(data: Buffer) {
-            self.handleData(data);
+            // If this returns false, means we had problems with the data from this socket
+            // We go ahead and close it to be defensive
+            if (!self.handleData(data)) {
+                this.socket.destroy("Error handling data - closing socket");
+            }
         };
 
         // Add a 'data' event handler to this instance of socket
@@ -48,7 +52,7 @@ export class SocketHandler {
         // Do some basic error-handling - needs to be improved
         this.socket.on("error", function (e: any) {
             if (self.connected) {
-                LoggingHelper.debug(Logger, "SocketError From: " + self.remoteEndPoint() + " Error: " + e.code + " Message: " + e.message);
+                LoggingHelper.error(Logger, "SocketError From: " + self.remoteEndPoint() + " Error: " + e.code + " Message: " + e.message);
             }
         });
 
@@ -70,9 +74,14 @@ export class SocketHandler {
      * Finds the delimiter and sends callbacks, potentially multiple times as multiple messages can be received at once
      * @param data
      */
-    private handleData(data: Buffer): void {
+    private handleData(data: Buffer): boolean {
         if (data !== null) {
-            this.buffer = Buffer.concat([this.buffer, data]);
+            try {
+                this.buffer = Buffer.concat([this.buffer, data]);
+            } catch (e) {
+                console.error(`Buffer allocation error existing ${this.buffer.length} new: ${data.length} error: ${e.message}`);
+                return false;
+            }
         }
 
         const delimiterIndex = this.buffer.indexOf(Global.MessageDelimiter);
@@ -105,9 +114,10 @@ export class SocketHandler {
 
             // If we have received more than one packet at a time, handle it recursively
             if (this.buffer.toString().indexOf(Global.MessageDelimiter) !== -1) {
-                this.handleData(null);
+                return this.handleData(null);
             }
         }
+        return true;
     }
 
     public send(socketMessage: SocketMessage) {
