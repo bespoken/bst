@@ -1,4 +1,4 @@
-FROM bespoken/nodejs
+FROM node:12
 
 MAINTAINER John Kelvie
 
