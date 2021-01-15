@@ -42,8 +42,8 @@ const questions = [
               value: "google",
           },
           {
-            name: "IVR",
-            value: "twilio",
+            name: "Phone",
+            value: "phone",
           },
         ],
     },
@@ -51,7 +51,7 @@ const questions = [
         type: "input",
         name: "phoneNumber",
         message: "Please provide a valid phone number in the E.164 format to call to (e.g.: +14155552671):",
-        when: (answers: any) => answers["platform"].includes("twilio"),
+        when: (answers: any) => answers["platform"].includes("phone"),
         validate: (input: any) => {
             if (!input) return false;
             return /^\+?[1-9]\d{1,14}$/.test(input);
