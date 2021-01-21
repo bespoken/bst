@@ -91,7 +91,7 @@ export class InitUtil {
             description: this.getTestSuiteDescription(type),
         };
         const interactions = [this.getLaunchInteraction(type, platform)];
-        if (platform !== "twilio") {
+        if (platform !== "phone") {
             interactions.push(this.getHelpInteraction(type, platform));
         }
         const yamlObject = {
@@ -146,7 +146,7 @@ export class InitUtil {
                 input = "LaunchRequest";
                 expected = `Welcome to ${this.projectName}`;
             } else if (type === "e2e") {
-                if (platform === "twilio") {
+                if (platform === "phone") {
                     input = "$DIAL";
                     expected = `Welcome to ${this.projectName}`;
                 } else {
@@ -162,7 +162,7 @@ export class InitUtil {
                 "value": expected,
             },
         ];
-        if (platform === "twilio") {
+        if (platform === "phone") {
             expectedItems.push({
                 "action": "set finishOnPhrase",
                 "operator": ":",
@@ -236,8 +236,8 @@ export class InitUtil {
         if (this.platform === "google") {
             testingJsonForUnit["platform"] = "google";
             testingJsonForUnit["dialogFlow"] = this.dialogFlow;
-        } else if (this.platform === "twilio") {
-            testingJsonForE2e["platform"] = "twilio";
+        } else if (this.platform === "phone") {
+            testingJsonForE2e["platform"] = "phone";
             testingJsonForE2e["phoneNumber"] = this.phoneNumber;
         }
         return this.type === "unit" ? testingJsonForUnit : testingJsonForE2e;
