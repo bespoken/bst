@@ -31,7 +31,7 @@ const questions = [
     {
         type: "list",
         name: "platform",
-        message: "Are you developing for Alexa, Google, or an IVR system?",
+        message: "Are you developing for Alexa, Google, or an automated Phone system?",
         choices: [
           {
               name: "Alexa",
