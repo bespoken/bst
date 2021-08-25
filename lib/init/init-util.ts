@@ -177,8 +177,6 @@ export class InitUtil {
 
     private getHelpInteraction(type: string, platform: string): object {
         let expectedPrompt = "helpPrompt";
-        let expectedCardContent = "helpPrompt";
-        let expectedCardTitle = "cardTitle";
         let input = "";
 
         if (this.isMultilocale) {
@@ -194,9 +192,7 @@ export class InitUtil {
             } else if (type === "e2e") {
                 input = "help";
             }
-            expectedPrompt = "What can I help you with?";
-            expectedCardContent = "What can I help you with?";
-            expectedCardTitle = this.projectName;
+            expectedPrompt = "What can I help you with";
         }
         return {
             "expected": [
@@ -204,16 +200,6 @@ export class InitUtil {
                     "action": "prompt",
                     "operator": ":",
                     "value": expectedPrompt,
-                },
-                {
-                    "action": "cardContent",
-                    "operator": ":",
-                    "value": expectedCardContent,
-                },
-                {
-                    "action": "cardTitle",
-                    "operator": ":",
-                    "value": expectedCardTitle,
                 },
             ],
             input,
@@ -236,8 +222,8 @@ export class InitUtil {
         if (this.platform === "google") {
             testingJsonForUnit["platform"] = "google";
             testingJsonForUnit["dialogFlow"] = this.dialogFlow;
-        } else if (this.platform === "phone") {
-            testingJsonForE2e["platform"] = "phone";
+        } else if (["phone", "sms", "whatsapp"].indexOf(this.platform) > -1) {
+            testingJsonForE2e["platform"] = this.platform;
             testingJsonForE2e["phoneNumber"] = this.phoneNumber;
         }
         return this.type === "unit" ? testingJsonForUnit : testingJsonForE2e;
