@@ -31,7 +31,7 @@ const questions = [
     {
         type: "list",
         name: "platform",
-        message: "Are you developing for Alexa, Google, or an automated Phone system?",
+        message: "Select the platform you are developing for",
         choices: [
           {
               name: "Alexa",
@@ -45,13 +45,21 @@ const questions = [
             name: "Phone",
             value: "phone",
           },
+          {
+            name: "Sms",
+            value: "sms",
+          },
+          {
+            name: "Whatsapp",
+            value: "whatsapp",
+          },
         ],
     },
     {
         type: "input",
         name: "phoneNumber",
         message: "Please provide a valid phone number in the E.164 format to call to (e.g.: +14155552671):",
-        when: (answers: any) => answers["platform"].includes("phone"),
+        when: (answers: any) => ["phone", "sms", "whatsapp"].indexOf(answers["platform"]) > -1,
         validate: (input: any) => {
             if (!input) return false;
             return /^\+?[1-9]\d{1,14}$/.test(input);
