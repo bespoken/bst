@@ -131,6 +131,10 @@ export class InitUtil {
     private getTestName(): string {
         if (this.isMultilocale) {
             return "firstTestName";
+        } else if (this.platform === "phone") {
+            return "Dial and ask for help";
+        } else if (["whatsapp", "sms"].indexOf(this.platform) > -1) {
+            return "Ask for help";
         }
         return "Launch and ask for help";
     }
@@ -148,6 +152,9 @@ export class InitUtil {
             } else if (type === "e2e") {
                 if (platform === "phone") {
                     input = "$DIAL";
+                    expected = `Welcome to ${this.projectName}`;
+                } else if (["sms", "whatsapp"].indexOf(platform) > -1) {
+                    input = "hello";
                     expected = `Welcome to ${this.projectName}`;
                 } else {
                     input = `open ${this.projectName}`;
