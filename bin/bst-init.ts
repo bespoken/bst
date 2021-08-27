@@ -32,28 +32,39 @@ const questions = [
         type: "list",
         name: "platform",
         message: "Select the platform you are developing for",
-        choices: [
-          {
-              name: "Alexa",
-              value: "alexa",
-          },
-          {
-              name: "Google",
-              value: "google",
-          },
-          {
-            name: "Phone",
-            value: "phone",
-          },
-          {
-            name: "Sms",
-            value: "sms",
-          },
-          {
-            name: "Whatsapp",
-            value: "whatsapp",
-          },
-        ],
+        choices: (answers: any) => {
+            const platforms = [
+                {
+                    name: "Alexa",
+                    value: "alexa",
+                },
+                {
+                    name: "Google",
+                    value: "google",
+                }
+            ];
+            if (answers["type"] === "unit") {
+                return platforms;
+            } else {
+                return platforms.concat(
+                    [
+
+                        {
+                            name: "Phone",
+                            value: "phone",
+                        },
+                        {
+                            name: "Sms",
+                            value: "sms",
+                        },
+                        {
+                            name: "Whatsapp",
+                            value: "whatsapp",
+                        },
+                    ]
+                );
+            }
+        }
     },
     {
         type: "input",
