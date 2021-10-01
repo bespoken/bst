@@ -120,13 +120,6 @@ jobs:
       - run: npm install
       - run: git checkout .
       - run: git checkout master
-      - run:
-          name: update skill testing ref
-          command: |
-            REPLACE_PATTERN="s/\"skill-testing-ml\": \".*\"/\"skill-testing-ml\": \"~$SKILL_TESTING_VERSION\"/g"
-            sed -i -e "$REPLACE_PATTERN" package.json
-            git add package.json
-            git diff-index --quiet HEAD || git commit -m "update skill testing ref"
       - run: npm version patch
       - run: git push && git push --tags
       - run: npm publish --tag beta
@@ -152,17 +145,7 @@ workflows:
               only: /bst-server-.*/
             branches:
               ignore: /.*/
-      - skill-testing-release:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /bst-client-.*/
-            branches:
-              ignore: /.*/
       - bst-client-release:
-          requires:
-            - skill-testing-release
           filters:
             tags:
               only: /bst-client-.*/
