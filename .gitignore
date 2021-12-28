@@ -37,3 +37,5 @@ site/
 !test/resources/exampleProject/*
 !test/resources/deployProject/*
 test/resources/ContentPromoPromptCopy.m4a
+
+.nvmrc

@@ -23,7 +23,6 @@
     "jest-html-reporters": "^1.1.0",
     "logless-client": "0.0.1",
     "nock": "^9.6.0",
-    "node-zip": "^1.1.1",
     "properties-reader": "0.0.15",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
