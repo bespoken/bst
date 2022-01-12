@@ -127,7 +127,7 @@ describe("init util", function () {
             const testSuite = parser.parse({});
             await testSuite.loadLocalizedValues();
 
-            assert.ok(testSuite.tests.length === 1)
+            assert.ok(testSuite.tests.length === 1);
 
             assert.deepStrictEqual("$testSuiteDescription", get(testSuite, "configuration.description", "").toString());
             assert.deepStrictEqual("$firstTestName", get(testSuite, "tests[0].description", "").toString());

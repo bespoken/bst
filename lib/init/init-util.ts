@@ -191,7 +191,7 @@ export class InitUtil {
                 input = platform === "alexa" ? "AMAZON.HelpIntent" : "HelpIntent";
             } else if (type === "e2e") {
                 input = "$HELP_UTTERANCE";
-                expectedPrompt = "$helpPrompt"
+                expectedPrompt = "$helpPrompt";
             }
         } else {
             if (type === "unit") {
@@ -295,11 +295,11 @@ export class InitUtil {
     }
 
     getLocalizedProperties(): Object {
-        if (this.isMultilocale && this.type === 'e2e') {
+        if (this.isMultilocale && this.type === "e2e") {
             return {
                 $testSuiteDescription: "My first unit test suite",
                 $firstTestName: "Launch and ask for help",
-                $launchPrompt: `Welcome to ${this.projectName}`,
+                $launchPrompt: `okay here's`,
                 $helpPrompt: "What can I help you with?",
                 $INVOCATION_UTTERANCE: `Open ${this.projectName} overview`,
                 $HELP_UTTERANCE: "help"
