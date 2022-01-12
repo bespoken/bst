@@ -15,7 +15,7 @@ export class InitUtil {
         private dialogFlow?: string,
         private testingExist?: boolean,
         private phoneNumber?: string,
-        ) {
+    ) {
         this.isMultilocale = locales.split(",").length > 1;
         this.projectName = projectName || "voice hello world";
         this.handler = handler || "index.js";
@@ -143,7 +143,7 @@ export class InitUtil {
         let expected = "";
         let input = "";
         if (this.isMultilocale) {
-            input = "LaunchRequest";
+            input = "invocationUtterance";
             expected = "launchPrompt";
         } else {
             if (type === "unit") {
@@ -190,7 +190,7 @@ export class InitUtil {
             if (type === "unit") {
                 input = platform === "alexa" ? "AMAZON.HelpIntent" : "HelpIntent";
             } else if (type === "e2e") {
-                input = "helpUtterance";
+                input = "$HELP_UTTERANCE";
             }
         } else {
             if (type === "unit") {
@@ -268,6 +268,9 @@ export class InitUtil {
             fs.mkdirSync(`${currentFolder}/test/${type}/locales`);
         }
 
+        const invocationUtterance = this.isMultilocale ? `Open ${this.projectName} overview` : undefined;
+        const $HELP_UTTERANCE = this.isMultilocale ? "help" : undefined;
+
         const localizedValues = {
             testSuiteDescription: "My first unit test suite",
             firstTestName: "Launch and ask for help",
@@ -275,6 +278,8 @@ export class InitUtil {
             helpPrompt: "What can I help you with?",
             helpCardContent: "What can I help you with?",
             helpCardTitle: this.projectName,
+            invocationUtterance,
+            $HELP_UTTERANCE
         };
         await Promise.all(this.locales.split(",").filter((x) => x).map((locale) => {
             locale = locale.trim();
@@ -309,5 +314,5 @@ export class InitUtil {
                 resolve();
             });
         });
-     }
+    }
 }
