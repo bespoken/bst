@@ -102,7 +102,7 @@ describe("init util", function () {
     });
 
     describe("init with multi locale and e2e", () => {
-        it("Should create only invocationUtterance and helpUtterance", async () => {
+        it("Should create only $INVOCATION_UTTERANCE and $HELP_UTTERANCE and use variables $firstTestName and $testSuiteDescription for test and test suite descriptions", async () => {
             const locales = ["en-US", "es-PE"];
             const projectName = "hello world";
             await new InitUtil("e2e", "alexa", "index.js", locales.join(","), projectName, undefined, undefined, false).createFiles();
@@ -127,10 +127,15 @@ describe("init util", function () {
             const testSuite = parser.parse({});
             await testSuite.loadLocalizedValues();
 
-            assert.deepStrictEqual(testSuite.tests.map(t => t.interactions).reduce((p, c) => p.concat(c), []).map(v => get(v, "utterance")), ["invocationUtterance", "$HELP_UTTERANCE"]);
+            assert.ok(testSuite.tests.length === 1)
+
+            assert.deepStrictEqual("$testSuiteDescription", get(testSuite, "configuration.description", "").toString());
+            assert.deepStrictEqual("$firstTestName", get(testSuite, "tests[0].description", "").toString());
+            assert.deepStrictEqual(["$INVOCATION_UTTERANCE", "$HELP_UTTERANCE"], get(testSuite, "tests[0].interactions", []).map(v => get(v, "utterance", null)));
         });
 
-        it("Should create only invocationUtterance and helpUtterance in locales", async () => {
+        it("Should localized have only these keys: $testSuiteDescription, $firstTestName, $launchPrompt, $helpPrompt when is multi-localized", async () => {
+            const expectedKey = ["$testSuiteDescription", "$firstTestName", "$launchPrompt", "$helpPrompt", "$INVOCATION_UTTERANCE", "$HELP_UTTERANCE"];
             const locales = ["en-US", "es-PE"];
             const projectName = "hello world";
             await new InitUtil("e2e", "alexa", "index.js", locales.join(","), projectName, undefined, undefined, false).createFiles();
@@ -155,8 +160,7 @@ describe("init util", function () {
             const testSuite = parser.parse({});
             await testSuite.loadLocalizedValues();
 
-            assert.deepStrictEqual(get(testSuite, `localizedValues[${locales[0]}].invocationUtterance`, null), `Open ${projectName} overview`);
-            assert.deepStrictEqual(get(testSuite, `localizedValues[${locales[0]}].$HELP_UTTERANCE`, null), "help");
+            assert.deepStrictEqual(Object.keys(get(testSuite, `localizedValues[${locales[0]}]`, {})), expectedKey);
         });
 
         it("Should not create locale files if only one locale", async () => {
@@ -178,39 +182,6 @@ describe("init util", function () {
 
             // validate files were create
             assert.ok(locales.map(f => fs.existsSync(`test/e2e/locales/${f}.yml`)).filter(v => v === true).length === 0);
-            await Global.loadConfig();
-            const parser: TestParser = new TestParser("test/e2e/index.e2e.yml");
-            const testSuite = parser.parse({});
-            await testSuite.loadLocalizedValues();
-
-            assert.deepStrictEqual(testSuite.tests.map(t => t.interactions).reduce((p, c) => p.concat(c), []).map(v => get(v, "utterance")), [`open ${projectName}`, "help"]);
-        });
-
-        it("Should not create invocationUtterance and helpUtterance in locales if only one locale", async () => {
-            const locales = ["en-US"];
-            await new InitUtil("e2e", "alexa", "index.js", locales.join(","), "hello world", undefined, undefined, false).createFiles();
-
-            const existUnitTestFile = "test/unit/index.test.yml";
-            const existE2eTestFile = "test/e2e/index.e2e.yml";
-            const existTestingFile = "testing.json";
-
-
-            assert.ok(!fs.existsSync(existUnitTestFile));
-            assert.ok(fs.existsSync(existE2eTestFile));
-            assert.ok(fs.existsSync(existTestingFile));
-
-            assert.ok(fs.existsSync(existTestingFile));
-            assert.ok(fs.existsSync(existTestingFile));
-
-            // validate files were create
-            assert.ok(locales.map(f => fs.existsSync(`test/e2e/locales/${f}.yml`)).filter(v => v === true).length === 0);
-            await Global.loadConfig();
-            const parser: TestParser = new TestParser("test/e2e/index.e2e.yml");
-            const testSuite = parser.parse({});
-            await testSuite.loadLocalizedValues();
-
-            assert.deepStrictEqual(get(testSuite, `localizedValues[${locales[0]}].invocationUtterance`, null), null);
-            assert.deepStrictEqual(get(testSuite, `localizedValues[${locales[0]}].helpUtterance`, null), null);
         });
     });
 
