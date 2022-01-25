@@ -3,11 +3,11 @@
   "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "2.5.3",
+  "version": "2.5.4",
   "bin": {
-    "bst": "./bin/bst.js",
-    "bst-server": "./bin/bst-server.js",
-    "bst-test": "./bin/bst-test.js"
+    "bst": "bin/bst.js",
+    "bst-server": "bin/bst-server.js",
+    "bst-test": "bin/bst-test.js"
   },
   "dependencies": {
     "async": "^2.0.0",
