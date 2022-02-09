@@ -78,6 +78,7 @@
     "url": "git://github.com/bespoken/bst.git"
   },
   "scripts": {
+    "mocha": "tsc && mocha --exit test/**/*-test.js",
     "build": "gulp build",
     "test": "gulp test",
     "coverage": "gulp coverage",
