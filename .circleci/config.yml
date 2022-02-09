@@ -36,7 +36,8 @@ jobs:
           paths: .
 
   codecov:
-    machine: true
+    docker:
+      - image: circleci/node:12
     environment:
       SKIP_STATISTICS: "true"
     working_directory: ~/circleci-deployment
