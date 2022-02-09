@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import * as program from "commander";
+import {program} from "commander";
 import {Global} from "../lib/core/global";
 
 program.version(Global.version());
 
 program
-    .usage("<location>")
+    .usage("[options] <location>")
     .description("Instructs bst to sleep using specified location")
     .action(function (location: string) {
         if (location === undefined || location.toLowerCase() !== "brooklyn") {

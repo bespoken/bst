@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from "commander";
+import {program} from "commander";
 import {Global} from "../lib/core/global";
 import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
 
@@ -53,9 +53,10 @@ Global.initializeCLI(false).then(() => {
     const configurationOverrides = {
         client: "CLI",
     };
+    const programOptions: any = program.opts();
     skillTesting.ConfigurationKeys.forEach(element => {
-        if (program[element.key]) {
-            configurationOverrides[element.key] = program[element.key];
+        if (programOptions[element.key]) {
+            configurationOverrides[element.key] = programOptions[element.key];
         }
     });
     const testCLI = new skillTesting.CLI();

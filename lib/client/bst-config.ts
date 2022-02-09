@@ -312,7 +312,7 @@ export class BSTProcess {
     // Excellent code from the internet
     //  https://github.com/nisaacson/is-running/blob/master/index.js
     //  http://stackoverflow.com/questions/14390930/how-to-check-if-an-arbitrary-pid-is-running-using-node-js
-    private static isRunning (pid: number): boolean {
+    public static isRunning (pid: number): boolean {
         try {
             process.kill(pid, 0);
             return true;

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from "commander";
+import {program} from "commander";
 import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
 import {BSTProxy} from "../lib/client/bst-proxy";
@@ -136,12 +136,12 @@ if (["function", "http", "lambda", "stop", "urlgen"].indexOf(process.argv[2]) < 
     console.error("  error: unknown command: " + process.argv[2] + "\n");
     process.exit();
 }
-
-program.Command.prototype.missingArgument = function(name: string): void {
-    console.error("  error: missing required argument " + name);
-    console.error();
-    process.exit(1);
-};
+// TODO fix
+// program.Command.prototype.missingArgument = function(name: string): void {
+//     console.error("  error: missing required argument " + name);
+//     console.error();
+//     process.exit(1);
+// };
 
 Global.initializeCLI().then(
     () => program.parse(process.argv)

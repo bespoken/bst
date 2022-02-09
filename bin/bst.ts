@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from "commander";
+import {program} from "commander";
 import {Global} from "../lib/core/global";
 import {LoggingHelper} from "../lib/core/logging-helper";
 import * as updateNotifier from "update-notifier";

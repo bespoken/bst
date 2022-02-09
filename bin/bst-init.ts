@@ -1,4 +1,4 @@
-import * as program from "commander";
+import {program} from "commander";
 import {prompt} from "inquirer";
 import {Global} from "../lib/core/global";
 import {InitUtil} from "../lib/init/init-util";

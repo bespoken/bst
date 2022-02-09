@@ -45,7 +45,7 @@ describe("BespokeClient", function() {
                     try {
                         assert.equal(reconnectAttempts, BespokeClient.RECONNECT_MAX_RETRIES, "Not enough reconnects");
                         assert(error);
-                        resolve();
+                        resolve("");
                     } catch (assertErr) {
                         reject(assertErr);
                     }
@@ -77,7 +77,7 @@ describe("BespokeClient", function() {
                             assert.equal(statusCode, 500);
 
                             client.shutdown(function () {
-                                resolve();
+                                resolve("");
                             });
                         });
                 };
@@ -103,7 +103,7 @@ describe("BespokeClient", function() {
                         assert.equal(statusCode, 500);
 
                         client.shutdown(function () {
-                            resolve();
+                            resolve("");
                         });
                     });
                 };
@@ -131,7 +131,7 @@ describe("BespokeClient", function() {
                         assert.equal(statusCode, 500);
 
                         client.shutdown(function () {
-                            resolve();
+                            resolve("");
                         });
                     });
                 };
@@ -164,7 +164,7 @@ describe("BespokeClient", function() {
                         assert.equal(statusCode, 500);
 
                         client.shutdown(function () {
-                            resolve();
+                            resolve("");
                         });
                     });
                 };
@@ -228,7 +228,7 @@ describe("BespokeClient", function() {
                         nodeManager.stop().then(() => {
                             BespokeClient.RECONNECT_MAX_RETRIES = 3;
 
-                            resolve();
+                            resolve("");
                         });
                     });
 

@@ -60,7 +60,7 @@ describe("BSTVirtualAlexa", async function() {
         let sandbox: any = null;
 
         beforeEach(function () {
-            sandbox = sinon.sandbox.create();
+            sandbox = sinon.createSandbox();
             mockery.enable({useCleanCache: true});
             mockery.warnOnUnregistered(false);
             mockery.registerMock("../core/global", globalModule);
@@ -175,7 +175,7 @@ describe("BSTVirtualAlexa", async function() {
 
         it("Initializes with error (Intent Schema provided not present)", function (done) {
             let errorReceived = false;
-            sandbox.stub(console, "error", function(data: Buffer) {
+            sandbox.stub(console, "error").callsFake(function(data: Buffer) {
                 if (!errorReceived && data.toString().startsWith("Error loading")) {
                     errorReceived = true;
                 }
@@ -197,7 +197,7 @@ describe("BSTVirtualAlexa", async function() {
 
         it("Initializes with error (Interaction Model provided not present)", function (done) {
             let errorReceived = false;
-            sandbox.stub(console, "error", function(data: Buffer) {
+            sandbox.stub(console, "error").callsFake(function(data: Buffer) {
                 if (!errorReceived && data.toString().startsWith("Error loading")) {
                     errorReceived = true;
                 }

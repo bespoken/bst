@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from "commander";
+import {program} from "commander";
 import {Global} from "../lib/core/global";
 import {BSTVirtualAlexa} from "../lib/client/bst-virtual-alexa";
 import {LoggingHelper} from "../lib/core/logging-helper";
@@ -20,7 +20,7 @@ program
     .description("Creates an launch request and sends it to your skill")
     .action(function () {
         // Just by casting program to options, we can get all the options which are set on it
-        const options: any = program;
+        const options: any = program.opts();
         let url = options.url;
         const interactionModel = options.model;
         const intentSchemaPath = options.intents;
