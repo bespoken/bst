@@ -8,6 +8,11 @@ import {SinonSandbox} from "sinon";
 // TODO fix test
 xdescribe("LoggingHelper", function() {
     let sandbox: SinonSandbox = null;
+    before(function() {
+        LoggingHelper.initialize(true);
+
+    });
+
     beforeEach(function () {
         sandbox = sinon.createSandbox();
     });
@@ -18,14 +23,12 @@ xdescribe("LoggingHelper", function() {
 
     describe("#initialize", function() {
         it("Logs correctly", function(done) {
-            LoggingHelper.initialize(true);
-            winston.error("Test", function () {
+            LoggingHelper.error("Test", "message", function () {
                 done();
             });
         });
 
         it("Toggles verbosity", function(done) {
-            LoggingHelper.initialize(true);
             let logger = function (log: string): boolean {
                 assert(log.indexOf("Verbosity1") === -1);
                 assert(log.indexOf("Verbosity3") === -1);

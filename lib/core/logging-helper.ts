@@ -12,12 +12,11 @@ export class LoggingHelper {
 
     public static setVerbose(enableVerbose: boolean) {
         LoggingHelper.verboseEnabled = enableVerbose;
-        // TODO validate if this works
-        // if (LoggingHelper.verboseEnabled) {
-        //     (<any> LoggingHelper.logger.transports[0]).level = "verbose";
-        // } else {
-        //     (<any> LoggingHelper.logger.transports[0]).level = "info";
-        // }
+        if (LoggingHelper.verboseEnabled) {
+            (<any> LoggingHelper.logger).level = "verbose";
+        } else {
+            (<any> LoggingHelper.logger).level = "info";
+        }
     }
 
     public static debug (logger: string, message: string): void {
@@ -36,17 +35,18 @@ export class LoggingHelper {
         LoggingHelper.log("warn", logger, message);
     }
 
-    public static error (logger: string, message: string): void {
-        LoggingHelper.log("error", logger, message);
+    public static error (logger: string, message: string, callback?: winston.LogCallback): void {
+        LoggingHelper.log("error", logger, message, callback);
     }
 
-    private static log(level: string, logger: string, message: string) {
-        // Rpad and then truncate the logger name
-        let loggerString = StringUtil.rpad(logger, " ", 10).substr(0, 10);
+    private static log(level: string, logger: string, message: string, callback?: winston.LogCallback) {
+        if (!LoggingHelper.logger) return;
         if (LoggingHelper.cli) {
-            winston.log(level, message);
+            LoggingHelper.logger.log(level, message, callback);
         } else {
-            winston.log(level, loggerString + "  " + message);
+            // Rpad and then truncate the logger name
+            let loggerString = StringUtil.rpad(logger, " ", 10).substr(0, 10);
+            LoggingHelper.logger.log(level, loggerString + "  " + message, callback);
         }
     }
 
@@ -63,15 +63,17 @@ export class LoggingHelper {
         LoggingHelper.cli = cli;
         winston.clear();
         if (LoggingHelper.cli) {
-            LoggingHelper.logger = winston.add(new winston.transports.Console({
+            LoggingHelper.logger = winston.createLogger({
                 format: LoggingHelper.cliFormatter,
-                level: "info"
-            }));
+                level: "info",
+                transports: [new winston.transports.Console()],
+            });
         } else {
-            LoggingHelper.logger = winston.add(new winston.transports.Console({
+            LoggingHelper.logger = winston.createLogger({
                 format: LoggingHelper.formatter,
-                level: "warn"
-            }));
+                level: "warn",
+                transports: [new winston.transports.Console()],
+            });
         }
     }
 
