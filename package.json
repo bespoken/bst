@@ -3,7 +3,7 @@
   "description": "Tools for making Alexa development easier and more fun",
   "license": "SEE LICENSE IN LICENSE",
   "private": false,
-  "version": "2.6.0",
+  "version": "2.6.0-RC.1",
   "bin": {
     "bst": "./bin/bst.js",
     "bst-server": "./bin/bst-server.js",
@@ -25,11 +25,7 @@
     "properties-reader": "0.0.15",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-<<<<<<< HEAD
-    "skill-testing-ml": "^1.3.2",
-=======
     "skill-testing-ml": "^1.3.0",
->>>>>>> b15870e (upgrade dev environment 12)
     "update-notifier": "^2.5.0",
     "uuid": "^8.3.2",
     "virtual-alexa": "^0.7.2",
