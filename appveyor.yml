@@ -1,10 +1,9 @@
 # Test against the latest version of this Node.js version
 environment:
   matrix:
-    - nodejs_version: "6"
-    - nodejs_version: "7"
-    - nodejs_version: "8"
     - nodejs_version: "10"
+    - nodejs_version: "12"
+    - nodejs_version: "16"
 
 
 # Install scripts. (runs after repo cloning)
@@ -24,3 +23,6 @@ test_script:
 
 # Don't actually build.
 build: off
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true

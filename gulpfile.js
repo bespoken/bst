@@ -68,7 +68,7 @@ gulp.task('test-suite-run', gulp.series('build', function testSuiteRun() {
             tap(function(file, t) {
                 const testFile = path.relative(process.cwd(), file.path);
 
-                const mocha = spawn.sync('node_modules/mocha/bin/mocha', ['--colors', testFile]);
+                const mocha = spawn.sync('node_modules/mocha/bin/mocha', ['--exit', '--colors', testFile]);
 
                 if (mocha.error) {
                     console.error('Error: ' + mocha.error, mocha.error);

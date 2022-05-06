@@ -1,22 +1,21 @@
 import * as winston from "winston";
+import { format } from "winston";
 import {StringUtil} from "./string-util";
-import {LoggerInstance} from "winston";
 
 export class LoggingHelper {
     private static cli: boolean = false;
     private static verboseEnabled: boolean = false;
-    private static logger: LoggerInstance = null;
+    private static logger: winston.Logger = null;
 
-    public static REQUEST_COLOR: string = "#ff6633";
-    public static LINK_COLOR: string = "#ff6633";
+    public static REQUEST_COLOR: string = "#FF6633";
+    public static LINK_COLOR: string = "#FF6633";
 
     public static setVerbose(enableVerbose: boolean) {
         LoggingHelper.verboseEnabled = enableVerbose;
-
         if (LoggingHelper.verboseEnabled) {
-            (<any> LoggingHelper.logger.transports).console.level = "verbose";
+            (<any> LoggingHelper.logger).level = "verbose";
         } else {
-            (<any> LoggingHelper.logger.transports).console.level = "info";
+            (<any> LoggingHelper.logger).level = "info";
         }
     }
 
@@ -36,27 +35,27 @@ export class LoggingHelper {
         LoggingHelper.log("warn", logger, message);
     }
 
-    public static error (logger: string, message: string): void {
-        LoggingHelper.log("error", logger, message);
+    public static error (logger: string, message: string, callback?: winston.LogCallback): void {
+        LoggingHelper.log("error", logger, message, callback);
     }
 
-    private static log(level: string, logger: string, message: string) {
-        // Rpad and then truncate the logger name
-        let loggerString = StringUtil.rpad(logger, " ", 10).substr(0, 10);
+    private static log(level: string, logger: string, message: string, callback?: winston.LogCallback) {
+        if (!LoggingHelper.logger) return;
         if (LoggingHelper.cli) {
-            winston.log(level, message);
+            LoggingHelper.logger.log(level, message, callback);
         } else {
-            winston.log(level, loggerString + "  " + message);
+            // Rpad and then truncate the logger name
+            let loggerString = StringUtil.rpad(logger, " ", 10).substr(0, 10);
+            LoggingHelper.logger.log(level, loggerString + "  " + message, callback);
         }
     }
 
     public static prepareForFileLoggingAndDisableConsole(file: string): void {
-        LoggingHelper.logger.add(winston.transports.File,
-            {
-                formatter: LoggingHelper.cli ? LoggingHelper.cliFormatter : LoggingHelper.formatter,
-                level: "error",
-                filename: file,
-            });
+        LoggingHelper.logger.add(new winston.transports.File({
+            format: LoggingHelper.cli ? LoggingHelper.cliFormatter : LoggingHelper.formatter,
+            level: "error",
+            filename: file,
+        }));
         LoggingHelper.logger.remove(winston.transports.Console);
     }
 
@@ -64,40 +63,39 @@ export class LoggingHelper {
         LoggingHelper.cli = cli;
         winston.clear();
         if (LoggingHelper.cli) {
-            LoggingHelper.logger = winston.add(winston.transports.Console,
-                {
-                    formatter: LoggingHelper.cliFormatter,
-                    level: "info"
-                }
-            );
+            LoggingHelper.logger = winston.createLogger({
+                format: LoggingHelper.cliFormatter,
+                level: "info",
+                transports: [new winston.transports.Console()],
+            });
         } else {
-            LoggingHelper.logger = winston.add(winston.transports.Console,
-                {
-                    formatter: LoggingHelper.formatter,
-                    level: "warn"
-                }
-            );
+            LoggingHelper.logger = winston.createLogger({
+                format: LoggingHelper.formatter,
+                level: "warn",
+                transports: [new winston.transports.Console()],
+            });
         }
     }
 
-    private static formatter(options: any): string {
+    private static formatter = format.printf(({ level, message, label, timestamp, meta }) => {
         return new Date().toISOString() + " "
-            + options.level.toUpperCase() + " "
-            + (undefined !== options.message ? options.message : "")
-            + (options.meta && Object.keys(options.meta).length ? "\n\t"
-            + JSON.stringify(options.meta) : "" );
-    }
+            + level.toUpperCase() + " "
+            + (undefined !== message ? message : "")
+            + (meta && Object.keys(meta).length ? "\n\t"
+            + JSON.stringify(meta) : "" );
+      });
 
-    private static cliFormatter(options: any): string {
-        let level = options.level.toUpperCase();
-        if (level === "VERBOSE") {
-            level = "VERB";
+
+    private static cliFormatter = format.printf(({ level, message, label, timestamp, meta }) => {
+        let levelFormatted = level.toUpperCase();
+        if (levelFormatted === "VERBOSE") {
+            levelFormatted = "VERB";
         }
-        return StringUtil.rpad(level, " ", 5) + " "
+        return StringUtil.rpad(levelFormatted, " ", 5) + " "
             + new Date().toISOString() + " "
-            + (undefined !== options.message ? options.message : "")
-            + (options.meta && Object.keys(options.meta).length ? "\n\t"
-            + JSON.stringify(options.meta) : "" );
-    }
+            + (undefined !== message ? message : "")
+            + (meta && Object.keys(meta).length ? "\n\t"
+            + JSON.stringify(meta) : "" );
+      });
 
 }

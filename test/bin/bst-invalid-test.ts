@@ -28,7 +28,8 @@ describe("bst commands", function() {
     let originalFunction: any = null;
     let dataString: string = "";
     let resultPattern: string = "";
-    let mochaDone: MochaDone = null;
+    // TODO fix
+    let mochaDone: any = null;
 
     let collectError = function (buffer: Buffer|string) {
         if (buffer instanceof Buffer) {
@@ -53,8 +54,9 @@ describe("bst commands", function() {
         mockery.warnOnUnregistered(false);
         mockery.registerMock("../lib/core/global", globalModule);
 
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(process, "exit", function (n: number) {}); // Ignore exit()
+        sandbox = sinon.createSandbox();
+        // @ts-ignore
+        sandbox.stub(process, "exit").callsFake(function (n: number) {}); // Ignore exit()
         originalFunction = process.stdout.write;
         dataString = "";
         (<any> process.stderr).write = collectError;

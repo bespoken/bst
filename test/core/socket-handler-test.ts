@@ -22,7 +22,7 @@ describe("SocketHandlerTest", function() {
 
     describe("Send", function() {
         it("Sends Simple Payload", function(done) {
-            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: any = TypeMoq.Mock.ofType(Socket);
 
             const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
                 assert.equal("TEST", message.asString());
@@ -33,7 +33,7 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends No Message ID Payload", function(done) {
-            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: any = TypeMoq.Mock.ofType(Socket);
 
             // Second message is received buy not the first
             const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
@@ -46,7 +46,7 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends Bad Message ID Payload", function(done) {
-            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: any = TypeMoq.Mock.ofType(Socket);
 
             // Second message is received buy not the first
             const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
@@ -61,7 +61,7 @@ describe("SocketHandlerTest", function() {
 
 
         it("Sends Multiple Payloads At Once", function(done) {
-            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: any = TypeMoq.Mock.ofType(Socket);
 
             let count = 0;
             const socketHandler = new SocketHandler(mockSocket.object, function(message: SocketMessage) {
@@ -79,7 +79,7 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends Broken Up Payloads", function(done) {
-            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: any = TypeMoq.Mock.ofType(Socket);
 
             let count = 0;
             const socketHandler = new SocketHandler(mockSocket.object, function(socketMessage: SocketMessage) {
@@ -106,7 +106,7 @@ describe("SocketHandlerTest", function() {
         });
 
         it("Sends More Broken Up Payloads", function(done) {
-            const mockSocket: TypeMoq.Mock<Socket> = TypeMoq.Mock.ofType(Socket);
+            const mockSocket: any = TypeMoq.Mock.ofType(Socket);
 
             let count = 0;
             const socketHandler = new SocketHandler(mockSocket.object, function(socketMessage: SocketMessage) {

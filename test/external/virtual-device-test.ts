@@ -28,7 +28,7 @@ describe("VirtualDeviceClient", function() {
         mockery.warnOnUnregistered(false);
         mockery.warnOnReplace(false);
         mockery.registerMock("../core/global", globalModule);
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
         messageParam = constructorToken = undefined;
     });
 

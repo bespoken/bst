@@ -65,11 +65,13 @@ describe("bst-proxy", function() {
         mockery.registerMock("../lib/core/global", globalModule);
         mockery.registerMock("../lib/core/logging-helper", {
             LoggingHelper: {
-                setVerbose: () => {}
+                setVerbose: () => {},
+                LINK_COLOR: "#FF6633",
             }
         });
-        sandbox = sinon.sandbox.create();
-        sandbox.stub(process, "exit", function () {}); // Ignore exit()
+        sandbox = sinon.createSandbox();
+        // @ts-ignore
+        sandbox.stub(process, "exit").callsFake( function () {}); // Ignore exit()
     });
 
     afterEach(function () {
@@ -121,10 +123,10 @@ describe("bst-proxy", function() {
         });
 
         it("Calls HTTP proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --secure --pithy --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 http 9000");
+            process.argv = command("node bst-proxy.js http 9000 --secure --pithy --bstHost localhost --bstPort 9000 --targetDomain 0.0.0.0 ");
 
             let pithyCalled = false;
-            sandbox.stub(console, "log", function (log: string) {
+            sandbox.stub(console, "log").callsFake( function (log: string) {
                 if (log.indexOf("Disabling verbose logging") !== -1) {
                     pithyCalled = true;
                 }
@@ -182,7 +184,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls function proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 function function.js handler");
+            process.argv = command("node bst-proxy.js function function.js handler --bstHost localhost2 --bstPort 9001");
             let optionsSet = false;
             mockProxy.start = function () {
                 if (!optionsSet) {
@@ -230,7 +232,7 @@ describe("bst-proxy", function() {
         });
 
         it("Calls Lambda proxy with options", function(done) {
-            process.argv = command("node bst-proxy.js --bstHost localhost2 --bstPort 9001 lambda lambda.js");
+            process.argv = command("node bst-proxy.js lambda lambda.js --bstHost localhost2 --bstPort 9001");
             let optionsSet = false;
             mockProxy.start = function () {
                 if (!optionsSet) {
@@ -252,7 +254,7 @@ describe("bst-proxy", function() {
     describe("stop command", function() {
         it("Stops running proxy", function(done) {
             process.argv = command("node bst-proxy.js stop");
-            sandbox.stub(console, "log", function (data: Buffer) {
+            sandbox.stub(console, "log").callsFake(function (data: Buffer) {
                 if (data !== undefined) {
                     if (data.toString().startsWith("Proxy process stopped.")) {
                         done();
@@ -277,7 +279,7 @@ describe("bst-proxy", function() {
 
         it("Fails to stop running proxy", function(done) {
             process.argv = command("node bst-proxy.js stop");
-            sandbox.stub(console, "error", function (data: Buffer) {
+            sandbox.stub(console, "error").callsFake( function (data: Buffer) {
                 if (data !== undefined) {
                     if (data.toString().startsWith("Proxy process failed to stop.")) {
                         done();
@@ -302,7 +304,7 @@ describe("bst-proxy", function() {
 
         it("Stops without anything running", function(done) {
             process.argv = command("node bst-proxy.js stop");
-            sandbox.stub(console, "log", function (data: Buffer) {
+            sandbox.stub(console, "log").callsFake(function (data: Buffer) {
                 if (data !== undefined) {
                     if (data.toString().startsWith("We do not see any proxy running")) {
                         done();

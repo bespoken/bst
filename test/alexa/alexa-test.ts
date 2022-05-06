@@ -77,7 +77,7 @@ describe("Alexa", function() {
             let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             alexa.startSession(skillURL, model, false).spoken("Nearest Location", function (error: any) {
                 assert(error);
-                assert.equal(error.message, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
+                assert.ok(error.message.includes("getaddrinfo ENOTFOUND alexa.xappmedia.xyz"));
                 done();
             });
         });
@@ -160,7 +160,7 @@ describe("Alexa", function() {
             let skillURL = "https://alexa.xappmedia.xyz/xapp?tag=JPKUnitTest&apiKey=XappMediaApiKey&appKey=DefaultApp";
             alexa.startSession(skillURL, model, false).intended("NearestLocation", null, function (error: any) {
                 assert(error);
-                assert.equal(error.message, "getaddrinfo ENOTFOUND alexa.xappmedia.xyz alexa.xappmedia.xyz:443");
+                assert.ok(error.message.includes("getaddrinfo ENOTFOUND alexa.xappmedia.xyz"));
                 done();
             });
         });

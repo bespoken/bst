@@ -1,6 +1,6 @@
 // Startup script for running BST
 import {BespokeServer} from "../lib/server/bespoke-server";
-import * as program from "commander";
+import {program} from "commander";
 
 program
     .command("start <webhookPort> <nodePorts ...>")

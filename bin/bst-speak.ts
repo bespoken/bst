@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as program from "commander";
+import {program} from "commander";
 import {Global} from "../lib/core/global";
 import {VirtualDeviceClient} from "../lib/external/virtual-device";
 import {BstStatistics, BstCommand} from "../lib/statistics/bst-statistics";
@@ -34,7 +34,7 @@ Global.initializeCLI().then(
                 }
 
                 // Just by casting program to options, we can get all the options which are set on it
-                const options: any = program;
+                const options: any = program.opts();
                 const token = options.token;
                 const locale = options.locale;
                 const voiceID = options.voiceID;

@@ -23,7 +23,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12
     working_directory: ~/circleci-deployment
     steps:
       - attach_workspace:
@@ -36,7 +36,8 @@ jobs:
           paths: .
 
   codecov:
-    machine: true
+    docker:
+      - image: circleci/node:12
     environment:
       SKIP_STATISTICS: "true"
     working_directory: ~/circleci-deployment
@@ -57,7 +58,7 @@ jobs:
   
   skill-testing-release:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12
     environment:
       ASK_ACCESS_TOKEN: dummy
       ASK_REFRESH_TOKEN: dummy
@@ -103,7 +104,7 @@ jobs:
 
   bst-client-release:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12
     working_directory: ~/bst-client-release
     steps:
       - add_ssh_keys:

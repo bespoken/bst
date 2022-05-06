@@ -217,7 +217,7 @@ describe("BSTProcess", function() {
 
         beforeEach(function (done) {
             exec("rm -rf " + (<any> BSTConfig).configDirectory(), function () {
-                sandbox = sinon.sandbox.create();
+                sandbox = sinon.createSandbox();
                 done();
             });
 
@@ -242,7 +242,7 @@ describe("BSTProcess", function() {
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             // We stub is running because that is tricky to test
-            sandbox.stub(BSTProcess, "isRunning", function (pid: string) {
+            sandbox.stub(BSTProcess, "isRunning").callsFake(function (pid: number) {
                 assert.equal(pid, 9999);
                 return true;
             });
@@ -256,7 +256,7 @@ describe("BSTProcess", function() {
             BSTProcess.run(9000, ProxyType.LAMBDA, 9999);
 
             // We stub is running because that is tricky to test
-            sandbox.stub(BSTProcess, "isRunning", function (pid: string) {
+            sandbox.stub(BSTProcess, "isRunning").callsFake( function (pid: number) {
                 assert.equal(pid, 9999);
                 return false;
             });
@@ -315,7 +315,7 @@ describe("BSTProcess", function() {
         beforeEach(async function () {
             return new Promise(resolve => {
                 exec("rm -rf " + (<any> BSTConfig).configDirectory(), async function () {
-                    sandbox = sinon.sandbox.create();
+                    sandbox = sinon.createSandbox();
                     fs.mkdirSync((<any> BSTConfig).configDirectory());
                     resolve();
                 });
@@ -339,7 +339,7 @@ describe("BSTProcess", function() {
             const BSTProxy = require("../../lib/client/bst-proxy").BSTProxy;
             let proxy = new BSTProxy(ProxyType.LAMBDA).port(10000);
 
-            sandbox.stub(process, "kill", function (pid: number, code: any) {
+            sandbox.stub(process, "kill").callsFake(function (pid: number, code: any) {
                 // Have to make sure to do the right thing when code is 0
                 //  Otherwise, the initial check on whether the process is running does not work correctly
                 //  FYI, calling kill with code 0 is what checks if a process is running
