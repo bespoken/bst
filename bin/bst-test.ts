@@ -24,9 +24,9 @@ Global.initializeCLI(false).then(() => {
                 skillTesterArgs.push(testPattern);
             }
 
-            const configurationOverrides = {
-                client: "CLI",
-            };
+            const isRunningOnGithubAction = process.env.CI === "true" && process.env.GITHUB_ACTIONS === "true";
+            const client = isRunningOnGithubAction ? "monitoring" : "CLI";
+            const configurationOverrides = { client };
             const programOptions: any = program.opts();
             skillTesting.ConfigurationKeys.forEach(element => {
                 if (programOptions[element.key]) {
