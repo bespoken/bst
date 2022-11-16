@@ -76,6 +76,7 @@ describe("bst-test", function() {
         });
 
         it("call with parameters", function() {
+            this.timeout(10000);
             return new Promise((resolve, reject) => {
                 const mockRun = function(a, overrides) {
                     assert.equal(overrides.client, "CLI");
