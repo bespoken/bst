@@ -46,6 +46,7 @@ describe("bst-test", function() {
 
     describe("test command", function() {
         it("call initializeCLI with false", function() {
+            this.timeout(10000);
             return new Promise((resolve, reject) => {
 
                 process.argv = command("node bst-test.js");
