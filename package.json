@@ -22,7 +22,7 @@
     "jest-html-reporters": "^1.1.0",
     "logless-client": "0.0.1",
     "nock": "^9.6.0",
-    "properties-reader": "0.0.15",
+    "properties-reader": "2.2.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "skill-testing-ml": "^1.4.6",
