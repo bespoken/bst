@@ -42,8 +42,8 @@ jobs:
           git push
           git push --tags
       
-      # - name: NPM publish into registry
-      #   run: |
-      #     npm publish --tag latest
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      - name: NPM publish into registry
+        run: |
+          npm publish --tag latest
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
