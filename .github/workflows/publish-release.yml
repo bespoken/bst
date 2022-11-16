@@ -1,0 +1,49 @@
+name: Publish RELEASE into NPM registry
+on:
+  push:
+    tags:
+      - "publish-release-*"
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GH_TOKEN_WITH_PUSH }}
+      
+      - name: Config GIT user and email
+        run: |
+          git config user.name "$(git log -1 --pretty=format:'%an')"
+          git config user.email "$(git log -1 --pretty=format:'%ae')"
+      
+      - name: Setup node version 14.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '10.x'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: NPM Build
+        run: |
+          npm ci
+          npm i --save skill-testing-ml@latest
+          npm run test
+
+      - name: Commit changes after update skill-testing-ml
+        run: |
+          git add . && git commit -m "Github Action: update skill-testing-ml"
+      
+      - name: NPM increment version for release
+        run: npm version $(node -e "require('./publishing-toolkit.js').printReleaseVersion()")
+      
+      - name: GIT Pushing changes
+        run: |
+          git push
+          git push --tags
+      
+      # - name: NPM publish into registry
+      #   run: |
+      #     npm publish --tag latest
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
