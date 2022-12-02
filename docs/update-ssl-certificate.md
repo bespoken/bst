@@ -30,3 +30,16 @@ docker stop [replace-with-container-id]
 ```
 docker run -d --env-file .env -p 443:443 -p 5000:5000 -p 80:80 bespoken/bst:bst-server-14
 ```
+
+
+# Import ssl certificate into aws cert manager
+
+## generate SSL Certificate Trust Chain
+
+Follow instructions to create certificate trust chain https://support.sectigo.com/PS_KnowledgeDetailPage?Id=kA03l00000117PV
+
+## import certificate into aws
+
+Go to and import the certificate
+https://us-east-1.console.aws.amazon.com/acm/home?region=us-east-1#/certificates/list
+
