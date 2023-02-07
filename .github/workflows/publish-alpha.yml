@@ -44,6 +44,6 @@ jobs:
       
       - name: NPM publish into registry
         run: |
-          npm publish --tag latest
+          npm publish --tag alpha
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
