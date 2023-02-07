@@ -30,24 +30,20 @@ jobs:
           npm i --save skill-testing-ml@alpha
           npm run test
 
-      - name: Git status
+      - name: Commit changes after update skill-testing-ml
         run: |
-          git status
+          git add . && git commit -m "Github Action: update skill-testing-ml"
       
-      # - name: Commit changes after update skill-testing-ml
-      #   run: |
-      #     git add . && git commit -m "Github Action: update skill-testing-ml"
+      - name: NPM increment version for release
+        run: npm version $(node -e "require('./publishing-toolkit.js').printNextAlphaVersion()")
       
-      # - name: NPM increment version for release
-      #   run: npm version $(node -e "require('./publishing-toolkit.js').printNextAlphaVersion()")
+      - name: GIT Pushing changes
+        run: |
+          git push
+          git push --tags
       
-      # - name: GIT Pushing changes
-      #   run: |
-      #     git push
-      #     git push --tags
-      
-      # - name: NPM publish into registry
-      #   run: |
-      #     npm publish --tag alpha
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      - name: NPM publish into registry
+        run: |
+          npm publish --tag alpha
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
